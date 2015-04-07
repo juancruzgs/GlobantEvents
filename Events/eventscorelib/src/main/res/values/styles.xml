@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="GlobantMainTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/globant_green</item>
+        <item name="colorPrimaryDark">@color/globant_green_dark</item>
+        <item name="colorAccent">@color/ambar</item>
+        <item name="icon">@color/grey_light</item>
+        <item name="divider">@color/grey_dark</item>
+        <item name="android:textColorPrimary">@color/grey</item>
+        <item name="android:textColorSecondary">@color/grey</item>
+    </style>
+</resources>
