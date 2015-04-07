@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.globant.eventscorelib.baseComponents.BaseActivity;
 
-public class EventsActivity extends ActionBarActivity {
+
+public class EventsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
