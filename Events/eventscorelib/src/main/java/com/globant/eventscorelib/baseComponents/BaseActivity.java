@@ -28,7 +28,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     TextView mConnectionRibbon;
     TextView mFragmentTitle;
     Toolbar mToolbar;
-    ArrayList<Fragment> mFragments;
+    ArrayList<BaseFragment> mFragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +66,8 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
-        mFragments.add(fragment);
-        setFragmentTitle();
+        mFragments.add((BaseFragment)fragment);
+        setFragmentTitle((BaseFragment)fragment);
         //If there are more than 1 fragment title is overrided
     }
 
@@ -106,14 +106,42 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
-    private final void setFragmentTitle(){
-        String title = getFragmentTitle();
+    private final void setFragmentTitle(BaseFragment fragment){
+        String title = getFragmentTitle(fragment);
         if (title != null && !title.isEmpty()){
             mFragmentTitle.setText(title);
         }
     }
 
+    private void showErrorOverlay(){
+        for (BaseFragment f : mFragments) {
+            f.showErrorOverlay();
+        }
+    }
+    private void showErrorOverlay(String messageError){
+        for (BaseFragment f : mFragments) {
+            f.showErrorOverlay(messageError);
+        }
+    }
+
+    private void showProgressOverlay(){
+        for (BaseFragment f : mFragments) {
+            f.showProgressOverlay();
+        }
+    }
+    private void showProgressOverlay(String messageProgress){
+        for (BaseFragment f : mFragments) {
+            f.showProgressOverlay(messageProgress);
+        }
+    }
+
+    private void hideUtilsAndShowContentOverlay(){
+        for (BaseFragment f : mFragments) {
+            f.hideUtilsAndShowContentOverlay();
+        }
+    }
+
     // Anstract methods
     public abstract String getActivityTitle();
-    public abstract String getFragmentTitle();
+    public abstract String getFragmentTitle(BaseFragment fragment);
 }
