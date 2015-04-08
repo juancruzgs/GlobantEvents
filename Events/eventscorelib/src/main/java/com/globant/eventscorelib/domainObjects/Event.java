@@ -10,6 +10,12 @@ public class Event {
     private String mFullDescription;
     private String mAdditionalInfo;
     private String mAddress;
+    private String mQrCode;
+    private String mCity;
+    private String mCountry;
+    private String mCategory;
+    private String mLanguage;
+    private String mHashtag;
     private Date mStartDate;
     private Date mEndDate;
     private boolean mPublic;
@@ -17,12 +23,6 @@ public class Event {
     private byte[] mEventLogo;
     private double mLatitude;
     private double mLongitude;
-    private String mQrCode;
-    private String mCity;
-    private String mCountry;
-    private String mCategory;
-    private String mLanguage;
-    private String mHashtag;
     private List<Speaker> mSpeakers;
     private List<Subscriber> mSubscribers;
 

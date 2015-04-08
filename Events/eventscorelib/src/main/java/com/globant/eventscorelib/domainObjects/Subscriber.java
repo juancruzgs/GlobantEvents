@@ -7,32 +7,42 @@ public class Subscriber {
     private String mEmail;
     private String mPhone;
     private String mOccupation;
-    private byte[] mPicture;
-    private boolean mEnglish;
     private String mTwitterUser;
     private String mCity;
     private String mCountry;
+    private byte[] mPicture;
+    private boolean mEnglish;
     private boolean mGlober;
     private boolean mPublic;
     private boolean mAccepted;
+    private boolean mCheckIn;
 
     public Subscriber() {
     }
 
-    public Subscriber(String name, String lastName, String email, String phone, String occupation, byte[] picture, boolean english, String twitterUser, String city, String country, boolean glober, boolean aPublic, boolean accepted) {
+    public Subscriber(String name, String lastName, String email, String phone, String occupation, String twitterUser, String city, String country, byte[] picture, boolean english, boolean glober, boolean aPublic, boolean accepted, boolean checkIn) {
         mName = name;
         mLastName = lastName;
         mEmail = email;
         mPhone = phone;
         mOccupation = occupation;
-        mPicture = picture;
-        mEnglish = english;
         mTwitterUser = twitterUser;
         mCity = city;
         mCountry = country;
+        mPicture = picture;
+        mEnglish = english;
         mGlober = glober;
         mPublic = aPublic;
         mAccepted = accepted;
+        mCheckIn = checkIn;
+    }
+
+    public boolean isCheckIn() {
+        return mCheckIn;
+    }
+
+    public void setCheckIn(boolean checkIn) {
+        mCheckIn = checkIn;
     }
 
     public String getName() {
