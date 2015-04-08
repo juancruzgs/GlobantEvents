@@ -32,6 +32,11 @@ public class TestActivity extends BaseActivity {
         return "Test Activty";
     }
 
+    @Override
+    public String getFragmentTitle() {
+        return "Fragment";
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

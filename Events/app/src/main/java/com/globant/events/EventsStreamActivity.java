@@ -28,6 +28,16 @@ public class EventsStreamActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public String getActivityTitle() {
+        return null;
+    }
+
+    @Override
+    public String getFragmentTitle() {
+        return null;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
