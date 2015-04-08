@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.globant.eventscorelib.baseComponents.BaseFragment;
+
 
 public class TestActivity extends ActionBarActivity {
 
@@ -51,15 +53,16 @@ public class TestActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends BaseFragment {
 
         public PlaceholderFragment() {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_test, container, false);
+            hideUtilsAndShowContentOverlay();
             return rootView;
         }
     }
