@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Event {
 
+    private String mObjectID;
     private String mTitle;
     private String mShortDescription;
     private String mFullDescription;
@@ -50,6 +51,10 @@ public class Event {
         mHashtag = hashtag;
         mSpeakers = speakers;
         mSubscribers = subscribers;
+    }
+
+    public String getObjectID() {
+        return mObjectID;
     }
 
     public String getHashtag() {

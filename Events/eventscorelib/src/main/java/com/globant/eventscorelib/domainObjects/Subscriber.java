@@ -2,6 +2,7 @@ package com.globant.eventscorelib.domainObjects;
 
 public class Subscriber {
 
+    private String mObjectID;
     private String mName;
     private String mLastName;
     private String mEmail;
@@ -37,7 +38,11 @@ public class Subscriber {
         mCheckIn = checkIn;
     }
 
-    public boolean isCheckIn() {
+    public String getObjectID() {
+        return mObjectID;
+    }
+
+    public boolean checkedIn() {
         return mCheckIn;
     }
 

@@ -3,6 +3,7 @@ package com.globant.eventscorelib.domainObjects;
 
 public class Speaker {
 
+    private String mObjectID;
     private String mTitle;
     private String mName;
     private String mLastName;
@@ -18,6 +19,10 @@ public class Speaker {
         mLastName = lastName;
         mBiography = biography;
         mPicture = picture;
+    }
+
+    public String getObjectID() {
+        return mObjectID;
     }
 
     public String getLastName() {
