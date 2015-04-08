@@ -11,18 +11,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.globant.eventscorelib.baseComponents.BaseActivity;
+import com.globant.eventscorelib.baseComponents.BaseFragment;
 
-public class TestActivity extends ActionBarActivity {
+
+public class TestActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        BaseFragment fragment = new PlaceholderFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, fragment)
                     .commit();
         }
+    }
+
+    @Override
+    public String getActivityTitle() {
+        return "Test Activty";
+    }
+
+    public String getFragmentTitle(BaseFragment fragment) {
+        return fragment.getTitle();
     }
 
 
@@ -51,16 +64,20 @@ public class TestActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends BaseFragment {
 
         public PlaceholderFragment() {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
+        protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_test, container, false);
             return rootView;
+        }
+
+        @Override
+        public String getTitle() {
+            return "FragmentTest";
         }
     }
 }
