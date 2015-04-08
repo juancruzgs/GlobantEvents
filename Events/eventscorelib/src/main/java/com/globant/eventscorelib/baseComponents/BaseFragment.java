@@ -78,4 +78,5 @@ public abstract class BaseFragment  extends Fragment{
         mUtilsLayout.setVisibility(View.GONE);
         mContentLayout.setVisibility(View.VISIBLE);
     }
+    abstract String getTitle();
 }
