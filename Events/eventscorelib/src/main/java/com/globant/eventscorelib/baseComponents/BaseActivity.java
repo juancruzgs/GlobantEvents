@@ -19,10 +19,11 @@ import com.globant.eventscorelib.R;
 /**
  * Created by ignaciopena on 4/1/15.
  */
-public class BaseActivity extends ActionBarActivity {
+public abstract class BaseActivity extends ActionBarActivity {
 
     BroadcastReceiver mReceiver;
     TextView mConnectionRibbon;
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +66,9 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     private void setToolbar(ViewGroup mainContainer) {
-        Toolbar toolbar =  (Toolbar) mainContainer.findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar =  (Toolbar) mainContainer.findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        setActivityTitle();
     }
 
     @Override
@@ -81,4 +83,13 @@ public class BaseActivity extends ActionBarActivity {
         unregisterReceiver(mReceiver);
         super.onPause();
     }
+
+    private final void setActivityTitle(){
+        String title = getActivityTitle();
+        if (title != null && !title.isEmpty()){
+            mToolbar.setTitle(title);
+        }
+    }
+
+    public abstract String getActivityTitle();
 }

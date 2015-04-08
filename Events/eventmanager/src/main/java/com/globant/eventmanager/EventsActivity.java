@@ -14,7 +14,7 @@ import android.os.Build;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 
 
-public class EventsActivity extends BaseActivity {
+public class EventsActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
