@@ -18,18 +18,13 @@ public class BaseActivity extends ActionBarActivity {
     BroadcastReceiver mReceiver;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Toolbar toolbar =  (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
-
-    @Override
     public void setContentView(int layoutResID) {
         ViewGroup mainContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.activity_base, null);
         FrameLayout frameLayout = (FrameLayout) mainContainer.findViewById(R.id.container);
-        ViewGroup content = (ViewGroup) getLayoutInflater().inflate(layoutResID, frameLayout);
+        ViewGroup content = (ViewGroup) getLayoutInflater().inflate(layoutResID, frameLayout, false);
         frameLayout.addView(content);
+        Toolbar toolbar =  (Toolbar) mainContainer.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         super.setContentView(mainContainer);
     }
 
