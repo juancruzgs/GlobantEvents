@@ -68,7 +68,6 @@ public abstract class BaseActivity extends ActionBarActivity {
         super.onAttachFragment(fragment);
         mFragments.add((BaseFragment)fragment);
         setFragmentTitle((BaseFragment)fragment);
-        //If there are more than 1 fragment title is overrided
     }
 
     private void setConnectionReceiver() {
