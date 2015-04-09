@@ -11,7 +11,8 @@ import com.parse.Parse;
 public class BaseApplication extends Application{
     private static BaseApplication ourInstance = new BaseApplication();
 
-    public static BaseApplication getInstance() {
+    public static BaseApplication getInstance()
+    {
         return ourInstance;
     }
 
