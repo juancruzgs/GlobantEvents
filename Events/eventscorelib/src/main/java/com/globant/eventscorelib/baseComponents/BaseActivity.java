@@ -1,12 +1,15 @@
 package com.globant.eventscorelib.baseComponents;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +32,41 @@ public abstract class BaseActivity extends ActionBarActivity {
     TextView mFragmentTitle;
     Toolbar mToolbar;
     ArrayList<BaseFragment> mFragments;
+
+    BaseService mService = null;
+    boolean mIsBound = false;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the service object we can use to
+            // interact with the service.  Because we have bound to a explicit
+            // service that we know is running in our own process, we can
+            // cast its IBinder to a concrete class and directly access it.
+            mService = ((BaseService.BaseBinder)service).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            // Because it is running in our same process, we should never
+            // see this happen.
+            mService = null;
+        }
+    };
+
+    protected <T extends BaseService> void doBindService(Class<T> serviceClass) {
+        bindService(new Intent(this, serviceClass), mConnection, Context.BIND_AUTO_CREATE);
+        mIsBound = true;
+    }
+
+    protected void doUnbindService() {
+        if (mIsBound) {
+            // Detach our existing connection.
+            unbindService(mConnection);
+            mIsBound = false;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
