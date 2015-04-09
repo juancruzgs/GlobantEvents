@@ -56,7 +56,7 @@ public class Database {
         event.setLatitude(parseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES).getLatitude());
         event.setLongitude(parseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES).getLongitude());
         event.setSpeakers(getSpeakersByEventId(event.getObjectID()));
-        event.setSubscribers(getSubscriberByEventId(event.getObjectID(), true));
+        event.setSubscribers(getSubscriberByEventId(event.getObjectID()));
     }
 
     private void setEventDetails(Event event, ParseObject parseObject) throws ParseException {
@@ -71,21 +71,29 @@ public class Database {
         return null;
     }
 
-    public List<Subscriber> getSubscriberByEventId(String eventId, Boolean accepted) throws ParseException {
-        Subscriber subscriber = new Subscriber();
-        List<Subscriber> subscribers = new ArrayList<>();
+    public List<Subscriber> getSubscriberByEventId(String eventId) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         query.whereEqualTo(CoreConstants.FIELD_EVENTS, eventId);
-        query.whereEqualTo(CoreConstants.FIELD_ACCEPTED, accepted);
-        List<ParseObject> parseObjectList = query.find();
-        ParseObject parseObject;
-        for (int x = 0; x < parseObjectList.size(); x++) {
-            parseObject = parseObjectList.get(x);
-            setSubscriber(subscriber, parseObject);
-            subscribers.add(subscriber);
+
+
+        ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        innerQuery.whereMatchesKeyInQuery("objectId", "subscribers", query);
+        List<ParseObject> parseObjectList = innerQuery.find();
+        return null;
+        //TODO Terminar
+//        Subscriber subscriber = new Subscriber();
+//        List<Subscriber> subscribers = new ArrayList<>();
+//        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+//        query.whereEqualTo(CoreConstants.FIELD_EVENTS, eventId);
+//        List<ParseObject> parseObjectList = query.find();
+//        ParseObject parseObject;
+//        for (int x = 0; x < parseObjectList.size(); x++) {
+//            parseObject = parseObjectList.get(x);
+//            setSubscriber(subscriber, parseObject);
+//            subscribers.add(subscriber);
+//        }
+//        return subscribers;
         }
-        return subscribers;
-    }
 
     private void setSubscriber(Subscriber subscriber, ParseObject parseObject) throws ParseException {
         subscriber.setObjectID(parseObject.getObjectId());
