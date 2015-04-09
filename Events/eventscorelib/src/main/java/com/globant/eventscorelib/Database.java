@@ -5,6 +5,8 @@ import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -59,10 +61,6 @@ public class Database {
         event.setSubscribers(getSubscriberByEventId(event.getObjectID(), true));
     }
 
-    private void setEventDetails(Event event, ParseObject parseObject) throws ParseException {
-
-
-    }
 
     public List<Speaker> getSpeakersByEventId(String eventId) {
 //        List<Speaker> speakers = new ArrayList<>();
@@ -104,4 +102,32 @@ public class Database {
         subscriber.setAccepted(parseObject.getBoolean(CoreConstants.FIELD_ACCEPTED));
         subscriber.setCheckIn(parseObject.getBoolean(CoreConstants.FIELD_CHECK_IN));
     }
+
+    public void createEvent(Event event) throws ParseException {
+        ParseObject parseObject = new ParseObject(CoreConstants.EVENTS_TABLE);
+        parseObject.put(CoreConstants.FIELD_TITLE, event.getTitle());
+        parseObject.put(CoreConstants.FIELD_CITY, event.getShortDescription());
+        parseObject.put(CoreConstants.FIELD_COUNTRY, event.getCountry());
+        parseObject.put(CoreConstants.FIELD_CATEGORY, event.getCategory());
+        parseObject.put(CoreConstants.FIELD_START_DATE, event.getStartDate());
+        parseObject.put(CoreConstants.FIELD_END_DATE, event.getEndDate());
+        parseObject.put(CoreConstants.FIELD_PUBLIC, event.isPublic());
+        parseObject.put(CoreConstants.FIELD_ICON, new ParseFile(event.getIcon()));
+        parseObject.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile(event.getEventLogo()));
+        parseObject.put(CoreConstants.FIELD_FULL_DESCRIPTION, event.getFullDescription());
+        parseObject.put(CoreConstants.FIELD_ADDITIONAL_INFO, event.getAdditionalInfo());
+        parseObject.put(CoreConstants.FIELD_ADDRESS, event.getAddress());
+        parseObject.put(CoreConstants.FIELD_QR_CODE, event.getQrCode());
+        parseObject.put(CoreConstants.FIELD_LANGUAGE, event.getLanguage());
+        parseObject.put(CoreConstants.FIELD_HASHTAG, event.getHashtag());
+        parseObject.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(event.getLatitude(), event.getLongitude()));
+        parseObject.save();
+    }
+
+    public void  updateEvent(Event event) {
+        ParseObject parseObject = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, event.getObjectID());
+        parseObject.put("title", "sdsds");
+    }
+
+
 }
