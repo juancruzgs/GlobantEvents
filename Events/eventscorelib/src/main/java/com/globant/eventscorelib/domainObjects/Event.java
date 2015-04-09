@@ -57,6 +57,10 @@ public class Event {
         return mObjectID;
     }
 
+    public void setObjectID(String objectID) {
+        mObjectID = objectID;
+    }
+
     public String getHashtag() {
         return mHashtag;
     }

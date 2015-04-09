@@ -16,6 +16,7 @@ public class CoreConstants {
     public static final String SPEAKERS_TABLE = "Speakers";
     public static final String SUBSCRIBERS_TABLE = "Subscribers";
 
+    public static final String FIELD_OBJECT_ID = "objectId";
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_SHORT_DESCRIPTION = "short_description";
     public static final String FIELD_FULL_DESCRIPTION = "full_description";

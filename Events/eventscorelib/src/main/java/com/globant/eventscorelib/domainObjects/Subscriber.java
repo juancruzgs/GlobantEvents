@@ -42,6 +42,10 @@ public class Subscriber {
         return mObjectID;
     }
 
+    public void setObjectID(String objectID) {
+        mObjectID = objectID;
+    }
+
     public boolean checkedIn() {
         return mCheckIn;
     }

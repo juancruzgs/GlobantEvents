@@ -25,6 +25,10 @@ public class Speaker {
         return mObjectID;
     }
 
+    public void setObjectID(String objectID) {
+        mObjectID = objectID;
+    }
+
     public String getLastName() {
         return mLastName;
     }
