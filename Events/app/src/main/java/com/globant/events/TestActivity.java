@@ -65,5 +65,8 @@ public class TestActivity extends ActionBarActivity {
             hideUtilsAndShowContentOverlay();
             return rootView;
         }
+        @Override
+        public String getTitle(){ return "Fragment";
+        }
     }
 }
