@@ -17,52 +17,64 @@ import java.util.List;
 public class Database {
 
     public List<Event> getEvents() throws ParseException {
-        Event event;
+        Event domainEvent;
         List<Event> events = new ArrayList<>();
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         List<ParseObject> parseObjectList = query.find();
-        ParseObject parseObject;
+        ParseObject databaseEvent;
         for (int x = 0; x < parseObjectList.size(); x++) {
-            event = new Event();
-            parseObject = parseObjectList.get(x);
-            setEvent(event, parseObject);
-            events.add(event);
+            databaseEvent = parseObjectList.get(x);
+            domainEvent = createEventFromDatabase(databaseEvent);
+            events.add(domainEvent);
         }
         return events;
     }
 
        public Event getEvent(String eventId) throws ParseException {
-        Event event = new Event();
+        Event event;
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject parseObject = query.get(eventId);
-        setEvent(event, parseObject);
+        event = createEventFromDatabase(parseObject);
         return event;
     }
 
-    private void setEvent(Event event, ParseObject parseObject) throws ParseException {
-        event.setObjectID(parseObject.getObjectId());
-        event.setTitle(parseObject.getString(CoreConstants.FIELD_TITLE));
-        event.setShortDescription(parseObject.getString(CoreConstants.FIELD_SHORT_DESCRIPTION));
-        event.setCity(parseObject.getString(CoreConstants.FIELD_CITY));
-        event.setCountry(parseObject.getString(CoreConstants.FIELD_COUNTRY));
-        event.setCategory(parseObject.getString(CoreConstants.FIELD_CATEGORY));
-        event.setStartDate(parseObject.getDate(CoreConstants.FIELD_START_DATE));
-        event.setEndDate(parseObject.getDate(CoreConstants.FIELD_END_DATE));
-        event.setPublic(parseObject.getBoolean(CoreConstants.FIELD_PUBLIC));
-        event.setIcon(parseObject.getParseFile(CoreConstants.FIELD_ICON).getData());
-        event.setEventLogo(parseObject.getParseFile(CoreConstants.FIELD_EVENT_LOGO).getData());
-        event.setFullDescription(parseObject.getString(CoreConstants.FIELD_FULL_DESCRIPTION));
-        event.setAdditionalInfo(parseObject.getString(CoreConstants.FIELD_ADDITIONAL_INFO));
-        event.setAddress(parseObject.getString(CoreConstants.FIELD_ADDRESS));
-        event.setQrCode(parseObject.getString(CoreConstants.FIELD_QR_CODE));
-        event.setLanguage(parseObject.getString(CoreConstants.FIELD_LANGUAGE));
-        event.setHashtag(parseObject.getString(CoreConstants.FIELD_HASHTAG));
-        event.setLatitude(parseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES).getLatitude());
-        event.setLongitude(parseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES).getLongitude());
-        event.setSpeakers(getSpeakersByEventId(event.getObjectID()));
-        event.setSubscribers(getSubscriberByEventId(event.getObjectID()));
+    private Event createEventFromDatabase(ParseObject databaseEvent) throws ParseException {
+        Event domainEvent = new Event();
+        byte[] image;
+        domainEvent.setObjectID(databaseEvent.getObjectId());
+        domainEvent.setTitle(databaseEvent.getString(CoreConstants.FIELD_TITLE));
+        domainEvent.setShortDescription(databaseEvent.getString(CoreConstants.FIELD_SHORT_DESCRIPTION));
+        domainEvent.setCity(databaseEvent.getString(CoreConstants.FIELD_CITY));
+        domainEvent.setCountry(databaseEvent.getString(CoreConstants.FIELD_COUNTRY));
+        domainEvent.setCategory(databaseEvent.getString(CoreConstants.FIELD_CATEGORY));
+        domainEvent.setStartDate(databaseEvent.getDate(CoreConstants.FIELD_START_DATE));
+        domainEvent.setEndDate(databaseEvent.getDate(CoreConstants.FIELD_END_DATE));
+        domainEvent.setPublic(databaseEvent.getBoolean(CoreConstants.FIELD_PUBLIC));
+        image = getImageFromDatabase(databaseEvent, CoreConstants.FIELD_ICON);
+        domainEvent.setIcon(image);
+        image = getImageFromDatabase(databaseEvent, CoreConstants.FIELD_EVENT_LOGO);
+        domainEvent.setEventLogo(image);
+        domainEvent.setFullDescription(databaseEvent.getString(CoreConstants.FIELD_FULL_DESCRIPTION));
+        domainEvent.setAdditionalInfo(databaseEvent.getString(CoreConstants.FIELD_ADDITIONAL_INFO));
+        domainEvent.setAddress(databaseEvent.getString(CoreConstants.FIELD_ADDRESS));
+        domainEvent.setQrCode(databaseEvent.getString(CoreConstants.FIELD_QR_CODE));
+        domainEvent.setLanguage(databaseEvent.getString(CoreConstants.FIELD_LANGUAGE));
+        domainEvent.setHashtag(databaseEvent.getString(CoreConstants.FIELD_HASHTAG));
+        domainEvent.setLatitude(databaseEvent.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES).getLatitude());
+        domainEvent.setLongitude(databaseEvent.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES).getLongitude());
+        getEventSubscribers(databaseEvent);
+        return domainEvent;
     }
 
+    private byte[] getImageFromDatabase(ParseObject object, String field) throws ParseException {
+        ParseFile file = object.getParseFile(field);
+        if (file != null){
+            return file.getData();
+        }
+        else {
+            return null;
+        }
+    }
 
     public List<Speaker> getSpeakersByEventId(String eventId) {
 //        List<Speaker> speakers = new ArrayList<>();
@@ -71,31 +83,24 @@ public class Database {
         return null;
     }
 
-    public List<Subscriber> getSubscriberByEventId(String eventId) throws ParseException {
+    public List<Subscriber> getEventSubscribers(ParseObject event) throws ParseException {
+        List<Subscriber> subscribersList = new ArrayList<>();
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
-        query.whereEqualTo(CoreConstants.FIELD_EVENTS, eventId);
+        query.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
+        query.include(CoreConstants.FIELD_SUBSCRIBERS);
 
-
-        ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
-        innerQuery.whereMatchesKeyInQuery("objectId", "subscribers", query);
-        List<ParseObject> parseObjectList = innerQuery.find();
-        return null;
-        //TODO Terminar
-//        Subscriber subscriber = new Subscriber();
-//        List<Subscriber> subscribers = new ArrayList<>();
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
-//        query.whereEqualTo(CoreConstants.FIELD_EVENTS, eventId);
-//        List<ParseObject> parseObjectList = query.find();
-//        ParseObject parseObject;
-//        for (int x = 0; x < parseObjectList.size(); x++) {
-//            parseObject = parseObjectList.get(x);
-//            setSubscriber(subscriber, parseObject);
-//            subscribers.add(subscriber);
-//        }
-//        return subscribers;
+        List<ParseObject> eventsToSubscribersList = query.find();
+        for (int x = 0; x < eventsToSubscribersList.size(); x++) {
+            ParseObject eventToSubscribersRow = eventsToSubscribersList.get(x);
+            ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
+            Subscriber domainSubscriber = createSubscribersFromDatabase(databaseSubscriber);
+            subscribersList.add(domainSubscriber);
         }
+        return subscribersList;
+    }
 
-    private void setSubscriber(Subscriber subscriber, ParseObject parseObject) throws ParseException {
+    private Subscriber createSubscribersFromDatabase(ParseObject parseObject) throws ParseException {
+        Subscriber subscriber = new Subscriber();
         subscriber.setObjectID(parseObject.getObjectId());
         subscriber.setName(parseObject.getString(CoreConstants.FIELD_NAME));
         subscriber.setLastName(parseObject.getString(CoreConstants.FIELD_LAST_NAME));
@@ -111,6 +116,7 @@ public class Database {
         subscriber.setPublic(parseObject.getBoolean(CoreConstants.FIELD_PUBLIC));
         subscriber.setAccepted(parseObject.getBoolean(CoreConstants.FIELD_ACCEPTED));
         subscriber.setCheckIn(parseObject.getBoolean(CoreConstants.FIELD_CHECK_IN));
+        return subscriber;
     }
 
     public void createEvent(Event event) throws ParseException {
