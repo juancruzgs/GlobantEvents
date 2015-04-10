@@ -47,7 +47,7 @@
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="condensed_normal_lage">
+    <style name="condensed_normal_large">
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">22sp</item>
@@ -57,6 +57,24 @@
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="condensed_light_extra_large">
+        <item name="android:fontFamily">sans-serif-condensed-light</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">35sp</item>
+    </style>
+
+    <style name="condensed_normal_extra_large">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">35sp</item>
+    </style>
+
+    <style name="condensed_bold_extra_large">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">35sp</item>
     </style>
 
 </resources>
