@@ -17,12 +17,13 @@ import java.util.List;
 public class Database {
 
     public List<Event> getEvents() throws ParseException {
-        Event event = new Event();
+        Event event;
         List<Event> events = new ArrayList<>();
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         List<ParseObject> parseObjectList = query.find();
         ParseObject parseObject;
         for (int x = 0; x < parseObjectList.size(); x++) {
+            event = new Event();
             parseObject = parseObjectList.get(x);
             setEvent(event, parseObject);
             events.add(event);
@@ -115,17 +116,31 @@ public class Database {
     public void createEvent(Event event, List<String> speakersIds) throws ParseException {
         ParseObject parseObject = new ParseObject(CoreConstants.EVENTS_TABLE);
         setParseObjectWithEventColumns(event, parseObject);
-        addSpeakersToEvent(speakersIds, parseObject);
         parseObject.save();
 
     }
 
-    private void addSpeakersToEvent(List<String> speakersIds, ParseObject parseObject) throws ParseException {
+    public void addEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
+        ParseQuery<ParseObject> query2 = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject parseObject = query2.get(eventId);
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
         ParseRelation<ParseObject> relation = parseObject.getRelation(CoreConstants.FIELD_SPEAKERS);
         for (String speakerId : speakersIds) {
             relation.add(query.get(speakerId));
         }
+        parseObject.save();
+    }
+
+    public void deleteEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
+        ParseQuery<ParseObject> query2 = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject parseObject = query2.get(eventId);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
+        ParseRelation<ParseObject> relation = parseObject.getRelation(CoreConstants.FIELD_SPEAKERS);
+        for (String speakerId : speakersIds) {
+            relation.remove(query.get(speakerId));
+        }
+        parseObject.save();
     }
 
     public void  updateEvent(Event event) throws ParseException {
@@ -133,7 +148,6 @@ public class Database {
         setParseObjectWithEventColumns(event, parseObject);
         parseObject.save();
     }
-
 
     private void setParseObjectWithEventColumns(Event event, ParseObject parseObject) {
         parseObject.put(CoreConstants.FIELD_TITLE, event.getTitle());
@@ -153,6 +167,7 @@ public class Database {
         parseObject.put(CoreConstants.FIELD_HASHTAG, event.getHashtag());
         parseObject.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(event.getLatitude(), event.getLongitude()));
     }
+
 
 
 }
