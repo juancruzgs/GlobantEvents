@@ -50,4 +50,16 @@ public class CoreConstants {
     public static final String FIELD_SUBSCRIBERS = "subscribers";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_LAST_NAME = "last_name";
+
+    //QR Encoder
+    public static final int WHITE = 0xFFFFFFFF;
+    public static final int BLACK = 0xFF000000;
+    public static final String ENCODING = "UTF-8";
+
+    //QR Scanner
+    public static final String INTENT_SCAN = "com.google.zxing.client.android.SCAN";
+    public static final String SCAN_RESULT = "SCAN_RESULT";
+
+    //Logger
+    public static final String LOG_TAG = "GlobantEventsApp";
 }
