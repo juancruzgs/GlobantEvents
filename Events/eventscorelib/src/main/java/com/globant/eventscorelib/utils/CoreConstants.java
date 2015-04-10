@@ -50,4 +50,6 @@ public class CoreConstants {
     public static final String FIELD_SUBSCRIBERS = "subscribers";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_LAST_NAME = "last_name";
+    public static String INTENT_SCAN = "com.google.zxing.client.android.SCAN";
+    public static String SCAN_RESULT = "SCAN_RESULT";
 }
