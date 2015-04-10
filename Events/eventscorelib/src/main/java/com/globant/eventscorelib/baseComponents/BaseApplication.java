@@ -10,6 +10,7 @@ import com.parse.Parse;
  */
 public class BaseApplication extends Application{
     private static BaseApplication ourInstance = new BaseApplication();
+    private SharedPreferencesManager sharedPreferencesManager;
 
     public static BaseApplication getInstance()
     {

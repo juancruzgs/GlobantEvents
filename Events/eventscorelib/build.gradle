@@ -23,4 +23,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: 'Parse-1.9.jar')
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.parse.bolts:bolts-android:1.+'
+    compile files('libs/twitter4j-async-4.0.1.jar')
+    compile files('libs/twitter4j-core-4.0.1.jar')
+    compile files('libs/twitter4j-media-support-4.0.1.jar')
+    compile files('libs/twitter4j-stream-4.0.1.jar')
 }

@@ -50,4 +50,14 @@ public class CoreConstants {
     public static final String FIELD_SUBSCRIBERS = "subscribers";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_LAST_NAME = "last_name";
+
+    // Twitter
+    public static final String TWITTER_CONSUMER_KEY = "TM3D7gbzhR3PSWeCusCjA";
+    public static final String TWITTER_CONSUMER_SECRET = "USXozB6E1S7OgLLXgbfpHedYQgCF5FmdiBNHP9T82w";
+    public static final String TWITTER_ACCESS_TOKEN = "57847060-pJJyjVpTcCmSZJ9sTDKbXbB263AAcs3Roi61hiB9H";
+    public static final String TWITTER_ACCESS_TOKEN_SECRET = "CBNDFbTYtZ2sE9OslienBwVZtGAbFZOhfRNK3XJpQQCWP";
+    public static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
+    public static final String URL_TWITTER_AUTH = "auth_url";
+    public static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
+    public static final String URL_TWITTER_OAUTH_TOKEN = "oauth_token";
 }
