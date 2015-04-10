@@ -2,4 +2,12 @@
     <string name="app_name">Events Core Lib</string>
     <string name="loading">Loading..</string>
     <string name="error_message">Oops, something failed :(</string>
+    <string name="preference_user_first_name">preference_user_first_name</string>
+    <string name="preference_user_last_name">preference_user_last_name</string>
+    <string name="preference_user_email">preference_user_email</string>
+    <string name="preference_user_occupation_name">preference_user_occupation_name</string>
+    <string name="preference_user_phone">preference_user_phone</string>
+    <string name="preference_user_country">preference_user_country</string>
+    <string name="preference_user_city">preference_user_city</string>
+    <string name="preference_user_english_level">preference_user_english_level</string>
 </resources>
