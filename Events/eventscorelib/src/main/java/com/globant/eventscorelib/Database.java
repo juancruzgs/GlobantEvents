@@ -9,6 +9,7 @@ import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,18 +112,28 @@ public class Database {
         subscriber.setCheckIn(parseObject.getBoolean(CoreConstants.FIELD_CHECK_IN));
     }
 
-    public void createEvent(Event event) throws ParseException {
+    public void createEvent(Event event, List<String> speakersIds) throws ParseException {
         ParseObject parseObject = new ParseObject(CoreConstants.EVENTS_TABLE);
         setParseObjectWithEventColumns(event, parseObject);
+        addSpeakersToEvent(speakersIds, parseObject);
         parseObject.save();
+
     }
 
+    private void addSpeakersToEvent(List<String> speakersIds, ParseObject parseObject) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
+        ParseRelation<ParseObject> relation = parseObject.getRelation(CoreConstants.FIELD_SPEAKERS);
+        for (String speakerId : speakersIds) {
+            relation.add(query.get(speakerId));
+        }
+    }
 
     public void  updateEvent(Event event) throws ParseException {
         ParseObject parseObject = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, event.getObjectID());
         setParseObjectWithEventColumns(event, parseObject);
         parseObject.save();
     }
+
 
     private void setParseObjectWithEventColumns(Event event, ParseObject parseObject) {
         parseObject.put(CoreConstants.FIELD_TITLE, event.getTitle());
