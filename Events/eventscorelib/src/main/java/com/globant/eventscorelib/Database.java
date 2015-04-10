@@ -17,30 +17,114 @@ import java.util.List;
 public class Database {
 
     public List<Event> getEvents() throws ParseException {
-        Event domainEvent;
-        List<Event> events = new ArrayList<>();
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-        List<ParseObject> parseObjectList = query.find();
-        ParseObject databaseEvent;
-        for (int x = 0; x < parseObjectList.size(); x++) {
-            databaseEvent = parseObjectList.get(x);
-            domainEvent = createEventFromDatabase(databaseEvent);
-            events.add(domainEvent);
+        List<ParseObject> databaseEventsList = query.find();
+        List<Event> domainEventsList = new ArrayList<>();
+        for (ParseObject databaseEvent : databaseEventsList) {
+            Event domainEvent = createDomainEventFromDatabase(databaseEvent);
+            domainEventsList.add(domainEvent);
         }
-        return events;
+        return domainEventsList;
     }
 
-       public Event getEvent(String eventId) throws ParseException {
-        Event event;
+    public Event getEvent(String eventId) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-        ParseObject parseObject = query.get(eventId);
-        event = createEventFromDatabase(parseObject);
-        return event;
+        ParseObject databaseEvent = query.get(eventId);
+        return createDomainEventFromDatabase(databaseEvent);
     }
 
-    private Event createEventFromDatabase(ParseObject databaseEvent) throws ParseException {
+    public List<Speaker> getEventSpeakers(String eventId) {
+//        List<Speaker> speakers = new ArrayList<>();
+//        mQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+//        mParseObjectList = mQuery.find();
+        return null;
+    }
+
+    public List<Subscriber> getEventSubscribers(String eventId) throws ParseException {
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject event = eventsQuery.get(eventId);
+        ParseQuery<ParseObject> eventsToSubscribersQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        eventsToSubscribersQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
+        eventsToSubscribersQuery.include(CoreConstants.FIELD_SUBSCRIBERS);
+
+        List<ParseObject> eventsToSubscribersList = eventsToSubscribersQuery.find();
+        List<Subscriber> subscribersList = new ArrayList<>();
+        for (ParseObject eventToSubscribersRow : eventsToSubscribersList) {
+            ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
+            if (databaseSubscriber != null) {
+                Subscriber domainSubscriber = createDomainSubscriberFromDatabase(databaseSubscriber);
+                subscribersList.add(domainSubscriber);
+            }
+        }
+        return subscribersList;
+    }
+
+    public void createEvent(Event domainEvent) throws ParseException {
+        ParseObject databaseEvent = new ParseObject(CoreConstants.EVENTS_TABLE);
+        setDatabaseEventInformation(domainEvent, databaseEvent);
+        databaseEvent.save();
+    }
+
+    public void  updateEvent(Event domainEvent) throws ParseException {
+        ParseObject databaseEvent = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, domainEvent.getObjectID());
+        setDatabaseEventInformation(domainEvent, databaseEvent);
+        databaseEvent.save();
+    }
+
+    public void addEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject event = eventsQuery.get(eventId);
+        ParseQuery<ParseObject> speakersQuery = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
+        ParseRelation<ParseObject> relation = event.getRelation(CoreConstants.FIELD_SPEAKERS);
+        for (String speakerId : speakersIds) {
+            relation.add(speakersQuery.get(speakerId));
+        }
+        event.save();
+    }
+
+    public void deleteEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject event = eventsQuery.get(eventId);
+        ParseQuery<ParseObject> speakersQuery = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
+        ParseRelation<ParseObject> relation = event.getRelation(CoreConstants.FIELD_SPEAKERS);
+        for (String speakerId : speakersIds) {
+            relation.remove(speakersQuery.get(speakerId));
+        }
+        event.save();
+    }
+
+    public void createSpeaker (Speaker domainSpeaker) throws ParseException {
+        ParseObject databaseSpeaker = new ParseObject(CoreConstants.SPEAKERS_TABLE);
+        setDatabaseSpeakerInformation(domainSpeaker, databaseSpeaker);
+        databaseSpeaker.save();
+    }
+
+    private byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
+        ParseFile file = databaseObject.getParseFile(field);
+        if (file != null) {
+            return file.getData();
+        } else {
+            return null;
+        }
+    }
+
+    private double getCoordinatesFromDatabaseObject(ParseObject databaseObject, boolean latitude){
+        ParseGeoPoint geoPoint = databaseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES);
+        if (geoPoint != null){
+            if (latitude){
+                return geoPoint.getLatitude();
+            }
+            else {
+                return geoPoint.getLongitude();
+            }
+        }
+        else {
+            return CoreConstants.ZERO;
+        }
+    }
+
+    private Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
         Event domainEvent = new Event();
-        byte[] image;
         domainEvent.setObjectID(databaseEvent.getObjectId());
         domainEvent.setTitle(databaseEvent.getString(CoreConstants.FIELD_TITLE));
         domainEvent.setShortDescription(databaseEvent.getString(CoreConstants.FIELD_SHORT_DESCRIPTION));
@@ -50,144 +134,63 @@ public class Database {
         domainEvent.setStartDate(databaseEvent.getDate(CoreConstants.FIELD_START_DATE));
         domainEvent.setEndDate(databaseEvent.getDate(CoreConstants.FIELD_END_DATE));
         domainEvent.setPublic(databaseEvent.getBoolean(CoreConstants.FIELD_PUBLIC));
-        image = getImageFromDatabase(databaseEvent, CoreConstants.FIELD_ICON);
-        domainEvent.setIcon(image);
-        image = getImageFromDatabase(databaseEvent, CoreConstants.FIELD_EVENT_LOGO);
-        domainEvent.setEventLogo(image);
+        domainEvent.setIcon(getImageFromDatabase(databaseEvent, CoreConstants.FIELD_ICON));
+        domainEvent.setEventLogo(getImageFromDatabase(databaseEvent, CoreConstants.FIELD_EVENT_LOGO));
         domainEvent.setFullDescription(databaseEvent.getString(CoreConstants.FIELD_FULL_DESCRIPTION));
         domainEvent.setAdditionalInfo(databaseEvent.getString(CoreConstants.FIELD_ADDITIONAL_INFO));
         domainEvent.setAddress(databaseEvent.getString(CoreConstants.FIELD_ADDRESS));
         domainEvent.setQrCode(databaseEvent.getString(CoreConstants.FIELD_QR_CODE));
         domainEvent.setLanguage(databaseEvent.getString(CoreConstants.FIELD_LANGUAGE));
         domainEvent.setHashtag(databaseEvent.getString(CoreConstants.FIELD_HASHTAG));
-        domainEvent.setLatitude(databaseEvent.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES).getLatitude());
-        domainEvent.setLongitude(databaseEvent.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES).getLongitude());
-        getEventSubscribers(databaseEvent);
+        domainEvent.setLatitude(getCoordinatesFromDatabaseObject(databaseEvent, true));
+        domainEvent.setLongitude(getCoordinatesFromDatabaseObject(databaseEvent, false));
         return domainEvent;
     }
 
-    private byte[] getImageFromDatabase(ParseObject object, String field) throws ParseException {
-        ParseFile file = object.getParseFile(field);
-        if (file != null){
-            return file.getData();
-        }
-        else {
-            return null;
-        }
+    private Subscriber createDomainSubscriberFromDatabase(ParseObject databaseSubscriber) throws ParseException {
+        Subscriber domainSubscriber = new Subscriber();
+        domainSubscriber.setObjectID(databaseSubscriber.getObjectId());
+        domainSubscriber.setName(databaseSubscriber.getString(CoreConstants.FIELD_NAME));
+        domainSubscriber.setLastName(databaseSubscriber.getString(CoreConstants.FIELD_LAST_NAME));
+        domainSubscriber.setEmail(databaseSubscriber.getString(CoreConstants.FIELD_EMAIL));
+        domainSubscriber.setPhone(databaseSubscriber.getString(CoreConstants.FIELD_PHONE));
+        domainSubscriber.setOccupation(databaseSubscriber.getString(CoreConstants.FIELD_OCCUPATION));
+        domainSubscriber.setTwitterUser(databaseSubscriber.getString(CoreConstants.FIELD_TWITTER_USER));
+        domainSubscriber.setCity(databaseSubscriber.getString(CoreConstants.FIELD_CITY));
+        domainSubscriber.setCountry(databaseSubscriber.getString(CoreConstants.FIELD_COUNTRY));
+        domainSubscriber.setPicture(getImageFromDatabase(databaseSubscriber, CoreConstants.FIELD_PICTURE));
+        domainSubscriber.setEnglish(databaseSubscriber.getBoolean(CoreConstants.FIELD_ENGLISH));
+        domainSubscriber.setGlober(databaseSubscriber.getBoolean(CoreConstants.FIELD_GLOBER));
+        domainSubscriber.setPublic(databaseSubscriber.getBoolean(CoreConstants.FIELD_PUBLIC));
+        domainSubscriber.setAccepted(databaseSubscriber.getBoolean(CoreConstants.FIELD_ACCEPTED));
+        domainSubscriber.setCheckIn(databaseSubscriber.getBoolean(CoreConstants.FIELD_CHECK_IN));
+        return domainSubscriber;
     }
 
-    public List<Speaker> getSpeakersByEventId(String eventId) {
-//        List<Speaker> speakers = new ArrayList<>();
-//        mQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-//        mParseObjectList = mQuery.find();
-        return null;
+    private void setDatabaseEventInformation(Event domainEvent, ParseObject databaseEvent) {
+        databaseEvent.put(CoreConstants.FIELD_TITLE, domainEvent.getTitle());
+        databaseEvent.put(CoreConstants.FIELD_CITY, domainEvent.getShortDescription());
+        databaseEvent.put(CoreConstants.FIELD_COUNTRY, domainEvent.getCountry());
+        databaseEvent.put(CoreConstants.FIELD_CATEGORY, domainEvent.getCategory());
+        databaseEvent.put(CoreConstants.FIELD_START_DATE, domainEvent.getStartDate());
+        databaseEvent.put(CoreConstants.FIELD_END_DATE, domainEvent.getEndDate());
+        databaseEvent.put(CoreConstants.FIELD_PUBLIC, domainEvent.isPublic());
+        databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile(domainEvent.getIcon()));
+        databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile(domainEvent.getEventLogo()));
+        databaseEvent.put(CoreConstants.FIELD_FULL_DESCRIPTION, domainEvent.getFullDescription());
+        databaseEvent.put(CoreConstants.FIELD_ADDITIONAL_INFO, domainEvent.getAdditionalInfo());
+        databaseEvent.put(CoreConstants.FIELD_ADDRESS, domainEvent.getAddress());
+        databaseEvent.put(CoreConstants.FIELD_QR_CODE, domainEvent.getQrCode());
+        databaseEvent.put(CoreConstants.FIELD_LANGUAGE, domainEvent.getLanguage());
+        databaseEvent.put(CoreConstants.FIELD_HASHTAG, domainEvent.getHashtag());
+        databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(domainEvent.getLatitude(), domainEvent.getLongitude()));
     }
 
-    public List<Subscriber> getEventSubscribers(ParseObject event) throws ParseException {
-        List<Subscriber> subscribersList = new ArrayList<>();
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
-        query.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
-        query.include(CoreConstants.FIELD_SUBSCRIBERS);
-
-        List<ParseObject> eventsToSubscribersList = query.find();
-        for (int x = 0; x < eventsToSubscribersList.size(); x++) {
-            ParseObject eventToSubscribersRow = eventsToSubscribersList.get(x);
-            ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
-            Subscriber domainSubscriber = createSubscribersFromDatabase(databaseSubscriber);
-            subscribersList.add(domainSubscriber);
-        }
-        return subscribersList;
+    private void setDatabaseSpeakerInformation(Speaker domainSpeaker, ParseObject databaseSpeaker) {
+        databaseSpeaker.put(CoreConstants.FIELD_TITLE, domainSpeaker.getTitle());
+        databaseSpeaker.put(CoreConstants.FIELD_NAME, domainSpeaker.getName());
+        databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSpeaker.getLastName());
+        databaseSpeaker.put(CoreConstants.FIELD_BIOGRAPHY, domainSpeaker.getBiography());
+        databaseSpeaker.put(CoreConstants.FIELD_PICTURE, domainSpeaker.getPicture());
     }
-
-    private Subscriber createSubscribersFromDatabase(ParseObject parseObject) throws ParseException {
-        Subscriber subscriber = new Subscriber();
-        subscriber.setObjectID(parseObject.getObjectId());
-        subscriber.setName(parseObject.getString(CoreConstants.FIELD_NAME));
-        subscriber.setLastName(parseObject.getString(CoreConstants.FIELD_LAST_NAME));
-        subscriber.setEmail(parseObject.getString(CoreConstants.FIELD_EMAIL));
-        subscriber.setPhone(parseObject.getString(CoreConstants.FIELD_PHONE));
-        subscriber.setOccupation(parseObject.getString(CoreConstants.FIELD_OCCUPATION));
-        subscriber.setTwitterUser(parseObject.getString(CoreConstants.FIELD_TWITTER_USER));
-        subscriber.setCity(parseObject.getString(CoreConstants.FIELD_CITY));
-        subscriber.setCountry(parseObject.getString(CoreConstants.FIELD_COUNTRY));
-        subscriber.setPicture(parseObject.getParseFile(CoreConstants.FIELD_PICTURE).getData());
-        subscriber.setEnglish(parseObject.getBoolean(CoreConstants.FIELD_ENGLISH));
-        subscriber.setGlober(parseObject.getBoolean(CoreConstants.FIELD_GLOBER));
-        subscriber.setPublic(parseObject.getBoolean(CoreConstants.FIELD_PUBLIC));
-        subscriber.setAccepted(parseObject.getBoolean(CoreConstants.FIELD_ACCEPTED));
-        subscriber.setCheckIn(parseObject.getBoolean(CoreConstants.FIELD_CHECK_IN));
-        return subscriber;
-    }
-
-    public void createEvent(Event event) throws ParseException {
-        ParseObject parseObject = new ParseObject(CoreConstants.EVENTS_TABLE);
-        setParseObjectWithEventColumns(event, parseObject);
-        parseObject.save();
-
-    }
-
-    public void addEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
-        ParseQuery<ParseObject> query2 = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-        ParseObject parseObject = query2.get(eventId);
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
-        ParseRelation<ParseObject> relation = parseObject.getRelation(CoreConstants.FIELD_SPEAKERS);
-        for (String speakerId : speakersIds) {
-            relation.add(query.get(speakerId));
-        }
-        parseObject.save();
-    }
-
-    public void deleteEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
-        ParseQuery<ParseObject> query2 = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-        ParseObject parseObject = query2.get(eventId);
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
-        ParseRelation<ParseObject> relation = parseObject.getRelation(CoreConstants.FIELD_SPEAKERS);
-        for (String speakerId : speakersIds) {
-            relation.remove(query.get(speakerId));
-        }
-        parseObject.save();
-    }
-
-    public void  updateEvent(Event event) throws ParseException {
-        ParseObject parseObject = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, event.getObjectID());
-        setParseObjectWithEventColumns(event, parseObject);
-        parseObject.save();
-    }
-
-    private void setParseObjectWithEventColumns(Event event, ParseObject parseObject) {
-        parseObject.put(CoreConstants.FIELD_TITLE, event.getTitle());
-        parseObject.put(CoreConstants.FIELD_CITY, event.getShortDescription());
-        parseObject.put(CoreConstants.FIELD_COUNTRY, event.getCountry());
-        parseObject.put(CoreConstants.FIELD_CATEGORY, event.getCategory());
-        parseObject.put(CoreConstants.FIELD_START_DATE, event.getStartDate());
-        parseObject.put(CoreConstants.FIELD_END_DATE, event.getEndDate());
-        parseObject.put(CoreConstants.FIELD_PUBLIC, event.isPublic());
-        parseObject.put(CoreConstants.FIELD_ICON, new ParseFile(event.getIcon()));
-        parseObject.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile(event.getEventLogo()));
-        parseObject.put(CoreConstants.FIELD_FULL_DESCRIPTION, event.getFullDescription());
-        parseObject.put(CoreConstants.FIELD_ADDITIONAL_INFO, event.getAdditionalInfo());
-        parseObject.put(CoreConstants.FIELD_ADDRESS, event.getAddress());
-        parseObject.put(CoreConstants.FIELD_QR_CODE, event.getQrCode());
-        parseObject.put(CoreConstants.FIELD_LANGUAGE, event.getLanguage());
-        parseObject.put(CoreConstants.FIELD_HASHTAG, event.getHashtag());
-        parseObject.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(event.getLatitude(), event.getLongitude()));
-    }
-
-    public void createSpeaker (Speaker speaker) throws ParseException {
-        ParseObject parseObject = new ParseObject(CoreConstants.SPEAKERS_TABLE);
-        setParseObjectWithSpeakerColumns(speaker, parseObject);
-        parseObject.save();
-    }
-
-    private void setParseObjectWithSpeakerColumns(Speaker speaker, ParseObject parseObject) {
-        parseObject.put(CoreConstants.FIELD_TITLE, speaker.getTitle());
-        parseObject.put(CoreConstants.FIELD_NAME, speaker.getName());
-        parseObject.put(CoreConstants.FIELD_LAST_NAME, speaker.getLastName());
-        parseObject.put(CoreConstants.FIELD_BIOGRAPHY, speaker.getBiography());
-        parseObject.put(CoreConstants.FIELD_PICTURE, speaker.getPicture());
-
-    }
-
-
-
 }
