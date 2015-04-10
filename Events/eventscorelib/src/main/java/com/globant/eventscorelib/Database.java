@@ -113,7 +113,7 @@ public class Database {
         subscriber.setCheckIn(parseObject.getBoolean(CoreConstants.FIELD_CHECK_IN));
     }
 
-    public void createEvent(Event event, List<String> speakersIds) throws ParseException {
+    public void createEvent(Event event) throws ParseException {
         ParseObject parseObject = new ParseObject(CoreConstants.EVENTS_TABLE);
         setParseObjectWithEventColumns(event, parseObject);
         parseObject.save();
@@ -123,7 +123,6 @@ public class Database {
     public void addEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
         ParseQuery<ParseObject> query2 = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject parseObject = query2.get(eventId);
-
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
         ParseRelation<ParseObject> relation = parseObject.getRelation(CoreConstants.FIELD_SPEAKERS);
         for (String speakerId : speakersIds) {
@@ -166,6 +165,21 @@ public class Database {
         parseObject.put(CoreConstants.FIELD_LANGUAGE, event.getLanguage());
         parseObject.put(CoreConstants.FIELD_HASHTAG, event.getHashtag());
         parseObject.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(event.getLatitude(), event.getLongitude()));
+    }
+
+    public void createSpeaker (Speaker speaker) throws ParseException {
+        ParseObject parseObject = new ParseObject(CoreConstants.SPEAKERS_TABLE);
+        setParseObjectWithSpeakerColumns(speaker, parseObject);
+        parseObject.save();
+    }
+
+    private void setParseObjectWithSpeakerColumns(Speaker speaker, ParseObject parseObject) {
+        parseObject.put(CoreConstants.FIELD_TITLE, speaker.getTitle());
+        parseObject.put(CoreConstants.FIELD_NAME, speaker.getName());
+        parseObject.put(CoreConstants.FIELD_LAST_NAME, speaker.getLastName());
+        parseObject.put(CoreConstants.FIELD_BIOGRAPHY, speaker.getBiography());
+        parseObject.put(CoreConstants.FIELD_PICTURE, speaker.getPicture());
+
     }
 
 
