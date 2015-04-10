@@ -34,6 +34,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     ArrayList<BaseFragment> mFragments;
 
     BaseService mService = null;
+    Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -55,8 +56,8 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     };
 
-    protected <T extends BaseService> void doBindService(Class<T> serviceClass) {
-        bindService(new Intent(this, serviceClass), mConnection, Context.BIND_AUTO_CREATE);
+    protected void doBindService() {
+        bindService(new Intent(this, mServiceClass), mConnection, Context.BIND_AUTO_CREATE);
         mIsBound = true;
     }
 
@@ -68,11 +69,16 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
+    abstract protected void setServiceInternally();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setConnectionReceiver();
         mFragments = new ArrayList<>();
+
+        setServiceInternally();
+        startService(new Intent(this, mServiceClass));
     }
 
     @Override
