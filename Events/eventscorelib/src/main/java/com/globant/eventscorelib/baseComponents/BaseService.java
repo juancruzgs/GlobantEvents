@@ -6,6 +6,10 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 
+import com.globant.eventscorelib.domainObjects.Event;
+
+import java.util.List;
+
 /**
  * Created by ariel.cattaneo on 09/04/2015.
  */
@@ -83,5 +87,9 @@ public class BaseService extends Service {
         super.onRebind(intent);
 
         stopCountdown();
+    }
+
+    public Event getEvent(String id) {
+        return (Event) mDatabaseController.getObject(id, "events");
     }
 }

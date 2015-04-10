@@ -4,17 +4,19 @@ import com.globant.eventscorelib.domainObjects.Event;
 
 import java.util.List;
 
+// TODO: Adapt this to be used together with a CloudController
+
 /**
  * Created by ariel.cattaneo on 10/04/2015.
  */
 abstract public class DatabaseController {
     abstract void init();
 
-    abstract public List<Event> getEvents();
+    abstract public List<Object> getObjectList(String table);
 
-    abstract public Event getEvent(String eventId);
+    abstract public Object getObject(String id, String table);
 
-    abstract public void addEvent(Event event);
+    abstract public void addObject(Object object, String table);
 
     // TODO: Methods to access the rest of the objects
 }
