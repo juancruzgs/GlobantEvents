@@ -28,6 +28,15 @@ public class EventsStreamActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public String getActivityTitle() {
+        return null;
+    }
+
+    @Override
+    public String getFragmentTitle(BaseFragment fragment) {
+        return fragment.getTitle();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -60,10 +69,15 @@ public class EventsStreamActivity extends BaseActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_events_stream, container, false);
+            hideUtilsAndShowContentOverlay();
             return rootView;
+        }
+
+        public String getTitle(){
+            return "Fragment";
         }
     }
 }
