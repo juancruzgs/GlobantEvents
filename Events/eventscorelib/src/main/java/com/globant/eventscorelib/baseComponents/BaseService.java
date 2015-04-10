@@ -29,6 +29,8 @@ public class BaseService extends Service {
     Handler mHandler = new Handler();
     Runnable mRunnable;
 
+    DatabaseController mDatabaseController = null;
+
     @Override
     public void onCreate() {
         mRunnable = new Runnable() {
@@ -50,6 +52,11 @@ public class BaseService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         stopCountdown();
+
+        // TODO: If mDatabaseController is null, throw an adequate exception
+        // (the controller must be set in the subclass' onCreate() method)
+        mDatabaseController.init();
+
         startCountdown();
 
         return START_STICKY;
