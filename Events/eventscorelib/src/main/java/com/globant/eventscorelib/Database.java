@@ -113,6 +113,18 @@ public class Database {
 
     public void createEvent(Event event) throws ParseException {
         ParseObject parseObject = new ParseObject(CoreConstants.EVENTS_TABLE);
+        setParseObjectWithEventColumns(event, parseObject);
+        parseObject.save();
+    }
+
+
+    public void  updateEvent(Event event) throws ParseException {
+        ParseObject parseObject = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, event.getObjectID());
+        setParseObjectWithEventColumns(event, parseObject);
+        parseObject.save();
+    }
+
+    private void setParseObjectWithEventColumns(Event event, ParseObject parseObject) {
         parseObject.put(CoreConstants.FIELD_TITLE, event.getTitle());
         parseObject.put(CoreConstants.FIELD_CITY, event.getShortDescription());
         parseObject.put(CoreConstants.FIELD_COUNTRY, event.getCountry());
@@ -129,12 +141,6 @@ public class Database {
         parseObject.put(CoreConstants.FIELD_LANGUAGE, event.getLanguage());
         parseObject.put(CoreConstants.FIELD_HASHTAG, event.getHashtag());
         parseObject.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(event.getLatitude(), event.getLongitude()));
-        parseObject.save();
-    }
-
-    public void  updateEvent(Event event) {
-        ParseObject parseObject = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, event.getObjectID());
-        parseObject.put("title", "sdsds");
     }
 
 
