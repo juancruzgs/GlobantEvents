@@ -43,9 +43,9 @@ public class TestActivity extends BaseActivity {
         return "Test Activty";
     }
 
-    public String getFragmentTitle(BaseFragment fragment) {
-        return fragment.getTitle();
-    }
+//    public String getFragmentTitle(BaseFragment fragment) {
+//        return fragment.getTitle();
+//    }
 
 
     @Override
@@ -128,7 +128,7 @@ public class TestActivity extends BaseActivity {
         }
 
         @Override
-        public String getTitle() {
+        public String getFragmentTitle() {
             return "FragmentTest";
         }
 

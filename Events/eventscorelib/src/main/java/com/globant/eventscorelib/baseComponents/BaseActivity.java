@@ -37,11 +37,6 @@ public abstract class BaseActivity extends ActionBarActivity {
     BaseService mService = null;
     protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
-    boolean mPendingRequest = false;
-    enum Requestable {EVENT, SPEAKER, SUBSCRIBER}
-    Requestable mRequestedType;
-    String mRequestedId;
-    Object mRequestedObject;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -51,22 +46,6 @@ public abstract class BaseActivity extends ActionBarActivity {
             // service that we know is running in our own process, we can
             // cast its IBinder to a concrete class and directly access it.
             mService = ((BaseService.BaseBinder)service).getService();
-
-            if (mPendingRequest) {
-                switch (mRequestedType) {
-                    case EVENT:
-                        mRequestedObject = mService.getEvent(mRequestedId);
-                        break;
-                    default:
-                        // TODO: Throw an exception
-                }
-
-                // TODO: Trigger some trigger
-                // Perhaps to a previously registered listener
-
-                mPendingRequest = false;
-                doUnbindService();
-            }
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -77,6 +56,10 @@ public abstract class BaseActivity extends ActionBarActivity {
             mService = null;
         }
     };
+
+    private void doStartService() {
+        startService(new Intent(this, mServiceClass));
+    }
 
     protected void doBindService() {
         bindService(new Intent(this, mServiceClass), mConnection, Context.BIND_AUTO_CREATE);
@@ -108,7 +91,7 @@ public abstract class BaseActivity extends ActionBarActivity {
             Logger.d("Service not defined");
         }
         else {
-            startService(new Intent(this, mServiceClass));
+            doStartService();
         }
     }
 
@@ -130,12 +113,20 @@ public abstract class BaseActivity extends ActionBarActivity {
         registerReceiver(mReceiver,
                 new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         super.onResume();
+
+        if (!BaseService.isRunning) {
+            doStartService();
+        }
+
+        doBindService();
     }
 
     @Override
     protected void onPause() {
         unregisterReceiver(mReceiver);
         super.onPause();
+
+        doUnbindService();
     }
 
     @Override
@@ -218,11 +209,4 @@ public abstract class BaseActivity extends ActionBarActivity {
     // Anstract methods
     public abstract String getActivityTitle();
 //    public abstract String getFragmentTitle(BaseFragment fragment);
-
-    public void requestEvent(String id) {
-        mPendingRequest = true;
-        mRequestedType = Requestable.EVENT;
-        mRequestedId = id;
-        doBindService();
-    }
 }

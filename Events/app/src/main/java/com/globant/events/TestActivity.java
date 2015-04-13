@@ -66,7 +66,7 @@ public class TestActivity extends ActionBarActivity {
             return rootView;
         }
         @Override
-        public String getTitle(){ return "Fragment";
+        public String getFragmentTitle(){ return "Fragment";
         }
     }
 }

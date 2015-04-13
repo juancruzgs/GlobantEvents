@@ -40,10 +40,10 @@ public class EventsActivity extends BaseActivity {
         return null;
     }
 
-    @Override
-    public String getFragmentTitle(BaseFragment fragment) {
-        return fragment.getTitle();
-    }
+//    @Override
+//    public String getFragmentTitle(BaseFragment fragment) {
+//        return fragment.getTitle();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
