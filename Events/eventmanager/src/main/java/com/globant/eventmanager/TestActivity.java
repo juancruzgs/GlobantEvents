@@ -36,11 +36,12 @@ public class TestActivity extends BaseActivity {
                     .add(R.id.container, fragment)
                     .commit();
         }
+
     }
 
     @Override
     public String getActivityTitle() {
-        return "Test Activty";
+        return "Test Activity";
     }
 
     public String getFragmentTitle(BaseFragment fragment) {
@@ -73,7 +74,7 @@ public class TestActivity extends BaseActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends BaseFragment {
+    /*public static class PlaceholderFragment extends BaseFragment {
 
         ImageView mMyImage;
         Button mButton;
@@ -144,5 +145,5 @@ public class TestActivity extends BaseActivity {
                 return bitmap;
             }
         }
-    }
+    }*/
 }

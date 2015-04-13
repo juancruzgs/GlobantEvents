@@ -35,6 +35,10 @@ public class EventListFragment extends BaseFragment {
     protected RecyclerView.LayoutManager mLayoutManager;
     protected String[] mDataset;
 
+    public EventListFragment (){
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +76,8 @@ public class EventListFragment extends BaseFragment {
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
         // END_INCLUDE(initializeRecyclerView)
+        hideUtilsAndShowContentOverlay();
+
 
 
 
