@@ -1,0 +1,311 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:orientation="vertical"
+                tools:context="com.globant.events.CreditsActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_view_credits_text"
+        android:id="@+id/text_view_credits"
+        style="@style/condensed_bold_extra_large"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_baudo"
+                android:id="@+id/text_view_baudo"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/arg_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_baudo"
+                android:id="@+id/text_view_baudo_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_burgos"
+                android:id="@+id/text_view_burgos"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/col_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_burgos"
+                android:id="@+id/text_view_burgos_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_cattaneo"
+                android:id="@+id/text_view_cattaneo"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/arg_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_cattaneo"
+                android:id="@+id/text_view_cattaneo_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_cavallo"
+                android:id="@+id/text_view_cavallo"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/arg_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_cavallo"
+                android:id="@+id/text_view_cavallo_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_gonzalez"
+                android:id="@+id/text_view_gonzalez"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/arg_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_gonzalez"
+                android:id="@+id/text_view_gonzalez_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_gugliotta"
+                android:id="@+id/text_view_gugliotta"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/arg_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_gugliotta"
+                android:id="@+id/text_view_gugliotta_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_lodi"
+                android:id="@+id/text_view_lodi"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/arg_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_lodi"
+                android:id="@+id/text_view_lodi_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_madina"
+                android:id="@+id/text_view_madina"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/arg_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_madina"
+                android:id="@+id/text_view_madina_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_pena"
+                android:id="@+id/text_view_pena"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/arg_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_pena"
+                android:id="@+id/text_view_pena_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/credits_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_ramirez"
+                android:id="@+id/text_view_ramirez"
+                style="@style/condensed_normal_large"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/credits_divider_height"
+                android:layout_margin="@dimen/divider_margin"
+                android:background="@drawable/col_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail_ramirez"
+                android:id="@+id/text_view_ramirez_mail"
+                android:gravity="right"
+                style="@style/condensed_light_medium"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/we_are_ready"
+                android:id="@+id/text_view_ready"
+                android:gravity="center_horizontal"
+                android:textColor="@color/globant_green"
+                style="@style/condensed_normal_extra_large"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
