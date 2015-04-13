@@ -7,10 +7,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.software.shell.fab.ActionButton;
 
 
 /**
@@ -34,6 +36,7 @@ public class EventListFragment extends BaseFragment {
     protected EventsListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected String[] mDataset;
+    ActionButton mActionButton;
 
     public EventListFragment (){
 
@@ -58,6 +61,8 @@ public class EventListFragment extends BaseFragment {
         // BEGIN_INCLUDE(initializeRecyclerView)
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
 
+        wireUpFAB(rootView);
+
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
         // elements are laid out.
@@ -76,12 +81,20 @@ public class EventListFragment extends BaseFragment {
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
         // END_INCLUDE(initializeRecyclerView)
+
+
         hideUtilsAndShowContentOverlay();
 
 
 
 
         return rootView;
+    }
+
+    private void wireUpFAB(View rootView) {
+        mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
+        mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
+        mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
     }
 
     @Override
@@ -103,20 +116,25 @@ public class EventListFragment extends BaseFragment {
                     .findFirstCompletelyVisibleItemPosition();
         }
 
-        switch (layoutManagerType) {
-            case GRID_LAYOUT_MANAGER:
-                mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
-                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
-                break;
-            case LINEAR_LAYOUT_MANAGER:
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-                break;
-            default:
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        }
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
 
+                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)){
+                        mActionButton.hide();
+                }else{
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        mActionButton.show();
+                    }
+                }
+
+            }
+
+
+        });
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
