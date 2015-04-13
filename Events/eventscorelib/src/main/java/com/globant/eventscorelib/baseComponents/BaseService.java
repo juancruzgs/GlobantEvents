@@ -33,7 +33,7 @@ public class BaseService extends Service {
     Handler mHandler = new Handler();
     Runnable mRunnable;
 
-    DatabaseController mDatabaseController = null;
+    protected DatabaseController mDatabaseController = null;
 
     @Override
     public void onCreate() {
