@@ -12,9 +12,17 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
+import com.globant.eventscorelib.baseComponents.BaseFragment;
 
 
-public class EventsActivity extends ActionBarActivity {
+public class EventsActivity extends BaseActivity {
+
+    @Override
+    protected void setServiceInternally() {
+        super.setServiceInternally();
+
+        mServiceClass = ManagerDataService.class;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +35,15 @@ public class EventsActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public String getActivityTitle() {
+        return null;
+    }
+
+    @Override
+    public String getFragmentTitle(BaseFragment fragment) {
+        return fragment.getTitle();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

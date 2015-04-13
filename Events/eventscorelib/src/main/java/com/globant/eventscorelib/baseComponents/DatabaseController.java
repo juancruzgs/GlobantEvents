@@ -16,7 +16,9 @@ abstract public class DatabaseController {
 
     abstract public Object getObject(String id, String table);
 
-    abstract public void addObject(Object object, String table);
+    abstract public void putObject(Object object, String table);
+
+    abstract public void setObject(Object object, String id, String table);
 
     // TODO: Methods to access the rest of the objects
 }

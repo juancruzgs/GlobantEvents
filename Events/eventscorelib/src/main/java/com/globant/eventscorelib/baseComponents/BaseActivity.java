@@ -35,7 +35,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     ArrayList<BaseFragment> mFragments;
 
     BaseService mService = null;
-    Class<? extends BaseService> mServiceClass;
+    protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
     boolean mPendingRequest = false;
     enum Requestable {EVENT, SPEAKER, SUBSCRIBER}
@@ -92,7 +92,8 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     // TODO: This function will be used to set the service (a subclass of BaseService)
-    //abstract protected void setServiceInternally();
+    // No more "abstract" to not force use it in subclasses (there will be time for that)
+    protected void setServiceInternally() {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,8 +101,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         setConnectionReceiver();
         mFragments = new ArrayList<>();
 
-        // TODO: Uncomment when we are ready to use the service
-        //setServiceInternally();
+        setServiceInternally();
 
         if (mServiceClass == null) {
             // TODO: This will become an exception
