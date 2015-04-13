@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class BaseService extends Service {
 
+    public static boolean isRunning = false;
+
     /**
      * Class for clients to access.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with
@@ -34,12 +36,14 @@ public class BaseService extends Service {
     Runnable mRunnable;
 
     protected DatabaseController mDatabaseController = null;
+    protected CloudDataController mCloudDataController = null;
 
     @Override
     public void onCreate() {
         mRunnable = new Runnable() {
             @Override
             public void run() {
+                isRunning = false;
                 stopSelf();
             }
         };
@@ -62,6 +66,8 @@ public class BaseService extends Service {
         mDatabaseController.init();
 
         startCountdown();
+
+        isRunning = true;
 
         return START_STICKY;
     }
@@ -89,7 +95,19 @@ public class BaseService extends Service {
         stopCountdown();
     }
 
-    public Event getEvent(String id) {
-        return (Event) mDatabaseController.getObject(id, "events");
+    public DatabaseController getDatabaseController() {
+        if (mDatabaseController == null) {
+            // TODO: Make a new DatabaseController with the right subclass
+            // TODO: Init it if needed
+        }
+        return mDatabaseController;
+    }
+
+    public CloudDataController getCloudDataController() {
+        if (mCloudDataController == null) {
+            // TODO: Make a new CloudDataController with the right subclass
+            // TODO: Init it if needed
+        }
+        return mCloudDataController;
     }
 }

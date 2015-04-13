@@ -33,10 +33,10 @@ public class EventsStreamActivity extends BaseActivity {
         return null;
     }
 
-    @Override
-    public String getFragmentTitle(BaseFragment fragment) {
-        return fragment.getTitle();
-    }
+//    @Override
+//    public String getFragmentTitle(BaseFragment fragment) {
+//        return fragment.getTitle();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,7 +76,7 @@ public class EventsStreamActivity extends BaseActivity {
             return rootView;
         }
 
-        public String getTitle(){
+        public String getFragmentTitle(){
             return "Fragment";
         }
     }
