@@ -30,7 +30,7 @@
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/imageView"
+                    android:layout_alignBottom="@+id/event_image_view"
                     android:background="#82000000"
                     android:padding="10dp">
 
