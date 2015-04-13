@@ -9,5 +9,6 @@
     <string name="preference_user_phone">preference_user_phone</string>
     <string name="preference_user_country">preference_user_country</string>
     <string name="preference_user_city">preference_user_city</string>
-    <string name="preference_user_english_level">preference_user_english_level</string>
+    <string name="preference_user_english_knowledge">preference_user_english_knowledge</string>
+    <string name="preference_user_picture">preference_user_picture</string>
 </resources>
