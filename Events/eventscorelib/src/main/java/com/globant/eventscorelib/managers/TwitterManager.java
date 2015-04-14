@@ -31,6 +31,11 @@ public class TwitterManager {
 
     }
 
+    public interface TwitterLoginListener {
+        public void onLogin(boolean status);
+    }
+
+
     public boolean getLoginResponse(Uri uri) {
         if (uri != null && uri.toString().startsWith(CoreConstants.TWITTER_CALLBACK_URL)) {
             String verifier = uri.getQueryParameter(CoreConstants.URL_TWITTER_OAUTH_VERIFIER);
@@ -39,9 +44,11 @@ public class TwitterManager {
                 Twitter twitter = getTwitter(false);
                 accessToken = twitter.getOAuthAccessToken(requestToken,
                         verifier);
-                BaseApplication.getInstance()
+                BaseApplication
+                        .getInstance()
                         .getSharedPreferencesManager()
-                        .setTwitterStatusResponse(accessToken.getToken(), accessToken.getTokenSecret());
+                        .setTwitterStatusResponse(accessToken.getToken(),
+                                accessToken.getTokenSecret());
                 Log.e("Twitter OAuth Token", "> " + accessToken.getToken());
                 long userID = accessToken.getUserId();
                 return true;
@@ -86,9 +93,8 @@ public class TwitterManager {
             Twitter twitter = getTwitterNoTokens();
             if (twitter != null) {
                 if (!BaseApplication.getInstance().getSharedPreferencesManager()
-                        .isAlreadyTwitterLoggued()) {
-                    requestToken = twitter
-                            .getOAuthRequestToken("oauth://t4jsample");
+                        .isAlreadyTwitterLogged()) {
+                    requestToken = twitter.getOAuthRequestToken(CoreConstants.TWITTER_CALLBACK_URL);
                     ctx.startActivity(new Intent(Intent.ACTION_VIEW, Uri
                             .parse(requestToken.getAuthenticationURL())));
 
@@ -127,11 +133,11 @@ public class TwitterManager {
         }
     }
 
-    public Twitter getTwitter(){
+    public Twitter getTwitter() {
         return getTwitter(true);
     }
 
-    public Twitter getTwitterNoTokens(){
+    public Twitter getTwitterNoTokens() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(CoreConstants.TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(CoreConstants.TWITTER_CONSUMER_SECRET);
@@ -143,7 +149,7 @@ public class TwitterManager {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(CoreConstants.TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(CoreConstants.TWITTER_CONSUMER_SECRET);
-        if(!useToken){
+        if (!useToken) {
             builder.setOAuthAccessToken(CoreConstants.TWITTER_ACCESS_TOKEN);
             builder.setOAuthAccessTokenSecret(CoreConstants.TWITTER_ACCESS_TOKEN_SECRET);
         }
@@ -151,11 +157,11 @@ public class TwitterManager {
         return getTwitter(configuration);
     }
 
-    private Twitter getTwitter(Configuration configuration){
+    private Twitter getTwitter(Configuration configuration) {
         TwitterFactory factory = new TwitterFactory(configuration);
-        try{
+        try {
             return factory.getInstance(getAccessToken());
-        }catch(Exception e){
+        } catch (Exception e) {
             return factory.getInstance();
         }
     }
@@ -176,5 +182,6 @@ public class TwitterManager {
         }
         return result;
     }
+
 
 }

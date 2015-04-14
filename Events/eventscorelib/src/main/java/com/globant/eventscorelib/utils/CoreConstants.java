@@ -52,12 +52,14 @@ public class CoreConstants {
     public static final String FIELD_LAST_NAME = "last_name";
 
     // Twitter
-    public static final String TWITTER_CONSUMER_KEY = "TM3D7gbzhR3PSWeCusCjA";
-    public static final String TWITTER_CONSUMER_SECRET = "USXozB6E1S7OgLLXgbfpHedYQgCF5FmdiBNHP9T82w";
-    public static final String TWITTER_ACCESS_TOKEN = "57847060-pJJyjVpTcCmSZJ9sTDKbXbB263AAcs3Roi61hiB9H";
-    public static final String TWITTER_ACCESS_TOKEN_SECRET = "CBNDFbTYtZ2sE9OslienBwVZtGAbFZOhfRNK3XJpQQCWP";
+
+    public static final String TWITTER_CONSUMER_KEY = "c3nMUttSEcZzQRR4TekRIA3Em";
+    public static final String TWITTER_CONSUMER_SECRET = "lLBZ0E6wBF5vf9GasZnqqqOCmPzwZ58ruei14yU579RFhtED6P";
+    public static final String TWITTER_ACCESS_TOKEN = "152693997-R2UOOLRhAylNalkJblHDk1Uba0JZBjCmTa0TLmP2";
+    public static final String TWITTER_ACCESS_TOKEN_SECRET = "svMVlzL3T6twkAkH5nwqL0PYscEtOOs0a3chS3hi9wABk";
     public static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
-    public static final String URL_TWITTER_AUTH = "auth_url";
     public static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
-    public static final String URL_TWITTER_OAUTH_TOKEN = "oauth_token";
+    public static final String TWITTER_IS_LOGGED_IN = "is_logged_in";
+    public static final String TWITTER_PREF_KEY_OAUTH_TOKEN = "oauth_token";
+    public static final String TWITTER_PREF_KEY_OAUTH_SECRET = "oauth_token_secret";
 }

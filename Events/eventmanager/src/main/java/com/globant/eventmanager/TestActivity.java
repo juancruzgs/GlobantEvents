@@ -1,5 +1,7 @@
 package com.globant.eventmanager;
 
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -11,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.globant.eventscorelib.TweetFragment;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 
 
@@ -21,14 +25,13 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        BaseFragment fragment = new PlaceholderFragment();
+        BaseFragment fragment = new TweetFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();
         }
     }
-
     @Override
     public String getActivityTitle() {
         return "Test Activty";
@@ -59,6 +62,41 @@ public class TestActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Uri uri = getIntent().getData();
+        new TwitterLoaderResponse().execute(uri);
+    }
+
+
+    private class TwitterLoaderResponse extends AsyncTask<Uri, Integer, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Uri... params) {
+            boolean response = BaseApplication.getInstance().getTwitterManager().getLoginResponse(params[0]);
+            if (response){
+//                String eventname = BaseApplication.getInstance().getCacheObjectsManager().event.title;
+//                String aditionalMsg = getString(R.string.initialtweetcomplement);
+//                String tweet = "#FlipThinking "+ TwitterManager.HashtagString(eventname)+" "+aditionalMsg;
+                String tweet = "ksjfksnfknfksfns";
+                BaseApplication.getInstance().getTwitterManager().publishPost(tweet);
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if(result){
+                // mViewPager.setCurrentItem(mViewPager.getChildCount()-1);
+            }
+        }
+
     }
 
     /**
