@@ -11,10 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 
 
-public class TestActivity extends ActionBarActivity {
+public class TestActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +23,19 @@ public class TestActivity extends ActionBarActivity {
         setContentView(R.layout.activity_test);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new CreditsFragment())
                     .commit();
         }
+    }
+
+    @Override
+    public String getActivityTitle() {
+        return null;
+    }
+
+    @Override
+    public String getFragmentTitle(BaseFragment fragment) {
+        return fragment.getTitle();
     }
 
 
