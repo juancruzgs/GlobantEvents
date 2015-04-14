@@ -32,7 +32,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     TextView mConnectionRibbon;
     TextView mFragmentTitle;
     Toolbar mToolbar;
-    ArrayList<BaseFragment> mFragments;
+    ArrayList<BaseFragment> mFragments = new ArrayList<>();
 
     BaseService mService = null;
     Class<? extends BaseService> mServiceClass;
@@ -98,7 +98,6 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setConnectionReceiver();
-        mFragments = new ArrayList<>();
 
         // TODO: Uncomment when we are ready to use the service
         //setServiceInternally();
