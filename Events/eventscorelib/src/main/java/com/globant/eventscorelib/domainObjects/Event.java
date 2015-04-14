@@ -3,7 +3,7 @@ package com.globant.eventscorelib.domainObjects;
 import java.util.Date;
 import java.util.List;
 
-public class Event {
+public class Event  extends BaseObject{
 
     private String mObjectID;
     private String mTitle;
