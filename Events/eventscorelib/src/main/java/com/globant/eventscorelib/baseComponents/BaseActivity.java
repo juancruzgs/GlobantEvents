@@ -38,6 +38,10 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
 
+    public BaseService getService() {
+        return mService;
+    }
+
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             // This is called when the connection with the service has been
@@ -76,7 +80,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     // TODO: This function will be used to set the service (a subclass of BaseService)
     // No more "abstract" to not force use it in subclasses (there will be time for that)
-    protected void setServiceInternally() {}
+    abstract protected void setServiceInternally();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

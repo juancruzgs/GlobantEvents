@@ -19,6 +19,10 @@
         <activity
             android:name=".TestActivity"
             android:label="@string/title_activity_test" >
+        </activity>
+        <activity
+            android:name=".ServiceTestActivity"
+            android:label="@string/title_activity_test" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

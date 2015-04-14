@@ -19,7 +19,7 @@ public class EventsActivity extends BaseActivity {
 
     @Override
     protected void setServiceInternally() {
-        super.setServiceInternally();
+        //super.setServiceInternally();
 
         mServiceClass = ManagerDataService.class;
     }
