@@ -2,7 +2,6 @@ package com.globant.eventscorelib;
 
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,18 +37,17 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View aView = inflater.inflate(R.layout.fragment_tweet, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_tweet, container, false);
         hideUtilsAndShowContentOverlay();
-        loginTwitterBtn = (Button) aView.findViewById(R.id.loginTwitterBtn);
-        picture = (ImageView) aView.findViewById(R.id.picture);
-        usernameTextView = (TextView) aView.findViewById(R.id.usernameTextView);
-        nameTextView = (TextView) aView.findViewById(R.id.nameTextView);
-        tweetTextField = (EditText) aView.findViewById(R.id.tweetTextField);
-        tweetBtn = (Button) aView.findViewById(R.id.tweetBtn);
+        loginTwitterBtn = (Button) rootView.findViewById(R.id.loginTwitterBtn);
+        picture = (ImageView) rootView.findViewById(R.id.picture);
+        usernameTextView = (TextView) rootView.findViewById(R.id.usernameTextView);
+        nameTextView = (TextView) rootView.findViewById(R.id.nameTextView);
+        tweetTextField = (EditText) rootView.findViewById(R.id.tweetTextField);
+        tweetBtn = (Button) rootView.findViewById(R.id.tweetBtn);
         tweetBtn.setOnClickListener(this);
         loginTwitterBtn.setOnClickListener(this);
-
-        return aView;
+        return rootView;
     }
 
     @Override
@@ -68,7 +65,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
             } else {
                 tweetBtn.setEnabled(false);
                 tweetTextField.setEnabled(false);
-       //         hideUtilsAndShowContentOverlay();
+                hideUtilsAndShowContentOverlay();
             }
         } catch (Exception e) {
             Logger.e("LOADING TWITTER", e);
@@ -90,7 +87,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
             super.onPostExecute(result);
             if (result) {
                 tweetTextField.setText(getActivity().getString(
-                        R.string.basic_tweet));
+                        R.string.basic_tweet)); // TODO: get Event hashtag and change the strings
                 Toast.makeText(getActivity(),
                         getActivity().getString(R.string.tweet_success),
                         Toast.LENGTH_SHORT).show();
@@ -107,14 +104,12 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
 
         @Override
         protected User doInBackground(String... params) {
-            User user = null;
-//            user= BaseApplication.getInstance().getCacheObjectsManager().user;
+            User user = BaseApplication.getInstance().getCacheObjectsManager().user;
             try {
-//                if (user == null) {
-                    user = BaseApplication.getInstance().getTwitterManager()
-                            .getUser();
-//                    BaseApplication.getInstance().getCacheObjectsManager().user = user;
-//                }
+                if (user == null) {
+                    user = BaseApplication.getInstance().getTwitterManager().getUser();
+                    BaseApplication.getInstance().getCacheObjectsManager().user = user;
+                }
             } catch (Exception e) {
                 Logger.e("LOADING TWITTER", e);
             }
