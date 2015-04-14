@@ -1,13 +1,18 @@
 package com.globant.eventscorelib.baseComponents;
 
+import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 
+import com.globant.eventscorelib.domainObjects.BaseObject;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.Logger;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -37,6 +42,8 @@ public class BaseService extends Service {
 
     protected DatabaseController mDatabaseController = null;
     protected CloudDataController mCloudDataController = null;
+
+
 
     @Override
     public void onCreate() {
@@ -109,5 +116,152 @@ public class BaseService extends Service {
             // TODO: Init it if needed
         }
         return mCloudDataController;
+    }
+
+
+    ///HERE THE BARDO BEGINS
+
+    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE}
+
+    private ActionWrapper currentSuscriber;
+
+    public void suscribeActor(ActionListener anActionListener){
+          currentSuscriber = new ActionWrapper(anActionListener);
+
+           if (cachedElements.containsKey(anActionListener.getBindingKey())){
+              HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(anActionListener.getBindingKey());
+              for (ACTIONS key : cachedElement.keySet()) {
+                  anActionListener.onFinishAction(key,cachedElement.remove(key));
+
+              }
+
+          }
+    }
+
+    public void unSuscribeActor(ActionListener anActionListener){
+            currentSuscriber = null;
+//        if(){}
+    }
+
+    private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
+
+
+    public abstract class ActionListener {
+
+        abstract protected Activity getActivity();
+
+        abstract protected Object getBindingKey();
+
+        abstract void onStartAction(ACTIONS theAction);
+
+        abstract void onFinishAction(ACTIONS theAction, Object result);
+
+        abstract void onFailAction(ACTIONS theAction, Exception e);
+
+    }
+
+    public  class ActionWrapper {
+
+        private Activity anActivity;
+        private Activity getActivity(){return anActivity;}
+
+        ActionListener theListener;
+
+        public ActionWrapper(ActionListener aListener) {
+            this.anActivity = aListener.getActivity();
+            theListener = aListener;
+        }
+
+        void startAction(final ACTIONS theAction){
+
+
+             if (getActivity()!=null&& !getActivity().isFinishing()) {
+                 getActivity().runOnUiThread(new Runnable() {
+                     @Override
+                     public void run() {
+                         theListener.onStartAction(theAction);
+                     }
+                 });
+             }else{
+
+
+
+             }
+
+
+         };
+
+         void finishAction(final ACTIONS theAction, final Object result){
+
+             if (getActivity()!=null&& !getActivity().isFinishing()) {
+                 getActivity().runOnUiThread(new Runnable() {
+                     @Override
+                     public void run() {
+                         theListener.onFinishAction(theAction, result);
+                     }
+                 });
+             }else{
+                 HashMap<ACTIONS,Object> cachedElement = new HashMap();
+                 cachedElement.put(theAction,result);
+                 cachedElements.put(theListener.getBindingKey(),cachedElement);
+             }
+
+         };
+
+         void failAction(final ACTIONS theAction, final Exception e){
+
+             if (getActivity()!=null&& !getActivity().isFinishing()) {
+                 getActivity().runOnUiThread(new Runnable() {
+                     @Override
+                     public void run() {
+                         theListener.onFailAction(theAction, e);
+                     }
+                 });
+             }else{
+//                 HashMap<ACTIONS,Object> cachedElement = new HashMap();
+//                 cachedElement.put(theAction,e);
+//                 cachedElements.put(getBindingKey(), cachedElement);
+             }
+
+         };
+
+
+
+    }
+
+    private void executeAction(final ACTIONS theAction, final BaseObject argument) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    currentSuscriber.startAction(theAction);
+                    switch (theAction) {
+                        case EVENT_CREATE:
+                            mCloudDataController.createEvent((Event)argument);
+                            currentSuscriber.finishAction(theAction, null);
+                            break;
+                        case EVENT_DELETE:
+                            break;
+                        case EVENT_LIST:
+                           List<Event> theEvents = mCloudDataController.getEvents();
+                            currentSuscriber.finishAction(theAction, theEvents);
+                            break;
+                        case EVENT_DETAIL:
+                            break;
+
+
+                    }
+                } catch (Exception e) {
+
+                    currentSuscriber.failAction(theAction, e);
+                    Logger.e("executeAction", e);
+                }
+
+            }
+        };
+        new Thread(r).start();
+
+
     }
 }
