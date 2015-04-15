@@ -143,17 +143,17 @@ public class BaseService extends Service {
     private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
 
 
-    public abstract class ActionListener {
+    public static abstract class ActionListener {
 
-        abstract protected Activity getActivity();
+        abstract protected Activity getBindingActivity();
 
         abstract protected Object getBindingKey();
 
-        abstract void onStartAction(ACTIONS theAction);
+        abstract protected void onStartAction(ACTIONS theAction);
 
-        abstract void onFinishAction(ACTIONS theAction, Object result);
+        abstract protected void onFinishAction(ACTIONS theAction, Object result);
 
-        abstract void onFailAction(ACTIONS theAction, Exception e);
+        abstract protected void onFailAction(ACTIONS theAction, Exception e);
 
     }
 
@@ -165,7 +165,7 @@ public class BaseService extends Service {
         ActionListener theListener;
 
         public ActionWrapper(ActionListener aListener) {
-            this.anActivity = aListener.getActivity();
+            this.anActivity = aListener.getBindingActivity();
             theListener = aListener;
         }
 
@@ -227,7 +227,7 @@ public class BaseService extends Service {
 
     }
 
-    private void executeAction(final ACTIONS theAction, final BaseObject argument) {
+    public void executeAction(final ACTIONS theAction, final BaseObject argument) {
         Runnable r = new Runnable() {
             @Override
             public void run() {

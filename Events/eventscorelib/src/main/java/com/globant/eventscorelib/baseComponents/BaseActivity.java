@@ -38,6 +38,10 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
 
+    public BaseService getService() {
+        return mService;
+    }
+
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             // This is called when the connection with the service has been
@@ -46,6 +50,11 @@ public abstract class BaseActivity extends ActionBarActivity {
             // service that we know is running in our own process, we can
             // cast its IBinder to a concrete class and directly access it.
             mService = ((BaseService.BaseBinder)service).getService();
+
+            for (BaseFragment fragment : mFragments) {
+                fragment.setService(mService);
+            }
+
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -54,6 +63,10 @@ public abstract class BaseActivity extends ActionBarActivity {
             // Because it is running in our same process, we should never
             // see this happen.
             mService = null;
+
+            for (BaseFragment fragment : mFragments) {
+                fragment.setService(mService);
+            }
         }
     };
 
@@ -74,9 +87,8 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
-    // TODO: This function will be used to set the service (a subclass of BaseService)
-    // No more "abstract" to not force use it in subclasses (there will be time for that)
-    protected void setServiceInternally() {}
+    // TODO: This function is used to set the service (a subclass of BaseService)
+    abstract protected void setServiceInternally();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

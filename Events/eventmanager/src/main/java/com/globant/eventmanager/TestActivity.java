@@ -16,6 +16,7 @@ import android.widget.ImageView;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.google.zxing.WriterException;
 
 import java.io.File;
@@ -36,6 +37,11 @@ public class TestActivity extends BaseActivity {
                     .add(R.id.container, fragment)
                     .commit();
         }
+    }
+
+    @Override
+    protected void setServiceInternally() {
+        mServiceClass = BaseService.class;
     }
 
     @Override

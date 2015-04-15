@@ -21,6 +21,8 @@ public abstract class BaseFragment  extends Fragment{
     private FrameLayout mContentLayout;
     private TextView mTextViewUtilsMessage;
     private ImageView mImageViewUtils;
+    protected BaseService mService = null;
+    protected BaseService.ActionListener mActionListener = null;
 
     public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState){
@@ -78,5 +80,13 @@ public abstract class BaseFragment  extends Fragment{
         mUtilsLayout.setVisibility(View.GONE);
         mContentLayout.setVisibility(View.VISIBLE);
     }
+
+    public void setService(BaseService service) {
+        this.mService = service;
+        if (mActionListener != null) {
+            mService.subscribeActor(mActionListener);
+        }
+    }
+
     public abstract String getFragmentTitle();
 }
