@@ -105,7 +105,6 @@ public class TestActivity extends BaseActivity {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(getActivity(), event.getTitle(), Toast.LENGTH_SHORT).show();
                 } else if (resultCode == RESULT_CANCELED) {
                     // Handle Cancel
                 }
