@@ -3,15 +3,12 @@ package com.globant.eventmanager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.baseComponents.ServiceReadyListener;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.Logger;
 
@@ -20,10 +17,7 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ServiceTestFragment extends BaseFragment implements ServiceReadyListener {
-
-    BaseService.ActionListener mActionListener;
-    BaseService mService;
+public class ServiceTestFragment extends BaseFragment {
 
     public ServiceTestFragment() {
     }
@@ -53,6 +47,7 @@ public class ServiceTestFragment extends BaseFragment implements ServiceReadyLis
 
             @Override
             protected void onStartAction(BaseService.ACTIONS theAction) {
+                showProgressOverlay();
                 Logger.d("Action " + theAction.toString() + " started");
             }
 
@@ -72,16 +67,15 @@ public class ServiceTestFragment extends BaseFragment implements ServiceReadyLis
                 else {
                     Logger.d("Action " + theAction.toString() + " finished with result " + result.toString());
                 }
+                hideUtilsAndShowContentOverlay();
             }
 
             @Override
             protected void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+                showErrorOverlay();
                 Logger.d("Action " + theAction.toString() + " failed, throwing " + e.toString());
             }
         };
-
-        ((BaseActivity)getActivity()).setActionListener(mActionListener);
-        ((BaseActivity)getActivity()).setReadyListener(this);
 
         getActivity().findViewById(R.id.button_execute_action).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,10 +89,5 @@ public class ServiceTestFragment extends BaseFragment implements ServiceReadyLis
     @Override
     public String getFragmentTitle() {
         return "Service";
-    }
-
-    @Override
-    public void onServiceReady(BaseService service) {
-        mService = service;
     }
 }

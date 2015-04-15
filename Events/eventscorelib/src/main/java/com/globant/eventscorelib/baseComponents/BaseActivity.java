@@ -37,19 +37,9 @@ public abstract class BaseActivity extends ActionBarActivity {
     BaseService mService = null;
     protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
-    BaseService.ActionListener mActionListener = null;
-    ServiceReadyListener mReadyListener = null;
 
     public BaseService getService() {
         return mService;
-    }
-
-    public void setActionListener(BaseService.ActionListener listener) {
-        mActionListener = listener;
-    }
-
-    public void setReadyListener(ServiceReadyListener listener) {
-        mReadyListener = listener;
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -61,12 +51,10 @@ public abstract class BaseActivity extends ActionBarActivity {
             // cast its IBinder to a concrete class and directly access it.
             mService = ((BaseService.BaseBinder)service).getService();
 
-            if (mActionListener != null) {
-                mService.subscribeActor(mActionListener);
+            for (BaseFragment fragment : mFragments) {
+                fragment.setService(mService);
             }
-            if (mReadyListener != null) {
-                mReadyListener.onServiceReady(mService);
-            }
+
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -75,6 +63,10 @@ public abstract class BaseActivity extends ActionBarActivity {
             // Because it is running in our same process, we should never
             // see this happen.
             mService = null;
+
+            for (BaseFragment fragment : mFragments) {
+                fragment.setService(mService);
+            }
         }
     };
 
@@ -95,8 +87,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
-    // TODO: This function will be used to set the service (a subclass of BaseService)
-    // No more "abstract" to not force use it in subclasses (there will be time for that)
+    // TODO: This function is used to set the service (a subclass of BaseService)
     abstract protected void setServiceInternally();
 
     @Override
