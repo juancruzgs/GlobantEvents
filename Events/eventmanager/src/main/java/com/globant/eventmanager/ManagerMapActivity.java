@@ -3,8 +3,10 @@ package com.globant.eventmanager;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ import java.util.List;
 public class ManagerMapActivity extends MapActivity {
 
     private Marker mMarker;
+    private Geocoder mGeocoder;
 
     @Override
     protected int getMapLayout() {
@@ -42,6 +45,7 @@ public class ManagerMapActivity extends MapActivity {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
+        mGeocoder = new Geocoder(getBaseContext());
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -73,11 +77,10 @@ public class ManagerMapActivity extends MapActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Geocoder geocoder = new Geocoder(getBaseContext());
                 List<Address> addresses;
                 try {
                     //TODO AsyncTask
-                    addresses = geocoder.getFromLocationName(s, CoreConstants.MAX_GEOCODER_RESULTS);
+                    addresses = mGeocoder.getFromLocationName(s, CoreConstants.MAX_GEOCODER_RESULTS);
                     Address address = addresses.get(CoreConstants.ZERO);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                     addMarkerToMap(latLng);
@@ -96,14 +99,24 @@ public class ManagerMapActivity extends MapActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == android.R.id.home) {
+            List<Address> addresses;
+            if (mMarker != null) {
+                LatLng latLng = mMarker.getPosition();
+                try {
+                    addresses = mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, CoreConstants.MAX_GEOCODER_RESULTS);
+                    Address address = addresses.get(CoreConstants.ZERO);
+                    Intent intent = new Intent();
+                    intent.putExtra(CoreConstants.MAP_ADDRESS_INTENT, address);
+                    setResult(ManagerMapActivity.RESULT_OK, intent);
+                    NavUtils.navigateUpFromSameTask(this);
+                    return true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item);

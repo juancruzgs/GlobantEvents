@@ -66,4 +66,5 @@ public class CoreConstants {
     public static final int MAP_CAMERA_ZOOM = 17;
     public static final int MAP_CAMERA_ANIMATION_DURATION = 2000;
     public static final int MAX_GEOCODER_RESULTS = 1;
+    public static final String MAP_ADDRESS_INTENT = "address";
 }

@@ -49,6 +49,7 @@ public abstract class MapActivity extends ActionBarActivity implements OnMapRead
         TextView textView = (TextView)toolbar.findViewById(R.id.toolbar_fragment_title);
         textView.setText("");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     protected abstract String getActivityTitle();
