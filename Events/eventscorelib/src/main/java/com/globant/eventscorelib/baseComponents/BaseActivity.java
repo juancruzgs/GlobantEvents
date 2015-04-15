@@ -65,7 +65,7 @@ public abstract class BaseActivity extends ActionBarActivity {
             mService = null;
 
             for (BaseFragment fragment : mFragments) {
-                fragment.setService(mService);
+                fragment.setService(null);
             }
         }
     };

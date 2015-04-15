@@ -29,6 +29,11 @@ public class EventsStreamActivity extends BaseActivity {
     }
 
     @Override
+    protected void setServiceInternally() {
+        mServiceClass = ClientDataService.class;
+    }
+
+    @Override
     public String getActivityTitle() {
         return null;
     }
