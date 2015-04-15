@@ -6,4 +6,5 @@
     <string name="title_activity_manager_map">Map</string>
     <string name="search_hint">Search a location</string>
     <string name="search_title">Search</string>
+    <string name="toast_double_tap_to_cancel">Double tap to cancel</string>
 </resources>
