@@ -52,7 +52,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
 
     @Override
     public String getTitle() {
-        return "FragmentTweet";
+        return null;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
             if (BaseApplication.getInstance().getSharedPreferencesManager()
                     .isAlreadyTwitterLogged()) {
                 loginTwitterBtn.setVisibility(View.GONE);
-                new LoadTweetUser().execute("");
+                new LoadTweetUser().execute();
             } else {
                 tweetBtn.setEnabled(false);
                 tweetTextField.setEnabled(false);
@@ -70,11 +70,10 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
         } catch (Exception e) {
             Logger.e("LOADING TWITTER", e);
         }
-
         super.onResume();
     }
 
-    private class TweetPost extends AsyncTask<String, Integer, Boolean> {
+    private class TweetPost extends AsyncTask<String, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -100,10 +99,10 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
 
     }
 
-    private class LoadTweetUser extends AsyncTask<String, Integer, User> {
+    private class LoadTweetUser extends AsyncTask<Void, Void, User> {
 
         @Override
-        protected User doInBackground(String... params) {
+        protected User doInBackground(Void... params) {
             User user = BaseApplication.getInstance().getCacheObjectsManager().user;
             try {
                 if (user == null) {
@@ -113,7 +112,6 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
             } catch (Exception e) {
                 Logger.e("LOADING TWITTER", e);
             }
-
             if (user != null) {
                 return user;
             } else {
@@ -135,7 +133,6 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
                 loginTwitterBtn.setVisibility(View.GONE);
                 hideUtilsAndShowContentOverlay();
             } else {
-
                 showErrorOverlay();
             }
         }
@@ -159,14 +156,14 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
                 new TweetPost().execute(tweet);
             }
         } else if (v.getId() == R.id.loginTwitterBtn) {
-            new TwitterLoader().execute("");
+            new TwitterLoader().execute();
         }
     }
 
-    private class TwitterLoader extends AsyncTask<String, Integer, Boolean> {
+    private class TwitterLoader extends AsyncTask<Void, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected Boolean doInBackground(Void... params) {
             return BaseApplication.getInstance().getTwitterManager()
                     .loginToTwitter(getActivity(), null);
         }
@@ -177,7 +174,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
             hideUtilsAndShowContentOverlay();
             if (result) {
 
-                new LoadTweetUser().execute("");
+                new LoadTweetUser().execute();
             }
         }
 

@@ -49,12 +49,10 @@ public class TwitterManager {
                         .getSharedPreferencesManager()
                         .setTwitterStatusResponse(accessToken.getToken(),
                                 accessToken.getTokenSecret());
-                Log.e("Twitter OAuth Token", "> " + accessToken.getToken());
                 long userID = accessToken.getUserId();
                 return true;
             } catch (TwitterException e) {
-                Log.e("Twitter Manager", "> ", e);
-                return false;
+                   return false;
             }
         } else {
             return false;
@@ -67,7 +65,6 @@ public class TwitterManager {
             long userID = getAccessToken().getUserId();
             return twitter.showUser(userID);
         } catch (TwitterException e) {
-            Log.e("Twitter Manager", "> ", e);
             return null;
         }
     }
@@ -82,7 +79,6 @@ public class TwitterManager {
                 return false;
             }
         } catch (TwitterException e) {
-            Log.e("Twitter Manager", "> ", e);
             return false;
         }
 
@@ -107,7 +103,6 @@ public class TwitterManager {
                 return false;
             }
         } catch (TwitterException e) {
-            Log.e("Twitter Manager", "> ", e);
             if (listener != null) {
                 listener.onLogin(false);
             }
@@ -116,7 +111,7 @@ public class TwitterManager {
     }
 
     public List<Status> getTweetList() {
-        Query query = new Query("#FlipThinking");
+        Query query = new Query("#FlipThinking"); // TODO change the hashtag
         query.setCount(50);
         try {
             Twitter twitter = getTwitter(false);
@@ -128,8 +123,7 @@ public class TwitterManager {
             }
 
         } catch (TwitterException e) {
-            Log.e("Twitter Manager", "> ", e);
-            return null;
+             return null;
         }
     }
 

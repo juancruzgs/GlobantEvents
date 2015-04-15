@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.globant.eventscorelib.TwitterStreamFragment;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 
 
@@ -22,7 +23,7 @@ public class EventsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_events);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new TwitterStreamFragment())
                     .commit();
         }
     }
