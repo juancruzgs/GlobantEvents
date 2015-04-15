@@ -3,7 +3,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.globant.eventscorelib.MapActivity">
     <item android:id="@+id/search"
-          android:title="search"
+          android:title="@string/search_title"
           app:showAsAction="ifRoom"
           app:actionViewClass="android.support.v7.widget.SearchView" />
 </menu>
