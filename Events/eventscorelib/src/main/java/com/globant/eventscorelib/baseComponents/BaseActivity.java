@@ -37,9 +37,19 @@ public abstract class BaseActivity extends ActionBarActivity {
     BaseService mService = null;
     protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
+    BaseService.ActionListener mActionListener = null;
+    ServiceReadyListener mReadyListener = null;
 
     public BaseService getService() {
         return mService;
+    }
+
+    public void setActionListener(BaseService.ActionListener listener) {
+        mActionListener = listener;
+    }
+
+    public void setReadyListener(ServiceReadyListener listener) {
+        mReadyListener = listener;
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -50,6 +60,13 @@ public abstract class BaseActivity extends ActionBarActivity {
             // service that we know is running in our own process, we can
             // cast its IBinder to a concrete class and directly access it.
             mService = ((BaseService.BaseBinder)service).getService();
+
+            if (mActionListener != null) {
+                mService.subscribeActor(mActionListener);
+            }
+            if (mReadyListener != null) {
+                mReadyListener.onServiceReady(mService);
+            }
         }
 
         public void onServiceDisconnected(ComponentName className) {
