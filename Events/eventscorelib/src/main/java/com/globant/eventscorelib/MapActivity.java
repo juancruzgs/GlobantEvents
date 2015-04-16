@@ -13,6 +13,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
 public abstract class MapActivity extends ActionBarActivity implements OnMapReadyCallback {
@@ -63,7 +65,15 @@ public abstract class MapActivity extends ActionBarActivity implements OnMapRead
         mGoogleMap.setMyLocationEnabled(true);
     }
 
-    protected void changeCameraPosition(LatLng latLng) {
+    protected Marker addMarkerToMap(LatLng latLng) {
+        getGoogleMap().clear();
+        Marker marker = getGoogleMap().addMarker(new MarkerOptions()
+                .position(latLng));
+        changeCameraPosition(latLng);
+        return marker;
+    }
+
+    private void changeCameraPosition(LatLng latLng) {
         CameraPosition cameraPosition = CameraPosition.builder()
                 .target(latLng)
                 .zoom(CoreConstants.MAP_CAMERA_ZOOM)

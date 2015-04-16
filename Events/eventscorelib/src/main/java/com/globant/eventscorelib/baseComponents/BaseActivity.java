@@ -127,7 +127,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         registerReceiver(mReceiver,
-                         new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+                new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         super.onResume();
     }
 
@@ -180,35 +180,35 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     private final void setFragmentTitle(BaseFragment fragment){
-        String title = getFragmentTitle(fragment);
-        if (title != null && !title.isEmpty()){
+        String title = fragment.getFragmentTitle();
+        if (title != null && !title.isEmpty() && mFragmentTitle != null){
             mFragmentTitle.setText(title);
         }
     }
 
-    private void showErrorOverlay(){
+    protected void showErrorOverlay(){
         for (BaseFragment f : mFragments) {
             f.showErrorOverlay();
         }
     }
-    private void showErrorOverlay(String messageError){
+    protected void showErrorOverlay(String messageError){
         for (BaseFragment f : mFragments) {
             f.showErrorOverlay(messageError);
         }
     }
 
-    private void showProgressOverlay(){
+    protected void showProgressOverlay(){
         for (BaseFragment f : mFragments) {
             f.showProgressOverlay();
         }
     }
-    private void showProgressOverlay(String messageProgress){
+    protected void showProgressOverlay(String messageProgress){
         for (BaseFragment f : mFragments) {
             f.showProgressOverlay(messageProgress);
         }
     }
 
-    private void hideUtilsAndShowContentOverlay(){
+    protected void hideUtilsAndShowContentOverlay(){
         for (BaseFragment f : mFragments) {
             f.hideUtilsAndShowContentOverlay();
         }
@@ -216,7 +216,6 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     // Anstract methods
     public abstract String getActivityTitle();
-    public abstract String getFragmentTitle(BaseFragment fragment);
 
     public void requestEvent(String id) {
         mPendingRequest = true;

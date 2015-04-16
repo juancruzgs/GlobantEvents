@@ -17,7 +17,6 @@ import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,16 +52,9 @@ public class ManagerMapActivity extends MapActivity {
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                addMarkerToMap(latLng);
+                mMarker = addMarkerToMap(latLng);
             }
         });
-    }
-
-    private void addMarkerToMap(LatLng latLng) {
-        getGoogleMap().clear();
-        mMarker = getGoogleMap().addMarker(new MarkerOptions()
-                .position(latLng));
-        changeCameraPosition(latLng);
     }
 
     @Override
@@ -108,7 +100,7 @@ public class ManagerMapActivity extends MapActivity {
         @Override
         protected void onPostExecute(LatLng latLng) {
             if (latLng != null) {
-                addMarkerToMap(latLng);
+                mMarker = addMarkerToMap(latLng);
             }
             //TODO Else internet issue
         }

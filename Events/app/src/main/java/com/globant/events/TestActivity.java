@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
-import com.globant.eventscorelib.baseComponents.ProfileFragment;
 
 
 public class TestActivity extends BaseActivity {
@@ -23,6 +22,10 @@ public class TestActivity extends BaseActivity {
                     .add(R.id.container, new ProfileFragment())
                     .commit();
         }
+//        Intent intent = new Intent(TestActivity.this, ClientMapActivity.class);
+////        LatLng latLng = new LatLng(-38.010920, -57.535298);
+////        intent.putExtra("markerPosition",latLng);
+//        startActivity(intent);
     }
 
     @Override
