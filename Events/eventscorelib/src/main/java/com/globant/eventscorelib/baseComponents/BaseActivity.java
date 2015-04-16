@@ -216,7 +216,6 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     // Anstract methods
     public abstract String getActivityTitle();
-//    public abstract String getFragmentTitle(BaseFragment fragment);
 
     public void requestEvent(String id) {
         mPendingRequest = true;

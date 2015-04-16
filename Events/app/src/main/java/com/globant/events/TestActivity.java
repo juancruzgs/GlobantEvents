@@ -1,6 +1,5 @@
 package com.globant.events;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,8 +10,6 @@ import android.view.ViewGroup;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.google.android.gms.maps.model.LatLng;
-
-import junit.framework.Test;
 
 
 public class TestActivity extends BaseActivity {
@@ -35,11 +32,6 @@ public class TestActivity extends BaseActivity {
     @Override
     public String getActivityTitle() {
         return null;
-    }
-
-    @Override
-    public String getFragmentTitle(BaseFragment fragment) {
-        return fragment.getTitle();
     }
 
 
@@ -81,7 +73,7 @@ public class TestActivity extends BaseActivity {
             return rootView;
         }
         @Override
-        public String getTitle(){ return "Fragment";
+        public String getFragmentTitle(){ return "Fragment";
         }
     }
 }
