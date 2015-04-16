@@ -5,4 +5,5 @@
     <dimen name="credits_divider_height">1dp</dimen>
     <dimen name="flag_divider_height">2dp</dimen>
     <dimen name="divider_margin">3dp</dimen>
+    <dimen name="padding_ribbon">10dp</dimen>
 </resources>
