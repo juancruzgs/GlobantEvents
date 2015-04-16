@@ -6,7 +6,9 @@
     <color name="grey">#787878</color>
     <color name="almost_black">#212121</color>
     <color name="grey_dark">#707070</color>
+    <color name="Semi_transparent_grey_dark">#96000000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey_light">#B6B6B6</color>
+    <color name="grey_lighter">#ffd8d8d8</color>
     <color name="ambar">#FFC107</color>
 </resources>

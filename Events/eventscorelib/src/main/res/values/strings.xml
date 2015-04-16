@@ -2,4 +2,15 @@
     <string name="app_name">Events Core Lib</string>
     <string name="loading">Loading..</string>
     <string name="error_message">Oops, something failed :(</string>
+    <string name="textView_Event_Start_Title">Starts</string>
+    <string name="textView_Event_End_Title">Ends</string>
+    <string name="textView_Event_Address_Title">Address</string>
+    <string name="textView_Event_City_Title">City</string>
+    <string name="textView_Event_Country_Title">Country</string>
+    <string name="textView_Event_Language_Title">Event language</string>
+    <string name="texView_Add_Info_Title">Additional info</string>
+    <string name="textView_Event_Desc_Title">Description</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
