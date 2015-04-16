@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ public class ManagerMapActivity extends MapActivity {
     private Geocoder mGeocoder;
     private long mBackPressedTime;
     private long mUpPressedTime;
+    private AsyncTask<String, Void, LatLng> mGetAddressFromDecoderTask;
 
     @Override
     protected int getMapLayout() {
@@ -78,16 +80,7 @@ public class ManagerMapActivity extends MapActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                List<Address> addresses;
-                try {
-                    //TODO AsyncTask
-                    addresses = mGeocoder.getFromLocationName(s, CoreConstants.MAX_GEOCODER_RESULTS);
-                    Address address = addresses.get(CoreConstants.ZERO);
-                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    addMarkerToMap(latLng);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                mGetAddressFromDecoderTask = new getAddressFromGeocoderTask().execute(s);
                 return false;
             }
 
@@ -98,6 +91,28 @@ public class ManagerMapActivity extends MapActivity {
         });
     }
 
+    private class getAddressFromGeocoderTask extends AsyncTask<String, Void, LatLng> {
+        @Override
+        protected LatLng doInBackground(String... params) {
+            List<Address> addresses;
+            try {
+                addresses = mGeocoder.getFromLocationName(params[0], CoreConstants.MAX_GEOCODER_RESULTS);
+                Address address = addresses.get(CoreConstants.ZERO);
+                return new LatLng(address.getLatitude(), address.getLongitude());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(LatLng latLng) {
+            if (latLng != null) {
+                addMarkerToMap(latLng);
+            }
+            //TODO Else internet issue
+        }
+    }
     @Override
     public void onBackPressed() {
         finishActivityWithResult(true);
@@ -130,20 +145,23 @@ public class ManagerMapActivity extends MapActivity {
     }
 
     private void finishActivityWithMarkerData() {
-        try {
-            Address address = getMarkerLocation();
+        Address address = getMarkerLocation();
+        if (address != null) {
             setMapActivityResult(address);
             finish();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    private Address getMarkerLocation() throws IOException {
+    private Address getMarkerLocation(){
         List<Address> addresses;
         LatLng latLng = mMarker.getPosition();
-        addresses = mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, CoreConstants.MAX_GEOCODER_RESULTS);
-        return addresses.get(CoreConstants.ZERO);
+        try {
+            addresses = mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, CoreConstants.MAX_GEOCODER_RESULTS);
+            return addresses.get(CoreConstants.ZERO);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void setMapActivityResult(Address address) {
@@ -184,5 +202,13 @@ public class ManagerMapActivity extends MapActivity {
         }
 
         return false;
+    }
+
+    @Override
+    protected void onPause() {
+        if (mGetAddressFromDecoderTask != null && mGetAddressFromDecoderTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mGetAddressFromDecoderTask.cancel(true);
+        }
+        super.onPause();
     }
 }
