@@ -5,4 +5,5 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_credits">CreditsActivity</string>
     <string name="text_view_credits_text">Credits</string>
+    <string name="title_activity_client_map">Map</string>
 </resources>

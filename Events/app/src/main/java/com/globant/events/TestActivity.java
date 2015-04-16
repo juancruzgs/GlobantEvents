@@ -1,5 +1,6 @@
 package com.globant.events;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,6 +10,9 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.google.android.gms.maps.model.LatLng;
+
+import junit.framework.Test;
 
 
 public class TestActivity extends BaseActivity {
@@ -22,6 +26,10 @@ public class TestActivity extends BaseActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+//        Intent intent = new Intent(TestActivity.this, ClientMapActivity.class);
+////        LatLng latLng = new LatLng(-38.010920, -57.535298);
+////        intent.putExtra("markerPosition",latLng);
+//        startActivity(intent);
     }
 
     @Override
