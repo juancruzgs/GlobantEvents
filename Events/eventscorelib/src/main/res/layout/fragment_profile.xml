@@ -1,0 +1,299 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:fab="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="com.globant.eventscorelib.baseComponents.ProfileFragment"
+              android:weightSum="1"
+              android:orientation="vertical"
+    >
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3">
+
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:id="@+id/header"
+                android:src="@mipmap/placeholder"
+                android:background="#ffd5d5d5"
+            />
+
+        <com.software.shell.fab.ActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/header"
+        android:layout_marginBottom="-32dp"
+        android:layout_marginRight="20dp"
+        fab:image="@mipmap/ic_camera_white"
+        fab:image_size="24dp"
+        fab:button_color="#B9D52D"
+        android:layout_alignParentEnd="false"/>
+
+        <LinearLayout
+            android:id="@+id/body"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/header"
+            android:layout_marginTop="40dp"
+            android:layout_weight="0.7"
+            >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:minHeight="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/first_name"
+                android:layout_weight="0.1"
+                android:paddingBottom="8dp">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ic_account_box_grey600_48dp"
+                    android:src="@mipmap/ic_first_name"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"
+                    />
+
+                <EditText
+                    style="@style/condensed_normal_small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/edit_text_first_name"
+                    android:hint="First Name"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="0.9"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:minHeight="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/last_name"
+                android:layout_weight="0.1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/icon_last_name"
+                    android:src="@mipmap/ic_last_name"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"/>
+
+                <EditText
+                    style="@style/condensed_normal_small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:hint="Last Name"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/edit_text_last_name"
+                    android:layout_weight="0.9"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:minHeight="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/phone"
+                android:layout_weight="0.1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/icon_phone"
+                    android:src="@mipmap/ic_phone"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"/>
+
+                <EditText
+                    style="@style/condensed_normal_small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/edit_text_phone"
+                    android:hint="Phone"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="0.9"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:minHeight="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/email"
+                android:layout_weight="0.1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/icon_email"
+                    android:src="@mipmap/ic_email"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"/>
+
+                <EditText
+                    style="@style/condensed_normal_small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:hint="Email"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/edit_text_email"
+                    android:layout_weight="0.9"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:minHeight="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/twitter"
+                android:layout_weight="0.1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/icon_twitter"
+                    android:src="@mipmap/ic_twitter"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"/>
+
+                <EditText
+                    style="@style/condensed_normal_small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/edit_text_twitter"
+                    android:hint="Twitter user"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="0.9"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:minHeight="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/occupation"
+                android:layout_weight="0.1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/icon_occupation"
+                    android:src="@mipmap/ic_occupation"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"/>
+
+                <EditText
+                    style="@style/condensed_normal_small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/edit_text_occupation"
+                    android:hint="Occupation"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="0.9"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:minHeight="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/country"
+                android:layout_weight="0.1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/icon_country"
+                    android:src="@mipmap/ic_country"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"/>
+
+                <EditText
+                    style="@style/condensed_normal_small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/edit_text_country"
+                    android:hint="Country"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="0.9"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:minHeight="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/city"
+                android:layout_weight="0.1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/icon_city"
+                    android:src="@mipmap/ic_city"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"/>
+
+                <EditText
+                    style="@style/condensed_normal_small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/edit_text_city"
+                    android:hint="City"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="0.9"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>
