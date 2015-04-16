@@ -34,4 +34,6 @@
     <string name="mail_ramirez">juan.ramirez@globant.com</string>
     <string name="we_are_ready">We are ready!</string>
     <string name="credits_fragment_title">Credits</string>
+    <string name="action_done">Done</string>
+    <string name="preference_user_twitter">preference_user_twitter</string>
 </resources>
