@@ -1,4 +1,4 @@
-package com.globant.eventscorelib;
+package com.globant.eventscorelib.fragments;
 
 import android.os.Bundle;
 import android.app.Fragment;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 
 /**
@@ -26,7 +27,7 @@ public class CreditsFragment extends BaseFragment {
     }
 
     @Override
-    public String getTitle() {
+    public String getFragmentTitle() {
         return getString(R.string.credits_fragment_title);
     }
 }

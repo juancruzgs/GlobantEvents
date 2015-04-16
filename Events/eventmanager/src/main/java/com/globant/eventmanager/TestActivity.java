@@ -16,6 +16,7 @@ import android.widget.ImageView;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.fragments.SpeakersListFragment;
 import com.google.zxing.WriterException;
 
 import java.io.File;
@@ -30,7 +31,8 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        BaseFragment fragment = new EventListFragment();
+//        BaseFragment fragment = new EventListFragment();
+        BaseFragment fragment = new SpeakersListFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
@@ -43,11 +45,6 @@ public class TestActivity extends BaseActivity {
     public String getActivityTitle() {
         return "Test Activity";
     }
-
-    public String getFragmentTitle(BaseFragment fragment) {
-        return fragment.getTitle();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
