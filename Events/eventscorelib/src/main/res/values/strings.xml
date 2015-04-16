@@ -2,6 +2,7 @@
     <string name="app_name">Events Core Lib</string>
     <string name="loading">Loading..</string>
     <string name="error_message">Oops, something failed :(</string>
+    <string name="action_settings">Settings</string>
     <string name="preference_user_first_name">preference_user_first_name</string>
     <string name="preference_user_last_name">preference_user_last_name</string>
     <string name="preference_user_email">preference_user_email</string>
