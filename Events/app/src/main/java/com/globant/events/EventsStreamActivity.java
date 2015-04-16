@@ -34,11 +34,6 @@ public class EventsStreamActivity extends BaseActivity {
     }
 
     @Override
-    public String getFragmentTitle(BaseFragment fragment) {
-        return fragment.getTitle();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_events_stream, menu);
@@ -76,8 +71,10 @@ public class EventsStreamActivity extends BaseActivity {
             return rootView;
         }
 
-        public String getTitle(){
+        @Override
+        public String getFragmentTitle() {
             return "Fragment";
         }
+
     }
 }
