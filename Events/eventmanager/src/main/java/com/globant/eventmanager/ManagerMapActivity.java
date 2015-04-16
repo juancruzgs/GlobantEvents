@@ -113,6 +113,7 @@ public class ManagerMapActivity extends MapActivity {
             //TODO Else internet issue
         }
     }
+
     @Override
     public void onBackPressed() {
         finishActivityWithResult(true);
