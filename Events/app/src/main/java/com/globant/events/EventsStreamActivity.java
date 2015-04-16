@@ -13,6 +13,7 @@ import android.os.Build;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 
 public class EventsStreamActivity extends BaseActivity {
@@ -29,8 +30,8 @@ public class EventsStreamActivity extends BaseActivity {
     }
 
     @Override
-    protected void setServiceInternally() {
-        mServiceClass = ClientDataService.class;
+    protected Class<? extends BaseService> getServiceClass() {
+        return ClientDataService.class;
     }
 
     @Override

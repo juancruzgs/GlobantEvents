@@ -13,15 +13,14 @@ import android.os.Build;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 
 public class EventsActivity extends BaseActivity {
 
     @Override
-    protected void setServiceInternally() {
-        //super.setServiceInternally();
-
-        mServiceClass = ManagerDataService.class;
+    protected Class<? extends BaseService> getServiceClass() {
+        return ManagerDataService.class;
     }
 
     @Override

@@ -88,7 +88,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     // TODO: This function is used to set the service (a subclass of BaseService)
-    abstract protected void setServiceInternally();
+    abstract protected Class<? extends BaseService> getServiceClass();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +96,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         setConnectionReceiver();
         mFragments = new ArrayList<>();
 
-        setServiceInternally();
+        mServiceClass = getServiceClass();
 
         if (mServiceClass == null) {
             // TODO: This will become an exception
@@ -144,7 +144,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
-        mFragments.add((BaseFragment)fragment);
+        mFragments.add((BaseFragment) fragment);
         setFragmentTitle((BaseFragment)fragment);
     }
 

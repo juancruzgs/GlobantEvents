@@ -40,8 +40,8 @@ public class TestActivity extends BaseActivity {
     }
 
     @Override
-    protected void setServiceInternally() {
-        mServiceClass = BaseService.class;
+    protected Class<? extends BaseService> getServiceClass() {
+        return BaseService.class;
     }
 
     @Override
