@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.ProfileFragment;
 
 
 public class TestActivity extends BaseActivity {
@@ -19,7 +20,7 @@ public class TestActivity extends BaseActivity {
         setContentView(R.layout.activity_test);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new ProfileFragment())
                     .commit();
         }
     }
