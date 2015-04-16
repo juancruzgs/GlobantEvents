@@ -20,7 +20,8 @@
             android:text="@string/loading"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
             android:id="@+id/textView_utils"
-            android:textColor="#ff848484"/>
+            android:textColor="#ff848484"
+            style="@style/condensed_normal_large"/>
 
         <ImageView
             android:layout_width="120dp"
