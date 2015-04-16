@@ -30,7 +30,7 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        BaseFragment fragment = new EventListFragment();
+        BaseFragment fragment = new EventParticipantsFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
