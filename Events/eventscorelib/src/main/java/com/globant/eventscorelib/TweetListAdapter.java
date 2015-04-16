@@ -63,7 +63,7 @@ public class TweetListAdapter extends RecyclerView.Adapter<TweetListAdapter.View
         holder.getTweetText().setText(mTweetsList.get(position).getText());
         holder.getUserName().setText(mTweetsList.get(position).getUser().getName());
         Picasso.with(mContext).load(mTweetsList.get(position).getUser()
-                .getBiggerProfileImageURL()).into(holder.getUserPicture());
+                .getOriginalProfileImageURL()).into(holder.getUserPicture());
     }
 
     @Override

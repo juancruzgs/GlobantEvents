@@ -3,6 +3,8 @@ package com.globant.eventscorelib;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,32 +13,32 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 import com.software.shell.fab.ActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.Status;
 
 
-public class TwitterStreamFragment extends BaseFragment {
+public class BaseTwitterStreamFragment extends BaseFragment {
 
-    private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    protected LayoutManagerType mCurrentLayoutManagerType;
-    protected RecyclerView mRecyclerView;
-    protected TweetListAdapter mAdapter;
-    protected RecyclerView.LayoutManager mLayoutManager;
-    ActionButton mActionButton;
+    private LayoutManagerType mCurrentLayoutManagerType;
+    private RecyclerView mRecyclerView;
+    private TweetListAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ActionButton mActionButton;
     private List<Status> mTweetList;
     private AsyncTask<Void, Void, Boolean> mTweetsLoader;
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
-    public TwitterStreamFragment() {
+    public BaseTwitterStreamFragment() {
         // Required empty public constructor
     }
 
@@ -46,16 +48,47 @@ public class TwitterStreamFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_twitter_stream, container,
                 false);
         hideUtilsAndShowContentOverlay();
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.tweet_list_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
+        prepareRecyclerView(rootView);
+        prepareSwipeRefreshLayout(rootView);
         wireUpFAB(rootView);
         mLayoutManager = new LinearLayoutManager(getActivity());
         if (savedInstanceState != null) {
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                    .getSerializable(KEY_LAYOUT_MANAGER);
+                    .getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager();
         return rootView;
+    }
+
+    private void prepareSwipeRefreshLayout(View rootView) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                BaseApplication.getInstance().getCacheObjectsManager().tweetList = null;
+                mTweetsLoader = new TweetsLoader().execute();
+            }
+        });
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)){
+                    mActionButton.hide();
+                }else{
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        mActionButton.show();
+                    }
+                }
+            }
+        });
+    }
+
+    private void prepareRecyclerView(View rootView) {
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.tweet_list_recycler_view);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setHasFixedSize(true);
     }
 
     private void wireUpFAB(View rootView) {
@@ -74,20 +107,7 @@ public class TwitterStreamFragment extends BaseFragment {
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
 
-                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)){
-                    mActionButton.hide();
-                }else{
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        mActionButton.show();
-                    }
-                }
-            }
-        });
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
@@ -129,8 +149,10 @@ public class TwitterStreamFragment extends BaseFragment {
                 if (getActivity() == null) return;
                 mAdapter = new TweetListAdapter(mTweetList, getActivity());
                 mRecyclerView.setAdapter(mAdapter);
+                mSwipeRefreshLayout.setRefreshing(false);
                 hideUtilsAndShowContentOverlay();
             } else {
+                mSwipeRefreshLayout.setRefreshing(false);
                 showErrorOverlay();
             }
         }
@@ -138,7 +160,7 @@ public class TwitterStreamFragment extends BaseFragment {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
+        savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -149,6 +171,4 @@ public class TwitterStreamFragment extends BaseFragment {
         }
         super.onStop();
     }
-
-    // TODO onStop in TweetFragment
 }

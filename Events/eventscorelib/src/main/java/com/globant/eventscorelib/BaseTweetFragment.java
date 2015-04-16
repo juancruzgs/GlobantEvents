@@ -22,7 +22,7 @@ import com.squareup.picasso.Picasso;
 import twitter4j.User;
 
 
-public class TweetFragment extends BaseFragment implements View.OnClickListener {
+public class BaseTweetFragment extends BaseFragment implements View.OnClickListener {
 
     private ImageView picture;
     private TextView usernameTextView;
@@ -30,8 +30,11 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
     private EditText tweetTextField;
     private Button tweetBtn;
     private Button loginTwitterBtn;
+    private AsyncTask<String, Void, Boolean> mTweetPost;
+    private AsyncTask<Void, Void, User> mLoadTweetUser;
+    private AsyncTask<Void, Void, Boolean> mTwitterLoader;
 
-    public TweetFragment() {
+    public BaseTweetFragment() {
         // Required empty public constructor
     }
 
@@ -61,7 +64,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
             if (BaseApplication.getInstance().getSharedPreferencesManager()
                     .isAlreadyTwitterLogged()) {
                 loginTwitterBtn.setVisibility(View.GONE);
-                new LoadTweetUser().execute();
+               mLoadTweetUser = new LoadTweetUser().execute();
             } else {
                 tweetBtn.setEnabled(false);
                 tweetTextField.setEnabled(false);
@@ -71,6 +74,21 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
             Logger.e("LOADING TWITTER", e);
         }
         super.onResume();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.tweetBtn) {
+            String tweet = tweetTextField.getText().toString();
+            if (!tweet.equals("")) {
+                InputMethodManager imm = (InputMethodManager) getActivity()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(tweetTextField.getWindowToken(), 0);
+               mTweetPost = new TweetPost().execute(tweet);
+            }
+        } else if (v.getId() == R.id.loginTwitterBtn) {
+           mTwitterLoader = new TwitterLoader().execute();
+        }
     }
 
     private class TweetPost extends AsyncTask<String, Void, Boolean> {
@@ -145,21 +163,6 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
 
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.tweetBtn) {
-            String tweet = tweetTextField.getText().toString();
-            if (!tweet.equals("")) {
-                InputMethodManager imm = (InputMethodManager) getActivity()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(tweetTextField.getWindowToken(), 0);
-                new TweetPost().execute(tweet);
-            }
-        } else if (v.getId() == R.id.loginTwitterBtn) {
-            new TwitterLoader().execute();
-        }
-    }
-
     private class TwitterLoader extends AsyncTask<Void, Void, Boolean> {
 
         @Override
@@ -185,6 +188,24 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
         }
     }
 
+
+    @Override
+    public void onStop() {
+        if (mTweetPost != null && mTweetPost.getStatus() == AsyncTask.Status.RUNNING) {
+            mTweetPost.cancel(false);
+        }
+        else {
+            if (mTwitterLoader != null && mTwitterLoader.getStatus() == AsyncTask.Status.RUNNING) {
+                mTwitterLoader.cancel(false);
+            }
+            else {
+                if (mLoadTweetUser != null && mLoadTweetUser.getStatus() == AsyncTask.Status.RUNNING) {
+                    mLoadTweetUser.cancel(false);
+                }
+            }
+        }
+        super.onStop();
+    }
 }
 
 

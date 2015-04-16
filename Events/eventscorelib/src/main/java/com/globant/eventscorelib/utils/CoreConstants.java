@@ -62,4 +62,7 @@ public class CoreConstants {
     public static final String TWITTER_IS_LOGGED_IN = "is_logged_in";
     public static final String TWITTER_PREF_KEY_OAUTH_TOKEN = "oauth_token";
     public static final String TWITTER_PREF_KEY_OAUTH_SECRET = "oauth_token_secret";
+
+    // RecyclerView
+    public static final String KEY_LAYOUT_MANAGER = "layoutManager";
 }
