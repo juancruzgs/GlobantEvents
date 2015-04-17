@@ -1,14 +1,18 @@
-package com.globant.eventmanager;
+package com.globant.eventscorelib;
 
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.fragments.CreditsFragment;
 import com.software.shell.fab.ActionButton;
 
 
@@ -48,8 +52,6 @@ public class EventListFragment extends BaseFragment {
         initDataset();
     }
 
-
-
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
@@ -79,11 +81,8 @@ public class EventListFragment extends BaseFragment {
         mRecyclerView.setAdapter(mAdapter);
         // END_INCLUDE(initializeRecyclerView)
 
-
         hideUtilsAndShowContentOverlay();
-
-
-
+        setHasOptionsMenu(true);
 
         return rootView;
     }
@@ -152,5 +151,23 @@ public class EventListFragment extends BaseFragment {
         for (int i = 0; i < DATASET_COUNT; i++) {
             mDataset[i] = "This is element #" + i;
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_event_list_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_credits) {// Do Fragment menu item stuff here
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, new CreditsFragment()).addToBackStack(null)
+                    .commit();
+            return true;
+        }
+
+        return false;
     }
 }
