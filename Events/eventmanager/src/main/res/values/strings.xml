@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">EventManager</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_manager_map">Map</string>
