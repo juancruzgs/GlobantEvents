@@ -5,4 +5,9 @@
     <dimen name="credits_divider_height">1dp</dimen>
     <dimen name="flag_divider_height">2dp</dimen>
     <dimen name="divider_margin">3dp</dimen>
+    <dimen name="padding_ribbon">10dp</dimen>
+    <dimen name="elevation_event_card_row">10dp</dimen>
+    <dimen name="event_logo_card_row_height">180dp</dimen>
+    <dimen name="padding_framelayout">5dp</dimen>
+    <dimen name="padding_text_view_card_row">10dp</dimen>
 </resources>

@@ -13,4 +13,6 @@
     <color name="red">#DA0010</color>
     <color name="yellow">#FEE800</color>
     <color name="blue">#00148D</color>
+    <color name="grey_tr">#82000000</color>
+    <color name="grey_card">#AFAFAF</color>
 </resources>

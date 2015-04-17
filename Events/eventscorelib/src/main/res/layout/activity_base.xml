@@ -14,11 +14,12 @@
         android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:background="#FF3333"
-        android:textColor="#FFFFFF"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
-        android:text="No Connection"/>
+        android:background="@color/red"
+        android:textColor="@color/white"
+        android:paddingRight="@dimen/padding_ribbon"
+        android:paddingLeft="@dimen/padding_ribbon"
+        android:text="@string/no_connection"/>
+
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
