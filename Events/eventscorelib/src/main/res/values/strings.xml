@@ -47,6 +47,4 @@
     <string name="texView_Add_Info_Title">Additional info</string>
     <string name="textView_Event_Desc_Title">Description</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
