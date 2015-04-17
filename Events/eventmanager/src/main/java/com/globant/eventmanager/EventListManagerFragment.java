@@ -38,7 +38,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     private void wireUpFloatingButton(View rootView) {
-        mActionButton = (FloatingActionButton)rootView.findViewById(R.id.action_button);
+        mActionButton = (ActionButton)rootView.findViewById(R.id.action_button);
     }
 
     private void prepareRecyclerViewTouchListener(View rootView) {
@@ -60,7 +60,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     private void wireUpFAB(View rootView) {
-        mActionButton = (ActionButton) rootView.findViewById(com.globant.eventscorelib.R.id.action_button);
+        mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
     }

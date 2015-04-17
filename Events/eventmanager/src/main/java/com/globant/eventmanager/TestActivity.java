@@ -44,11 +44,6 @@ public class TestActivity extends BaseActivity {
         return "Test Activity";
     }
 
-    public String getFragmentTitle(BaseFragment fragment) {
-        return fragment.getTitle();
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

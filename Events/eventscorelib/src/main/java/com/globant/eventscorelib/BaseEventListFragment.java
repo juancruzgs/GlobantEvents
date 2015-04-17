@@ -90,7 +90,7 @@ public abstract class BaseEventListFragment extends BaseFragment {
 
     @Override
     public String getFragmentTitle() {
-        return "Stream";
+        return getString(R.string.title_fragment_events_stream);
     }
 
     /**

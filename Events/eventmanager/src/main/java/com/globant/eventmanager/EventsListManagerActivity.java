@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.globant.eventscorelib.baseComponents.BaseActivity;
 
-public class EventsListManagerActivity extends ActionBarActivity {
+
+public class EventsListManagerActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +21,10 @@ public class EventsListManagerActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public String getActivityTitle() {
+        return getString(R.string.title_activity_events_stream);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
