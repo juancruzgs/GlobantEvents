@@ -50,6 +50,7 @@ public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapte
         mDatasetName = datasetName;
         mDatasetDescription = datasetDescription;
         mContext = context;
+        transformation = new CropCircleTransformation(context);
     }
 
     @Override

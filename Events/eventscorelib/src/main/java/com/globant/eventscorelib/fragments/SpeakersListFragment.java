@@ -17,7 +17,7 @@ import com.globant.eventscorelib.baseComponents.BaseFragment;
 public class SpeakersListFragment extends BaseFragment {
 
     //TODO delete this two attr
-    private static final int DATASET_COUNT = 60;
+    private static final int DATASET_COUNT = 3;
     protected String[] mDatasetName;
     protected String[] mDatasetDescription;
 
@@ -78,8 +78,8 @@ public class SpeakersListFragment extends BaseFragment {
         mDatasetName = new String[DATASET_COUNT];
         mDatasetDescription = new String[DATASET_COUNT];
         for (int i = 0; i < DATASET_COUNT; i++) {
-            mDatasetName[i] = "Name #" + i;
-            mDatasetDescription[i] = "This is the description of the Name #" + i;
+            mDatasetName[i] = "Tim Cook";
+            mDatasetDescription[i] = "Timothy Donald \"Tim\" Cook is an American business executive, and is the CEO of Apple Inc.";
         }
     }
 }
