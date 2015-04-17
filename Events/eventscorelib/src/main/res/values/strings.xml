@@ -57,4 +57,13 @@
     <string name="action_credits">Credits</string>
     <string name="title_activity_credits">Credits</string>
     <string name="hello_world">Hello world!</string>
+    <string name="edit_text_first_name_hint">First name</string>
+    <string name="edit_text_laat_name_hint">Last name</string>
+    <string name="edit_text_phone_hint">Phone</string>
+    <string name="edit_text_email_hint">Email</string>
+    <string name="edit_text_twitter_hint">Twitter user</string>
+    <string name="edit_text_occupation_hint">Occupation</string>
+    <string name="edit_text_country_hint">Country</string>
+    <string name="edit_text_city_hint">City</string>
+    <string name="check_box_text_english_hint">Need english translator?</string>
 </resources>
