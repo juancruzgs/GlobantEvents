@@ -18,6 +18,7 @@ import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
+import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.utils.CoreConstants;
 
@@ -42,11 +43,8 @@ public class TwitterManager {
             AccessToken accessToken;
             try {
                 Twitter twitter = getTwitter(false);
-                accessToken = twitter.getOAuthAccessToken(requestToken,
-                        verifier);
-                BaseApplication
-                        .getInstance()
-                        .getSharedPreferencesManager()
+                accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
+                BaseApplication.getInstance().getSharedPreferencesManager()
                         .setTwitterStatusResponse(accessToken.getToken(),
                                 accessToken.getTokenSecret());
                 long userID = accessToken.getUserId();
@@ -61,7 +59,7 @@ public class TwitterManager {
 
     public User getUser() {
         try {
-            Twitter twitter = getTwitter();
+            Twitter twitter = getTwitter(true);
             long userID = getAccessToken().getUserId();
             return twitter.showUser(userID);
         } catch (TwitterException e) {
@@ -71,9 +69,9 @@ public class TwitterManager {
 
     public boolean publishPost(String post) {
         try {
-            Twitter twitter = getTwitter();
+            Twitter twitter = getTwitter(true);
             if (twitter != null) {
-                twitter4j.Status status = getTwitter().updateStatus(post);
+                twitter4j.Status status = getTwitter(true).updateStatus(post);
                 return true;
             } else {
                 return false;
@@ -84,16 +82,15 @@ public class TwitterManager {
 
     }
 
-    public boolean loginToTwitter(Context ctx, TwitterLoginListener listener) {
+    public boolean loginToTwitter(Context context, TwitterLoginListener listener) {
         try {
             Twitter twitter = getTwitterNoTokens();
             if (twitter != null) {
                 if (!BaseApplication.getInstance().getSharedPreferencesManager()
                         .isAlreadyTwitterLogged()) {
                     requestToken = twitter.getOAuthRequestToken(CoreConstants.TWITTER_CALLBACK_URL);
-                    ctx.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-                            .parse(requestToken.getAuthenticationURL())));
-
+                    context.startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(requestToken.getAuthenticationURL())));
                 }
                 if (listener != null) {
                     listener.onLogin(true);
@@ -110,8 +107,8 @@ public class TwitterManager {
         }
     }
 
-    public List<Status> getTweetList() {
-        Query query = new Query("#FlipThinking"); // TODO change the hashtag
+    public List<Status> getTweetList(Context context, String hashtag) {
+        Query query = new Query(context.getString(R.string.general_hashtag) + hashtag); // TODO change the hashtag
         query.setCount(50);
         try {
             Twitter twitter = getTwitter(false);
@@ -121,14 +118,9 @@ public class TwitterManager {
             } else {
                 return null;
             }
-
         } catch (TwitterException e) {
              return null;
         }
-    }
-
-    public Twitter getTwitter() {
-        return getTwitter(true);
     }
 
     public Twitter getTwitterNoTokens() {
@@ -167,15 +159,4 @@ public class TwitterManager {
                 .getSharedPreferencesManager().getAccessTokenSecret();
         return new AccessToken(access_token, access_token_secret);
     }
-
-    public static String HashtagString(String allString) {
-        String[] arrayStrings = allString.split(" ");
-        String result = "";
-        for (String hashtagString : arrayStrings) {
-            result += "#" + hashtagString + " ";
-        }
-        return result;
-    }
-
-
 }

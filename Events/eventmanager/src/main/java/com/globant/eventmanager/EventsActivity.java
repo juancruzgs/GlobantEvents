@@ -1,5 +1,6 @@
 package com.globant.eventmanager;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -9,7 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globant.eventscorelib.BaseTwitterStreamFragment;
+import com.globant.eventscorelib.BaseTwitterActivity;
+import com.globant.eventscorelib.TwitterStreamFragment;
 
 
 public class EventsActivity extends ActionBarActivity {
@@ -19,9 +21,9 @@ public class EventsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new BaseTwitterStreamFragment())
-                    .commit();
+            Intent intent  = new Intent (this, BaseTwitterActivity.class);
+            startActivity(intent);
+
         }
     }
 

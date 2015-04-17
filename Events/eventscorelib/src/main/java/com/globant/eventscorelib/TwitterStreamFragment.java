@@ -22,11 +22,10 @@ import java.util.List;
 import twitter4j.Status;
 
 
-public class BaseTwitterStreamFragment extends BaseFragment {
+public class TwitterStreamFragment extends BaseFragment {
 
     private LayoutManagerType mCurrentLayoutManagerType;
     private RecyclerView mRecyclerView;
-    private TweetListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ActionButton mActionButton;
     private List<Status> mTweetList;
@@ -38,7 +37,7 @@ public class BaseTwitterStreamFragment extends BaseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
-    public BaseTwitterStreamFragment() {
+    public TwitterStreamFragment() {
         // Required empty public constructor
     }
 
@@ -69,6 +68,13 @@ public class BaseTwitterStreamFragment extends BaseFragment {
                 mTweetsLoader = new TweetsLoader().execute();
             }
         });
+
+    }
+
+    private void prepareRecyclerView(View rootView) {
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.tweet_list_recycler_view);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -85,16 +91,18 @@ public class BaseTwitterStreamFragment extends BaseFragment {
         });
     }
 
-    private void prepareRecyclerView(View rootView) {
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.tweet_list_recycler_view);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setHasFixedSize(true);
-    }
-
     private void wireUpFAB(View rootView) {
         mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+        mActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null)
+                        .replace(R.id.container, new TweetFragment())
+                        .commit();
+            }
+        });
     }
 
     public void setRecyclerViewLayoutManager() {
@@ -115,13 +123,14 @@ public class BaseTwitterStreamFragment extends BaseFragment {
 
     @Override
     public String getTitle() {
-        return null;
+        return "Stream";
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+        showProgressOverlay();
         mTweetsLoader = new TweetsLoader().execute();
     }
 
@@ -133,7 +142,7 @@ public class BaseTwitterStreamFragment extends BaseFragment {
             mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
             try {
                 if (mTweetList == null) {
-                    mTweetList = BaseApplication.getInstance().getTwitterManager().getTweetList();
+                    mTweetList = BaseApplication.getInstance().getTwitterManager().getTweetList(getActivity(), ""); // TODO: put the event hashtag
                     BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
                 }
             } catch (Exception e) {
@@ -147,7 +156,7 @@ public class BaseTwitterStreamFragment extends BaseFragment {
             super.onPostExecute(result);
             if (result && mTweetList !=null) {
                 if (getActivity() == null) return;
-                mAdapter = new TweetListAdapter(mTweetList, getActivity());
+                TweetListAdapter mAdapter = new TweetListAdapter(mTweetList, getActivity());
                 mRecyclerView.setAdapter(mAdapter);
                 mSwipeRefreshLayout.setRefreshing(false);
                 hideUtilsAndShowContentOverlay();
@@ -171,4 +180,6 @@ public class BaseTwitterStreamFragment extends BaseFragment {
         }
         super.onStop();
     }
+
+    // TODO change the asyntask
 }
