@@ -23,7 +23,7 @@
             android:value="AIzaSyDliO57CRqONNUhD6uPQV9IrqB8oU2ahhI" />
 
         <activity
-            android:name=".EventsActivity"
+            android:name=".EventsListManagerActivity"
             android:label="@string/app_name" >
         </activity>
         <activity

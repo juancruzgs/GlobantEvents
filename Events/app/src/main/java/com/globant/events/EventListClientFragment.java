@@ -10,7 +10,7 @@ import com.globant.eventscorelib.BaseEventListFragment;
 /**
 * Created by paula.baudo on 4/17/2015.
 */
-public class EventStreamFragment extends BaseEventListFragment {
+public class EventListClientFragment extends BaseEventListFragment {
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_client_event_list;
@@ -21,7 +21,7 @@ public class EventStreamFragment extends BaseEventListFragment {
         return R.id.event_list_recycler_view;
     }
 
-    public EventStreamFragment() {
+    public EventListClientFragment() {
     }
 //
 //    @Override

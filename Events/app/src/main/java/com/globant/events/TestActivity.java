@@ -19,7 +19,7 @@ public class TestActivity extends BaseActivity {
         setContentView(R.layout.activity_test);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new EventStreamFragment())
+                    .add(R.id.container, new EventListClientFragment())
                     .commit();
         }
 //        Intent intent = new Intent(TestActivity.this, ClientMapActivity.class);
