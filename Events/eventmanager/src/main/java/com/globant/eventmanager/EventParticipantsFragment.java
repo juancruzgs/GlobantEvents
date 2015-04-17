@@ -20,7 +20,7 @@ public class EventParticipantsFragment extends BaseFragment {
 
     private static final String TAG = "EventParticipantsFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private static final int DATASET_COUNT = 60;
+    private static final int DATASET_COUNT = 9;
 
 
     private enum LayoutManagerType {
