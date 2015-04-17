@@ -18,7 +18,8 @@ public class SpeakersListFragment extends BaseFragment {
 
     //TODO delete this two attr
     private static final int DATASET_COUNT = 60;
-    protected String[] mDataset;
+    protected String[] mDatasetName;
+    protected String[] mDatasetDescription;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -56,7 +57,7 @@ public class SpeakersListFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
 
-        mAdapter = new SpeakersListAdapter(mDataset);
+        mAdapter = new SpeakersListAdapter(mDatasetName, mDatasetDescription);
         mRecyclerView.setAdapter(mAdapter);
 
         mRecyclerView.setHasFixedSize(true);
@@ -74,9 +75,11 @@ public class SpeakersListFragment extends BaseFragment {
 
     //TODO delete method
     private void initDataset() {
-        mDataset = new String[DATASET_COUNT];
+        mDatasetName = new String[DATASET_COUNT];
+        mDatasetDescription = new String[DATASET_COUNT];
         for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "This is element #" + i;
+            mDatasetName[i] = "Name #" + i;
+            mDatasetDescription[i] = "This is the description of the Name #" + i;
         }
     }
 }

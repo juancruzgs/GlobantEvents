@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
@@ -12,23 +13,36 @@ import com.globant.eventscorelib.R;
  * Created by agustin.gugliotta on 15/04/2015.
  */
 public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapter.ViewHolder>{
-    private String[] mDataset;
+    private String[] mDatasetName;
+    private String[] mDatasetDescription;
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        private final TextView textViewName;
+        private final TextView textViewDescription;
+        private final ImageView imageView;
 
         public ViewHolder(View v) {
             super(v);
-            textView = (TextView) v.findViewById(R.id.text_view_speaker_item);
+            textViewName = (TextView) v.findViewById(R.id.text_view_speaker_item_name);
+            textViewDescription = (TextView) v.findViewById(R.id.text_view_speaker_item_description);
+            imageView = (ImageView) v.findViewById(R.id.image_view_profile_speaker);
         }
 
-        public TextView getTextView() {
-            return textView;
+        public TextView getTextViewName() {
+            return textViewName;
+        }
+        public TextView getTextViewDescription() {
+            return textViewDescription;
+        }
+        public ImageView getImageView() {
+            return imageView;
         }
     }
 
-    public SpeakersListAdapter(String[] dataset) {
-        mDataset = dataset;
+    public SpeakersListAdapter(String[] datasetName, String[] datasetDescription) {
+        mDatasetName = datasetName;
+        mDatasetDescription = datasetDescription;
     }
 
     @Override
@@ -40,11 +54,12 @@ public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.getTextView().setText(mDataset[position]);
+        holder.getTextViewName().setText(mDatasetName[position]);
+        holder.getTextViewDescription().setText(mDatasetDescription[position]);
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDatasetName.length;
     }
 }
