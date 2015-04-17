@@ -1,20 +1,14 @@
 package com.globant.eventmanager;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 
 
-public class EventsActivity extends ActionBarActivity {
+public class EventsListManagerActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +16,15 @@ public class EventsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_events);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new EventListManagerFragment())
                     .commit();
         }
     }
 
+    @Override
+    public String getActivityTitle() {
+        return getString(R.string.title_activity_events_stream);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -50,19 +48,4 @@ public class EventsActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_events, container, false);
-            return rootView;
-        }
-    }
 }

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Events Core Lib</string>
     <string name="title_activity_events_stream">Events</string>
+    <string name="title_fragment_events_stream">Stream</string>
     <string name="loading">Loading..</string>
     <string name="error_message">Oops, something failed :(</string>
     <string name="action_settings">Settings</string>

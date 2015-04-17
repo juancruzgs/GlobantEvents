@@ -19,7 +19,7 @@ public class TestActivity extends BaseActivity {
         setContentView(R.layout.activity_test);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ProfileFragment())
+                    .add(R.id.container, new EventListClientFragment())
                     .commit();
         }
 //        Intent intent = new Intent(TestActivity.this, ClientMapActivity.class);
@@ -31,11 +31,6 @@ public class TestActivity extends BaseActivity {
     @Override
     public String getActivityTitle() {
         return null;
-    }
-
-    @Override
-    public String getFragmentTitle(BaseFragment fragment) {
-        return fragment.getTitle();
     }
 
 
@@ -77,7 +72,7 @@ public class TestActivity extends BaseActivity {
             return rootView;
         }
         @Override
-        public String getTitle(){ return "Fragment";
+        public String getFragmentTitle(){ return "Fragment";
         }
     }
 }
