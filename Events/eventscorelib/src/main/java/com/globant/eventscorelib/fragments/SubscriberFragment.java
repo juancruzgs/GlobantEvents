@@ -3,11 +3,14 @@ package com.globant.eventscorelib.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,12 +20,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.SharedPreferenceManager;
 import com.software.shell.fab.ActionButton;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 
@@ -59,6 +64,28 @@ public class SubscriberFragment extends BaseFragment {
         View rootView= inflater.inflate(R.layout.fragment_subscriber, container, false);
         wireUpViews(rootView);
         prepareImageButton();
+        File f = new File("/data/data/" + this.getActivity().getPackageName() +  "/shared_prefs/" +  this.getActivity().getPackageName()+ "_preferences.xml");
+        if(f.exists())
+        {mEditTextFirstName.setText(SharedPreferenceManager.getUserFirstName(this.getActivity()));
+            mEditTextLastName.setText(SharedPreferenceManager.getUserLastName(this.getActivity()));
+            mEditTextPhone.setText(SharedPreferenceManager.getUserPhone(this.getActivity()));
+            mEditTextEmail.setText(SharedPreferenceManager.getUserEmail(this.getActivity()));
+            mEditTextOccupation.setText(SharedPreferenceManager.getUserOccupation(this.getActivity()));
+            mEditTextTwitter.setText(SharedPreferenceManager.getUserTwitter(this.getActivity()));
+            mEditTextCity.setText(SharedPreferenceManager.getUserCity(this.getActivity()));
+            mEditTextCountry.setText(SharedPreferenceManager.getUserCountry(this.getActivity()));
+//            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+//            String value = sharedPreferences.getString(this.getActivity().getString(R.string.preference_user_picture,null));
+//            if (value == null) {
+//                // the key does not exist
+//            } else {
+//                // handle the value
+//            }
+//
+////            byte[] preferencePhoto=SharedPreferenceManager.getUserImage(this.getActivity());
+////            mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
+
+        }
         hideUtilsAndShowContentOverlay();
         return rootView;
     }
@@ -67,7 +94,7 @@ public class SubscriberFragment extends BaseFragment {
         mEditTextFirstName=(EditText)rootView.findViewById(R.id.edit_text_first_name);
         mEditTextLastName=(EditText)rootView.findViewById(R.id.edit_text_last_name);
         mEditTextPhone=(EditText)rootView.findViewById(R.id.edit_text_phone);
-        mEditTextOccupation=(EditText)rootView.findViewById(R.id.edit_text_email);
+        mEditTextOccupation=(EditText)rootView.findViewById(R.id.edit_text_occupation);
         mEditTextTwitter=(EditText)rootView.findViewById(R.id.edit_text_twitter);
         mEditTextEmail=(EditText)rootView.findViewById(R.id.edit_text_email);
         mEditTextCountry=(EditText)rootView.findViewById(R.id.edit_text_country);
@@ -164,13 +191,18 @@ public class SubscriberFragment extends BaseFragment {
             SharedPreferenceManager.setUserCountry(mEditTextCountry.getText().toString(), this.getActivity());
             SharedPreferenceManager.setUserCity(mEditTextCity.getText().toString(), this.getActivity());
             SharedPreferenceManager.setUserTwitter(mEditTextTwitter.getText().toString(), this.getActivity());
-
+            SharedPreferenceManager.setUserImage(convertBitmapImageToByteArray(mPhoto),this.getActivity());
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+   private byte[] convertBitmapImageToByteArray(Bitmap Photo) {
+       ByteArrayOutputStream stream = new ByteArrayOutputStream();
+       Photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+       return stream.toByteArray();
+   }
 
 }
 
