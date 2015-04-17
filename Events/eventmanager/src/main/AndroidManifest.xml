@@ -25,7 +25,7 @@
         <activity
             android:name=".EventsListManagerActivity"
             android:label="@string/title_activity_events_stream"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,13 +35,14 @@
         <activity
             android:name=".TestActivity"
             android:label="@string/title_activity_test"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ManagerMapActivity"
             android:label="@string/title_activity_manager_map"
-            android:parentActivityName="com.globant.eventmanager.TestActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".TestActivity"
+            android:screenOrientation="portrait" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -49,6 +50,15 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".EventDetailManagerActivity"
+            android:label="@string/title_activity_event_detail_manager" >
+        </activity>
+        <activity
+            android:name="com.globant.eventscorelib.CreditsActivity"
+            android:label="@string/title_activity_credits"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

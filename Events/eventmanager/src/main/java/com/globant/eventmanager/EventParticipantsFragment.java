@@ -12,29 +12,20 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class EventParticipantsFragment extends BaseFragment {
 
     private static final String TAG = "EventParticipantsFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int DATASET_COUNT = 9;
-
-
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
-
     protected LayoutManagerType mCurrentLayoutManagerType;
-
     protected RecyclerView mRecyclerView;
     protected EventParticipantsListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected String[] mDataset;
-
 
     public EventParticipantsFragment() {
         // Required empty public constructor
@@ -46,47 +37,22 @@ public class EventParticipantsFragment extends BaseFragment {
         initDataset();
     }
 
-
-
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_participants, container, false);
         rootView.setTag(TAG);
-
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_participants_recycler_view);
-
         mLayoutManager = new LinearLayoutManager(getActivity());
-
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
         if (savedInstanceState != null) {
-            // Restore saved layout manager type.
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
-        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                return false;
-            }
 
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-
-            }
-        });
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-
         mAdapter = new EventParticipantsListAdapter(getActivity(), mDataset);
         mRecyclerView.setAdapter(mAdapter);
-
-
         hideUtilsAndShowContentOverlay();
-
-
-
-
         return rootView;
     }
 
@@ -97,15 +63,12 @@ public class EventParticipantsFragment extends BaseFragment {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save currently selected layout manager.
         savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
     }
 
     public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
         int scrollPosition = 0;
-
-        // If a layout manager has already been set, get current scroll position.
         if (mRecyclerView.getLayoutManager() != null) {
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
@@ -113,7 +76,6 @@ public class EventParticipantsFragment extends BaseFragment {
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
@@ -124,6 +86,4 @@ public class EventParticipantsFragment extends BaseFragment {
             mDataset[i] = "Hermione Granger #" + i;
         }
     }
-
-
 }

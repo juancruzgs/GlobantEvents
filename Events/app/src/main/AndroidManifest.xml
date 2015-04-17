@@ -57,6 +57,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EventListClientActivity" />
         </activity>
+        <activity
+            android:name="com.globant.eventscorelib.CreditsActivity"
+            android:label="@string/title_activity_credits"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
