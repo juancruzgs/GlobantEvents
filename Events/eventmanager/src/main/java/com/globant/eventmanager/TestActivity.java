@@ -128,7 +128,7 @@ public class TestActivity extends BaseActivity {
         }
 
         @Override
-        public String getTitle() {
+        public String getFragmentTitle() {
             return "FragmentTest";
         }
 
