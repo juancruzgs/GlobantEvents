@@ -48,5 +48,8 @@
     <string name="textView_Event_Language_Title">Event language</string>
     <string name="texView_Add_Info_Title">Additional info</string>
     <string name="textView_Event_Desc_Title">Description</string>
+    <string name="title_activity_base_pager_acivity">BasePagerAcivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>
