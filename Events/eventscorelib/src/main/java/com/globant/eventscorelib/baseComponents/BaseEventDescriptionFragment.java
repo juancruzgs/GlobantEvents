@@ -80,7 +80,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     }
 
     @Override
-    public String getTitle() {
+    public String getFragmentTitle() {
         return mTitle;
     }
 
