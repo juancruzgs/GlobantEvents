@@ -5,6 +5,20 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="fab_layout_wrap_width_wrap_height_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="fab_action_button_base_style" parent="fab_layout_wrap_width_wrap_height_style" />
+
+    <style name="fab_action_button_style" parent="fab_action_button_base_style">
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">@dimen/fab_margin</item>
+        <item name="android:layout_marginBottom">@dimen/fab_margin</item>
+    </style>
+
     <style name="condensed_light_small">
         <item name="android:typeface">normal</item>
         <item name="android:textStyle">normal</item>
@@ -12,7 +26,7 @@
     </style>
 
     <style name="condensed_normal_small">
-        <item name="android:typeface">monospace</item>
+        <item name="android:typeface">normal</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">12sp</item>
     </style>
@@ -47,7 +61,7 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="condensed_normal_lage">
+    <style name="condensed_normal_large">
         <item name="android:typeface">normal</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">20sp</item>
@@ -57,6 +71,24 @@
         <item name="android:typeface">normal</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="condensed_light_extra_large">
+        <item name="android:typeface">normal</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">33sp</item>
+    </style>
+
+    <style name="condensed_normal_extra_large">
+        <item name="android:typeface">normal</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">33sp</item>
+    </style>
+
+    <style name="condensed_bold_extra_large">
+        <item name="android:typeface">normal</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">33sp</item>
     </style>
 
 </resources>

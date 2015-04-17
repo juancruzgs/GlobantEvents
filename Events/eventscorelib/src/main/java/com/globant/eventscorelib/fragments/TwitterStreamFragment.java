@@ -1,4 +1,4 @@
-package com.globant.eventscorelib;
+package com.globant.eventscorelib.fragments;
 
 
 import android.os.AsyncTask;
@@ -44,7 +44,7 @@ public class TwitterStreamFragment extends BaseFragment {
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_twitter_stream, container,
+        View rootView = inflater.inflate(com.globant.eventscorelib.R.layout.fragment_twitter_stream, container,
                 false);
         hideUtilsAndShowContentOverlay();
         prepareRecyclerView(rootView);

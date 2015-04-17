@@ -1,12 +1,15 @@
 package com.globant.eventscorelib.baseComponents;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
 
@@ -28,13 +32,83 @@ public abstract class BaseActivity extends ActionBarActivity {
     TextView mConnectionRibbon;
     TextView mFragmentTitle;
     Toolbar mToolbar;
-    ArrayList<BaseFragment> mFragments;
+    ArrayList<BaseFragment> mFragments = new ArrayList<>();
+
+    BaseService mService = null;
+    Class<? extends BaseService> mServiceClass;
+    boolean mIsBound = false;
+    boolean mPendingRequest = false;
+    enum Requestable {EVENT, SPEAKER, SUBSCRIBER}
+    Requestable mRequestedType;
+    String mRequestedId;
+    Object mRequestedObject;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the service object we can use to
+            // interact with the service.  Because we have bound to a explicit
+            // service that we know is running in our own process, we can
+            // cast its IBinder to a concrete class and directly access it.
+            mService = ((BaseService.BaseBinder)service).getService();
+
+            if (mPendingRequest) {
+                switch (mRequestedType) {
+                    case EVENT:
+                        mRequestedObject = mService.getEvent(mRequestedId);
+                        break;
+                    default:
+                        // TODO: Throw an exception
+                }
+
+                // TODO: Trigger some trigger
+                // Perhaps to a previously registered listener
+
+                mPendingRequest = false;
+                doUnbindService();
+            }
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            // Because it is running in our same process, we should never
+            // see this happen.
+            mService = null;
+        }
+    };
+
+    protected void doBindService() {
+        bindService(new Intent(this, mServiceClass), mConnection, Context.BIND_AUTO_CREATE);
+        mIsBound = true;
+    }
+
+    protected void doUnbindService() {
+        if (mIsBound) {
+            // Detach our existing connection.
+            unbindService(mConnection);
+            mIsBound = false;
+        }
+    }
+
+    // TODO: This function will be used to set the service (a subclass of BaseService)
+    //abstract protected void setServiceInternally();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setConnectionReceiver();
-        mFragments = new ArrayList<>();
+
+        // TODO: Uncomment when we are ready to use the service
+        //setServiceInternally();
+
+        if (mServiceClass == null) {
+            // TODO: This will become an exception
+            Logger.d("Service not defined");
+        }
+        else {
+            startService(new Intent(this, mServiceClass));
+        }
     }
 
     @Override
@@ -53,7 +127,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         registerReceiver(mReceiver,
-                         new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+                new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         super.onResume();
     }
 
@@ -106,35 +180,35 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     private final void setFragmentTitle(BaseFragment fragment){
-        String title = getFragmentTitle(fragment);
-        if (title != null && !title.isEmpty()){
+        String title = fragment.getFragmentTitle();
+        if (title != null && !title.isEmpty() && mFragmentTitle != null){
             mFragmentTitle.setText(title);
         }
     }
 
-    private void showErrorOverlay(){
+    protected void showErrorOverlay(){
         for (BaseFragment f : mFragments) {
             f.showErrorOverlay();
         }
     }
-    private void showErrorOverlay(String messageError){
+    protected void showErrorOverlay(String messageError){
         for (BaseFragment f : mFragments) {
             f.showErrorOverlay(messageError);
         }
     }
 
-    private void showProgressOverlay(){
+    protected void showProgressOverlay(){
         for (BaseFragment f : mFragments) {
             f.showProgressOverlay();
         }
     }
-    private void showProgressOverlay(String messageProgress){
+    protected void showProgressOverlay(String messageProgress){
         for (BaseFragment f : mFragments) {
             f.showProgressOverlay(messageProgress);
         }
     }
 
-    private void hideUtilsAndShowContentOverlay(){
+    protected void hideUtilsAndShowContentOverlay(){
         for (BaseFragment f : mFragments) {
             f.hideUtilsAndShowContentOverlay();
         }
@@ -142,5 +216,11 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     // Anstract methods
     public abstract String getActivityTitle();
-    public abstract String getFragmentTitle(BaseFragment fragment);
+
+    public void requestEvent(String id) {
+        mPendingRequest = true;
+        mRequestedType = Requestable.EVENT;
+        mRequestedId = id;
+        doBindService();
+    }
 }

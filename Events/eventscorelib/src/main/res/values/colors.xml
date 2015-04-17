@@ -9,4 +9,10 @@
     <color name="white">#FFFFFF</color>
     <color name="grey_light">#B6B6B6</color>
     <color name="ambar">#FFC107</color>
+    <color name="blue_light">#75ABDA</color>
+    <color name="red">#DA0010</color>
+    <color name="yellow">#FEE800</color>
+    <color name="blue">#00148D</color>
+    <color name="grey_tr">#82000000</color>
+    <color name="grey_card">#AFAFAF</color>
 </resources>

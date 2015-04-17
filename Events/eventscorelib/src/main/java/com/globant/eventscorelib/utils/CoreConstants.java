@@ -16,7 +16,6 @@ public class CoreConstants {
     public static final String SPEAKERS_TABLE = "Speakers";
     public static final String SUBSCRIBERS_TABLE = "Subscribers";
 
-    public static final String FIELD_OBJECT_ID = "objectId";
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_SHORT_DESCRIPTION = "short_description";
     public static final String FIELD_FULL_DESCRIPTION = "full_description";
@@ -51,8 +50,27 @@ public class CoreConstants {
     public static final String FIELD_NAME = "name";
     public static final String FIELD_LAST_NAME = "last_name";
 
-    // Twitter
+    //QR Encoder
+    public static final int WHITE = 0xFFFFFFFF;
+    public static final int BLACK = 0xFF000000;
+    public static final String ENCODING = "UTF-8";
 
+    //QR Scanner
+    public static final String INTENT_SCAN = "com.google.zxing.client.android.SCAN";
+    public static final String SCAN_RESULT = "SCAN_RESULT";
+
+    //Logger
+    public static final String LOG_TAG = "GlobantEventsApp";
+
+    //Map
+    public static final int MAP_CAMERA_ZOOM = 17;
+    public static final int MAP_CAMERA_ANIMATION_DURATION = 2000;
+    public static final int MAX_GEOCODER_RESULTS = 1;
+    public static final String MAP_ADDRESS_INTENT = "address";
+    public static final String MAP_MARKER_POSITION_INTENT = "markerPosition";
+    public static final int DOUBLE_TAP_TIME_INTERVAL = 2000;
+
+    // Twitter
     public static final String TWITTER_CONSUMER_KEY = "c3nMUttSEcZzQRR4TekRIA3Em";
     public static final String TWITTER_CONSUMER_SECRET = "lLBZ0E6wBF5vf9GasZnqqqOCmPzwZ58ruei14yU579RFhtED6P";
     public static final String TWITTER_ACCESS_TOKEN = "152693997-R2UOOLRhAylNalkJblHDk1Uba0JZBjCmTa0TLmP2";

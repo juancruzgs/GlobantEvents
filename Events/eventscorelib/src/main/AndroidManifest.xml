@@ -7,6 +7,9 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name" >
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name" >
         <activity
             android:name=".BaseTwitterActivity"
             android:windowSoftInputMode="adjustResize"

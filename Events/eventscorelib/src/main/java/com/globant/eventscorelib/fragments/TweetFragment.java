@@ -1,4 +1,4 @@
-package com.globant.eventscorelib;
+package com.globant.eventscorelib.fragments;
 
 
 import android.content.Context;
@@ -40,7 +40,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_tweet, container, false);
+        View rootView = inflater.inflate(com.globant.eventscorelib.R.layout.fragment_tweet, container, false);
         hideUtilsAndShowContentOverlay();
         wireUpViews(rootView);
         return rootView;
