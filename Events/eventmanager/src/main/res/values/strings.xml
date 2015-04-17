@@ -8,4 +8,7 @@
     <string name="search_title">Search</string>
     <string name="toast_double_tap_to_cancel">Double tap to cancel</string>
     <string name="edit_text_hint_name">Name</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

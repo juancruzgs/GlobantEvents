@@ -12,8 +12,8 @@ import com.globant.eventscorelib.adapters.SpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 
 /**
- * Created by agustin.gugliotta on 15/04/2015.
- */
+        * Created by agustin.gugliotta on 15/04/2015.
+        */
 public class SpeakersListFragment extends BaseFragment {
 
     //TODO delete this two attr

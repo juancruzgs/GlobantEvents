@@ -16,6 +16,9 @@ import java.util.List;
 
 public class Database {
 
+    public Database(){
+    }
+
     public List<Event> getEvents() throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         List<ParseObject> databaseEventsList = query.find();
