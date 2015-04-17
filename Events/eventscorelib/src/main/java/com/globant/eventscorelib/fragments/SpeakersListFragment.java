@@ -57,7 +57,7 @@ public class SpeakersListFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
 
-        mAdapter = new SpeakersListAdapter(mDatasetName, mDatasetDescription);
+        mAdapter = new SpeakersListAdapter(getActivity(),mDatasetName, mDatasetDescription);
         mRecyclerView.setAdapter(mAdapter);
 
         mRecyclerView.setHasFixedSize(true);

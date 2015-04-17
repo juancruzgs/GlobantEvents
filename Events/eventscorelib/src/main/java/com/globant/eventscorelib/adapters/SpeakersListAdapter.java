@@ -1,5 +1,6 @@
 package com.globant.eventscorelib.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.globant.eventscorelib.CropCircleTransformation;
 import com.globant.eventscorelib.R;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by agustin.gugliotta on 15/04/2015.
@@ -15,12 +18,15 @@ import com.globant.eventscorelib.R;
 public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapter.ViewHolder>{
     private String[] mDatasetName;
     private String[] mDatasetDescription;
+    private CropCircleTransformation transformation;
+    private final Context mContext;
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewName;
         private final TextView textViewDescription;
         private final ImageView imageView;
+
 
         public ViewHolder(View v) {
             super(v);
@@ -40,9 +46,10 @@ public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapte
         }
     }
 
-    public SpeakersListAdapter(String[] datasetName, String[] datasetDescription) {
+    public SpeakersListAdapter(Context context, String[] datasetName, String[] datasetDescription) {
         mDatasetName = datasetName;
         mDatasetDescription = datasetDescription;
+        mContext = context;
     }
 
     @Override
@@ -56,6 +63,7 @@ public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.getTextViewName().setText(mDatasetName[position]);
         holder.getTextViewDescription().setText(mDatasetDescription[position]);
+        Picasso.with(mContext).load(R.drawable.speaker_image).transform(transformation).into(holder.getImageView());
     }
 
     @Override
