@@ -74,17 +74,12 @@ public class SubscriberFragment extends BaseFragment {
             mEditTextTwitter.setText(SharedPreferenceManager.getUserTwitter(this.getActivity()));
             mEditTextCity.setText(SharedPreferenceManager.getUserCity(this.getActivity()));
             mEditTextCountry.setText(SharedPreferenceManager.getUserCountry(this.getActivity()));
-//            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-//            String value = sharedPreferences.getString(this.getActivity().getString(R.string.preference_user_picture,null));
-//            if (value == null) {
-//                // the key does not exist
-//            } else {
-//                // handle the value
-//            }
-//
-////            byte[] preferencePhoto=SharedPreferenceManager.getUserImage(this.getActivity());
-////            mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
-
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+            String value = sharedPreferences.getString(this.getActivity().getString(R.string.preference_user_picture),null);
+            if (value != null) {
+                byte[] preferencePhoto = SharedPreferenceManager.getUserImage(this.getActivity());
+                mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
+            }
         }
         hideUtilsAndShowContentOverlay();
         return rootView;
