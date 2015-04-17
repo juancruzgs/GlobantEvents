@@ -43,5 +43,6 @@
     <string name="button_tweet">Tweet!</string>
     <string name="general_hashtag">#GlobantEvents </string>
     <string name="twitter_username">\@%s</string>
+    <string name="placeholder_twitter_username">\@username</string>
 
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="7dp"
@@ -28,7 +28,8 @@
                 android:id="@+id/textView_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/condensed_normal_medium"/>
+                style="@style/condensed_normal_medium"
+                android:textColor="@color/globant_green"/>
 
             <TextView
                 android:id="@+id/textView_tweet"
@@ -38,7 +39,6 @@
                 />
 
         </LinearLayout>
-
     </LinearLayout>
 
     <View

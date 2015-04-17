@@ -73,8 +73,8 @@ public class CoreConstants {
     // Twitter
     public static final String TWITTER_CONSUMER_KEY = "c3nMUttSEcZzQRR4TekRIA3Em";
     public static final String TWITTER_CONSUMER_SECRET = "lLBZ0E6wBF5vf9GasZnqqqOCmPzwZ58ruei14yU579RFhtED6P";
-    public static final String TWITTER_ACCESS_TOKEN = "152693997-R2UOOLRhAylNalkJblHDk1Uba0JZBjCmTa0TLmP2";
-    public static final String TWITTER_ACCESS_TOKEN_SECRET = "svMVlzL3T6twkAkH5nwqL0PYscEtOOs0a3chS3hi9wABk";
+    public static final String TWITTER_ACCESS_TOKEN = "152693997-IEoWMmAkYDX3f1hO5pxWBKhbgqNh0V09wOFPkG8V";
+    public static final String TWITTER_ACCESS_TOKEN_SECRET = "r2C4SZl8MCeF5vXYyFF9VumUvYYJ1kkk2FzM6QVW3Cxjb";
     public static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
     public static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
     public static final String TWITTER_IS_LOGGED_IN = "is_logged_in";

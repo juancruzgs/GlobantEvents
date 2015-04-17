@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.adapters.TweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
@@ -57,6 +59,11 @@ public class TwitterStreamFragment extends BaseFragment {
         }
         setRecyclerViewLayoutManager();
         return rootView;
+    }
+
+    @Override
+    public String getFragmentTitle() {
+        return "Stream";
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
@@ -119,14 +126,6 @@ public class TwitterStreamFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
-
-
-    @Override
-    public String getTitle() {
-        return "Stream";
-    }
-
-
     @Override
     public void onResume() {
         super.onResume();

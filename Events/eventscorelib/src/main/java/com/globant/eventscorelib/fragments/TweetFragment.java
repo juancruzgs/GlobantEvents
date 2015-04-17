@@ -1,6 +1,7 @@
 package com.globant.eventscorelib.fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.utils.Logger;
@@ -58,17 +60,21 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
     }
 
     @Override
-    public String getTitle() {
+    public String getFragmentTitle() {
         return "Tweet";
     }
 
     @Override
     public void onResume() {
+        changeUserInformation();
+        super.onResume();
+    }
+
+    private void changeUserInformation() {
         try {
             if (BaseApplication.getInstance().getSharedPreferencesManager()
                     .isAlreadyTwitterLogged()) {
                mLoginTwitterButton.setVisibility(View.GONE);
-                showProgressOverlay();
                mLoadTweetUser = new LoadTweetUser().execute();
             } else {
                 mTweetButton.setEnabled(false);
@@ -78,7 +84,6 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
         } catch (Exception e) {
             Logger.e("LOADING TWITTER", e);
         }
-        super.onResume();
     }
 
     @Override
@@ -118,7 +123,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
 
     }
 
-    private class LoadTweetUser extends AsyncTask<Void, Void, User> {
+    public class LoadTweetUser extends AsyncTask<Void, Void, User> {
 
         @Override
         protected User doInBackground(Void... params) {
@@ -156,7 +161,6 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
     }
 
     private class TwitterLoader extends AsyncTask<Void, Void, Boolean> {
-
         @Override
         protected Boolean doInBackground(Void... params) {
             return BaseApplication.getInstance().getTwitterManager().loginToTwitter(getActivity(), null);
@@ -166,7 +170,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if (result) {
-                new LoadTweetUser().execute();
+               mLoadTweetUser = new LoadTweetUser().execute();
             }
         }
     }

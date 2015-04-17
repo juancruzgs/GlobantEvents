@@ -10,8 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globant.eventscorelib.BaseTwitterActivity;
-import com.globant.eventscorelib.TwitterStreamFragment;
+import com.globant.eventscorelib.baseComponents.BaseTwitterActivity;
 
 
 public class EventsActivity extends ActionBarActivity {
@@ -21,7 +20,7 @@ public class EventsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
         if (savedInstanceState == null) {
-            Intent intent  = new Intent (this, BaseTwitterActivity.class);
+            Intent intent  = new Intent (this, ManagerTwitterActivity.class);
             startActivity(intent);
 
         }

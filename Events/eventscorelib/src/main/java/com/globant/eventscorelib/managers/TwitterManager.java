@@ -29,13 +29,11 @@ public class TwitterManager {
     private RequestToken requestToken;
 
     public TwitterManager() {
-
     }
 
     public interface TwitterLoginListener {
         public void onLogin(boolean status);
     }
-
 
     public boolean getLoginResponse(Uri uri) {
         if (uri != null && uri.toString().startsWith(CoreConstants.TWITTER_CALLBACK_URL)) {
@@ -108,7 +106,8 @@ public class TwitterManager {
     }
 
     public List<Status> getTweetList(Context context, String hashtag) {
-        Query query = new Query(context.getString(R.string.general_hashtag) + hashtag); // TODO change the hashtag
+        //context.getString(R.string.general_hashtag)
+        Query query = new Query("#FlipThinking" + hashtag); // TODO change the hashtag
         query.setCount(50);
         try {
             Twitter twitter = getTwitter(false);

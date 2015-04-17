@@ -16,11 +16,8 @@ public class BaseTwitterActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Uri uri = intent.getData();
+        showProgressOverlay();
         new TwitterLoaderResponse().execute(uri);
-
-        getSupportFragmentManager().beginTransaction().addToBackStack(null)
-                .replace(com.globant.eventscorelib.R.id.container, new TweetFragment())
-                .commit();
     }
 
     @Override
@@ -34,24 +31,17 @@ public class BaseTwitterActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Uri uri = getIntent().getData();
-        new TwitterLoaderResponse().execute(uri);
-    }
-
     private class TwitterLoaderResponse extends AsyncTask<Uri, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Uri... params) {
-            boolean response = BaseApplication.getInstance().getTwitterManager().getLoginResponse(params[0]);
-            return response;
+            return BaseApplication.getInstance().getTwitterManager().getLoginResponse(params[0]);
         }
 
         @Override
         protected void onPostExecute(Boolean response) {
             super.onPostExecute(response);
             if (response) {
+                initTweetFragment();
 //        		String eventname = FTApplication.getInstance().getCacheObjectsManager().event.title;
 //        		String aditionalMsg = getString(R.string.initialtweetcomplement);
 //        		String tweet = "#FlipThinking "+" "+aditionalMsg; TODO change first tweet
@@ -60,13 +50,14 @@ public class BaseTwitterActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public String getActivityTitle() {
-        return "Twitter";
+    private void initTweetFragment() {
+        getSupportFragmentManager().beginTransaction().addToBackStack(null)
+                .replace(R.id.container, new TweetFragment())
+                .commit();
     }
 
     @Override
-    public String getFragmentTitle(BaseFragment fragment) {
-        return fragment.getTitle();
+    public String getActivityTitle() {
+        return "Twitter";
     }
 }
