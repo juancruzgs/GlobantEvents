@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -48,6 +50,7 @@ public class SubscriberFragment extends BaseFragment {
     EditText mEditTextTwitter;
     EditText mEditTextCountry;
     EditText mEditTextCity;
+    CheckBox mCheckBoxEnglishKnowledge;
 
     final int CAMERA_CAPTURE = 1;
     final int CROP_PIC = 2;
@@ -74,6 +77,7 @@ public class SubscriberFragment extends BaseFragment {
             mEditTextTwitter.setText(SharedPreferenceManager.getUserTwitter(this.getActivity()));
             mEditTextCity.setText(SharedPreferenceManager.getUserCity(this.getActivity()));
             mEditTextCountry.setText(SharedPreferenceManager.getUserCountry(this.getActivity()));
+            mCheckBoxEnglishKnowledge.setChecked(SharedPreferenceManager.getUserEnglishKnowledge(this.getActivity()));
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
             String value = sharedPreferences.getString(this.getActivity().getString(R.string.preference_user_picture),null);
             if (value != null) {
@@ -94,6 +98,7 @@ public class SubscriberFragment extends BaseFragment {
         mEditTextEmail=(EditText)rootView.findViewById(R.id.edit_text_email);
         mEditTextCountry=(EditText)rootView.findViewById(R.id.edit_text_country);
         mEditTextCity=(EditText)rootView.findViewById(R.id.edit_text_city);
+        mCheckBoxEnglishKnowledge=(CheckBox)rootView.findViewById(R.id.check_box_english_knowledge);
         mFloatingActionButtonPhoto=(ActionButton)rootView.findViewById(R.id.fab);
         mPhotoProfile=(ImageView)rootView.findViewById(R.id.header);
     }
@@ -186,7 +191,9 @@ public class SubscriberFragment extends BaseFragment {
             SharedPreferenceManager.setUserCountry(mEditTextCountry.getText().toString(), this.getActivity());
             SharedPreferenceManager.setUserCity(mEditTextCity.getText().toString(), this.getActivity());
             SharedPreferenceManager.setUserTwitter(mEditTextTwitter.getText().toString(), this.getActivity());
-            SharedPreferenceManager.setUserImage(convertBitmapImageToByteArray(mPhoto),this.getActivity());
+            Bitmap photoToPreference = ((BitmapDrawable)mPhotoProfile.getDrawable()).getBitmap();
+            SharedPreferenceManager.setUserImage(convertBitmapImageToByteArray(photoToPreference),this.getActivity());
+            SharedPreferenceManager.setUserEnglishKnowledge(mCheckBoxEnglishKnowledge.isChecked(),this.getActivity());
             return true;
         }
 
