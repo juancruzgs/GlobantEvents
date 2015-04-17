@@ -11,9 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.fragments.CreditsFragment;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
 
@@ -112,7 +114,24 @@ public abstract class BaseEventListFragment extends BaseFragment {
             Intent intentCredits = new Intent(getActivity(), CreditsActivity.class);
             startActivity(intentCredits);
             return true;
+        } else {
+            if (id == R.id.action_checkin){
+                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
+                startActivityForResult(intentScan,0);
+                return true;
+            }
         }
         return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            if (resultCode == -1) {
+                String contents = data.getStringExtra(CoreConstants.SCAN_RESULT);
+                showCheckinOverlay();
+            }
+
+        }
     }
 }
