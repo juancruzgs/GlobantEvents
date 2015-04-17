@@ -22,7 +22,9 @@ public abstract class BaseFragment  extends Fragment{
     private TextView mTextViewUtilsMessage;
     private ImageView mImageViewUtils;
     protected BaseService mService = null;
-    protected BaseService.ActionListener mActionListener = null;
+
+    // TODO: This function can return an ActionListener to manage the db actions... or just null
+    abstract public BaseService.ActionListener getActionListener();
 
     public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState){
@@ -83,9 +85,7 @@ public abstract class BaseFragment  extends Fragment{
 
     public void setService(BaseService service) {
         this.mService = service;
-        if (mActionListener != null) {
-            mService.subscribeActor(mActionListener);
-        }
+        mService.subscribeActor(getActionListener());
     }
 
     public abstract String getFragmentTitle();

@@ -69,16 +69,26 @@ public class EventsActivity extends BaseActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends BaseFragment {
 
         public PlaceholderFragment() {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
+        public BaseService.ActionListener getActionListener() {
+            // TODO: Make an ActionListener to get the list of events and fill the stream
+            return null;
+        }
+
+        @Override
+        protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_events, container, false);
             return rootView;
+        }
+
+        @Override
+        public String getFragmentTitle() {
+            return "Events";
         }
     }
 }

@@ -75,6 +75,11 @@ public class EventsStreamActivity extends BaseActivity {
         }
 
         @Override
+        public BaseService.ActionListener getActionListener() {
+            return null;
+        }
+
+        @Override
         public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_events_stream, container, false);

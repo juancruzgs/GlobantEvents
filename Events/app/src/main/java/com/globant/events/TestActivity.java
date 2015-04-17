@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 
 public class TestActivity extends ActionBarActivity {
@@ -56,6 +57,11 @@ public class TestActivity extends ActionBarActivity {
     public static class PlaceholderFragment extends BaseFragment {
 
         public PlaceholderFragment() {
+        }
+
+        @Override
+        public BaseService.ActionListener getActionListener() {
+            return null;
         }
 
         @Override
