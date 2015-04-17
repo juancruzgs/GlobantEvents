@@ -3,12 +3,17 @@ package com.globant.eventmanager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,21 +31,24 @@ public class EventParticipantsListAdapter extends RecyclerView.Adapter<EventPart
 
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
 
         private final TextView textViewName;
         private final TextView textViewGlober;
         private final ImageView imageViewParticipantLeft;
         private final ImageView imageViewParticipantRight;
+        private final LinearLayout participantHolderItemLayout;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             textViewName = (TextView) itemView.findViewById(R.id.text_view_participant_name);
             textViewGlober = (TextView) itemView.findViewById(R.id.text_view_glober);
             imageViewParticipantLeft = (ImageView) itemView.findViewById(R.id.image_view_participant_left);
             imageViewParticipantRight = (ImageView) itemView.findViewById(R.id.image_view_participant_right);
+            participantHolderItemLayout = (LinearLayout) itemView.findViewById(R.id.participant_item_holder_layout);
         }
 
         public TextView getTextViewName() {
@@ -59,17 +67,6 @@ public class EventParticipantsListAdapter extends RecyclerView.Adapter<EventPart
             return imageViewParticipantRight;
         }
 
-        @Override
-        public void onClick(View v) {
-            if (imageViewParticipantLeft.getVisibility() == View.VISIBLE) {
-                animateInvisibility(imageViewParticipantLeft);
-                animateVisibility(imageViewParticipantRight);
-            }else{
-                animateInvisibility(imageViewParticipantRight);
-                animateVisibility(imageViewParticipantLeft);
-            }
-
-        }
 
         private void animateInvisibility(final View myView) {
             int cx = (myView.getLeft() + myView.getRight()) / 2;
@@ -109,6 +106,31 @@ public class EventParticipantsListAdapter extends RecyclerView.Adapter<EventPart
             // make the view visible and start the animation
             myView.setVisibility(View.VISIBLE);
             anim.start();
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            int currentApiVersion = Build.VERSION.SDK_INT;
+            if (imageViewParticipantLeft.getVisibility() == View.VISIBLE) {
+                if (currentApiVersion >= Build.VERSION_CODES.LOLLIPOP) {
+                    animateInvisibility(imageViewParticipantLeft);
+                    animateVisibility(imageViewParticipantRight);
+                } else {
+                    imageViewParticipantLeft.setVisibility(View.GONE);
+                    imageViewParticipantRight.setVisibility(View.VISIBLE);
+                }
+                participantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
+            }else{
+                if (currentApiVersion >= Build.VERSION_CODES.LOLLIPOP) {
+                    animateInvisibility(imageViewParticipantRight);
+                    animateVisibility(imageViewParticipantLeft);
+                } else {
+                    imageViewParticipantLeft.setVisibility(View.VISIBLE);
+                    imageViewParticipantRight.setVisibility(View.GONE);
+                }
+                participantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
+            }
+            return true;
         }
     }
 
