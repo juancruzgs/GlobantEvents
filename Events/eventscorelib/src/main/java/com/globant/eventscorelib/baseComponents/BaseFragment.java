@@ -85,7 +85,10 @@ public abstract class BaseFragment  extends Fragment{
 
     public void setService(BaseService service) {
         this.mService = service;
-        mService.subscribeActor(getActionListener());
+        BaseService.ActionListener listener = getActionListener();
+        if (listener != null){
+            mService.subscribeActor(listener);
+        }
     }
 
     public abstract String getFragmentTitle();
