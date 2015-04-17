@@ -34,6 +34,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
+    String mTitle;
 
     public BaseEventDescriptionFragment() {
     }
@@ -43,29 +44,24 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
 
-        hideUtilsAndShowContentOverlay();
+        hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
 
+        wireUpViews(rootView);
+        initializeViewParameters();
+
+        return rootView;
+    }
+
+    private void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
-
-        mStickyToolbar = false;
-
-        mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         mActionBarSize = getActionBarSize();
         mToolbarColor = getResources().getColor(R.color.globant_green);
-
-        mToolbar = rootView.findViewById(R.id.toolbar);
+        mStickyToolbar = false;
+        mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         mToolbar.setBackgroundColor(Color.TRANSPARENT);
-
-        mImageView = rootView.findViewById(R.id.image);
-
-        mOverlayView = rootView.findViewById(R.id.overlay);
-
-        mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
         mScrollView.setScrollViewCallbacks(this);
-
-        mTitleView = (TextView) rootView.findViewById(R.id.title);
-        mTitleView.setText(/*getTitle()*/"La Fiesta del Chori !");
-
+        mTitle = "";
+        mTitleView.setText("La Fiesta del Chori !");
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
             public void run() {
@@ -73,18 +69,30 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
                 mScrollView.scrollTo(0, 0 );
             }
         });
+    }
 
-        return rootView;
+    private void wireUpViews(View rootView) {
+        mToolbar = rootView.findViewById(R.id.toolbar);
+        mImageView = rootView.findViewById(R.id.image);
+        mOverlayView = rootView.findViewById(R.id.overlay);
+        mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
+        mTitleView = (TextView) rootView.findViewById(R.id.title);
     }
 
     @Override
     public String getTitle() {
-        return "BaseEventDescriptionFragment";
+        return mTitle;
     }
 
 
     @Override
     public void onScrollChanged(int i, boolean b, boolean b2) {
+
+        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
+        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
+        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
+        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
+
         // Translate overlay and image
         float flexibleRange = mFlexibleSpaceImageHeight - mActionBarSize;
         int minOverlayTransitionY = mActionBarSize - mOverlayView.getHeight();
@@ -123,6 +131,16 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
                 ViewHelper.setTranslationY(mToolbar, -i);
             }
         }
+
+        if (i < mFlexibleSpaceImageHeight){
+            mTitle = "";
+            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(mTitle);
+        }
+        else {
+            mTitle = "La Fiesta del Chori !";
+            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(mTitle);
+        }
+
 
     }
 
