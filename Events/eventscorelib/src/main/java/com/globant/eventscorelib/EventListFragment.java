@@ -1,6 +1,7 @@
 package com.globant.eventscorelib;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -95,7 +96,7 @@ public class EventListFragment extends BaseFragment {
 
     @Override
     public String getFragmentTitle() {
-        return null;
+        return "Stream";
     }
 
     /**
@@ -149,7 +150,7 @@ public class EventListFragment extends BaseFragment {
     private void initDataset() {
         mDataset = new String[DATASET_COUNT];
         for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "This is element #" + i;
+            mDataset[i] = "La Fiesta del Chorizo";
         }
     }
 
@@ -162,9 +163,8 @@ public class EventListFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_credits) {// Do Fragment menu item stuff here
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new CreditsFragment()).addToBackStack(null)
-                    .commit();
+            Intent intentCredits = new Intent(getActivity(), CreditsActivity.class);
+            startActivity(intentCredits);
             return true;
         }
 
