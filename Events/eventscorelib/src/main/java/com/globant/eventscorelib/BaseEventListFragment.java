@@ -62,9 +62,6 @@ public abstract class BaseEventListFragment extends BaseFragment {
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-
-//        mAdapter = new EventsListAdapter(mDataset);
-//        mRecyclerView.setAdapter(mAdapter);
         hideUtilsAndShowContentOverlay();
         setHasOptionsMenu(true);
 
