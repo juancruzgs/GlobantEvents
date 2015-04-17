@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.globant.eventmanager;
+package com.globant.eventscorelib;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,7 +40,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Vi
 
         public ViewHolder(View v) {
             super(v);
-            textView = (TextView) v.findViewById(com.globant.eventscorelib.R.id.event_title_text_view);
+            textView = (TextView) v.findViewById(R.id.event_title_text_view);
         }
 
         public TextView getTextView() {
@@ -64,7 +64,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Vi
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(com.globant.eventscorelib.R.layout.event_card_row_item, viewGroup, false);
+                .inflate(R.layout.event_card_row_item, viewGroup, false);
 
         return new ViewHolder(v);
     }
