@@ -71,10 +71,8 @@ public class EventsStreamActivity extends BaseActivity {
             return rootView;
         }
 
-        @Override
-        public String getFragmentTitle() {
+        public String getTitle(){
             return "Fragment";
         }
-
     }
 }
