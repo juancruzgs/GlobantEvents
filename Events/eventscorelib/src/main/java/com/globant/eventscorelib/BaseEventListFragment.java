@@ -20,29 +20,31 @@ import com.software.shell.fab.ActionButton;
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  */
-public class EventListFragment extends BaseFragment {
+public abstract class BaseEventListFragment extends BaseFragment {
 
     private static final String TAG = "EventListFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
     private static final int DATASET_COUNT = 60;
 
-    private enum LayoutManagerType {
+    protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
 
-    protected LayoutManagerType mCurrentLayoutManagerType;
+    private LayoutManagerType mCurrentLayoutManagerType;
 
-    protected RecyclerView mRecyclerView;
-    protected EventsListAdapter mAdapter;
-    protected RecyclerView.LayoutManager mLayoutManager;
-    protected String[] mDataset;
-    ActionButton mActionButton;
+    private RecyclerView mRecyclerView;
+    private EventsListAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private String[] mDataset;
 
-    public EventListFragment (){
+    public BaseEventListFragment(){
 
     }
+
+    protected abstract int getFragmentLayout();
+    protected abstract int getEventListRecyclerView();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,13 +57,11 @@ public class EventListFragment extends BaseFragment {
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
+        View rootView = inflater.inflate(getFragmentLayout(), container, false);
         rootView.setTag(TAG);
 
         // BEGIN_INCLUDE(initializeRecyclerView)
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
-
-        wireUpFAB(rootView);
+        mRecyclerView = (RecyclerView) rootView.findViewById(getEventListRecyclerView());
 
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
@@ -88,12 +88,6 @@ public class EventListFragment extends BaseFragment {
         return rootView;
     }
 
-    private void wireUpFAB(View rootView) {
-        mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
-        mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
-        mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
-    }
-
     @Override
     public String getFragmentTitle() {
         return "Stream";
@@ -115,23 +109,7 @@ public class EventListFragment extends BaseFragment {
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
 
-                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)){
-                        mActionButton.hide();
-                }else{
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        mActionButton.show();
-                    }
-                }
-
-            }
-
-
-        });
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }

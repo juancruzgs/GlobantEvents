@@ -3,14 +3,12 @@ package com.globant.events;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globant.eventscorelib.EventListFragment;
+import com.globant.eventscorelib.BaseEventListFragment;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
-import com.globant.eventscorelib.fragments.CreditsFragment;
 
 
 public class EventsStreamActivity extends BaseActivity {
@@ -21,7 +19,7 @@ public class EventsStreamActivity extends BaseActivity {
         setContentView(R.layout.activity_events_stream);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new EventListFragment())
+                    .add(R.id.container, new EventStreamFragment())
                     .commit();
         }
     }
@@ -37,21 +35,4 @@ public class EventsStreamActivity extends BaseActivity {
         return true;
     }
 
-    public static class EventStreamFragment extends BaseFragment {
-
-        public EventStreamFragment() {
-        }
-
-        @Override
-        public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
-            hideUtilsAndShowContentOverlay();
-            return rootView;
-        }
-
-        public String getTitle(){
-            return "Fragment";
-        }
-    }
 }
