@@ -17,6 +17,7 @@ import android.widget.ImageView;
 
 import com.globant.eventscorelib.MapActivity;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
+import com.globant.eventscorelib.baseComponents.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.fragments.SpeakersListFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
@@ -34,14 +35,12 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-//        BaseFragment fragment = new EventListFragment();
-        BaseFragment fragment = new SpeakersListFragment();
+        BaseFragment fragment = new PlaceholderFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();
         }
-
     }
 
     @Override
@@ -74,22 +73,12 @@ public class TestActivity extends BaseActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    /*public static class PlaceholderFragment extends BaseFragment {
+    public static class PlaceholderFragment extends BaseFragment {
 
         ImageView mMyImage;
         Button mButton;
         Bitmap mQRCodeImage;
         public PlaceholderFragment() {
-        }
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            if (requestCode == 5) { // Please, use a final int instead of hardcoded int value
-                if (resultCode == RESULT_OK) {
-                    Address address = data.getExtras().getParcelable(CoreConstants.MAP_ADDRESS_INTENT);
-                    address.getLatitude();
-                }
-            }
         }
 
         @Override
@@ -110,8 +99,7 @@ public class TestActivity extends BaseActivity {
                     emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "From My App");
                     emailIntent.putExtra(Intent.EXTRA_STREAM, u);
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-//                    Intent intent = new Intent(getActivity(), ManagerMapActivity.class);
-//                    startActivityForResult(intent, 5);
+
                 }
 
                 private File saveBitmap(Bitmap qr_code_image) {
@@ -156,5 +144,5 @@ public class TestActivity extends BaseActivity {
                 return bitmap;
             }
         }
-    }*/
+    }
 }
