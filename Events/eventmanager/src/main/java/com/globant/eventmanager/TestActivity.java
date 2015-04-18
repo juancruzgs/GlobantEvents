@@ -1,27 +1,11 @@
 package com.globant.eventmanager;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
-import com.google.zxing.WriterException;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 
 public class TestActivity extends BaseActivity {
@@ -30,23 +14,19 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        BaseFragment fragment = new PlaceholderFragment();
+        BaseFragment fragment = new EventParticipantsFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();
         }
+
     }
 
     @Override
     public String getActivityTitle() {
-        return "Test Activty";
+        return "Test Activity";
     }
-
-//    public String getFragmentTitle(BaseFragment fragment) {
-//        return fragment.getTitle();
-//    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,7 +53,7 @@ public class TestActivity extends BaseActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends BaseFragment {
+    /*public static class PlaceholderFragment extends BaseFragment {
 
         ImageView mMyImage;
         Button mButton;
@@ -128,7 +108,7 @@ public class TestActivity extends BaseActivity {
         }
 
         @Override
-        public String getFragmentTitle() {
+        public String getTitle() {
             return "FragmentTest";
         }
 
@@ -144,5 +124,5 @@ public class TestActivity extends BaseActivity {
                 return bitmap;
             }
         }
-    }
+    }*/
 }

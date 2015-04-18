@@ -1,20 +1,17 @@
 package com.globant.events;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 
+import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 
 
-public class TestActivity extends ActionBarActivity {
+public class TestActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +19,18 @@ public class TestActivity extends ActionBarActivity {
         setContentView(R.layout.activity_test);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new EventListClientFragment())
                     .commit();
         }
+//        Intent intent = new Intent(TestActivity.this, ClientMapActivity.class);
+////        LatLng latLng = new LatLng(-38.010920, -57.535298);
+////        intent.putExtra("markerPosition",latLng);
+//        startActivity(intent);
+    }
+
+    @Override
+    public String getActivityTitle() {
+        return null;
     }
 
 
