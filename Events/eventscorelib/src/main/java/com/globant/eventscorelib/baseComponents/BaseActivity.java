@@ -55,7 +55,7 @@ public abstract class BaseActivity extends ActionBarActivity {
             if (mPendingRequest) {
                 switch (mRequestedType) {
                     case EVENT:
-                        mRequestedObject = mService.getEvent(mRequestedId);
+//                        mRequestedObject = mService.getEvent(mRequestedId);
                         break;
                     default:
                         // TODO: Throw an exception
@@ -180,7 +180,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     private final void setFragmentTitle(BaseFragment fragment){
-        String title = fragment.getFragmentTitle();
+        String title = fragment.getTitle();
         if (title != null && !title.isEmpty() && mFragmentTitle != null){
             mFragmentTitle.setText(title);
         }

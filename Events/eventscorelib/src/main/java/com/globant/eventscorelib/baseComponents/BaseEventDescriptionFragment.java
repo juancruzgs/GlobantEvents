@@ -80,10 +80,9 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         return mTitle;
     }
-
 
     @Override
     public void onScrollChanged(int i, boolean b, boolean b2) {

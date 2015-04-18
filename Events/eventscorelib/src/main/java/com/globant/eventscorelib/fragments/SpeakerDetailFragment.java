@@ -49,7 +49,7 @@ public class SpeakerDetailFragment extends BaseFragment {
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         return getString(R.string.speaker_detail_fragment);
     }
 

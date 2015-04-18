@@ -18,7 +18,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
     private String[] mDataset;
     private static final int DATASET_COUNT = 60;
 
-
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_manager_event_list;

@@ -104,7 +104,7 @@ public class SubscriberFragment extends BaseFragment {
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         return null;
     }
 

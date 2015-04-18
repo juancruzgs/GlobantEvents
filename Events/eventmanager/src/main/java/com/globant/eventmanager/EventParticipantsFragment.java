@@ -57,7 +57,7 @@ public class EventParticipantsFragment extends BaseFragment {
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         return null;
     }
 

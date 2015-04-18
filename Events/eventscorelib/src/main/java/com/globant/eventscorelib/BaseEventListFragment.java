@@ -38,7 +38,7 @@ public abstract class BaseEventListFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
 //    private EventsListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private String[] mDataset;
+//    private String[] mDataset;
 
     public BaseEventListFragment(){
 
@@ -71,7 +71,7 @@ public abstract class BaseEventListFragment extends BaseFragment {
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         return getString(R.string.title_fragment_events_stream);
     }
 

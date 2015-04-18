@@ -72,7 +72,7 @@ public class TestActivity extends BaseActivity {
             return rootView;
         }
         @Override
-        public String getFragmentTitle(){ return "Fragment";
+        public String getTitle(){ return "Fragment";
         }
     }
 }
