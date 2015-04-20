@@ -7,12 +7,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
@@ -51,7 +54,18 @@ public class SubscriberFragment extends BaseFragment {
     EditText mEditTextCountry;
     EditText mEditTextCity;
     CheckBox mCheckBoxEnglishKnowledge;
-
+    ImageView mIconOccupation;
+    ImageView mIconLastName;
+    ImageView mIconCountry;
+    ImageView mIconCity;
+    ImageView mIconTwitter;
+    ImageView mIconPhone;
+    ImageView mIconEmail;
+    ImageView mIconEnglishKnowledge;
+    ImageView mIconFirstName;
+    ImageView mIconToChange;
+    Drawable mDrawableToApply;
+    Drawable mDrawableToReturn;
     final int CAMERA_CAPTURE = 1;
     final int CROP_PIC = 2;
 
@@ -67,26 +81,120 @@ public class SubscriberFragment extends BaseFragment {
         View rootView= inflater.inflate(R.layout.fragment_subscriber, container, false);
         wireUpViews(rootView);
         prepareImageButton();
-        File f = new File("/data/data/" + this.getActivity().getPackageName() +  "/shared_prefs/" +  this.getActivity().getPackageName()+ "_preferences.xml");
-        if(f.exists())
-        {mEditTextFirstName.setText(SharedPreferenceManager.getUserFirstName(this.getActivity()));
-            mEditTextLastName.setText(SharedPreferenceManager.getUserLastName(this.getActivity()));
-            mEditTextPhone.setText(SharedPreferenceManager.getUserPhone(this.getActivity()));
-            mEditTextEmail.setText(SharedPreferenceManager.getUserEmail(this.getActivity()));
-            mEditTextOccupation.setText(SharedPreferenceManager.getUserOccupation(this.getActivity()));
-            mEditTextTwitter.setText(SharedPreferenceManager.getUserTwitter(this.getActivity()));
-            mEditTextCity.setText(SharedPreferenceManager.getUserCity(this.getActivity()));
-            mEditTextCountry.setText(SharedPreferenceManager.getUserCountry(this.getActivity()));
-            mCheckBoxEnglishKnowledge.setChecked(SharedPreferenceManager.getUserEnglishKnowledge(this.getActivity()));
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-            String value = sharedPreferences.getString(this.getActivity().getString(R.string.preference_user_picture),null);
-            if (value != null) {
-                byte[] preferencePhoto = SharedPreferenceManager.getUserImage(this.getActivity());
-                mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
-            }
-        }
+        checkPreferences();
+        mEditTextFirstName.setOnFocusChangeListener(editTextFocus);
+        mEditTextLastName.setOnFocusChangeListener(editTextFocus);
+        mEditTextCountry.setOnFocusChangeListener(editTextFocus);
+        mEditTextCity.setOnFocusChangeListener(editTextFocus);
+        mEditTextTwitter.setOnFocusChangeListener(editTextFocus);
+        mEditTextPhone.setOnFocusChangeListener(editTextFocus);
+        mEditTextEmail.setOnFocusChangeListener(editTextFocus);
+        mEditTextOccupation.setOnFocusChangeListener(editTextFocus);
+        mCheckBoxEnglishKnowledge.setOnFocusChangeListener(editTextFocus);
         hideUtilsAndShowContentOverlay();
         return rootView;
+    }
+
+    private View.OnFocusChangeListener editTextFocus =  new View.OnFocusChangeListener() {
+        public void onFocusChange(View view, boolean gainFocus) {
+
+            int id = view.getId();
+            //noinspection SimplifiableIfStatement
+            if (id== (R.id.edit_text_first_name)) {
+             mIconToChange=mIconFirstName;
+             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_first_name_ambar);
+              mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_first_name);
+
+
+            } else if (id== (R.id.edit_text_last_name)){
+                mIconToChange=mIconLastName;
+                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_last_name_ambar);
+                mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_last_name);
+
+            }   else if (id== (R.id.edit_text_phone)){
+                mIconToChange=mIconPhone;
+                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_phone_ambar);
+                mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_phone);
+
+            }
+                  else if (id== (R.id.edit_text_occupation)){
+                    mIconToChange=mIconOccupation;
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_occupation_ambar);
+                    mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_occupation);
+
+
+            }
+                   else if (id== (R.id.edit_text_email)){
+                    mIconToChange=mIconEmail;
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_email_ambar);
+                    mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_email);
+
+
+            }
+                      else if (id== (R.id.edit_text_country)){
+                    mIconToChange=mIconCountry;
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_country_ambar);
+                    mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_country);
+
+
+            }
+                        else if (id== (R.id.edit_text_city)){
+                    mIconToChange=mIconCity;
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_city_ambar);
+                    mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_city);
+
+
+            }
+                           else if (id== (R.id.edit_text_twitter)){
+                    mIconToChange=mIconTwitter;
+                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_twitter_ambar);
+                mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_twitter_1);
+
+
+            }
+                               else if (id== (R.id.check_box_english_knowledge)){
+                    mIconToChange=mIconEnglishKnowledge;
+                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_language_ambar);
+                mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_language);
+            }
+
+            //onFocus
+            if (gainFocus) {
+                //set the text
+                mIconToChange.setImageDrawable(mDrawableToApply);
+            }
+            //onBlur
+            else {
+//                //clear the text
+                mIconToChange.setImageDrawable(mDrawableToReturn);
+            }
+        };
+    };
+
+    private void checkPreferences() {
+        File f = new File("/data/data/" + this.getActivity().getPackageName() +  "/shared_prefs/" +  this.getActivity().getPackageName()+ "_preferences.xml");
+        if(f.exists())
+        {
+            retrieveSubscriberPreferences();
+        }
+    }
+
+    private void retrieveSubscriberPreferences() {
+        mEditTextFirstName.setText(SharedPreferenceManager.getUserFirstName(this.getActivity()));
+        mEditTextLastName.setText(SharedPreferenceManager.getUserLastName(this.getActivity()));
+        mEditTextPhone.setText(SharedPreferenceManager.getUserPhone(this.getActivity()));
+        mEditTextEmail.setText(SharedPreferenceManager.getUserEmail(this.getActivity()));
+        mEditTextOccupation.setText(SharedPreferenceManager.getUserOccupation(this.getActivity()));
+        mEditTextTwitter.setText(SharedPreferenceManager.getUserTwitter(this.getActivity()));
+        mEditTextCity.setText(SharedPreferenceManager.getUserCity(this.getActivity()));
+        mEditTextCountry.setText(SharedPreferenceManager.getUserCountry(this.getActivity()));
+        mCheckBoxEnglishKnowledge.setChecked(SharedPreferenceManager.getUserEnglishKnowledge(this.getActivity()));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        String value = sharedPreferences.getString(this.getActivity().getString(R.string.preference_user_picture),null);
+        if (value != null) {
+            byte[] preferencePhoto = SharedPreferenceManager.getUserImage(this.getActivity());
+            mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
+        }
     }
 
     private void wireUpViews(View rootView) {
@@ -101,6 +209,15 @@ public class SubscriberFragment extends BaseFragment {
         mCheckBoxEnglishKnowledge=(CheckBox)rootView.findViewById(R.id.check_box_english_knowledge);
         mFloatingActionButtonPhoto=(ActionButton)rootView.findViewById(R.id.fab);
         mPhotoProfile=(ImageView)rootView.findViewById(R.id.header);
+        mIconFirstName=(ImageView)rootView.findViewById(R.id.icon_first_name);
+        mIconLastName=(ImageView)rootView.findViewById(R.id.icon_last_name);
+        mIconOccupation=(ImageView)rootView.findViewById(R.id.icon_occupation);
+        mIconPhone=(ImageView)rootView.findViewById(R.id.icon_phone);
+        mIconEmail=(ImageView)rootView.findViewById(R.id.icon_email);
+        mIconCountry=(ImageView)rootView.findViewById(R.id.icon_country);
+        mIconCity=(ImageView)rootView.findViewById(R.id.icon_city);
+        mIconEnglishKnowledge=(ImageView)rootView.findViewById(R.id.icon_language);
+        mIconTwitter=(ImageView)rootView.findViewById(R.id.icon_twitter);
     }
 
     @Override
@@ -183,24 +300,28 @@ public class SubscriberFragment extends BaseFragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
-            SharedPreferenceManager.setUserFirstName(mEditTextFirstName.getText().toString(), this.getActivity());
-            SharedPreferenceManager.setUserLastName(mEditTextLastName.getText().toString(), this.getActivity());
-            SharedPreferenceManager.setUserPhone(mEditTextPhone.getText().toString(), this.getActivity());
-            SharedPreferenceManager.setUserOccupation(mEditTextOccupation.getText().toString(), this.getActivity());
-            SharedPreferenceManager.setUserEmail(mEditTextEmail.getText().toString(), this.getActivity());
-            SharedPreferenceManager.setUserCountry(mEditTextCountry.getText().toString(), this.getActivity());
-            SharedPreferenceManager.setUserCity(mEditTextCity.getText().toString(), this.getActivity());
-            SharedPreferenceManager.setUserTwitter(mEditTextTwitter.getText().toString(), this.getActivity());
-            Bitmap photoToPreference = ((BitmapDrawable)mPhotoProfile.getDrawable()).getBitmap();
-            SharedPreferenceManager.setUserImage(convertBitmapImageToByteArray(photoToPreference),this.getActivity());
-            SharedPreferenceManager.setUserEnglishKnowledge(mCheckBoxEnglishKnowledge.isChecked(),this.getActivity());
+            saveSubscriberPreferences();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-   private byte[] convertBitmapImageToByteArray(Bitmap Photo) {
+    private void saveSubscriberPreferences() {
+        SharedPreferenceManager.setUserFirstName(mEditTextFirstName.getText().toString(), this.getActivity());
+        SharedPreferenceManager.setUserLastName(mEditTextLastName.getText().toString(), this.getActivity());
+        SharedPreferenceManager.setUserPhone(mEditTextPhone.getText().toString(), this.getActivity());
+        SharedPreferenceManager.setUserOccupation(mEditTextOccupation.getText().toString(), this.getActivity());
+        SharedPreferenceManager.setUserEmail(mEditTextEmail.getText().toString(), this.getActivity());
+        SharedPreferenceManager.setUserCountry(mEditTextCountry.getText().toString(), this.getActivity());
+        SharedPreferenceManager.setUserCity(mEditTextCity.getText().toString(), this.getActivity());
+        SharedPreferenceManager.setUserTwitter(mEditTextTwitter.getText().toString(), this.getActivity());
+        Bitmap photoToPreference = ((BitmapDrawable)mPhotoProfile.getDrawable()).getBitmap();
+        SharedPreferenceManager.setUserImage(convertBitmapImageToByteArray(photoToPreference),this.getActivity());
+        SharedPreferenceManager.setUserEnglishKnowledge(mCheckBoxEnglishKnowledge.isChecked(),this.getActivity());
+    }
+
+    private byte[] convertBitmapImageToByteArray(Bitmap Photo) {
        ByteArrayOutputStream stream = new ByteArrayOutputStream();
        Photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
        return stream.toByteArray();
