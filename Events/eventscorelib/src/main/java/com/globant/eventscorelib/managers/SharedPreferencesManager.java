@@ -1,28 +1,22 @@
-package com.globant.eventscorelib.baseComponents;
-
+package com.globant.eventscorelib.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
-import android.provider.SyncStateContract;
 import android.util.Base64;
-import android.widget.ImageView;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.utils.CoreConstants;
 
-import java.io.ByteArrayOutputStream;
+public class SharedPreferencesManager {
 
-/**
- * Created by agustin.madina on 09/04/2015.
- */
-public class SharedPreferenceManager {
-
+    private Context mContext;
+    private SharedPreferences mSharedPreferences;
 
 
-    private SharedPreferenceManager(){
-
+    public SharedPreferencesManager(Context ctx) {
+        this.mContext = ctx;
+        mSharedPreferences = mContext.getSharedPreferences("Globant", Context.MODE_PRIVATE);
     }
 
 
@@ -38,13 +32,14 @@ public class SharedPreferenceManager {
                 context.getString(R.string.preference_user_last_name), null);
 
     }
+
     public static String getUserEmail(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getString(
                 context.getString(R.string.preference_user_email), null);
     }
 
-    public static String getUserOccupation (Context context) {
+    public static String getUserOccupation(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getString(
                 context.getString(R.string.preference_user_occupation_name), null);
@@ -131,6 +126,7 @@ public class SharedPreferenceManager {
         editor.putString(context.getString(R.string.preference_user_english_knowledge), value.toString());
         editor.commit();
     }
+
     public static void setUserCountry(String value, Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -138,7 +134,7 @@ public class SharedPreferenceManager {
         editor.commit();
     }
 
-    public static void setUserCity (String value, Context context) {
+    public static void setUserCity(String value, Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(context.getString(R.string.preference_user_city), value);
@@ -152,19 +148,43 @@ public class SharedPreferenceManager {
         editor.commit();
     }
 
-    public static void setUserImage(byte[] image, Context context){                     //Converts Bytearray  into String
+    public static void setUserImage(byte[] image, Context context) {                     //Converts Bytearray  into String
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor= sharedPreferences.edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         String encoded = Base64.encodeToString(image, Base64.DEFAULT);
-        editor.putString(context.getString(R.string.preference_user_picture),encoded);
+        editor.putString(context.getString(R.string.preference_user_picture), encoded);
         editor.commit();
     }
 
-    public static byte[] getUserImage(Context context){
+    public static byte[] getUserImage(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String encoded= sharedPreferences.getString(context.getString(R.string.preference_user_picture), null);
+        String encoded = sharedPreferences.getString(context.getString(R.string.preference_user_picture), null);
         byte[] image = Base64.decode(encoded, Base64.DEFAULT);
         return image;
     }
 
+
+    public void setTwitterStatusResponse(String token, String tokenSecret) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(CoreConstants.TWITTER_PREF_KEY_OAUTH_TOKEN, token);
+        editor.putString(CoreConstants.TWITTER_PREF_KEY_OAUTH_SECRET, tokenSecret);
+        editor.putBoolean(CoreConstants.TWITTER_IS_LOGGED_IN, true);
+        editor.commit();
+    }
+
+    public String getAccessToken() {
+        return mSharedPreferences.getString(CoreConstants.TWITTER_PREF_KEY_OAUTH_TOKEN, null);
+    }
+
+    public String getAccessTokenSecret() {
+        return mSharedPreferences.getString(CoreConstants.TWITTER_PREF_KEY_OAUTH_SECRET, null);
+    }
+
+    public boolean isAlreadyTwitterLogged() {
+        return mSharedPreferences.getBoolean(CoreConstants.TWITTER_IS_LOGGED_IN, false);
+    }
+
+
 }
+
+
