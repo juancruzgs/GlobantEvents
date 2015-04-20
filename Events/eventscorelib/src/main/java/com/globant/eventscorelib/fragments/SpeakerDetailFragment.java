@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Speaker;
 
 /**
@@ -32,6 +33,11 @@ public class SpeakerDetailFragment extends BaseFragment {
     }
 
     @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
+    }
+
+    @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_speaker_detail, container, false);
         hideUtilsAndShowContentOverlay();
@@ -49,7 +55,7 @@ public class SpeakerDetailFragment extends BaseFragment {
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         return getString(R.string.speaker_detail_fragment);
     }
 

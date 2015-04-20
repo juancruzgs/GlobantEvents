@@ -9,10 +9,15 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
-import com.google.android.gms.maps.model.LatLng;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 
 public class TestActivity extends BaseActivity {
+
+    @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return ClientDataService.class;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +25,7 @@ public class TestActivity extends BaseActivity {
         setContentView(R.layout.activity_test);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new EventListClientFragment())
                     .commit();
         }
 //        Intent intent = new Intent(TestActivity.this, ClientMapActivity.class);
@@ -66,6 +71,11 @@ public class TestActivity extends BaseActivity {
         }
 
         @Override
+        public BaseService.ActionListener getActionListener() {
+            return null;
+        }
+
+        @Override
         public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_test, container, false);
@@ -73,7 +83,7 @@ public class TestActivity extends BaseActivity {
             return rootView;
         }
         @Override
-        public String getFragmentTitle(){ return "Fragment";
+        public String getTitle(){ return "Fragment";
         }
     }
 }

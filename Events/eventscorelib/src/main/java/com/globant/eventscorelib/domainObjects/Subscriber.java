@@ -1,6 +1,6 @@
 package com.globant.eventscorelib.domainObjects;
 
-public class Subscriber {
+public class Subscriber extends BaseObject{
 
     private String mObjectID;
     private String mName;

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +21,11 @@ public class CreditsFragment extends BaseFragment {
     }
 
     @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
+    }
+
+    @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_credits, container, false);
         hideUtilsAndShowContentOverlay();
@@ -27,7 +33,7 @@ public class CreditsFragment extends BaseFragment {
     }
 
     @Override
-    public String getFragmentTitle() {
-        return getString(R.string.credits_fragment_title);
+    public String getTitle() {
+        return " ";
     }
 }

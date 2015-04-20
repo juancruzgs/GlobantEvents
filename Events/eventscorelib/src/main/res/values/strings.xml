@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Events Core Lib</string>
+    <string name="title_activity_events_stream">Events</string>
+    <string name="title_fragment_events_stream">Stream</string>
     <string name="loading">Loading..</string>
     <string name="error_message">Oops, something failed :(</string>
     <string name="action_settings">Settings</string>
@@ -34,6 +36,8 @@
     <string name="mail_ramirez">juan.ramirez@globant.com</string>
     <string name="we_are_ready">We are ready!</string>
     <string name="credits_fragment_title">Credits</string>
+    <string name="action_done">Done</string>
+    <string name="preference_user_twitter">preference_user_twitter</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="speaker_detail_fragment">Speaker Detail</string>
     <string name="checkin_successfully">Check-in Successful</string>
@@ -46,5 +50,17 @@
     <string name="textView_Event_Language_Title">Event language</string>
     <string name="texView_Add_Info_Title">Additional info</string>
     <string name="textView_Event_Desc_Title">Description</string>
-
+    <string name="title_activity_base_pager_acivity">BasePagerAcivity</string>
+    <string name="action_credits">Credits</string>
+    <string name="title_activity_credits">Credits</string>
+    <string name="edit_text_first_name_hint">First name</string>
+    <string name="edit_text_laat_name_hint">Last name</string>
+    <string name="edit_text_phone_hint">Phone</string>
+    <string name="edit_text_email_hint">Email</string>
+    <string name="edit_text_twitter_hint">Twitter user</string>
+    <string name="edit_text_occupation_hint">Occupation</string>
+    <string name="edit_text_country_hint">Country</string>
+    <string name="edit_text_city_hint">City</string>
+    <string name="check_box_text_english_hint">Need english translator?</string>
+    <string name="action_checkin">Check-in</string>
 </resources>

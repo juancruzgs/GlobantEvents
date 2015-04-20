@@ -10,13 +10,5 @@ import java.util.List;
  * Created by ariel.cattaneo on 10/04/2015.
  */
 abstract public class DatabaseController {
-    abstract void init();
-
-    abstract public List<Object> getObjectList(String table);
-
-    abstract public Object getObject(String id, String table);
-
-    abstract public void addObject(Object object, String table);
-
-    // TODO: Methods to access the rest of the objects
+    // TODO: Here we will have methods to use the local magic of Parse
 }
