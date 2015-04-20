@@ -13,4 +13,5 @@
     <string name="title_activity_event_detail_manager">EventDetailManagerActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="button_execute_action">Execute action</string>
 </resources>

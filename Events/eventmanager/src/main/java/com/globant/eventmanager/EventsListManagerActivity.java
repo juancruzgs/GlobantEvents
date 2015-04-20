@@ -6,9 +6,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
+import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 
 public class EventsListManagerActivity extends BaseActivity {
+
+    @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return ManagerDataService.class;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

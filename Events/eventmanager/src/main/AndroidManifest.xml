@@ -60,6 +60,7 @@
             android:label="@string/title_activity_credits"
             android:screenOrientation="portrait">
         </activity>
+
         <service android:name=".ManagerDataService"
             android:exported="false"/>
     </application>

@@ -2,7 +2,6 @@ package com.globant.eventscorelib.baseComponents;
 
 import android.app.Activity;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -68,9 +67,7 @@ public class BaseService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         stopCountdown();
 
-        // TODO: If mDatabaseController is null, throw an adequate exception
-        // (the controller must be set in the subclass' onCreate() method)
-        mDatabaseController.init();
+        mCloudDataController = new CloudDataController();
 
         startCountdown();
 
@@ -123,10 +120,10 @@ public class BaseService extends Service {
 
     public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE}
 
-    private ActionWrapper currentSuscriber;
+    private ActionWrapper currentSubscriber;
 
-    public void suscribeActor(ActionListener anActionListener){
-          currentSuscriber = new ActionWrapper(anActionListener);
+    public void subscribeActor(ActionListener anActionListener){
+          currentSubscriber = new ActionWrapper(anActionListener);
 
            if (cachedElements.containsKey(anActionListener.getBindingKey())){
               HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(anActionListener.getBindingKey());
@@ -138,25 +135,25 @@ public class BaseService extends Service {
           }
     }
 
-    public void unSuscribeActor(ActionListener anActionListener){
-            currentSuscriber = null;
+    public void unSubscribeActor(ActionListener anActionListener){
+            currentSubscriber = null;
 //        if(){}
     }
 
     private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
 
 
-    public abstract class ActionListener {
+    public static abstract class ActionListener {
 
-        abstract protected Activity getActivity();
+        abstract protected Activity getBindingActivity();
 
         abstract protected Object getBindingKey();
 
-        abstract void onStartAction(ACTIONS theAction);
+        abstract protected void onStartAction(ACTIONS theAction);
 
-        abstract void onFinishAction(ACTIONS theAction, Object result);
+        abstract protected void onFinishAction(ACTIONS theAction, Object result);
 
-        abstract void onFailAction(ACTIONS theAction, Exception e);
+        abstract protected void onFailAction(ACTIONS theAction, Exception e);
 
     }
 
@@ -168,7 +165,7 @@ public class BaseService extends Service {
         ActionListener theListener;
 
         public ActionWrapper(ActionListener aListener) {
-            this.anActivity = aListener.getActivity();
+            this.anActivity = aListener.getBindingActivity();
             theListener = aListener;
         }
 
@@ -184,7 +181,7 @@ public class BaseService extends Service {
                  });
              }else{
 
-
+                 // TODO: Decide what to do with an started action when the Activity isn't available
 
              }
 
@@ -218,6 +215,7 @@ public class BaseService extends Service {
                      }
                  });
              }else{
+                 // TODO: Decide what to do with an failed action when the Activity isn't available
 //                 HashMap<ACTIONS,Object> cachedElement = new HashMap();
 //                 cachedElement.put(theAction,e);
 //                 cachedElements.put(getBindingKey(), cachedElement);
@@ -229,23 +227,23 @@ public class BaseService extends Service {
 
     }
 
-    private void executeAction(final ACTIONS theAction, final BaseObject argument) {
+    public void executeAction(final ACTIONS theAction, final BaseObject argument) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
 
                 try {
-                    currentSuscriber.startAction(theAction);
+                    currentSubscriber.startAction(theAction);
                     switch (theAction) {
                         case EVENT_CREATE:
                             mCloudDataController.createEvent((Event)argument);
-                            currentSuscriber.finishAction(theAction, null);
+                            currentSubscriber.finishAction(theAction, null);
                             break;
                         case EVENT_DELETE:
                             break;
                         case EVENT_LIST:
                            List<Event> theEvents = mCloudDataController.getEvents();
-                            currentSuscriber.finishAction(theAction, theEvents);
+                            currentSubscriber.finishAction(theAction, theEvents);
                             break;
                         case EVENT_DETAIL:
                             break;
@@ -254,7 +252,7 @@ public class BaseService extends Service {
                     }
                 } catch (Exception e) {
 
-                    currentSuscriber.failAction(theAction, e);
+                    currentSubscriber.failAction(theAction, e);
                     Logger.e("executeAction", e);
                 }
 
