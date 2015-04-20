@@ -24,16 +24,18 @@
 
         <activity
             android:name=".TestActivity"
-            android:label="@string/title_activity_test" >
+            android:label="@string/title_activity_test"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".EventListClientActivity"
+            android:label="@string/title_activity_events_stream"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".EventsStreamActivity"
-            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.google.zxing.client.android.CaptureActivity"
@@ -50,11 +52,22 @@
         <activity
             android:name=".ClientMapActivity"
             android:label="@string/title_activity_client_map"
-            android:parentActivityName="com.globant.events.TestActivity">
+            android:parentActivityName=".TestActivity"
+            android:screenOrientation="portrait" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.globant.events.TestActivity" />
+                android:value=".EventListClientActivity" />
+        </activity>
+        <activity
+            android:name="com.globant.eventscorelib.CreditsActivity"
+            android:label="@string/title_activity_credits"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".EventDetailClientActivity"
+            android:label="@string/title_activity_event_detail_client" >
         </activity>
     </application>
 

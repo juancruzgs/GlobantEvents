@@ -71,6 +71,20 @@ public class SharedPreferencesManager {
 
     }
 
+    public static String getUserTwitter(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getString(
+                context.getString(R.string.preference_user_twitter), null);
+    }
+
+
+    public static void setUserTwitter(String value, Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(context.getString(R.string.preference_user_twitter), value);
+        editor.commit();
+    }
+
     public static void setUserFirstName(String value, Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();

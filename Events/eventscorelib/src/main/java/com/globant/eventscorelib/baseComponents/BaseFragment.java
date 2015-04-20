@@ -1,7 +1,11 @@
 package com.globant.eventscorelib.baseComponents;
 
+
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +16,8 @@ import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 
-/**
- * Created by ignaciopena on 4/1/15.
- */
-public abstract class BaseFragment  extends Fragment{
+
+public abstract class BaseFragment extends Fragment{
 
     private LinearLayout mUtilsLayout;
     private FrameLayout mContentLayout;
@@ -37,6 +39,17 @@ public abstract class BaseFragment  extends Fragment{
 
     abstract protected View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                               Bundle savedInstanceState);
+
+
+    protected int getActionBarSize() {
+        TypedValue typedValue = new TypedValue();
+        int[] textSizeAttr = new int[]{R.attr.actionBarSize};
+        int indexOfAttrTextSize = 0;
+        TypedArray a = getActivity().obtainStyledAttributes(typedValue.data, textSizeAttr);
+        int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
+        a.recycle();
+        return actionBarSize;
+    }
 
     private void wireUpLayouts(View rootView) {
         mUtilsLayout = (LinearLayout)rootView.findViewById(R.id.utilsPanel);
@@ -101,5 +114,5 @@ public abstract class BaseFragment  extends Fragment{
         mUtilsLayout.setVisibility(View.GONE);
         mContentLayout.setVisibility(View.VISIBLE);
     }
-    public abstract String getFragmentTitle();
+    public abstract String getTitle();
 }

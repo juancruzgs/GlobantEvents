@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
-import com.google.android.gms.maps.model.LatLng;
 
 
 public class TestActivity extends BaseActivity {
@@ -20,7 +19,7 @@ public class TestActivity extends BaseActivity {
         setContentView(R.layout.activity_test);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new EventListClientFragment())
                     .commit();
         }
 //        Intent intent = new Intent(TestActivity.this, ClientMapActivity.class);
@@ -73,7 +72,7 @@ public class TestActivity extends BaseActivity {
             return rootView;
         }
         @Override
-        public String getFragmentTitle(){ return "Fragment";
+        public String getTitle(){ return "Fragment";
         }
     }
 }

@@ -10,4 +10,6 @@
     <dimen name="event_logo_card_row_height">180dp</dimen>
     <dimen name="padding_framelayout">5dp</dimen>
     <dimen name="padding_text_view_card_row">10dp</dimen>
+    <dimen name="flexible_space_image_height">200dp</dimen>
+    <dimen name="flexible_space_show_fab_offset">120dp</dimen>
 </resources>

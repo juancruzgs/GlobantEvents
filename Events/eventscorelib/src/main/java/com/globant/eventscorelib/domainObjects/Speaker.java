@@ -1,7 +1,7 @@
 package com.globant.eventscorelib.domainObjects;
 
 
-public class Speaker {
+public class Speaker extends BaseObject{
 
     private String mObjectID;
     private String mTitle;
