@@ -53,7 +53,6 @@
     <string name="title_activity_base_pager_acivity">BasePagerAcivity</string>
     <string name="action_credits">Credits</string>
     <string name="title_activity_credits">Credits</string>
-    <string name="hello_world">Hello world!</string>
     <string name="edit_text_first_name_hint">First name</string>
     <string name="edit_text_laat_name_hint">Last name</string>
     <string name="edit_text_phone_hint">Phone</string>
