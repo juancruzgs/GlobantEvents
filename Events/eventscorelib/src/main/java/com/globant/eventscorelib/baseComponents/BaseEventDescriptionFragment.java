@@ -41,6 +41,11 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
 
     @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
+    }
+
+    @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
 

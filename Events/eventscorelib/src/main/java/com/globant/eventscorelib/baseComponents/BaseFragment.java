@@ -127,6 +127,5 @@ public abstract class BaseFragment extends Fragment{
         }
     }
 
-    public abstract String getFragmentTitle();
     public abstract String getTitle();
 }

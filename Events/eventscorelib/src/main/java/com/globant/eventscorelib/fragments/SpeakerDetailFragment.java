@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Speaker;
 
 /**
@@ -29,6 +30,11 @@ public class SpeakerDetailFragment extends BaseFragment {
 
      public SpeakerDetailFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
     }
 
     @Override

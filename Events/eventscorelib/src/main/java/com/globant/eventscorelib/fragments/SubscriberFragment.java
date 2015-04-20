@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseComponents.SharedPreferenceManager;
 import com.software.shell.fab.ActionButton;
 
@@ -59,6 +60,11 @@ public class SubscriberFragment extends BaseFragment {
         // Required empty public constructor
     }
 
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
+    }
 
     @Override
     public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
