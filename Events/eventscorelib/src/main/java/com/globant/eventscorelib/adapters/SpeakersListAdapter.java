@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.globant.eventscorelib.CropCircleTransformation;
+import com.globant.eventscorelib.utils.CropCircleTransformation;
 import com.globant.eventscorelib.R;
 import com.squareup.picasso.Picasso;
 
