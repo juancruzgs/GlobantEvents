@@ -7,13 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.BaseEventListFragment;
+import com.globant.eventscorelib.BaseEventsListAdapter;
 import com.software.shell.fab.ActionButton;
-import com.software.shell.fab.FloatingActionButton;
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
-    ActionButton mActionButton;
-    RecyclerView mRecyclerView;
+    private ActionButton mActionButton;
+    private RecyclerView mRecyclerView;
+    private BaseEventsListAdapter mAdapter;
+    private String[] mDataset;
+    private static final int DATASET_COUNT = 60;
 
     @Override
     protected int getFragmentLayout() {
@@ -26,6 +29,12 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     public EventListManagerFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initDataset();
     }
 
     @Override
@@ -57,6 +66,15 @@ public class EventListManagerFragment extends BaseEventListFragment {
                 }
             }
         });
+        mAdapter = new EventListAdapterManager(mDataset, getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    protected void initDataset() {
+        mDataset = new String[DATASET_COUNT];
+        for (int i = 0; i < DATASET_COUNT; i++) {
+            mDataset[i] = "La Fiesta del Chorizo";
+        }
     }
 
     private void wireUpFAB(View rootView) {

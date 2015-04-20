@@ -68,7 +68,7 @@ public class SpeakersListFragment extends BaseFragment {
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         //TODO change hardcoded string
         return "Speaker List";
     }

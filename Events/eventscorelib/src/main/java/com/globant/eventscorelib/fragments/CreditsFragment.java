@@ -27,7 +27,7 @@ public class CreditsFragment extends BaseFragment {
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         return " ";
     }
 }

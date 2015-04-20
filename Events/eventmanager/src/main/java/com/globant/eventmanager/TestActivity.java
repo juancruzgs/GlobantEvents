@@ -1,27 +1,11 @@
 package com.globant.eventmanager;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
-import com.google.zxing.WriterException;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 
 public class TestActivity extends BaseActivity {

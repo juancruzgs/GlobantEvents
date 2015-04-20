@@ -51,9 +51,6 @@
     <string name="texView_Add_Info_Title">Additional info</string>
     <string name="textView_Event_Desc_Title">Description</string>
     <string name="title_activity_base_pager_acivity">BasePagerAcivity</string>
-
-    <string name="hello_world">Hello world!</string>
-
     <string name="action_credits">Credits</string>
     <string name="title_activity_credits">Credits</string>
     <string name="edit_text_first_name_hint">First name</string>
@@ -65,4 +62,5 @@
     <string name="edit_text_country_hint">Country</string>
     <string name="edit_text_city_hint">City</string>
     <string name="check_box_text_english_hint">Need english translator?</string>
+    <string name="action_checkin">Check-in</string>
 </resources>
