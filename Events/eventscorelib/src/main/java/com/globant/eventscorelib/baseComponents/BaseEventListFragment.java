@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.fragments.SubscriberFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 
@@ -116,6 +117,13 @@ public abstract class BaseEventListFragment extends BaseFragment {
                 Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
                 startActivityForResult(intentScan,0);
                 return true;
+            } else {
+                if (id == R.id.action_profile){
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, new SubscriberFragment())
+                            .commit();
+                    return true;
+                }
             }
         }
         return false;

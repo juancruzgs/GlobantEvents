@@ -63,4 +63,15 @@
     <string name="edit_text_city_hint">City</string>
     <string name="check_box_text_english_hint">Need english translator?</string>
     <string name="action_checkin">Check-in</string>
+    <string name="editText_twitter_what_is_happening">What\'s happening?</string>
+    <string name="tweet_success">You are a RockStar!</string>
+    <string name="tweet_failure">Try again or check your connection</string>
+    <string name="button_login_twitter">Login using Twitter</string>
+    <string name="button_tweet">Tweet!</string>
+    <string name="general_hashtag">#GlobantEvents </string>
+    <string name="twitter_username">\@%s</string>
+    <string name="placeholder_twitter_username">\@username</string>
+    <string name="title_activity_tweet">TweetActivity</string>
+
+    <string name="action_profile">Profile</string>
 </resources>
