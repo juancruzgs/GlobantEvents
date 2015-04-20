@@ -1,10 +1,11 @@
-package com.globant.eventscorelib;
+package com.globant.eventscorelib.baseComponents;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

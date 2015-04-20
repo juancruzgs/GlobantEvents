@@ -61,7 +61,7 @@
                 android:value=".EventListClientActivity" />
         </activity>
         <activity
-            android:name="com.globant.eventscorelib.CreditsActivity"
+            android:name="com.globant.eventscorelib.baseComponents.CreditsActivity"
             android:label="@string/title_activity_credits"
             android:screenOrientation="portrait" >
         </activity>

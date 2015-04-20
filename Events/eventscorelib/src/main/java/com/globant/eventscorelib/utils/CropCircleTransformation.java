@@ -1,4 +1,4 @@
-package com.globant.eventscorelib;
+package com.globant.eventscorelib.utils;
 
 import android.content.Context;
 import android.content.res.Resources;

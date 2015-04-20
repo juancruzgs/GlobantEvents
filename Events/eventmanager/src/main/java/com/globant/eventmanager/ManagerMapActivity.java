@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.globant.eventscorelib.MapActivity;
+import com.globant.eventscorelib.baseComponents.MapActivity;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
