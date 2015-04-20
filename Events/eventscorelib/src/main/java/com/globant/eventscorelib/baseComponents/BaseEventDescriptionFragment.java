@@ -21,6 +21,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.fragments.SubscriberFragment;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -80,7 +81,10 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "FAB is clicked", Toast.LENGTH_SHORT).show();
+                //TODO: Refactor with functionality
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, new SubscriberFragment())
+                        .commit();
             }
         });
 
