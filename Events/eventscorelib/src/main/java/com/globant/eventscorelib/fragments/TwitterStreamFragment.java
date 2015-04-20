@@ -62,7 +62,7 @@ public class TwitterStreamFragment extends BaseFragment {
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         return "Stream";
     }
 

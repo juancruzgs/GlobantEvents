@@ -107,7 +107,7 @@ public class TwitterManager {
 
     public List<Status> getTweetList(Context context, String hashtag) {
         //context.getString(R.string.general_hashtag)
-        Query query = new Query("#FlipThinking" + hashtag); // TODO change the hashtag
+        Query query = new Query("#FlipThinking"); // TODO change the hashtag
         query.setCount(50);
         try {
             Twitter twitter = getTwitter(false);

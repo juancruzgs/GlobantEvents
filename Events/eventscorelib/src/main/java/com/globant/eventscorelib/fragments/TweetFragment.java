@@ -1,7 +1,6 @@
 package com.globant.eventscorelib.fragments;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.globant.eventscorelib.CropCircleTransformation;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
@@ -60,7 +60,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
     }
 
     @Override
-    public String getFragmentTitle() {
+    public String getTitle() {
         return "Tweet";
     }
 
@@ -150,7 +150,8 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
                 mUsername.setText(String.format(getString(R.string.twitter_username), user.getScreenName()));
                 mUserFullName.setText(user.getName());
                 if (user.getProfileImageURL() != null) {
-                    Picasso.with(getActivity()).load(user.getOriginalProfileImageURL()).into(mUserPicture);
+                    CropCircleTransformation transformation = new CropCircleTransformation(getActivity());
+                    Picasso.with(getActivity()).load(user.getOriginalProfileImageURL()).transform(transformation).into(mUserPicture);
                 }
                 mTweetButton.setEnabled(true);
                 mTweetText.setEnabled(true);

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.globant.eventscorelib.CropCircleTransformation;
 import com.globant.eventscorelib.R;
 import com.squareup.picasso.Picasso;
 
@@ -61,10 +62,11 @@ public class TweetListAdapter extends RecyclerView.Adapter<TweetListAdapter.View
 
     @Override
     public void onBindViewHolder(TweetListAdapter.ViewHolder holder, int position) {
+        CropCircleTransformation transformation = new CropCircleTransformation(mContext);
         holder.getTweetText().setText(mTweetsList.get(position).getText());
         holder.getUserName().setText(mTweetsList.get(position).getUser().getName());
         Picasso.with(mContext).load(mTweetsList.get(position).getUser()
-                .getOriginalProfileImageURL()).into(holder.getUserPicture());
+                .getOriginalProfileImageURL()).transform(transformation).into(holder.getUserPicture());
     }
 
     @Override
