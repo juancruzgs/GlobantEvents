@@ -73,4 +73,5 @@
     <string name="placeholder_twitter_username">\@username</string>
     <string name="title_activity_tweet">TweetActivity</string>
 
+    <string name="action_profile">Profile</string>
 </resources>
