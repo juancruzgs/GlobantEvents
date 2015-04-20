@@ -23,7 +23,7 @@
         android:id="@+id/action_button"
         style="@style/fab_action_button_style"
         fab:button_color="#CBE742"
-        fab:image="@drawable/fab_edit"
+        fab:image="@mipmap/fab_edit"
         fab:image_size="24dp"
         fab:type="DEFAULT" />
 
