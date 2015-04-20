@@ -63,4 +63,5 @@
     <string name="edit_text_city_hint">City</string>
     <string name="check_box_text_english_hint">Need english translator?</string>
     <string name="action_checkin">Check-in</string>
+    <string name="action_profile">Profile</string>
 </resources>
