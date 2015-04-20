@@ -1,8 +1,10 @@
-package com.globant.eventscorelib;
+package com.globant.eventscorelib.baseComponents;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+
+import com.globant.eventscorelib.R;
 
 /**
 * Created by paula.baudo on 4/17/2015.

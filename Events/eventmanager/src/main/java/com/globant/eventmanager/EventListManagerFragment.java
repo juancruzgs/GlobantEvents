@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globant.eventscorelib.BaseEventListFragment;
-import com.globant.eventscorelib.BaseEventsListAdapter;
+import com.globant.eventscorelib.baseComponents.BaseEventListFragment;
+import com.globant.eventscorelib.baseComponents.BaseEventsListAdapter;
 import com.software.shell.fab.ActionButton;
 
 public class EventListManagerFragment extends BaseEventListFragment {

@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globant.eventscorelib.BaseEventsListAdapter;
+import com.globant.eventscorelib.baseComponents.BaseEventsListAdapter;
 
 public class EventListAdapterManager extends BaseEventsListAdapter {
 

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globant.eventscorelib.CropCircleTransformation;
+import com.globant.eventscorelib.utils.CropCircleTransformation;
 import com.squareup.picasso.Picasso;
 
 /**

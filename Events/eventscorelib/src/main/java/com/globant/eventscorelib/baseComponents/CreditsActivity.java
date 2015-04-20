@@ -1,7 +1,8 @@
-package com.globant.eventscorelib;
+package com.globant.eventscorelib.baseComponents;
 
 import android.os.Bundle;
 
+import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.fragments.CreditsFragment;
 

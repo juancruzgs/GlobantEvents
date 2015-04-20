@@ -1,4 +1,4 @@
-package com.globant.eventscorelib;
+package com.globant.eventscorelib.baseComponents;
 
 
 import android.content.Intent;
@@ -11,12 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.globant.eventscorelib.baseComponents.BaseFragment;
-import com.globant.eventscorelib.fragments.CreditsFragment;
+import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.utils.CoreConstants;
-import com.software.shell.fab.ActionButton;
 
 
 /**
