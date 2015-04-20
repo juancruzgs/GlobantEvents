@@ -287,7 +287,8 @@
                     android:id="@+id/icon_city"
                     android:src="@mipmap/ic_city"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="0.1"/>
+                    android:layout_weight="0.1"
+                    android:focusableInTouchMode="false"/>
 
                 <EditText
                     style="@style/condensed_normal_small"
