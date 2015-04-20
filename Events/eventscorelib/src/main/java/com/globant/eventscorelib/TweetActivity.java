@@ -6,12 +6,18 @@ import android.os.Bundle;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.fragments.TweetFragment;
 
 
 public class TweetActivity extends BaseActivity {
 
     TweetFragment mTweetFragment;
+
+    @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

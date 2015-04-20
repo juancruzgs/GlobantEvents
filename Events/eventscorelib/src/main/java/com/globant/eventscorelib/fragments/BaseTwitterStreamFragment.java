@@ -15,6 +15,7 @@ import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.adapters.TweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 import com.software.shell.fab.ActionButton;
@@ -43,6 +44,11 @@ public class BaseTwitterStreamFragment extends BaseFragment {
         // Required empty public constructor
     }
 
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
+    }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

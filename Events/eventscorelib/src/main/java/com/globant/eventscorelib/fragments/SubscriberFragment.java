@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.managers.SharedPreferencesManager;
 import com.software.shell.fab.ActionButton;
 
@@ -37,7 +38,6 @@ import java.io.File;
  * A simple {@link Fragment} subclass.
  */
 public class SubscriberFragment extends BaseFragment {
-
 
     Bitmap mPhoto;
     ImageView mPhotoProfile;
@@ -59,6 +59,11 @@ public class SubscriberFragment extends BaseFragment {
         // Required empty public constructor
     }
 
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
+    }
 
     @Override
     public View onCreateEventView(LayoutInflater inflater, ViewGroup container,

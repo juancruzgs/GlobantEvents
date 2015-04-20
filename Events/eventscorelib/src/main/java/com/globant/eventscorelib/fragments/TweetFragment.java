@@ -14,7 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.globant.eventscorelib.CropCircleTransformation;
+import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.utils.CropCircleTransformation;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
@@ -39,6 +40,11 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
 
     public TweetFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
     }
 
     @Override
