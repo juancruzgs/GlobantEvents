@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/imageView_user_picture"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"/>
 
         <LinearLayout
@@ -28,14 +28,14 @@
                 android:id="@+id/textView_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/condensed_normal_medium"
+                style="@style/condensed_normal_large"
                 android:textColor="@color/globant_green"/>
 
             <TextView
                 android:id="@+id/textView_tweet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/condensed_light_small"
+                style="@style/condensed_normal_small"
                 />
 
         </LinearLayout>

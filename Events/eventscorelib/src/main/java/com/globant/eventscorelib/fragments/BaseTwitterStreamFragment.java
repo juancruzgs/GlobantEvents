@@ -24,7 +24,7 @@ import java.util.List;
 import twitter4j.Status;
 
 
-public class TwitterStreamFragment extends BaseFragment {
+public class BaseTwitterStreamFragment extends BaseFragment {
 
     private LayoutManagerType mCurrentLayoutManagerType;
     private RecyclerView mRecyclerView;
@@ -39,7 +39,7 @@ public class TwitterStreamFragment extends BaseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
-    public TwitterStreamFragment() {
+    public BaseTwitterStreamFragment() {
         // Required empty public constructor
     }
 

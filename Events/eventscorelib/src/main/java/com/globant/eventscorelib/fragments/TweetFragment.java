@@ -32,6 +32,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
     private EditText mTweetText;
     private Button mTweetButton;
     private Button mLoginTwitterButton;
+    CropCircleTransformation mCircleTransformation;
     private AsyncTask<String, Void, Boolean> mTweetPost;
     private AsyncTask<Void, Void, User> mLoadTweetUser;
     private AsyncTask<Void, Void, Boolean> mTwitterLoader;
@@ -43,6 +44,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(com.globant.eventscorelib.R.layout.fragment_tweet, container, false);
+        mCircleTransformation = new CropCircleTransformation(getActivity());
         hideUtilsAndShowContentOverlay();
         wireUpViews(rootView);
         return rootView;
@@ -51,6 +53,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
     private void wireUpViews(View rootView) {
         mLoginTwitterButton = (Button) rootView.findViewById(R.id.button_login_twitter);
         mUserPicture = (ImageView) rootView.findViewById(R.id.imageView_user);
+        Picasso.with(getActivity()).load(R.mipmap.ic_person).transform(mCircleTransformation).into(mUserPicture);
         mUsername = (TextView) rootView.findViewById(R.id.textView_username);
         mUserFullName = (TextView) rootView.findViewById(R.id.textView_user_full_name);
         mTweetText = (EditText) rootView.findViewById(R.id.textView_tweet);
@@ -64,18 +67,19 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
         return "Tweet";
     }
 
-    @Override
-    public void onResume() {
-        changeUserInformation();
-        super.onResume();
-    }
+//    @Override
+//    public void onResume() {
+//        showProgressOverlay();
+//        changeUserInformation();
+//        super.onResume();
+//    }
 
-    private void changeUserInformation() {
+    public void changeUserInformation() {
         try {
             if (BaseApplication.getInstance().getSharedPreferencesManager()
                     .isAlreadyTwitterLogged()) {
                mLoginTwitterButton.setVisibility(View.GONE);
-               mLoadTweetUser = new LoadTweetUser().execute();
+               mLoadTweetUser = new LoadUserInformation().execute();
             } else {
                 mTweetButton.setEnabled(false);
                 mTweetText.setEnabled(false);
@@ -123,7 +127,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
 
     }
 
-    public class LoadTweetUser extends AsyncTask<Void, Void, User> {
+    public class LoadUserInformation extends AsyncTask<Void, Void, User> {
 
         @Override
         protected User doInBackground(Void... params) {
@@ -150,8 +154,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
                 mUsername.setText(String.format(getString(R.string.twitter_username), user.getScreenName()));
                 mUserFullName.setText(user.getName());
                 if (user.getProfileImageURL() != null) {
-                    CropCircleTransformation transformation = new CropCircleTransformation(getActivity());
-                    Picasso.with(getActivity()).load(user.getOriginalProfileImageURL()).transform(transformation).into(mUserPicture);
+                    Picasso.with(getActivity()).load(user.getOriginalProfileImageURL()).transform(mCircleTransformation).into(mUserPicture);
                 }
                 mTweetButton.setEnabled(true);
                 mTweetText.setEnabled(true);
@@ -171,7 +174,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if (result) {
-               mLoadTweetUser = new LoadTweetUser().execute();
+               mLoadTweetUser = new LoadUserInformation().execute();
             }
         }
     }

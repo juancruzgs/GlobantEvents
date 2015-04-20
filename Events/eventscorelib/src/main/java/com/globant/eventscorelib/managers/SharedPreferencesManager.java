@@ -169,7 +169,7 @@ public class SharedPreferencesManager {
         editor.putString(CoreConstants.TWITTER_PREF_KEY_OAUTH_TOKEN, token);
         editor.putString(CoreConstants.TWITTER_PREF_KEY_OAUTH_SECRET, tokenSecret);
         editor.putBoolean(CoreConstants.TWITTER_IS_LOGGED_IN, true);
-        editor.apply();
+        editor.commit();
     }
 
     public String getAccessToken() {
