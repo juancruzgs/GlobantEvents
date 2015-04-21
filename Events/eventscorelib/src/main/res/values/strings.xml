@@ -77,5 +77,6 @@
     <string name="action_profile">Profile</string>
     <string name="title_activity_speaker_detail">SpeakerDetailActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="action_map">Map</string>
 
 </resources>

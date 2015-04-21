@@ -102,6 +102,7 @@ public abstract class BaseEventListFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_event_list_fragment, menu);
     }
 
@@ -110,7 +111,7 @@ public abstract class BaseEventListFragment extends BaseFragment {
         int id = item.getItemId();
         boolean handled = false;
 
-        if (id == R.id.action_credits) {// Do Fragment menu item stuff here
+        if (id == R.id.action_credits) {
             Intent intentCredits = new Intent(getActivity(), CreditsActivity.class);
             startActivity(intentCredits);
             handled = true;
