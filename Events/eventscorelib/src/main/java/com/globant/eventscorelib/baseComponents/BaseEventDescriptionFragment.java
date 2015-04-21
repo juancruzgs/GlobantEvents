@@ -84,7 +84,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
                 //TODO: Refactor with functionality
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, new SubscriberFragment())
-                        .commit();
+                        .addToBackStack(null).commit();
             }
         });
 
