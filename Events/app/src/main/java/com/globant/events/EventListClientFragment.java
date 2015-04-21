@@ -59,16 +59,4 @@ public class EventListClientFragment extends BaseEventListFragment {
             mDataset[i] = "La Fiesta del Chorizo";
         }
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == com.globant.eventscorelib.R.id.action_credits)
-        {
-            Intent intentCredits = new Intent(getActivity(), CreditsClientActivity.class);
-            startActivity(intentCredits);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
