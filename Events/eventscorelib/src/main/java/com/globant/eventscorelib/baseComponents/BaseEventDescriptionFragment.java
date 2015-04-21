@@ -172,7 +172,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
         // Translate FAB
         int maxFabTranslationY = mFlexibleSpaceImageHeight - mFab.getHeight() / 2;
-        float fabTranslationY = ScrollUtils.getFloat(
+        float fabTranslationY = ScrollUtils.getFloat( -50
                 -i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
                 mActionBarSize - mFab.getHeight() / 2,
                 maxFabTranslationY);
