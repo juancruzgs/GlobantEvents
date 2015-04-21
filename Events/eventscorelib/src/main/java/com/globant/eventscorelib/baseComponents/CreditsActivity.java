@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.fragments.CreditsFragment;
 
 
@@ -11,7 +12,7 @@ public class CreditsActivity extends BaseActivity {
 
     @Override
     protected Class<? extends BaseService> getServiceClass() {
-        return BaseService.class;
+        return null;
     }
 
     @Override

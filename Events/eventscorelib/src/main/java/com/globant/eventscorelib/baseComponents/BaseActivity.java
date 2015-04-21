@@ -54,7 +54,6 @@ public abstract class BaseActivity extends ActionBarActivity {
             for (BaseFragment fragment : mFragments) {
                 fragment.setService(mService);
             }
-
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -101,9 +100,6 @@ public abstract class BaseActivity extends ActionBarActivity {
             // TODO: This will become an exception
             Logger.d("Service not defined");
         }
-        else {
-            doStartService();
-        }
     }
 
     @Override
@@ -122,7 +118,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         registerReceiver(mReceiver,
-                         new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+                new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         super.onResume();
 
         if (!BaseService.isRunning) {

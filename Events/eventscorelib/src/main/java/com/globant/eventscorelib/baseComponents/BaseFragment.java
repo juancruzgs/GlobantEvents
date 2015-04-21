@@ -26,9 +26,6 @@ public abstract class BaseFragment extends Fragment{
     protected BaseService mService = null;
     private Boolean mIsCheckin;
 
-    // TODO: This function can return an ActionListener to manage the db actions... or just null
-    abstract public BaseService.ActionListener getActionListener();
-
     public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState){
 
@@ -40,6 +37,11 @@ public abstract class BaseFragment extends Fragment{
         mContentLayout.addView(content);
         return rootView;
     }
+
+
+    // TODO: This function can return an ActionListener to manage the db actions... or just null
+    abstract public BaseService.ActionListener getActionListener();
+
 
     abstract protected View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                               Bundle savedInstanceState);

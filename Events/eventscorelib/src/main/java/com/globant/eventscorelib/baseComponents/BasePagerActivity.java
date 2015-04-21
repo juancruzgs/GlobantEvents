@@ -21,7 +21,7 @@ public class BasePagerActivity extends BaseActivity {
 
     @Override
     protected Class<? extends BaseService> getServiceClass() {
-        return BaseService.class;
+        return null;
     }
 
     @Override

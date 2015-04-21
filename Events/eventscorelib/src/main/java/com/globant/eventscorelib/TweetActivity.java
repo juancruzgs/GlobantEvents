@@ -31,7 +31,6 @@ public class TweetActivity extends BaseActivity {
         }
     }
 
-
     @Override
     protected void onResume() {
         Uri uri = getIntent().getData();

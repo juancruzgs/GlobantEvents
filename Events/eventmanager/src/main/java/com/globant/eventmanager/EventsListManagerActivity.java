@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
-import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
 
 
