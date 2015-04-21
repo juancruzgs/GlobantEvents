@@ -59,7 +59,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
     private void wireUpViews(View rootView) {
         mLoginTwitterButton = (Button) rootView.findViewById(R.id.button_login_twitter);
         mUserPicture = (ImageView) rootView.findViewById(R.id.imageView_user);
-        Picasso.with(getActivity()).load(R.mipmap.ic_person).transform(mCircleTransformation).into(mUserPicture);
+        Picasso.with(getActivity()).load(R.mipmap. placeholder).transform(mCircleTransformation).into(mUserPicture);
         mUsername = (TextView) rootView.findViewById(R.id.textView_username);
         mUserFullName = (TextView) rootView.findViewById(R.id.textView_user_full_name);
         mTweetText = (EditText) rootView.findViewById(R.id.textView_tweet);
@@ -107,7 +107,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener 
                mTweetPost = new TweetPost().execute(tweet);
             }
         } else if (v.getId() == R.id.button_login_twitter) {
-            showProgressOverlay();
+//            showProgressOverlay();
            mTwitterLoader = new TwitterLoader().execute();
         }
     }
