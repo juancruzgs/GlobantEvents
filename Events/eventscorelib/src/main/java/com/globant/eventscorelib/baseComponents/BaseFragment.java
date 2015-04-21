@@ -24,6 +24,7 @@ public abstract class BaseFragment extends Fragment{
     private TextView mTextViewUtilsMessage;
     private ImageView mImageViewUtils;
     private Boolean mIsCheckin;
+    protected BaseService mService = null;
 
     public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState){
@@ -36,6 +37,11 @@ public abstract class BaseFragment extends Fragment{
         mContentLayout.addView(content);
         return rootView;
     }
+
+
+    // TODO: This function can return an ActionListener to manage the db actions... or just null
+    abstract public BaseService.ActionListener getActionListener();
+
 
     abstract protected View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                               Bundle savedInstanceState);
@@ -115,4 +121,12 @@ public abstract class BaseFragment extends Fragment{
         mContentLayout.setVisibility(View.VISIBLE);
     }
     public abstract String getTitle();
+
+    public void setService(BaseService service) {
+        this.mService = service;
+        BaseService.ActionListener listener = getActionListener();
+        if (listener != null){
+            mService.subscribeActor(listener);
+        }
+    }
 }

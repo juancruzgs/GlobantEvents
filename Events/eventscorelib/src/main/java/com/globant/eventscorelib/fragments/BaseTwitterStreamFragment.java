@@ -1,7 +1,7 @@
 package com.globant.eventscorelib.fragments;
 
 
-import android.os.AsyncTask;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,8 +15,8 @@ import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.adapters.TweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
-import com.globant.eventscorelib.utils.Logger;
 import com.software.shell.fab.ActionButton;
 
 import java.util.List;
@@ -24,14 +24,50 @@ import java.util.List;
 import twitter4j.Status;
 
 
-public class BaseTwitterStreamFragment extends BaseFragment {
+public class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener{
 
     private LayoutManagerType mCurrentLayoutManagerType;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private ActionButton mActionButton;
     private List<Status> mTweetList;
-    private AsyncTask<Void, Void, Boolean> mTweetsLoader;
+
+    @Override
+    public Activity getBindingActivity() {
+        return null;
+    }
+
+    @Override
+    public Object getBindingKey() {
+        return null;
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+         showProgressOverlay();
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        mTweetList = (List<Status>) result;
+        BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
+       if (mTweetList != null) {
+            if (getActivity() == null) return;
+            TweetListAdapter mAdapter = new TweetListAdapter(mTweetList, getActivity());
+            mRecyclerView.setAdapter(mAdapter);
+            mSwipeRefreshLayout.setRefreshing(false);
+            hideUtilsAndShowContentOverlay();
+        } else {
+            mSwipeRefreshLayout.setRefreshing(false);
+            showErrorOverlay();
+        }
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
+    }
+
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
@@ -43,6 +79,10 @@ public class BaseTwitterStreamFragment extends BaseFragment {
         // Required empty public constructor
     }
 
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
+    }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,10 +112,9 @@ public class BaseTwitterStreamFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 BaseApplication.getInstance().getCacheObjectsManager().tweetList = null;
-                mTweetsLoader = new TweetsLoader().execute();
+                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, ""); // TODO: put the event hashtag
             }
         });
-
     }
 
     private void prepareRecyclerView(View rootView) {
@@ -126,45 +165,56 @@ public class BaseTwitterStreamFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
+//        if (mTweetList == null) {
+//            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, ""); // TODO: put the event hashtag
+//        }
+//    }
+
     @Override
-    public void onResume() {
-        super.onResume();
-        showProgressOverlay();
-        mTweetsLoader = new TweetsLoader().execute();
+    public void setService(BaseService service) {
+        super.setService(service);
+        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
+        if (mTweetList == null) {
+            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, ""); // TODO: put the event hashtag
+        }
     }
 
-
-    private class TweetsLoader extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
-            try {
-                if (mTweetList == null) {
-                    mTweetList = BaseApplication.getInstance().getTwitterManager().getTweetList(getActivity(), ""); // TODO: put the event hashtag
-                    BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
-                }
-            } catch (Exception e) {
-                Logger.e("LOADING TWITTER", e);
-            }
-            return (mTweetList != null);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (result && mTweetList !=null) {
-                if (getActivity() == null) return;
-                TweetListAdapter mAdapter = new TweetListAdapter(mTweetList, getActivity());
-                mRecyclerView.setAdapter(mAdapter);
-                mSwipeRefreshLayout.setRefreshing(false);
-                hideUtilsAndShowContentOverlay();
-            } else {
-                mSwipeRefreshLayout.setRefreshing(false);
-                showErrorOverlay();
-            }
-        }
-   }
+    //    private class TweetsLoader extends AsyncTask<Void, Void, Boolean> {
+//
+//        @Override
+//        protected Boolean doInBackground(Void... params) {
+//            mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
+//            try {
+//                if (mTweetList == null) {
+//                    mTweetList = BaseApplication.getInstance().getTwitterManager().getTweetList(getActivity(), ""); // TODO: put the event hashtag
+//                    BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
+//                }
+//            } catch (Exception e) {
+//                Logger.e("LOADING TWITTER", e);
+//            }
+//            return (mTweetList != null);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean result) {
+//            super.onPostExecute(result);
+//            if (result && mTweetList !=null) {
+//                if (getActivity() == null) return;
+//                TweetListAdapter mAdapter = new TweetListAdapter(mTweetList, getActivity());
+//                mRecyclerView.setAdapter(mAdapter);
+//                mSwipeRefreshLayout.setRefreshing(false);
+//                hideUtilsAndShowContentOverlay();
+//            } else {
+//                mSwipeRefreshLayout.setRefreshing(false);
+//                showErrorOverlay();
+//            }
+//        }
+//   }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -172,13 +222,6 @@ public class BaseTwitterStreamFragment extends BaseFragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    @Override
-    public void onStop() {
-        if (mTweetsLoader != null && mTweetsLoader.getStatus() == AsyncTask.Status.RUNNING) {
-            mTweetsLoader.cancel(false);
-        }
-        super.onStop();
-    }
 
     // TODO change the asyntask
 }

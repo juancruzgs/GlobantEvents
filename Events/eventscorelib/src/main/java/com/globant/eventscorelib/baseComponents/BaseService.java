@@ -2,18 +2,20 @@ package com.globant.eventscorelib.baseComponents;
 
 import android.app.Activity;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 
-import com.globant.eventscorelib.domainObjects.BaseObject;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.managers.TwitterManager;
 import com.globant.eventscorelib.utils.Logger;
 
 import java.util.HashMap;
 import java.util.List;
+
+import twitter4j.Status;
+import twitter4j.User;
 
 /**
  * Created by ariel.cattaneo on 09/04/2015.
@@ -21,8 +23,8 @@ import java.util.List;
 public class BaseService extends Service {
 
     public static boolean isRunning = false;
-
-    /**
+    // This is the object that receives interactions from clients.
+     /**
      * Class for clients to access.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with
      * IPC.
@@ -42,7 +44,7 @@ public class BaseService extends Service {
 
     protected DatabaseController mDatabaseController = null;
     protected CloudDataController mCloudDataController = null;
-
+    protected TwitterManager mTwitterManager = null;
 
 
     @Override
@@ -67,11 +69,8 @@ public class BaseService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         stopCountdown();
-
-        // TODO: If mDatabaseController is null, throw an adequate exception
-        // (the controller must be set in the subclass' onCreate() method)
-        mDatabaseController.init();
-
+        mCloudDataController = new CloudDataController();
+        mTwitterManager = new TwitterManager();
         startCountdown();
 
         isRunning = true;
@@ -82,23 +81,19 @@ public class BaseService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         stopCountdown();
-
         return mBinder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         super.onUnbind(intent);
-
         startCountdown();
-
         return true;
     }
 
     @Override
     public void onRebind(Intent intent) {
         super.onRebind(intent);
-
         stopCountdown();
     }
 
@@ -118,49 +113,88 @@ public class BaseService extends Service {
         return mCloudDataController;
     }
 
+    public TwitterManager getTwitterManager() {
+        return mTwitterManager;
+    }
 
     ///HERE THE BARDO BEGINS
 
-    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE}
-
-    private ActionWrapper currentSuscriber;
-
-    public void suscribeActor(ActionListener anActionListener){
-          currentSuscriber = new ActionWrapper(anActionListener);
-
-           if (cachedElements.containsKey(anActionListener.getBindingKey())){
-              HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(anActionListener.getBindingKey());
-              for (ACTIONS key : cachedElement.keySet()) {
-                  anActionListener.onFinishAction(key,cachedElement.remove(key));
-
-              }
-
-          }
+    public enum ACTIONS {
+        EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE,
+        TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST
     }
 
-    public void unSuscribeActor(ActionListener anActionListener){
-            currentSuscriber = null;
+    private ActionWrapper currentSubscriber;
+
+    public void subscribeActor(ActionListener anActionListener){
+        currentSubscriber = new ActionWrapper(anActionListener);
+
+        if (cachedElements.containsKey(anActionListener.getBindingKey())){
+            HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(anActionListener.getBindingKey());
+            for (ACTIONS key : cachedElement.keySet()) {
+                anActionListener.onFinishAction(key,cachedElement.remove(key));
+            }
+        }
+    }
+
+    public void unSubscribeActor(ActionListener anActionListener){
+        currentSubscriber = null;
 //        if(){}
+    }
+
+    public void executeAction(final ACTIONS theAction, final Object argument) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    currentSubscriber.startAction(theAction);
+                    switch (theAction) {
+                        case EVENT_CREATE:
+                            mCloudDataController.createEvent((Event)argument);
+                            currentSubscriber.finishAction(theAction, null);
+                            break;
+                        case EVENT_DELETE:
+                            break;
+                        case EVENT_LIST:
+                            List<Event> theEvents = mCloudDataController.getEvents();
+                            currentSubscriber.finishAction(theAction, theEvents);
+                            break;
+                        case EVENT_DETAIL:
+                            break;
+                        case GET_TWITTER_USER:
+                            User user = mTwitterManager.getUser();
+                            currentSubscriber.finishAction(theAction, user);
+                            break;
+                        case TWEETS_LIST:
+                            List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
+                            currentSubscriber.finishAction(theAction, tweetList);
+                            break;
+
+
+                    }
+                } catch (Exception e) {
+
+                    currentSubscriber.failAction(theAction, e);
+                    Logger.e("executeAction", e);
+                }
+
+            }
+        };
+        new Thread(r).start();
     }
 
     private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
 
 
-    public abstract class ActionListener {
-
-        abstract protected Activity getActivity();
-
-        abstract protected Object getBindingKey();
-
-        abstract void onStartAction(ACTIONS theAction);
-
-        abstract void onFinishAction(ACTIONS theAction, Object result);
-
-        abstract void onFailAction(ACTIONS theAction, Exception e);
-
+    public interface ActionListener {
+        Activity getBindingActivity();
+        Object getBindingKey();
+        void onStartAction(ACTIONS theAction);
+        void onFinishAction(ACTIONS theAction, Object result);
+        void onFailAction(ACTIONS theAction, Exception e);
     }
 
-    public  class ActionWrapper {
+    public class ActionWrapper {
 
         private Activity anActivity;
         private Activity getActivity(){return anActivity;}
@@ -168,100 +202,52 @@ public class BaseService extends Service {
         ActionListener theListener;
 
         public ActionWrapper(ActionListener aListener) {
-            this.anActivity = aListener.getActivity();
+            this.anActivity = aListener.getBindingActivity();
             theListener = aListener;
         }
 
         void startAction(final ACTIONS theAction){
+            if (getActivity()!=null&& !getActivity().isFinishing()) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        theListener.onStartAction(theAction);
+                    }
+                });
+            }else{
+                // TODO: Decide what to do with an started action when the Activity isn't available
+            }
+        }
 
+        void finishAction(final ACTIONS theAction, final Object result){
+            if (getActivity()!=null&& !getActivity().isFinishing()) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        theListener.onFinishAction(theAction, result);
+                    }
+                });
+            }else{
+                HashMap<ACTIONS,Object> cachedElement = new HashMap();
+                cachedElement.put(theAction,result);
+                cachedElements.put(theListener.getBindingKey(),cachedElement);
+            }
+        }
 
-             if (getActivity()!=null&& !getActivity().isFinishing()) {
-                 getActivity().runOnUiThread(new Runnable() {
-                     @Override
-                     public void run() {
-                         theListener.onStartAction(theAction);
-                     }
-                 });
-             }else{
-
-
-
-             }
-
-
-         };
-
-         void finishAction(final ACTIONS theAction, final Object result){
-
-             if (getActivity()!=null&& !getActivity().isFinishing()) {
-                 getActivity().runOnUiThread(new Runnable() {
-                     @Override
-                     public void run() {
-                         theListener.onFinishAction(theAction, result);
-                     }
-                 });
-             }else{
-                 HashMap<ACTIONS,Object> cachedElement = new HashMap();
-                 cachedElement.put(theAction,result);
-                 cachedElements.put(theListener.getBindingKey(),cachedElement);
-             }
-
-         };
-
-         void failAction(final ACTIONS theAction, final Exception e){
-
-             if (getActivity()!=null&& !getActivity().isFinishing()) {
-                 getActivity().runOnUiThread(new Runnable() {
-                     @Override
-                     public void run() {
-                         theListener.onFailAction(theAction, e);
-                     }
-                 });
-             }else{
+        void failAction(final ACTIONS theAction, final Exception e){
+            if (getActivity()!=null&& !getActivity().isFinishing()) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        theListener.onFailAction(theAction, e);
+                    }
+                });
+            }else{
+                // TODO: Decide what to do with an failed action when the Activity isn't available
 //                 HashMap<ACTIONS,Object> cachedElement = new HashMap();
 //                 cachedElement.put(theAction,e);
 //                 cachedElements.put(getBindingKey(), cachedElement);
-             }
-
-         };
-
-
-
-    }
-
-    private void executeAction(final ACTIONS theAction, final BaseObject argument) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    currentSuscriber.startAction(theAction);
-                    switch (theAction) {
-                        case EVENT_CREATE:
-                            mCloudDataController.createEvent((Event)argument);
-                            currentSuscriber.finishAction(theAction, null);
-                            break;
-                        case EVENT_DELETE:
-                            break;
-                        case EVENT_LIST:
-                           List<Event> theEvents = mCloudDataController.getEvents();
-                            currentSuscriber.finishAction(theAction, theEvents);
-                            break;
-                        case EVENT_DETAIL:
-                            break;
-
-
-                    }
-                } catch (Exception e) {
-
-                    currentSuscriber.failAction(theAction, e);
-                    Logger.e("executeAction", e);
-                }
-
             }
-        };
-        new Thread(r).start();
-
-
+        }
     }
 }
