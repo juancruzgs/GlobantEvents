@@ -3,6 +3,8 @@ package com.globant.eventscorelib.baseComponents;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -10,6 +12,7 @@ import android.os.IBinder;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.managers.TwitterManager;
 import com.globant.eventscorelib.utils.Logger;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,18 +27,6 @@ public class BaseService extends Service {
 
     public static boolean isRunning = false;
     // This is the object that receives interactions from clients.
-     /**
-     * Class for clients to access.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with
-     * IPC.
-     */
-    public class BaseBinder extends Binder {
-        BaseService getService() {
-            return BaseService.this;
-        }
-    }
-
-    // This is the object that receives interactions from clients.
     private final IBinder mBinder = new BaseBinder();
 
     private final static int TIMEOUT_MINUTES = 5;
@@ -44,11 +35,24 @@ public class BaseService extends Service {
 
     protected DatabaseController mDatabaseController = null;
     protected CloudDataController mCloudDataController = null;
+    protected GeocoderController mGeocoderController = null;
     protected TwitterManager mTwitterManager = null;
-
+    /**
+     * Class for clients to access.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with
+     * IPC.
+     */
+    public class BaseBinder extends Binder {
+        public BaseService getService() {
+            return BaseService.this;
+        }
+    }
 
     @Override
     public void onCreate() {
+        mCloudDataController = new CloudDataController();
+        mGeocoderController = new GeocoderController(getBaseContext());
+        mTwitterManager = new TwitterManager();
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -69,8 +73,6 @@ public class BaseService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         stopCountdown();
-        mCloudDataController = new CloudDataController();
-        mTwitterManager = new TwitterManager();
         startCountdown();
         isRunning = true;
         return START_STICKY;
@@ -111,15 +113,11 @@ public class BaseService extends Service {
         return mCloudDataController;
     }
 
+    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
+    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST}
+
     public TwitterManager getTwitterManager() {
         return mTwitterManager;
-    }
-
-    ///HERE THE BARDO BEGINS
-
-    public enum ACTIONS {
-        EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE,
-        TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST
     }
 
     private ActionWrapper currentSubscriber;
@@ -137,17 +135,64 @@ public class BaseService extends Service {
 
     public void unSubscribeActor(ActionListener anActionListener){
         currentSubscriber = null;
-//        if(){}
+    }
+
+    public void executeAction(final ACTIONS theAction, final Object argument) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    currentSubscriber.startAction(theAction);
+                    switch (theAction) {
+                        case EVENT_CREATE:
+                            mCloudDataController.createEvent((Event)argument);
+                            currentSubscriber.finishAction(theAction, null);
+                            break;
+                        case EVENT_DELETE:
+                            break;
+                        case EVENT_LIST:
+                            List<Event> theEvents = mCloudDataController.getEvents();
+                            currentSubscriber.finishAction(theAction, theEvents);
+                            break;
+                        case EVENT_DETAIL:
+                            break;
+                        case POSITION_ADDRESS:
+                            Address address = mGeocoderController.getAddressFromCoordinates((LatLng)argument);
+                            currentSubscriber.finishAction(theAction, address);
+                            break;
+                        case POSITION_COORDINATES:
+                            LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String)argument);
+                            currentSubscriber.finishAction(theAction, latLng);
+                            break;
+                        case GET_TWITTER_USER:
+                            User user = mTwitterManager.getUser();
+                            currentSubscriber.finishAction(theAction, user);
+                            break;
+                        case TWEETS_LIST:
+                            List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
+                            currentSubscriber.finishAction(theAction, tweetList);
+                            break;
+                    }
+                } catch (Exception e) {
+
+                    currentSubscriber.failAction(theAction, e);
+                    Logger.e("executeAction", e);
+                }
+
+            }
+        };
+        new Thread(r).start();
     }
 
     private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
 
-    public interface ActionListener {
-        Activity getBindingActivity();
-        Object getBindingKey();
-        void onStartAction(ACTIONS theAction);
-        void onFinishAction(ACTIONS theAction, Object result);
-        void onFailAction(ACTIONS theAction, Exception e);
+
+    public static interface ActionListener {
+        public Activity getBindingActivity();
+        public Object getBindingKey();
+        public void onStartAction(ACTIONS theAction);
+        public void onFinishAction(ACTIONS theAction, Object result);
+        public void onFailAction(ACTIONS theAction, Exception e);
     }
 
     public class ActionWrapper {
@@ -206,43 +251,4 @@ public class BaseService extends Service {
             }
         }
     }
-
-    public void executeAction(final ACTIONS theAction, final Object argument) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    currentSubscriber.startAction(theAction);
-                    switch (theAction) {
-                        case EVENT_CREATE:
-                            mCloudDataController.createEvent((Event)argument);
-                            currentSubscriber.finishAction(theAction, null);
-                            break;
-                        case EVENT_DELETE:
-                            break;
-                        case EVENT_LIST:
-                           List<Event> theEvents = mCloudDataController.getEvents();
-                            currentSubscriber.finishAction(theAction, theEvents);
-                            break;
-                        case EVENT_DETAIL:
-                            break;
-                        case GET_TWITTER_USER:
-                            User user = mTwitterManager.getUser();
-                            currentSubscriber.finishAction(theAction, user);
-                            break;
-                        case TWEETS_LIST:
-                            List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
-                            currentSubscriber.finishAction(theAction, tweetList);
-                            break;
-                    }
-                } catch (Exception e) {
-                    currentSubscriber.failAction(theAction, e);
-                    Logger.e("executeAction", e);
-                }
-
-            }
-        };
-        new Thread(r).start();
-    }
-
 }

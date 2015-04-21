@@ -1,13 +1,15 @@
 package com.globant.eventscorelib.baseComponents;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -48,7 +50,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     public BaseEventDescriptionFragment() {
     }
 
-
     @Override
     public BaseService.ActionListener getActionListener() {
         return null;
@@ -57,12 +58,10 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
-
         hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
-
         wireUpViews(rootView);
         initializeViewParameters();
-
+        setHasOptionsMenu(true);
         return rootView;
     }
 
@@ -205,6 +204,11 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_event_description_fragment, menu);
     }
 
     private void showFab() {

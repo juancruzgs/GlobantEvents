@@ -31,7 +31,7 @@ public class EventDetailClientActivity extends BasePagerActivity {
     @Override
     protected List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(new BaseEventDescriptionFragment());
+        fragmentList.add(new EventDescriptionClientFragment());
 //        fragmentList.add(new EventParticipantsFragment());
         fragmentList.add(new SpeakersListFragment());
         return fragmentList;
