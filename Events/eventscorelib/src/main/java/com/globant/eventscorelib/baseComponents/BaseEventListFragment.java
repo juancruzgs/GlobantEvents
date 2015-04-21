@@ -108,22 +108,16 @@ public abstract class BaseEventListFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_credits) {// Do Fragment menu item stuff here
-            Intent intentCredits = new Intent(getActivity(), CreditsActivity.class);
-            startActivity(intentCredits);
+        if (id == R.id.action_checkin){
+            Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
+            startActivityForResult(intentScan,0);
             return true;
         } else {
-            if (id == R.id.action_checkin){
-                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                startActivityForResult(intentScan,0);
+            if (id == R.id.action_profile){
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, new SubscriberFragment())
+                        .addToBackStack(null).commit();
                 return true;
-            } else {
-                if (id == R.id.action_profile){
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, new SubscriberFragment())
-                            .addToBackStack(null).commit();
-                    return true;
-                }
             }
         }
         return false;

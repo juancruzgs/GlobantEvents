@@ -8,12 +8,7 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.fragments.CreditsFragment;
 
 
-public class CreditsActivity extends BaseActivity {
-
-    @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return null;
-    }
+public abstract class CreditsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
