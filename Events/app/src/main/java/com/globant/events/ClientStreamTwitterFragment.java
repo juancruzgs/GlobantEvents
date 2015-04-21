@@ -1,0 +1,17 @@
+package com.globant.events;
+
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.globant.eventscorelib.fragments.BaseTwitterStreamFragment;
+
+public class ClientStreamTwitterFragment extends BaseTwitterStreamFragment {
+
+    @Override
+    protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateEventView(inflater, container, savedInstanceState);
+    }
+}

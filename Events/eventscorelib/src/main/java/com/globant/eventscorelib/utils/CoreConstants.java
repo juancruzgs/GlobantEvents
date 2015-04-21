@@ -69,4 +69,18 @@ public class CoreConstants {
     public static final String MAP_ADDRESS_INTENT = "address";
     public static final String MAP_MARKER_POSITION_INTENT = "markerPosition";
     public static final int DOUBLE_TAP_TIME_INTERVAL = 2000;
+
+    // Twitter
+    public static final String TWITTER_CONSUMER_KEY = "c3nMUttSEcZzQRR4TekRIA3Em";
+    public static final String TWITTER_CONSUMER_SECRET = "lLBZ0E6wBF5vf9GasZnqqqOCmPzwZ58ruei14yU579RFhtED6P";
+    public static final String TWITTER_ACCESS_TOKEN = "152693997-IEoWMmAkYDX3f1hO5pxWBKhbgqNh0V09wOFPkG8V";
+    public static final String TWITTER_ACCESS_TOKEN_SECRET = "r2C4SZl8MCeF5vXYyFF9VumUvYYJ1kkk2FzM6QVW3Cxjb";
+    public static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
+    public static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
+    public static final String TWITTER_IS_LOGGED_IN = "is_logged_in";
+    public static final String TWITTER_PREF_KEY_OAUTH_TOKEN = "oauth_token";
+    public static final String TWITTER_PREF_KEY_OAUTH_SECRET = "oauth_token_secret";
+
+    // RecyclerView
+    public static final String KEY_LAYOUT_MANAGER = "layoutManager";
 }

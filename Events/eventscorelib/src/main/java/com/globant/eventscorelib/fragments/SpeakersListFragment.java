@@ -1,11 +1,13 @@
 package com.globant.eventscorelib.fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.adapters.SpeakersListAdapter;
@@ -69,6 +71,20 @@ public class SpeakersListFragment extends BaseFragment {
         mRecyclerView.setHasFixedSize(true);
 
         hideUtilsAndShowContentOverlay();
+
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        //TODO juan.ramirez,  send speaker id or speaker object from backend.
+                        getActivity().getSupportFragmentManager()
+                                     .beginTransaction()
+                                     .replace(R.id.container, new SpeakerDetailFragment())
+                                     .addToBackStack(null)
+                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                     .commit();
+                    }
+                })
+        );
 
         return rootView;
     }
