@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="7dp"
-    android:background="@color/white">
+    android:background="@color/background_floating_material_light">
 
     <ScrollView
         android:layout_width="match_parent"
