@@ -15,14 +15,9 @@ import com.globant.eventscorelib.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasePagerActivity extends BaseActivity {
+abstract public class BasePagerActivity extends BaseActivity {
 
     PageAdapter pageAdapter;
-
-    @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return null;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

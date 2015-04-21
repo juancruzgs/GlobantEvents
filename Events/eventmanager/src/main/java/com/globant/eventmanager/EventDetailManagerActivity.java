@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import com.globant.eventscorelib.baseComponents.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.baseComponents.BasePagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.fragments.SpeakersListFragment;
 
 import java.util.ArrayList;
@@ -42,6 +43,11 @@ public class EventDetailManagerActivity extends BasePagerActivity {
 //
 //        return super.onOptionsItemSelected(item);
 //    }
+
+    @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return ManagerDataService.class;
+    }
 
     @Override
     protected List<Fragment> getFragments() {

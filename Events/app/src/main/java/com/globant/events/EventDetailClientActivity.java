@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.globant.eventscorelib.baseComponents.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.baseComponents.BasePagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.fragments.SpeakersListFragment;
 
 import java.util.ArrayList;
@@ -15,6 +16,11 @@ import java.util.List;
 
 
 public class EventDetailClientActivity extends BasePagerActivity {
+
+    @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return ClientDataService.class;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
