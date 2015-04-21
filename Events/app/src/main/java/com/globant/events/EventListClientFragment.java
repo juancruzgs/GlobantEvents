@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseEventListFragment;
 import com.globant.eventscorelib.baseComponents.BaseEventsListAdapter;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 /**
 * Created by paula.baudo on 4/17/2015.
@@ -35,6 +36,11 @@ public class EventListClientFragment extends BaseEventListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initDataset();
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
     }
 
     @Override

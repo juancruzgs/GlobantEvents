@@ -2,6 +2,7 @@ package com.globant.eventscorelib.baseComponents;
 
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -9,16 +10,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.fragments.SubscriberFragment;
 import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 
 
 public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks {
@@ -35,10 +40,19 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
     String mTitle;
+    private View mFab;
+    private boolean mFabIsShown;
+    private int mFlexibleSpaceShowFabOffset;
+    private int mFabMargin;
 
     public BaseEventDescriptionFragment() {
     }
 
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
+    }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +69,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
         mActionBarSize = getActionBarSize();
+        mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(R.dimen.flexible_space_show_fab_offset);
         mToolbarColor = getResources().getColor(R.color.globant_green);
         mStickyToolbar = false;
         mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
@@ -62,6 +77,21 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mScrollView.setScrollViewCallbacks(this);
         mTitle = "";
         mTitleView.setText("La Fiesta del Chori !");
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: Refactor with functionality
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, new SubscriberFragment())
+                        .addToBackStack(null).commit();
+            }
+        });
+
+        mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        ViewHelper.setScaleX(mFab, 0);
+        ViewHelper.setScaleY(mFab, 0);
+
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
             public void run() {
@@ -77,6 +107,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mOverlayView = rootView.findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
         mTitleView = (TextView) rootView.findViewById(R.id.title);
+        mFab = rootView.findViewById(R.id.fab);
     }
 
     @Override
@@ -140,7 +171,30 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(mTitle);
         }
 
+        // Translate FAB
+        int maxFabTranslationY = mFlexibleSpaceImageHeight - mFab.getHeight() / 2;
+        float fabTranslationY = ScrollUtils.getFloat(
+                -i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
+                mActionBarSize - mFab.getHeight() / 2,
+                maxFabTranslationY);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            // On pre-honeycomb, ViewHelper.setTranslationX/Y does not set margin,
+            // which causes FAB's OnClickListener not working.
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFab.getLayoutParams();
+            lp.leftMargin = mOverlayView.getWidth() - mFabMargin - mFab.getWidth();
+            lp.topMargin = (int) fabTranslationY;
+            mFab.requestLayout();
+        } else {
+            ViewHelper.setTranslationX(mFab, mOverlayView.getWidth() - mFabMargin - mFab.getWidth());
+            ViewHelper.setTranslationY(mFab, fabTranslationY);
+        }
 
+        // Show/hide FAB
+        if (fabTranslationY < mFlexibleSpaceShowFabOffset-mActionBarSize) {
+            hideFab();
+        } else {
+            showFab();
+        }
     }
 
     @Override
@@ -151,5 +205,21 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
 
+    }
+
+    private void showFab() {
+        if (!mFabIsShown) {
+            ViewPropertyAnimator.animate(mFab).cancel();
+            ViewPropertyAnimator.animate(mFab).scaleX(1).scaleY(1).setDuration(200).start();
+            mFabIsShown = true;
+        }
+    }
+
+    private void hideFab() {
+        if (mFabIsShown) {
+            ViewPropertyAnimator.animate(mFab).cancel();
+            ViewPropertyAnimator.animate(mFab).scaleX(0).scaleY(0).setDuration(200).start();
+            mFabIsShown = false;
+        }
     }
 }

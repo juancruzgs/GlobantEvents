@@ -1,15 +1,18 @@
 package com.globant.eventscorelib.fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.adapters.SpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 /**
         * Created by agustin.gugliotta on 15/04/2015.
@@ -17,8 +20,9 @@ import com.globant.eventscorelib.baseComponents.BaseFragment;
 public class SpeakersListFragment extends BaseFragment {
 
     //TODO delete this two attr
-    private static final int DATASET_COUNT = 60;
-    protected String[] mDataset;
+    private static final int DATASET_COUNT = 3;
+    protected String[] mDatasetName;
+    protected String[] mDatasetDescription;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -40,6 +44,11 @@ public class SpeakersListFragment extends BaseFragment {
     }
 
     @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
+    }
+
+    @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         int scrollPosition = 0;
         View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
@@ -56,12 +65,26 @@ public class SpeakersListFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
 
-        mAdapter = new SpeakersListAdapter(mDataset);
+        mAdapter = new SpeakersListAdapter(getActivity(),mDatasetName, mDatasetDescription);
         mRecyclerView.setAdapter(mAdapter);
 
         mRecyclerView.setHasFixedSize(true);
 
         hideUtilsAndShowContentOverlay();
+
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        //TODO juan.ramirez,  send speaker id or speaker object from backend.
+                        getActivity().getSupportFragmentManager()
+                                     .beginTransaction()
+                                     .replace(R.id.container, new SpeakerDetailFragment())
+                                     .addToBackStack(null)
+                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                     .commit();
+                    }
+                })
+        );
 
         return rootView;
     }
@@ -74,9 +97,11 @@ public class SpeakersListFragment extends BaseFragment {
 
     //TODO delete method
     private void initDataset() {
-        mDataset = new String[DATASET_COUNT];
+        mDatasetName = new String[DATASET_COUNT];
+        mDatasetDescription = new String[DATASET_COUNT];
         for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "This is element #" + i;
+            mDatasetName[i] = "Tim Cook";
+            mDatasetDescription[i] = "Timothy Donald \"Tim\" Cook is an American business executive, and is the CEO of Apple Inc.";
         }
     }
 }

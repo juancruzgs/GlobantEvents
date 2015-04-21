@@ -10,6 +10,11 @@ import com.globant.eventscorelib.fragments.CreditsFragment;
 public class CreditsActivity extends BaseActivity {
 
     @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return BaseService.class;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_credits);

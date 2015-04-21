@@ -20,6 +20,11 @@ public class BasePagerActivity extends BaseActivity {
     PageAdapter pageAdapter;
 
     @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return BaseService.class;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_pager_acivity);
@@ -84,11 +89,11 @@ public class BasePagerActivity extends BaseActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Description";
+                    return "DESCRIPTION";
                 case 1:
-                    return "Tweets";
+                    return "PARTICIPANTS";
                 case 2:
-                    return "Participants";
+                    return "SPEAKERS";
                 default:
                     return null;
             }

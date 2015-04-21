@@ -9,9 +9,15 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 
 public class TestActivity extends BaseActivity {
+
+    @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return ClientDataService.class;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,11 @@ public class TestActivity extends BaseActivity {
     public static class PlaceholderFragment extends BaseFragment {
 
         public PlaceholderFragment() {
+        }
+
+        @Override
+        public BaseService.ActionListener getActionListener() {
+            return null;
         }
 
         @Override

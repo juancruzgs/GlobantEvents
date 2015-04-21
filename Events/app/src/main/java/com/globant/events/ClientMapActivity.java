@@ -3,13 +3,13 @@ package com.globant.events;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.globant.eventscorelib.baseComponents.MapActivity;
+import com.globant.eventscorelib.baseComponents.BaseMapActivity;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 
-public class ClientMapActivity extends MapActivity {
+public class ClientMapActivity extends BaseMapActivity {
     @Override
     protected int getMapLayout() {
         return R.layout.activity_client_map;
