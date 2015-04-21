@@ -3,8 +3,8 @@ package com.globant.eventscorelib.baseComponents;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +22,7 @@ abstract public class BasePagerActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_pager_acivity);
+        setContentView(R.layout.activity_base_pager);
 
         List<Fragment> fragments = getFragments();
 
@@ -31,6 +31,8 @@ abstract public class BasePagerActivity extends BaseActivity {
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
         pager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
+        titleStrip.setTextColor(getResources().getColor(R.color.white));
     }
 
     @Override
