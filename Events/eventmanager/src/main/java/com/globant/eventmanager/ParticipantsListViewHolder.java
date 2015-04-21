@@ -25,10 +25,11 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
     private final ImageView mImageViewParticipantLeft;
     private final ImageView mImageViewParticipantRight;
     private final LinearLayout mParticipantHolderItemLayout;
-    private final TranslateAnimation mTranslateAnimation;
     private final FrameLayout mFrameLayoutLeft;
     private final FrameLayout mFrameLayoutRight;
     private final LinearLayout mLinearLayoutHolder;
+    private final LinearLayout mLinearLayoutMiddle;
+
 
     public ParticipantsListViewHolder(View itemView) {
         super(itemView);
@@ -41,20 +42,37 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
         mImageViewParticipantLeft = (ImageView) itemView.findViewById(R.id.image_view_participant_left);
         mImageViewParticipantRight = (ImageView) itemView.findViewById(R.id.image_view_participant_right);
         mParticipantHolderItemLayout = (LinearLayout) itemView.findViewById(R.id.participant_item_holder_layout);
-        mTranslateAnimation = new TranslateAnimation(mFrameLayoutLeft.getX(),900f
-                ,mFrameLayoutLeft.getY(),mFrameLayoutLeft.getY());
-        mTranslateAnimation.setDuration(1000);
-        mTranslateAnimation.initialize(mFrameLayoutLeft.getWidth(),
-                mFrameLayoutLeft.getHeight(), mLinearLayoutHolder.getWidth(), mLinearLayoutHolder.getHeight());
-        mTranslateAnimation.setAnimationListener(new Animation.AnimationListener() {
+        mLinearLayoutMiddle = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle);
+
+    }
+
+    public FrameLayout getmFrameLayoutLeft() {
+        return mFrameLayoutLeft;
+    }
+
+    private void addTranslateAnimation(final FrameLayout frameLayoutFrom, final FrameLayout frameLayoutTo, LinearLayout linearLayoutHolder, boolean leftToRight) {
+        TranslateAnimation translateAnimation;
+        float position = frameLayoutFrom.getWidth();
+        if (leftToRight) {
+            translateAnimation = new TranslateAnimation(frameLayoutFrom.getX(),linearLayoutHolder.getRight()-position
+                    ,frameLayoutFrom.getY(),frameLayoutFrom.getY());
+        }else{
+            translateAnimation = new TranslateAnimation(0, -linearLayoutHolder.getWidth()+position
+                    ,frameLayoutFrom.getY(),frameLayoutFrom.getY());
+        }
+
+        translateAnimation.setDuration(500);
+        translateAnimation.initialize(frameLayoutFrom.getWidth(),
+                frameLayoutFrom.getHeight(), linearLayoutHolder.getWidth(), linearLayoutHolder.getHeight());
+        translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mFrameLayoutLeft.setVisibility(View.INVISIBLE);
-                mImageViewParticipantRight.setVisibility(View.VISIBLE);
+                frameLayoutFrom.setVisibility(View.GONE);
+                frameLayoutTo.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -62,8 +80,9 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
 
             }
         });
-
+        frameLayoutFrom.startAnimation(translateAnimation);
     }
+
 
     public TextView getTextViewName() {
         return mTextViewName;
@@ -81,56 +100,15 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
         return mImageViewParticipantRight;
     }
 
-    private void animateInvisibility(final View myView) {
-        int cx = (myView.getLeft() + myView.getRight()) / 2;
-        int cy = (myView.getTop() + myView.getBottom()) / 2;
 
-        int initialRadius = myView.getWidth();
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
-
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                myView.setVisibility(View.GONE);
-            }
-        });
-
-        anim.start();
-    }
-
-    private void animateVisibility(View myView) {
-        int cx = (myView.getLeft() + myView.getRight()) / 2;
-        int cy = (myView.getTop() + myView.getBottom()) / 2;
-        int finalRadius = Math.max(myView.getWidth(), myView.getHeight());
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
-        myView.setVisibility(View.VISIBLE);
-        anim.start();
-    }
 
     @Override
     public boolean onLongClick(View v) {
-        int currentApiVersion = Build.VERSION.SDK_INT;
-        if (mImageViewParticipantLeft.getVisibility() == View.VISIBLE) {
-            /*if (currentApiVersion >= Build.VERSION_CODES.LOLLIPOP) {
-                animateInvisibility(mImageViewParticipantLeft);
-                animateVisibility(mImageViewParticipantRight);
-            } else {
-                mImageViewParticipantLeft.setVisibility(View.GONE);
-                mImageViewParticipantRight.setVisibility(View.VISIBLE);
-            }*/
-            mFrameLayoutLeft.startAnimation(mTranslateAnimation);
+        if (v.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
+            addTranslateAnimation(mFrameLayoutLeft,mFrameLayoutRight,mLinearLayoutHolder,true);
             mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
         }else{
-            if (currentApiVersion >= Build.VERSION_CODES.LOLLIPOP) {
-                animateInvisibility(mImageViewParticipantRight);
-                animateVisibility(mImageViewParticipantLeft);
-            } else {
-                mImageViewParticipantLeft.setVisibility(View.VISIBLE);
-                mImageViewParticipantRight.setVisibility(View.GONE);
-            }
+            addTranslateAnimation(mFrameLayoutRight,mFrameLayoutLeft,mLinearLayoutHolder,false);
             mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
         }
         return true;
