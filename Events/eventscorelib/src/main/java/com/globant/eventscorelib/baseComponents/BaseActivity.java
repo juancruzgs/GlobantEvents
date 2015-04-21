@@ -93,7 +93,6 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setConnectionReceiver();
-
         mServiceClass = getServiceClass();
     }
 
@@ -120,7 +119,6 @@ public abstract class BaseActivity extends ActionBarActivity {
             if (!BaseService.isRunning) {
                 doStartService();
             }
-
             doBindService();
         }
     }

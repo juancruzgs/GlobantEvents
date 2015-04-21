@@ -88,17 +88,5 @@ public class EventListManagerFragment extends BaseEventListFragment {
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == com.globant.eventscorelib.R.id.action_credits)
-        {
-            Intent intentCredits = new Intent(getActivity(), CreditsManagerActivity.class);
-            startActivity(intentCredits);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
 
