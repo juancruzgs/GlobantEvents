@@ -7,10 +7,14 @@ import android.view.MenuItem;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.google.zxing.WriterException;
 
 
 public class TestActivity extends BaseActivity {
+
+    @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +27,6 @@ public class TestActivity extends BaseActivity {
                     .commit();
         }
 
-    }
-
-    @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return BaseService.class;
     }
 
     @Override
@@ -66,11 +65,6 @@ public class TestActivity extends BaseActivity {
         Button mButton;
         Bitmap mQRCodeImage;
         public PlaceholderFragment() {
-        }
-
-        @Override
-        public BaseService.ActionListener getActionListener() {
-            return null;
         }
 
         @Override
