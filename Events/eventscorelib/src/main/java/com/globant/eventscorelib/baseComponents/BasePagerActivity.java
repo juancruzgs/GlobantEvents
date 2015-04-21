@@ -89,11 +89,11 @@ public class BasePagerActivity extends BaseActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Description";
+                    return "DESCRIPTION";
                 case 1:
-                    return "Tweets";
+                    return "PARTICIPANTS";
                 case 2:
-                    return "Participants";
+                    return "SPEAKERS";
                 default:
                     return null;
             }

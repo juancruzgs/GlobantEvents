@@ -11,6 +11,20 @@
             android:name=".baseComponents.BasePagerActivity"
             android:label="@string/title_activity_base_pager_acivity" >
         </activity>
+        <activity
+            android:name=".TweetActivity"
+            android:label="@string/title_activity_tweet"
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="t4jsample"
+                    android:scheme="oauth" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

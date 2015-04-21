@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public abstract class MapActivity extends ActionBarActivity implements OnMapReadyCallback {
+public abstract class BaseMapActivity extends ActionBarActivity implements OnMapReadyCallback {
 
     private GoogleMap mGoogleMap;
 
