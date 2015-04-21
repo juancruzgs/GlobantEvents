@@ -39,7 +39,7 @@
         android:layout_marginRight="20dp"
         fab:image="@mipmap/ic_camera_white"
         fab:image_size="24dp"
-        fab:button_color="#B9D52D"
+        fab:button_color="#FFC107"
         android:layout_alignParentEnd="false"/>
 
         <LinearLayout
@@ -82,9 +82,12 @@
                     android:hint="@string/edit_text_first_name_hint"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"/>
             </LinearLayout>
-
+            <View android:layout_width="match_parent"
+                  android:layout_height="0.25dp"
+                  android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -113,9 +116,12 @@
                     android:layout_marginLeft="20dp"
                     android:id="@+id/edit_text_last_name"
                     android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"/>
             </LinearLayout>
-
+            <View android:layout_width="match_parent"
+                  android:layout_height="0.25dp"
+                  android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -144,9 +150,12 @@
                     android:hint="@string/edit_text_phone_hint"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"/>
             </LinearLayout>
-
+            <View android:layout_width="match_parent"
+                  android:layout_height="0.25dp"
+                  android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -175,9 +184,12 @@
                     android:layout_marginLeft="20dp"
                     android:id="@+id/edit_text_email"
                     android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"/>
             </LinearLayout>
-
+            <View android:layout_width="match_parent"
+                  android:layout_height="0.25dp"
+                  android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -192,7 +204,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/icon_twitter"
-                    android:src="@mipmap/ic_twitter_1"
+                    android:src="@mipmap/ic_twitter1"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"/>
 
@@ -206,9 +218,12 @@
                     android:hint="@string/edit_text_twitter_hint"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"/>
             </LinearLayout>
-
+            <View android:layout_width="match_parent"
+                  android:layout_height="0.25dp"
+                  android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -237,9 +252,12 @@
                     android:hint="@string/edit_text_occupation_hint"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"/>
             </LinearLayout>
-
+            <View android:layout_width="match_parent"
+                  android:layout_height="0.25dp"
+                  android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -268,9 +286,12 @@
                     android:hint="@string/edit_text_country_hint"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"/>
             </LinearLayout>
-
+            <View android:layout_width="match_parent"
+                  android:layout_height="0.25dp"
+                  android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -300,10 +321,13 @@
                     android:hint="@string/edit_text_city_hint"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"/>
 
             </LinearLayout>
-
+               <View android:layout_width="match_parent"
+                   android:layout_height="0.25dp"
+                   android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
