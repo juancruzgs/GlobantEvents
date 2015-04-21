@@ -147,7 +147,7 @@ public class BaseTwitterStreamFragment extends BaseFragment {
             mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
             try {
                 if (mTweetList == null) {
-                    mTweetList = BaseApplication.getInstance().getTwitterManager().getTweetList(getActivity(), ""); // TODO: put the event hashtag
+                    mTweetList = BaseApplication.getInstance().getTwitterManager().getTweetList(getActivity(), "#DescribeYourSexLifeInATvShow"); // TODO: put the event hashtag
                     BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
                 }
             } catch (Exception e) {
