@@ -17,6 +17,7 @@ public class EventParticipantsListAdapter extends RecyclerView.Adapter<Participa
     private CropCircleTransformation transformation;
     private String[] mDataSet;
     private final Context mContext;
+    private float mX;
 
     public EventParticipantsListAdapter (Context context, String[] dataSet) {
         mContext = context;
@@ -36,6 +37,7 @@ public class EventParticipantsListAdapter extends RecyclerView.Adapter<Participa
         holder.getTextViewName().setText(mDataSet[position]);
         Picasso.with(mContext).load(R.drawable.profile_pic).transform(transformation).into(holder.getImageViewParticipantLeft());
         Picasso.with(mContext).load(R.drawable.profile_pic).transform(transformation).into(holder.getImageViewParticipantRight());
+
     }
 
     @Override
