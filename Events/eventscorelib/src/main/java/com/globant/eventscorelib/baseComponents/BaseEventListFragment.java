@@ -121,7 +121,7 @@ public abstract class BaseEventListFragment extends BaseFragment {
                 if (id == R.id.action_profile){
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, new SubscriberFragment())
-                            .commit();
+                            .addToBackStack(null).commit();
                     return true;
                 }
             }
