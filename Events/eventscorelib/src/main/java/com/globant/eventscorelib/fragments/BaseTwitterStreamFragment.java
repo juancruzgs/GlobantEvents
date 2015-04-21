@@ -112,7 +112,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
             @Override
             public void onRefresh() {
                 BaseApplication.getInstance().getCacheObjectsManager().tweetList = null;
-                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, ""); // TODO: put the event hashtag
+                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "#GameOfThrones"); // TODO: put the event hashtag
             }
         });
     }
@@ -183,38 +183,6 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
             mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, ""); // TODO: put the event hashtag
         }
     }
-
-    //    private class TweetsLoader extends AsyncTask<Void, Void, Boolean> {
-//
-//        @Override
-//        protected Boolean doInBackground(Void... params) {
-//            mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
-//            try {
-//                if (mTweetList == null) {
-//                    mTweetList = BaseApplication.getInstance().getTwitterManager().getTweetList(getActivity(), ""); // TODO: put the event hashtag
-//                    BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
-//                }
-//            } catch (Exception e) {
-//                Logger.e("LOADING TWITTER", e);
-//            }
-//            return (mTweetList != null);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Boolean result) {
-//            super.onPostExecute(result);
-//            if (result && mTweetList !=null) {
-//                if (getActivity() == null) return;
-//                TweetListAdapter mAdapter = new TweetListAdapter(mTweetList, getActivity());
-//                mRecyclerView.setAdapter(mAdapter);
-//                mSwipeRefreshLayout.setRefreshing(false);
-//                hideUtilsAndShowContentOverlay();
-//            } else {
-//                mSwipeRefreshLayout.setRefreshing(false);
-//                showErrorOverlay();
-//            }
-//        }
-//   }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
