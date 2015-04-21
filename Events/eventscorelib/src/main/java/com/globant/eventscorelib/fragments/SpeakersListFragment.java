@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.adapters.SpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 /**
         * Created by agustin.gugliotta on 15/04/2015.
@@ -37,6 +38,11 @@ public class SpeakersListFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initDataset();
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
     }
 
     @Override

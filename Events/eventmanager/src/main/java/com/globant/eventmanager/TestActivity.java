@@ -6,9 +6,15 @@ import android.view.MenuItem;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 
 public class TestActivity extends BaseActivity {
+
+    @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

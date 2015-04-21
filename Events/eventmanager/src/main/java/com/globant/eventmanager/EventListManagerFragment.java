@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.BaseEventListFragment;
 import com.globant.eventscorelib.BaseEventsListAdapter;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.software.shell.fab.ActionButton;
 
 public class EventListManagerFragment extends BaseEventListFragment {
@@ -35,6 +36,11 @@ public class EventListManagerFragment extends BaseEventListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initDataset();
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
     }
 
     @Override

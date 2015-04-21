@@ -11,9 +11,15 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 
 public class EventsListManagerActivity extends BaseActivity {
+
+    @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
