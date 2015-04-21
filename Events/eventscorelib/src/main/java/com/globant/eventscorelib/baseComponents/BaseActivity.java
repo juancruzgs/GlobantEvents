@@ -95,11 +95,6 @@ public abstract class BaseActivity extends ActionBarActivity {
         setConnectionReceiver();
 
         mServiceClass = getServiceClass();
-
-        if (mServiceClass == null) {
-            // TODO: This will become an exception
-            Logger.d("Service not defined");
-        }
     }
 
     @Override
@@ -121,11 +116,13 @@ public abstract class BaseActivity extends ActionBarActivity {
                 new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         super.onResume();
 
-        if (!BaseService.isRunning) {
-            doStartService();
-        }
+        if (mServiceClass != null) {
+            if (!BaseService.isRunning) {
+                doStartService();
+            }
 
-        doBindService();
+            doBindService();
+        }
     }
 
     @Override
@@ -133,7 +130,9 @@ public abstract class BaseActivity extends ActionBarActivity {
         unregisterReceiver(mReceiver);
         super.onPause();
 
-        doUnbindService();
+        if (mServiceClass != null) {
+            doUnbindService();
+        }
     }
 
     @Override
