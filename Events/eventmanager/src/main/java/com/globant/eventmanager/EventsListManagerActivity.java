@@ -18,7 +18,7 @@ public class EventsListManagerActivity extends BaseActivity {
 
     @Override
     protected Class<? extends BaseService> getServiceClass() {
-        return null;
+        return ManagerDataService.class;
     }
 
     @Override

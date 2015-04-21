@@ -34,7 +34,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public Activity getBindingActivity() {
-        return null;
+        return getActivity();
     }
 
     @Override
@@ -44,14 +44,14 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-         showProgressOverlay();
+        showProgressOverlay();
     }
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         mTweetList = (List<Status>) result;
         BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
-       if (mTweetList != null) {
+        if (mTweetList != null) {
             if (getActivity() == null) return;
             TweetListAdapter mAdapter = new TweetListAdapter(mTweetList, getActivity());
             mRecyclerView.setAdapter(mAdapter);
@@ -72,8 +72,8 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public BaseTwitterStreamFragment() {
         // Required empty public constructor
@@ -81,7 +81,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return null;
+        return BaseTwitterStreamFragment.this;
     }
 
     @Override

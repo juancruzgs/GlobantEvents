@@ -10,14 +10,4 @@ import com.globant.eventscorelib.fragments.BaseTwitterStreamFragment;
 
 
 public class ManagerTwitterStreamFragment extends BaseTwitterStreamFragment {
-
-    @Override
-    public BaseService.ActionListener getActionListener() {
-        return null;
-    }
-
-    @Override
-    protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateEventView(inflater, container, savedInstanceState);
-    }
 }

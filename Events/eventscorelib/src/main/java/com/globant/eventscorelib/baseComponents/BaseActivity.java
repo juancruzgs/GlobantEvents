@@ -54,7 +54,6 @@ public abstract class BaseActivity extends ActionBarActivity {
             for (BaseFragment fragment : mFragments) {
                 fragment.setService(mService);
             }
-
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -100,9 +99,6 @@ public abstract class BaseActivity extends ActionBarActivity {
         if (mServiceClass == null) {
             // TODO: This will become an exception
             Logger.d("Service not defined");
-        }
-        else {
-            doStartService();
         }
     }
 
