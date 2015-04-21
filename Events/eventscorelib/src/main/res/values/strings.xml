@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Events Core Lib</string>
     <string name="title_activity_events_stream">Events</string>
     <string name="title_fragment_events_stream">Stream</string>
@@ -72,6 +74,8 @@
     <string name="twitter_username">\@%s</string>
     <string name="placeholder_twitter_username">\@username</string>
     <string name="title_activity_tweet">TweetActivity</string>
-
     <string name="action_profile">Profile</string>
+    <string name="title_activity_speaker_detail">SpeakerDetailActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

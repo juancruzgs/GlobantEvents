@@ -1,5 +1,6 @@
 package com.globant.eventscorelib.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,8 @@ import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.adapters.SpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.baseComponents.CreditsActivity;
+import com.globant.eventscorelib.baseComponents.SpeakerDetailActivity;
 
 /**
         * Created by agustin.gugliotta on 15/04/2015.
@@ -76,12 +79,8 @@ public class SpeakersListFragment extends BaseFragment {
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
                         //TODO juan.ramirez,  send speaker id or speaker object from backend.
-                        getActivity().getSupportFragmentManager()
-                                     .beginTransaction()
-                                     .replace(R.id.container, new SpeakerDetailFragment())
-                                     .addToBackStack(null)
-                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                                     .commit();
+                        Intent intentSpeakerDetail = new Intent(getActivity(), SpeakerDetailActivity.class);
+                        startActivity(intentSpeakerDetail);
                     }
                 })
         );
