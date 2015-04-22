@@ -19,7 +19,7 @@ import java.util.List;
 import static android.support.v4.view.ViewPager.OnPageChangeListener;
 import static com.globant.eventscorelib.baseComponents.BaseFragment.TitleChangeable;
 
-abstract public class BasePagerActivity extends BaseActivity  implements OnPageChangeListener {
+abstract public class BasePagerActivity extends BaseActivity{
 
     PageAdapter pageAdapter;
     ViewPager mPager;
@@ -35,7 +35,6 @@ abstract public class BasePagerActivity extends BaseActivity  implements OnPageC
 
         mPager = (ViewPager)findViewById(R.id.viewpager);
         mPager.setAdapter(pageAdapter);
-        mPager.setOnPageChangeListener(this);
         mPager.setPageTransformer(true, new ZoomOutSlideTransformer());
     }
 
@@ -90,30 +89,6 @@ abstract public class BasePagerActivity extends BaseActivity  implements OnPageC
         public CharSequence getPageTitle(int position) {
             return ((BaseFragment)fragments.get(position)).getTitle();
         }
-
     }
 
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        Logger.d("onPageScrollStateChanged");
-    }
-
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        Logger.d("onPageScrolled");
-//        mPager = (ViewPager)findViewById(R.id.viewpager);
-//        CharSequence pageTitle = mPager.getAdapter().getPageTitle(position);
-//        if (pageTitle != null){
-//            changeFragmentTitle(pageTitle.toString());
-//        } else {
-//            changeFragmentTitle("");
-//        }
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        Logger.d("onPageSelected");
-    }
 }

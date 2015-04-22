@@ -111,7 +111,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public String getTitle() {
-        return mTitle;
+        return "Event description";
     }
 
     @Override
