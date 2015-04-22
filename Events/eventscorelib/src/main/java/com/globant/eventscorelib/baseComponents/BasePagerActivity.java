@@ -8,16 +8,22 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class BasePagerActivity extends BaseActivity {
+import static android.support.v4.view.ViewPager.OnPageChangeListener;
+import static com.globant.eventscorelib.baseComponents.BaseFragment.TitleChangeable;
+
+abstract public class BasePagerActivity extends BaseActivity  implements OnPageChangeListener {
 
     PageAdapter pageAdapter;
+    ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +34,15 @@ abstract public class BasePagerActivity extends BaseActivity {
 
         pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
 
-        ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
-        pager.setAdapter(pageAdapter);
-        pager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        mPager = (ViewPager)findViewById(R.id.viewpager);
+        mPager.setAdapter(pageAdapter);
+        mPager.setOnPageChangeListener(this);
+        mPager.setPageTransformer(true, new ZoomOutSlideTransformer());
     }
 
     @Override
     public String getActivityTitle() {
-        return "Base Pager Activity";
+        return null;
     }
 
 
@@ -82,16 +89,32 @@ abstract public class BasePagerActivity extends BaseActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "DESCRIPTION";
-                case 1:
-                    return "PARTICIPANTS";
-                case 2:
-                    return "SPEAKERS";
-                default:
-                    return null;
-            }
+            return ((BaseFragment)fragments.get(position)).getTitle();
         }
+
+    }
+
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        Logger.d("onPageScrollStateChanged");
+    }
+
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        Logger.d("onPageScrolled");
+//        mPager = (ViewPager)findViewById(R.id.viewpager);
+//        CharSequence pageTitle = mPager.getAdapter().getPageTitle(position);
+//        if (pageTitle != null){
+//            changeFragmentTitle(pageTitle.toString());
+//        } else {
+//            changeFragmentTitle("");
+//        }
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        Logger.d("onPageSelected");
     }
 }

@@ -130,4 +130,8 @@ public abstract class BaseFragment extends Fragment{
     }
 
     public abstract String getTitle();
+
+    public interface TitleChangeable{
+        public void changeFragmentTitle(String title);
+    }
 }

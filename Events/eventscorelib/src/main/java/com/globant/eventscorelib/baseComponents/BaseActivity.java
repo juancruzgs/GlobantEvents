@@ -23,10 +23,12 @@ import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
 
+import static com.globant.eventscorelib.baseComponents.BaseFragment.TitleChangeable;
+
 /**
  * Created by ignaciopena on 4/1/15.
  */
-public abstract class BaseActivity extends ActionBarActivity {
+public abstract class BaseActivity extends ActionBarActivity implements TitleChangeable{
 
     BroadcastReceiver mReceiver;
     TextView mConnectionRibbon;
@@ -210,7 +212,13 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
-    // Anstract methods
+
+    @Override
+    public void changeFragmentTitle(String title) {
+        if (title != null && mFragmentTitle != null){
+             mFragmentTitle.setText(title);
+        }
+    }
+
     public abstract String getActivityTitle();
-//    public abstract String getFragmentTitle(BaseFragment fragment);
 }

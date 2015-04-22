@@ -163,11 +163,11 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
         if (i < mFlexibleSpaceImageHeight){
             mTitle = "";
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(mTitle);
+            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
         }
         else {
             mTitle = "La Fiesta del Chori !";
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(mTitle);
+            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
         }
 
         // Translate FAB
