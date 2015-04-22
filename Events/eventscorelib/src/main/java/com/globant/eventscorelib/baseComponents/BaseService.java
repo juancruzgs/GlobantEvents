@@ -180,7 +180,6 @@ public class BaseService extends Service {
                     currentSubscriber.failAction(theAction, e);
                     Logger.e("executeAction", e);
                 }
-
             }
         };
         new Thread(r).start();
