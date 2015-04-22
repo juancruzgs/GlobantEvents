@@ -155,6 +155,8 @@ public class BaseService extends Service {
                             currentSubscriber.finishAction(theAction, theEvents);
                             break;
                         case EVENT_DETAIL:
+                            Event event = mCloudDataController.getEvent((String)argument);
+                            currentSubscriber.finishAction(theAction, event);
                             break;
                         case POSITION_ADDRESS:
                             Address address = mGeocoderController.getAddressFromCoordinates((LatLng)argument);
