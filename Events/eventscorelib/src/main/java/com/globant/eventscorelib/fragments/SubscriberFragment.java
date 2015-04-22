@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseComponents.ErrorLabelLayout;
 import com.globant.eventscorelib.managers.SharedPreferencesManager;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -64,9 +67,9 @@ public class SubscriberFragment extends BaseFragment {
     ImageView mIconFirstName;
     ImageView mIconToChange;
     Drawable mDrawableToApply;
-    Drawable mDrawableToReturn;
     final int CAMERA_CAPTURE = 1;
     final int CROP_PIC = 2;
+    ErrorLabelLayout errorLabelLayoutFirstName;
 
     public SubscriberFragment() {
         // Required empty public constructor
@@ -105,7 +108,10 @@ public class SubscriberFragment extends BaseFragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language_ambar));
                 if (mIconToChange!= null){
-                mIconToChange.setImageDrawable(mDrawableToReturn);}
+                    mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
+                    DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.grey_icon));
+                    mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
+                    mIconToChange.setImageDrawable(mDrawableToApply);}
             }
         });
     }
@@ -116,68 +122,66 @@ public class SubscriberFragment extends BaseFragment {
 
             int id = view.getId();
             //noinspection SimplifiableIfStatement
+
+            //HACERLO UN VOID COMUN
             if (id== (R.id.edit_text_first_name)) {
              mIconToChange=mIconFirstName;
-             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_first_name_ambar);
-             mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_first_name);
+             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_first_name);
 
 
             } else if (id== (R.id.edit_text_last_name)){
                 mIconToChange=mIconLastName;
-                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_last_name_ambar);
-                mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_last_name);
+                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_last_name);
 
             }   else if (id== (R.id.edit_text_phone)){
                  mIconToChange=mIconPhone;
-                 mDrawableToApply=getResources().getDrawable(R.mipmap.ic_phone_ambar);
-                 mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_phone);
+                 mDrawableToApply=getResources().getDrawable(R.mipmap.ic_phone);
 
             }
                   else if (id== (R.id.edit_text_occupation)){
                     mIconToChange=mIconOccupation;
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_occupation_ambar);
-                    mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_occupation);
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_occupation);
 
 
             }
                    else if (id== (R.id.edit_text_email)){
                      mIconToChange=mIconEmail;
-                     mDrawableToApply=getResources().getDrawable(R.mipmap.ic_email_ambar);
-                     mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_email);
+                     mDrawableToApply=getResources().getDrawable(R.mipmap.ic_email);
 
 
             }
                      else if (id== (R.id.edit_text_country)){
                         mIconToChange=mIconCountry;
-                        mDrawableToApply=getResources().getDrawable(R.mipmap.ic_country_ambar);
-                        mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_country);
+                        mDrawableToApply=getResources().getDrawable(R.mipmap.ic_country);
 
 
             }
                         else if (id== (R.id.edit_text_city)){
                          mIconToChange=mIconCity;
-                         mDrawableToApply=getResources().getDrawable(R.mipmap.ic_city_ambar);
-                         mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_city);
+                         mDrawableToApply=getResources().getDrawable(R.mipmap.ic_city);
 
 
             }
                            else if (id== (R.id.edit_text_twitter)){
                              mIconToChange=mIconTwitter;
-                             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_twitter_ambar);
-                             mDrawableToReturn=getResources().getDrawable(R.mipmap.ic_twitter1);
+                             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_twitter1);
 
 
             }
 
             //onFocus
             if (gainFocus) {
-                //set the text
+                mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
+                DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.ambar));
+                mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
                 mIconToChange.setImageDrawable(mDrawableToApply);
             }
             //onBlur
             else {
-//                //clear the text
-                mIconToChange.setImageDrawable(mDrawableToReturn);
+                mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
+                DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.grey_icon));
+                mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
+                mIconToChange.setImageDrawable(mDrawableToApply);
                 mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
             }
         };
@@ -230,6 +234,7 @@ public class SubscriberFragment extends BaseFragment {
         mIconCity=(ImageView)rootView.findViewById(R.id.icon_city);
         mIconEnglishKnowledge=(ImageView)rootView.findViewById(R.id.icon_language);
         mIconTwitter=(ImageView)rootView.findViewById(R.id.icon_twitter);
+        errorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
     }
 
     @Override
@@ -312,7 +317,20 @@ public class SubscriberFragment extends BaseFragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
-            saveSubscriberPreferences();
+                ////CREAR PROCEDIMIENTO HAGA UN IF COMUN, QUE ENTRE UNA VIEW (EDITTEXT) USE EL VOID DE ARRIBA, SAQUE QUE ICONTOCHANGE Y DRAWTOAPLY Y HAGA LAS 4 LINEAS DE ABAJO
+            if (mEditTextFirstName.getText().toString().trim().length() == 0) {
+                errorLabelLayoutFirstName.setError("*Required");
+                mIconToChange=mIconFirstName;
+                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_first_name);
+                mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
+                DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.red_error));
+                mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
+                mIconToChange.setImageDrawable(mDrawableToApply);
+            }
+
+                else {
+                    saveSubscriberPreferences();}
+
             return true;
         }
 

@@ -57,38 +57,39 @@
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:minHeight="56dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:id="@+id/first_name"
+                android:paddingBottom="8dp"
                 android:layout_weight="0.1"
-                android:paddingBottom="8dp">
+                android:minHeight="56dp">
 
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/icon_first_name"
                     android:src="@mipmap/ic_first_name"
-                    android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"
-                    />
-
+                    android:layout_gravity="center_vertical"/>
+                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                android:id="@+id/nameErrorLayoutFirstName"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.9"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="20dp">
                 <EditText
                     style="@style/condensed_normal_small"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:ems="10"
                     android:id="@+id/edit_text_first_name"
                     android:hint="@string/edit_text_first_name_hint"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"
-                    android:background="#00000000"/>
+                    android:background="#00000000"
+                    android:paddingTop="15dp"/>
+                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
             </LinearLayout>
-            <View android:layout_width="match_parent"
-                  android:layout_height="0.25dp"
-                  android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -104,21 +105,30 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/icon_last_name"
                     android:src="@mipmap/ic_last_name"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.1"/>
-
+                    android:layout_weight="0.1"
+                    android:layout_gravity="center_vertical"/>
+                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                    android:id="@+id/nameErrorLayoutLastName"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.9"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="20dp">
                 <EditText
                     style="@style/condensed_normal_small"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:ems="10"
                     android:hint="@string/edit_text_laat_name_hint"
-                    android:layout_marginLeft="20dp"
                     android:id="@+id/edit_text_last_name"
                     android:layout_weight="0.9"
+                    android:background="#00000000"
                     android:layout_gravity="center_vertical"
-                    android:background="#00000000"/>
+                    android:paddingTop="15dp"/>
+                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+
+
             </LinearLayout>
             <View android:layout_width="match_parent"
                   android:layout_height="0.25dp"
@@ -154,9 +164,6 @@
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"/>
             </LinearLayout>
-            <View android:layout_width="match_parent"
-                  android:layout_height="0.25dp"
-                  android:background="@color/grey_dark"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -188,9 +195,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"/>
             </LinearLayout>
-            <View android:layout_width="match_parent"
-                  android:layout_height="0.25dp"
-                  android:background="@color/grey_dark"/>
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -232,40 +237,6 @@
                 android:minHeight="56dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:id="@+id/occupation"
-                android:layout_weight="0.1">
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/icon_occupation"
-                    android:src="@mipmap/ic_occupation"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.1"/>
-
-                <EditText
-                    style="@style/condensed_normal_small"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
-                    android:ems="10"
-                    android:id="@+id/edit_text_occupation"
-                    android:hint="@string/edit_text_occupation_hint"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="0.9"
-                    android:layout_gravity="center_vertical"
-                    android:background="#00000000"/>
-            </LinearLayout>
-            <View android:layout_width="match_parent"
-                  android:layout_height="0.25dp"
-                  android:background="@color/grey_dark"/>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="0dp"
-                android:minHeight="56dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:id="@+id/country"
                 android:layout_weight="0.1">
 
@@ -290,9 +261,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"/>
             </LinearLayout>
-            <View android:layout_width="match_parent"
-                  android:layout_height="0.25dp"
-                  android:background="@color/grey_dark"/>
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -336,6 +305,39 @@
                 android:minHeight="56dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:id="@+id/occupation"
+                android:layout_weight="0.1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/icon_occupation"
+                    android:src="@mipmap/ic_occupation"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"/>
+
+                <EditText
+                    style="@style/condensed_normal_small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/edit_text_occupation"
+                    android:hint="@string/edit_text_occupation_hint"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="0.9"
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:minHeight="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:id="@+id/english"
                 android:layout_weight="0.1">
 
@@ -357,7 +359,7 @@
                     android:text="@string/check_box_text_english_hint"
                     android:textColor="@color/grey"
                     android:singleLine="true"
-                    android:layout_marginLeft="20dp"/>
+                    android:layout_marginLeft="10dp"/>
 
             </LinearLayout>
 
