@@ -1,6 +1,7 @@
 package com.globant.eventscorelib;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,29 +14,34 @@ import com.globant.eventscorelib.fragments.TweetFragment;
 
 public abstract class BaseTweetActivity extends BaseActivity implements BaseService.ActionListener {
 
-    TweetFragment mTweetFragment;
-
-    @Override
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tweet);
         if (savedInstanceState == null) {
-            mTweetFragment = new TweetFragment();
-            //mTweetFragment.setService(getService());
             getSupportFragmentManager().beginTransaction().addToBackStack(null)
-                    .replace(R.id.container, mTweetFragment)
+                    .replace(R.id.container, new TweetFragment())
                     .commit();
         }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         Uri uri = getIntent().getData();
         if (uri != null) {
             getService().executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri);
         }
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Uri uri = getIntent().getData();
+//        if (uri != null) {
+//            getService().executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri);
+//        }
+//    }
 
     @Override
     public Activity getBindingActivity() {

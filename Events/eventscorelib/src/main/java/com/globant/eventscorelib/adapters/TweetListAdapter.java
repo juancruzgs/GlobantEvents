@@ -2,6 +2,7 @@ package com.globant.eventscorelib.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class TweetListAdapter extends RecyclerView.Adapter<TweetListAdapter.View
 
         public ViewHolder(View v) {
             super(v);
-            mTweetText = (TextView) v.findViewById(com.globant.eventscorelib.R.id.textView_tweet);
+            mTweetText = (TextView) v.findViewById(R.id.textView_tweet);
             mUserName =  (TextView) v.findViewById(R.id.textView_user_name);
             mUserPicture = (ImageView) v.findViewById(R.id.imageView_user_picture);
         }
@@ -67,6 +68,7 @@ public class TweetListAdapter extends RecyclerView.Adapter<TweetListAdapter.View
         holder.getUserName().setText(mTweetsList.get(position).getUser().getName());
         Picasso.with(mContext).load(mTweetsList.get(position).getUser()
                 .getOriginalProfileImageURL()).transform(transformation).into(holder.getUserPicture());
+        Linkify.addLinks(holder.getTweetText(), Linkify.ALL);
     }
 
     @Override

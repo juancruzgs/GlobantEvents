@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent" android:layout_height="match_parent"
+             xmlns:fab="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
              android:padding="@dimen/padding_framelayout">
 
     <android.support.v7.widget.CardView
@@ -69,10 +71,16 @@
                 style="@style/condensed_normal_small"
                 android:singleLine="false"
                 android:padding="@dimen/padding_text_view_card_row" />
-
         </LinearLayout>
 
-
     </android.support.v7.widget.CardView>
+
+    <com.software.shell.fab.ActionButton
+        android:id="@+id/action_button"
+        style="@style/fab_action_button_style"
+        fab:button_color="#CBE742"
+        fab:image="@mipmap/ic_fab_edit"
+        fab:image_size="24dp"
+        fab:type="DEFAULT" />
 
 </FrameLayout>
