@@ -176,6 +176,7 @@ public class BaseService extends Service {
                             break;
                         case SUBSCRIBER_CHECKIN:
                             mCloudDataController.setCheckIn((String) argument, getBaseContext());
+                            currentSubscriber.finishAction(theAction, null);
                             break;
                     }
                 } catch (Exception e) {

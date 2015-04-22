@@ -136,6 +136,9 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
+        if (mService != null){
+            ((BaseFragment)fragment).setService(mService);
+        }
         mFragments.add((BaseFragment)fragment);
         setFragmentTitle((BaseFragment)fragment);
     }

@@ -14,14 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.managers.SharedPreferencesManager;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 import com.nineoldandroids.view.ViewHelper;
@@ -102,6 +100,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         if (requestCode == 0) {
             if (resultCode == Activity.RESULT_OK) {
                 String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
+                Logger.d(eventId == null ? "null" : eventId);
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId);
             }
         }
