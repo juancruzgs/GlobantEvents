@@ -114,7 +114,7 @@ public class BaseService extends Service {
     }
 
     public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
-    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST}
+    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN}
 
     public TwitterManager getTwitterManager() {
         return mTwitterManager;
@@ -173,6 +173,9 @@ public class BaseService extends Service {
                         case TWEETS_LIST:
                             List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
                             currentSubscriber.finishAction(theAction, tweetList);
+                            break;
+                        case SUBSCRIBER_CHECKIN:
+                            mCloudDataController.setCheckIn((String) argument, getBaseContext());
                             break;
                     }
                 } catch (Exception e) {

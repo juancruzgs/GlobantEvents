@@ -1,8 +1,11 @@
 package com.globant.eventscorelib.baseComponents;
 
+import android.content.Context;
+
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.managers.SharedPreferencesManager;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -43,10 +46,11 @@ public class CloudDataController {
         return query.getFirst();
     }
 
-    public void setCheckIn(String eventId, String subscriberEmail) throws ParseException {
+    public void setCheckIn(String eventId, Context context) throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject event = eventsQuery.get(eventId);
-        ParseObject subscriber = getSubscriberByEmail(subscriberEmail);
+        String subscriberMail = SharedPreferencesManager.getUserEmail(context);
+        ParseObject subscriber = getSubscriberByEmail(subscriberMail);
         ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, subscriber);

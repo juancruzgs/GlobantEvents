@@ -102,8 +102,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         if (requestCode == 0) {
             if (resultCode == Activity.RESULT_OK) {
                 String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
-                String subscriberMail = SharedPreferencesManager.getUserEmail(getActivity());
-
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId);
             }
         }
     }
