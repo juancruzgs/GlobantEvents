@@ -12,7 +12,7 @@
             android:label="@string/title_activity_base_pager_acivity" >
         </activity>
         <activity
-            android:name=".TweetActivity"
+            android:name=".BaseTweetActivity"
             android:label="@string/title_activity_tweet"
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTop">

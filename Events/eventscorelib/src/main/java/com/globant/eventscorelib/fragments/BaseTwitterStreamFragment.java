@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.TweetActivity;
+import com.globant.eventscorelib.BaseTweetActivity;
 import com.globant.eventscorelib.adapters.TweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
@@ -26,7 +26,7 @@ import java.util.List;
 import twitter4j.Status;
 
 
-public class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener{
+public abstract class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener{
 
     private LayoutManagerType mCurrentLayoutManagerType;
     private RecyclerView mRecyclerView;
@@ -148,11 +148,13 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), TweetActivity.class);
+                Intent intent = new Intent(getActivity(), getTweetActivityClass());
                 startActivity(intent);
             }
         });
     }
+
+    protected abstract Class<? extends BaseTweetActivity> getTweetActivityClass();
 
     public void setRecyclerViewLayoutManager() {
         int scrollPosition = 0;

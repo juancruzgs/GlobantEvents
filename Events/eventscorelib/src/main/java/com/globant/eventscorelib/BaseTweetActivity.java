@@ -11,14 +11,9 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.fragments.TweetFragment;
 
 
-public class TweetActivity extends BaseActivity implements BaseService.ActionListener {
+public abstract class BaseTweetActivity extends BaseActivity implements BaseService.ActionListener {
 
     TweetFragment mTweetFragment;
-
-    @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return BaseService.class;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

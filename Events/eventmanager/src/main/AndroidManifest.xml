@@ -57,10 +57,17 @@
         <activity
             android:name="com.globant.eventscorelib.CreditsActivity"
             android:label="@string/title_activity_credits"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
-        <service android:name=".ManagerDataService"
-            android:exported="false"/>
+
+        <service
+            android:name=".ManagerDataService"
+            android:exported="false" />
+
+        <activity
+            android:name=".TweetManagerActivity"
+            android:label="@string/title_activity_twitter_manager" >
+        </activity>
     </application>
 
 </manifest>

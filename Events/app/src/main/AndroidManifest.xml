@@ -69,6 +69,10 @@
             android:name=".EventDetailClientActivity"
             android:label="@string/title_activity_event_detail_client" >
         </activity>
+        <activity
+            android:name=".TweetClientActivity"
+            android:label="@string/title_activity_tweet_client" >
+        </activity>
     </application>
 
 </manifest>

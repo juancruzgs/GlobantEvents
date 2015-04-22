@@ -6,4 +6,5 @@
     <string name="title_activity_event_detail_client">EventDetailClientActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_tweet_client">TweetClientActivity</string>
 </resources>
