@@ -1,12 +1,7 @@
 package com.globant.events;
 
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.globant.eventscorelib.baseComponents.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.baseComponents.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.fragments.SpeakersListFragment;
@@ -16,11 +11,6 @@ import java.util.List;
 
 
 public class EventDetailClientActivity extends BasePagerActivity {
-
-    @Override
-    public String getActivityTitle() {
-        return "Description";
-    }
 
     @Override
     protected Class<? extends BaseService> getServiceClass() {

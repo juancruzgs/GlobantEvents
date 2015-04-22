@@ -33,11 +33,6 @@ public class EventsListManagerActivity extends BaseActivity {
     }
 
     @Override
-    public String getActivityTitle() {
-        return getString(R.string.title_activity_events_stream);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_events, menu);

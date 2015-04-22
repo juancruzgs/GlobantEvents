@@ -36,9 +36,4 @@ public class EventDetailManagerActivity extends BasePagerActivity {
         fragmentList.add(new ManagerTwitterStreamFragment());
         return fragmentList;
     }
-
-    @Override
-    public String getActivityTitle() {
-        return "Description";
-    }
 }

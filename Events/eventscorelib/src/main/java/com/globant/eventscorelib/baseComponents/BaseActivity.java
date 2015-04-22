@@ -170,15 +170,15 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
         mToolbar =  (Toolbar) mainContainer.findViewById(R.id.toolbar);
         mFragmentTitle = (TextView) mToolbar.findViewById(R.id.toolbar_fragment_title);
         setSupportActionBar(mToolbar);
-        setActivityTitle();
+//        setActivityTitle();
     }
 
-    private void setActivityTitle(){
-        String title = getActivityTitle();
-        if (title != null && !title.isEmpty()){
-            mToolbar.setTitle(title);
-        }
-    }
+//    private void setActivityTitle(){
+//        String title = getActivityTitle();
+//        if (title != null && !title.isEmpty()){
+//            mToolbar.setTitle(title);
+//        }
+//    }
 
     private void setFragmentTitle(BaseFragment fragment){
         String title = fragment.getTitle();
@@ -222,5 +222,5 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
         }
     }
 
-    public abstract String getActivityTitle();
+//    public abstract String getActivityTitle();
 }

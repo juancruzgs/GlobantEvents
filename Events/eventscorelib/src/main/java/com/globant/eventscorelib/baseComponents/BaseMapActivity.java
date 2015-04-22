@@ -48,14 +48,11 @@ public abstract class BaseMapActivity extends ActionBarActivity implements OnMap
 
     private void prepareToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle(getActivityTitle());
         TextView textView = (TextView)toolbar.findViewById(R.id.toolbar_fragment_title);
         textView.setText("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-    protected abstract String getActivityTitle();
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

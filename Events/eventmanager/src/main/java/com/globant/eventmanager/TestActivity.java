@@ -30,11 +30,6 @@ public class TestActivity extends BaseActivity {
     }
 
     @Override
-    public String getActivityTitle() {
-        return "Test Activity";
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_test, menu);
