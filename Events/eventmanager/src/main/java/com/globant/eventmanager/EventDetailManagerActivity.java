@@ -38,16 +38,6 @@ public class EventDetailManagerActivity extends BasePagerActivity {
     }
 
     @Override
-    protected List<String> getFragmentPageTitles() {
-        List<String> list = new ArrayList<>();
-        list.add("DESCRIPTION");
-        list.add("PARTICIPANTS");
-        list.add("SPEAKERS");
-        list.add("TWITTER");
-        return list;
-    }
-
-    @Override
     public String getActivityTitle() {
         return "Description";
     }

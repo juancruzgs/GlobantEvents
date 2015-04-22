@@ -68,13 +68,9 @@ abstract public class BasePagerActivity extends BaseActivity  implements OnPageC
 
         @Override
         public CharSequence getPageTitle(int position) {
-            List<String> titles = getFragmentPageTitles();
-            return titles.get(position);
-//            return ((BaseFragment)fragments.get(position)).getTitle();
+            return ((BaseFragment)fragments.get(position)).getTitle().toUpperCase();
         }
     }
-
-    protected abstract List<String> getFragmentPageTitles();
 
     @Override
     public void onPageScrollStateChanged(int state) {

@@ -139,7 +139,10 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
         mFragments.add((BaseFragment)fragment);
-        setFragmentTitle((BaseFragment)fragment);
+        if (mFragments.size() == 1) {
+            //Sets the first fragment title
+            setFragmentTitle((BaseFragment) fragment);
+        }
     }
 
     private void setConnectionReceiver() {
