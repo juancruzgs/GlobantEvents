@@ -40,32 +40,12 @@ abstract public class BasePagerActivity extends BaseActivity  implements OnPageC
     }
 
     @Override
-    public String getActivityTitle() {
-        return null;
-    }
-
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_base_pager_acivity, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected List<Fragment> getFragments() {
-        List<Fragment> fList = new ArrayList<Fragment>();
-
-        fList.add(new BaseEventDescriptionFragment());
-        fList.add(new BaseEventDescriptionFragment());
-        fList.add(new BaseEventDescriptionFragment());
-
-        return fList;
-    }
+    protected abstract List<Fragment> getFragments();
 
     public class PageAdapter extends FragmentPagerAdapter {
 
@@ -88,17 +68,18 @@ abstract public class BasePagerActivity extends BaseActivity  implements OnPageC
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return ((BaseFragment)fragments.get(position)).getTitle();
+            List<String> titles = getFragmentPageTitles();
+            return titles.get(position);
+//            return ((BaseFragment)fragments.get(position)).getTitle();
         }
-
     }
 
+    protected abstract List<String> getFragmentPageTitles();
 
     @Override
     public void onPageScrollStateChanged(int state) {
         Logger.d("onPageScrollStateChanged");
     }
-
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

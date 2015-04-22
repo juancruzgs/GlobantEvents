@@ -170,14 +170,14 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
         setActivityTitle();
     }
 
-    private final void setActivityTitle(){
+    private void setActivityTitle(){
         String title = getActivityTitle();
         if (title != null && !title.isEmpty()){
             mToolbar.setTitle(title);
         }
     }
 
-    private final void setFragmentTitle(BaseFragment fragment){
+    private void setFragmentTitle(BaseFragment fragment){
         String title = fragment.getTitle();
         if (title != null && !title.isEmpty() && mFragmentTitle != null){
             mFragmentTitle.setText(title);
@@ -211,7 +211,6 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
             f.hideUtilsAndShowContentOverlay();
         }
     }
-
 
     @Override
     public void changeFragmentTitle(String title) {

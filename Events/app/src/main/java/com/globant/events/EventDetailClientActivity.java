@@ -18,14 +18,13 @@ import java.util.List;
 public class EventDetailClientActivity extends BasePagerActivity {
 
     @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return ClientDataService.class;
+    public String getActivityTitle() {
+        return "Description";
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_event_detail_client);
+    protected Class<? extends BaseService> getServiceClass() {
+        return ClientDataService.class;
     }
 
     @Override
@@ -35,30 +34,16 @@ public class EventDetailClientActivity extends BasePagerActivity {
         //TODO: Add EventParticipantsFragment
 //        fragmentList.add(new EventParticipantsFragment());
         fragmentList.add(new SpeakersListFragment());
-        fragmentList.add(new SpeakersListFragment());
         fragmentList.add(new ClientStreamTwitterFragment());
         return fragmentList;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_event_detail_client, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    protected List<String> getFragmentPageTitles() {
+        List<String> list = new ArrayList<>();
+        list.add("DESCRIPTION");
+        list.add("SPEAKERS");
+        list.add("TWITTER");
+        return list;
+    }
 }

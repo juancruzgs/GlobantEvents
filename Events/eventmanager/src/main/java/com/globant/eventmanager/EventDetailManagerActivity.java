@@ -20,30 +20,7 @@ public class EventDetailManagerActivity extends BasePagerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_event_detail_manager);
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_event_detail_manager, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @Override
     protected Class<? extends BaseService> getServiceClass() {
@@ -58,5 +35,20 @@ public class EventDetailManagerActivity extends BasePagerActivity {
         fragmentList.add(new SpeakersListFragment());
         fragmentList.add(new ManagerTwitterStreamFragment());
         return fragmentList;
+    }
+
+    @Override
+    protected List<String> getFragmentPageTitles() {
+        List<String> list = new ArrayList<>();
+        list.add("DESCRIPTION");
+        list.add("PARTICIPANTS");
+        list.add("SPEAKERS");
+        list.add("TWITTER");
+        return list;
+    }
+
+    @Override
+    public String getActivityTitle() {
+        return "Description";
     }
 }
