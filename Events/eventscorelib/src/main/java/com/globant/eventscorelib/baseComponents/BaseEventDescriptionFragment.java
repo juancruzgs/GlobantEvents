@@ -208,6 +208,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_event_description_fragment, menu);
     }
 

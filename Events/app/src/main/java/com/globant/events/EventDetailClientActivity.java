@@ -32,8 +32,11 @@ public class EventDetailClientActivity extends BasePagerActivity {
     protected List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new EventDescriptionClientFragment());
+        //TODO: Add EventParticipantsFragment
 //        fragmentList.add(new EventParticipantsFragment());
         fragmentList.add(new SpeakersListFragment());
+        fragmentList.add(new SpeakersListFragment());
+        fragmentList.add(new ClientStreamTwitterFragment());
         return fragmentList;
     }
 
