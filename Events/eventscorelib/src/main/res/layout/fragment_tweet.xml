@@ -36,7 +36,7 @@
                     android:scaleType="centerCrop"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
-                   />
+                    android:src="@mipmap/placeholder"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"

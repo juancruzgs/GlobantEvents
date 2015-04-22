@@ -2,6 +2,7 @@ package com.globant.eventscorelib.fragments;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.TweetActivity;
 import com.globant.eventscorelib.adapters.TweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
@@ -49,17 +51,19 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        mTweetList = (List<Status>) result;
-        BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
-        if (mTweetList != null) {
-            if (getActivity() == null) return;
-            TweetListAdapter mAdapter = new TweetListAdapter(mTweetList, getActivity());
-            mRecyclerView.setAdapter(mAdapter);
-            mSwipeRefreshLayout.setRefreshing(false);
-            hideUtilsAndShowContentOverlay();
-        } else {
-            mSwipeRefreshLayout.setRefreshing(false);
-            showErrorOverlay();
+        switch (theAction) {
+            case TWEETS_LIST:
+            mTweetList = (List<Status>) result;
+            BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
+            if (mTweetList != null) {
+                if (getActivity() == null) return;
+                setAdapterRecyclerView();
+                hideUtilsAndShowContentOverlay();
+            } else {
+                mSwipeRefreshLayout.setRefreshing(false);
+                showErrorOverlay();
+            }
+            break;
         }
     }
 
@@ -144,9 +148,8 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null)
-                        .replace(R.id.container, new TweetFragment())
-                        .commit();
+                Intent intent = new Intent(getActivity(), TweetActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -158,7 +161,6 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
         }
-
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
 
@@ -166,21 +168,27 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
-//        if (mTweetList == null) {
-//            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, ""); // TODO: put the event hashtag
-//        }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
+        if (mTweetList != null) {
+            setAdapterRecyclerView();
+        }
+    }
+
+    private void setAdapterRecyclerView() {
+        TweetListAdapter mAdapter = new TweetListAdapter(mTweetList, getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 
     @Override
     public void setService(BaseService service) {
         super.setService(service);
         mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
         if (mTweetList == null) {
-            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, ""); // TODO: put the event hashtag
+            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones"); // TODO: put the event hashtag
         }
     }
 
@@ -189,7 +197,4 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
     }
-
-
-    // TODO change the asyntask
 }

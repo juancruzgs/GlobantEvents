@@ -4,37 +4,45 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="7dp"
-    >
+    android:padding="7dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginBottom="7dp">
 
         <ImageView
             android:id="@+id/imageView_user_picture"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="100dp"
-            android:scaleType="centerCrop"/>
+            android:layout_weight="0.4"
+            android:layout_marginLeft="8dp"
+            />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingLeft="10dp">
+            android:paddingLeft="10dp"
+            android:layout_gravity="center">
 
             <TextView
                 android:id="@+id/textView_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 style="@style/condensed_normal_large"
-                android:textColor="@color/globant_green"/>
+                android:textColor="@color/globant_green"
+                />|
 
             <TextView
                 android:id="@+id/textView_tweet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 style="@style/condensed_normal_small"
                 />
 
@@ -46,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/grey_light"
-        android:layout_marginTop="12dp"/>
+        />
 
 </LinearLayout>
 

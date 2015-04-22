@@ -70,7 +70,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     };
 
     private void doStartService() {
-        startService(new Intent(this, mServiceClass));
+        startService(new Intent(getApplicationContext(), mServiceClass));
     }
 
     protected void doBindService() {

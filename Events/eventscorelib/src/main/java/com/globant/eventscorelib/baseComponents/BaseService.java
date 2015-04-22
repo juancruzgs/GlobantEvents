@@ -3,6 +3,7 @@ package com.globant.eventscorelib.baseComponents;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -169,8 +170,18 @@ public class BaseService extends Service {
                             List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
                             currentSubscriber.finishAction(theAction, tweetList);
                             break;
-
-
+                        case TWITTER_LOADER:
+                            Boolean login = mTwitterManager.loginToTwitter(getBaseContext(), null);
+                            currentSubscriber.finishAction(theAction, login);
+                            break;
+                        case TWITTER_LOADER_RESPONSE:
+                            Boolean response = mTwitterManager.getLoginResponse((Uri) argument);
+                            currentSubscriber.finishAction(theAction, response);
+                            break;
+                        case TWEET_POST:
+                            Boolean post = mTwitterManager.publishPost((String) argument);
+                            currentSubscriber.finishAction(theAction, post);
+                            break;
                     }
                 } catch (Exception e) {
 

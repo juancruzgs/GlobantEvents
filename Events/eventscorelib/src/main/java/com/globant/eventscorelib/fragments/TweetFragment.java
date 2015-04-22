@@ -41,8 +41,58 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
     }
 
     @Override
-    public BaseService.ActionListener getActionListener() {
+    public Activity getBindingActivity() {
+        return getActivity();
+    }
+
+    @Override
+    public Object getBindingKey() {
         return null;
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay();
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        switch (theAction) {
+            case GET_TWITTER_USER:
+                User user = (User) result;
+                BaseApplication.getInstance().getCacheObjectsManager().user = user;
+                if (user != null) {
+                    changeUserInformation();
+                }
+                break;
+            case TWITTER_LOADER:
+                if ((Boolean) result) {
+                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
+                }
+                break;
+            case TWITTER_LOADER_RESPONSE:
+                break;
+            case TWEET_POST:
+                if ((Boolean) result) {
+                    mTweetText.setText(getActivity().getString(R.string.general_hashtag));
+                    // TODO: get Event hashtag and change the strings
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.tweet_success), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.tweet_failure), Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+        hideUtilsAndShowContentOverlay();
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return TweetFragment.this;
     }
 
     @Override
@@ -75,17 +125,16 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
         try {
             if (BaseApplication.getInstance().getSharedPreferencesManager()
                     .isAlreadyTwitterLogged()) {
-               mLoginTwitterButton.setVisibility(View.GONE);
-               User user = BaseApplication.getInstance().getCacheObjectsManager().user;
+                mLoginTwitterButton.setVisibility(View.GONE);
+                User user = BaseApplication.getInstance().getCacheObjectsManager().user;
                 if (user == null) {
-               mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
+                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
+                } else {
+                    setUserInformation(user);
                 }
-                else {}
-
             } else {
                 mTweetButton.setEnabled(false);
                 mTweetText.setEnabled(false);
-                hideUtilsAndShowContentOverlay();
             }
         } catch (Exception e) {
             Logger.e("LOADING TWITTER", e);
@@ -100,74 +149,48 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
                 InputMethodManager imm = (InputMethodManager) getActivity()
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), 0);
-                new TweetPost().execute(tweet);
+                mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet);
             }
         } else if (v.getId() == R.id.button_login_twitter) {
-            showProgressOverlay();
-           new TwitterLoader().execute();
+            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, null);
         }
     }
 
-    @Override
-    public Activity getBindingActivity() {
-        return null;
-    }
 
-    @Override
-    public Object getBindingKey() {
-        return null;
-    }
-
-    @Override
-    public void onStartAction(BaseService.ACTIONS theAction) {
-        showProgressOverlay();
-    }
-
-    @Override
-    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        switch(theAction) {
-            case GET_TWITTER_USER:
-                User user = (User) result;
-                BaseApplication.getInstance().getCacheObjectsManager().user = user;
-                if (user != null) {
-                    mUsername.setText(String.format(getString(R.string.twitter_username), user.getScreenName()));
-                    mUserFullName.setText(user.getName());
-                    if (user.getProfileImageURL() != null) {
-                        Picasso.with(getActivity()).load(user.getOriginalProfileImageURL()).transform(mCircleTransformation).into(mUserPicture);
-                    }
-                    mTweetButton.setEnabled(true);
-                    mTweetText.setEnabled(true);
-                    mLoginTwitterButton.setVisibility(View.GONE);
-                    hideUtilsAndShowContentOverlay();
-                }
+    private void setUserInformation(User user) {
+        mUsername.setText(String.format(getString(R.string.twitter_username), user.getScreenName()));
+        mUserFullName.setText(user.getName());
+        if (user.getProfileImageURL() != null) {
+            Picasso.with(getActivity()).load(user.getOriginalProfileImageURL()).transform(mCircleTransformation).into(mUserPicture);
         }
+        mTweetButton.setEnabled(true);
+        mTweetText.setEnabled(true);
+        mLoginTwitterButton.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        showErrorOverlay();
-    }
 
-    private class TweetPost extends AsyncTask<String, Void, Boolean> {
 
-        @Override
-        protected Boolean doInBackground(String... params) {
-            return BaseApplication.getInstance().getTwitterManager().publishPost(params[0]);
-        }
 
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (result) {
-                mTweetText.setText(getActivity().getString(R.string.general_hashtag));
-                // TODO: get Event hashtag and change the strings
-                Toast.makeText(getActivity(), getActivity().getString(R.string.tweet_success),Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getActivity(), getActivity().getString(R.string.tweet_failure), Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    }
+//    private class TweetPost extends AsyncTask<String, Void, Boolean> {
+//
+//        @Override
+//        protected Boolean doInBackground(String... params) {
+//            return BaseApplication.getInstance().getTwitterManager().publishPost(params[0]);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean result) {
+//            super.onPostExecute(result);
+//            if (result) {
+//                mTweetText.setText(getActivity().getString(R.string.general_hashtag));
+//                // TODO: get Event hashtag and change the strings
+//                Toast.makeText(getActivity(), getActivity().getString(R.string.tweet_success), Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(getActivity(), getActivity().getString(R.string.tweet_failure), Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//
+//    }
 
 //    public class LoadUserInformation extends AsyncTask<Void, Void, User> {
 //
@@ -206,22 +229,22 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
 //        }
 //    }
 
-    private class TwitterLoader extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            return BaseApplication.getInstance().getTwitterManager().loginToTwitter(getActivity(), null);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (result) {
-                hideUtilsAndShowContentOverlay();
-
-               //new LoadUserInformation().execute();
-            }
-        }
-    }
+//    private class TwitterLoader extends AsyncTask<Void, Void, Boolean> {
+//        @Override
+//        protected Boolean doInBackground(Void... params) {
+//            return BaseApplication.getInstance().getTwitterManager().loginToTwitter(getActivity(), null);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean result) {
+//            super.onPostExecute(result);
+//            if (result) {
+//                hideUtilsAndShowContentOverlay();
+//
+//                //new LoadUserInformation().execute();
+//            }
+//        }
+//    }
 }
 
 
