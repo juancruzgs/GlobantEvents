@@ -29,27 +29,9 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     private long mBackPressedTime;
     private long mUpPressedTime;
     private LatLng mInitialMarkerPosition;
-
     private BaseService mService = null;
     private SearchView mSearchView;
     private String mInitialQuery = "";
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (mMarker != null) {
-            LatLng latLng = mMarker.getPosition();
-            outState.putParcelable(CoreConstants.MAP_MARKER_POSITION_INTENT, latLng);
-        }
-        outState.putString("string", mSearchView.getQuery().toString());
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mInitialMarkerPosition = (LatLng)savedInstanceState.get(CoreConstants.MAP_MARKER_POSITION_INTENT);
-        mInitialQuery = savedInstanceState.getString("string");
-    }
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -81,9 +63,7 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     }
 
     @Override
-    public void onStartAction(BaseService.ACTIONS theAction) {
-
-    }
+    public void onStartAction(BaseService.ACTIONS theAction) {}
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
@@ -107,9 +87,7 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     }
 
     @Override
-    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-
-    }
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,18 +97,20 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     }
 
     @Override
-    protected int getMapLayout() {
-        return R.layout.activity_manager_map;
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mMarker != null) {
+            LatLng latLng = mMarker.getPosition();
+            outState.putParcelable(CoreConstants.MAP_MARKER_POSITION_INTENT, latLng);
+        }
+        outState.putString(CoreConstants.MAP_SEARCH_QUERY_INTENT, mSearchView.getQuery().toString());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected int getMapContainer() {
-        return R.id.container;
-    }
-
-    @Override
-    protected String getActivityTitle() {
-        return getString(R.string.title_activity_manager_map);
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mInitialMarkerPosition = (LatLng)savedInstanceState.get(CoreConstants.MAP_MARKER_POSITION_INTENT);
+        mInitialQuery = savedInstanceState.getString(CoreConstants.MAP_SEARCH_QUERY_INTENT);
     }
 
     @Override
@@ -173,6 +153,10 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
                 return false;
             }
         });
+        prepareInitialSearchState();
+    }
+
+    private void prepareInitialSearchState() {
         if (!mInitialQuery.isEmpty()) {
             mSearchView.setQuery(mInitialQuery, false);
             mSearchView.setIconified(false);
@@ -250,5 +234,20 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
         }
 
         return false;
+    }
+
+    @Override
+    protected int getMapLayout() {
+        return R.layout.activity_manager_map;
+    }
+
+    @Override
+    protected int getMapContainer() {
+        return R.id.container;
+    }
+
+    @Override
+    protected String getActivityTitle() {
+        return getString(R.string.title_activity_manager_map);
     }
 }
