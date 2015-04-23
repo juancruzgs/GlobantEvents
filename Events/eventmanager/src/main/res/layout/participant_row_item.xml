@@ -7,15 +7,14 @@
     android:id="@+id/participant_item_holder_layout">
 
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/linear_layout_holder">
+        android:layout_height="wrap_content"
+        android:id="@+id/relative_layout_holder">
 
         <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingLeft="8dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
@@ -32,11 +31,11 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:padding="10dp"
-                android:layout_weight="1"
-                android:id="@+id/linear_layout_middle">
+                android:id="@+id/linear_layout_middle"
+                android:layout_marginLeft="80dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -83,12 +82,13 @@
             </LinearLayout>
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:paddingRight="8dp"
             android:id="@+id/frame_layout_right_image"
-            android:visibility="gone">
+            android:visibility="invisible"
+            android:layout_alignParentRight="true">
 
             <ImageView
                 android:layout_width="72dp"
@@ -97,7 +97,7 @@
                 android:src="@drawable/profile_pic" />
         </FrameLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:orientation="vertical"
