@@ -62,15 +62,13 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
                 User user = (User) result;
                 BaseApplication.getInstance().getCacheObjectsManager().user = user;
                 if (user != null) {
-                    changeUserInformation();
+                    changeUserInformation(user);
                 }
                 break;
             case TWITTER_LOADER:
                 if ((Boolean) result) {
                     mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
                 }
-                break;
-            case TWITTER_LOADER_RESPONSE:
                 break;
             case TWEET_POST:
                 if ((Boolean) result) {
@@ -104,6 +102,16 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        User user = BaseApplication.getInstance().getCacheObjectsManager().user;
+        if (user != null) {
+          setUserInformation(user);
+        }
+
+    }
+
     private void wireUpViews(View rootView) {
         mLoginTwitterButton = (Button) rootView.findViewById(R.id.button_login_twitter);
         mUserPicture = (ImageView) rootView.findViewById(R.id.imageView_user);
@@ -121,25 +129,6 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
         return "Tweet";
     }
 
-    public void changeUserInformation() {
-        try {
-            if (BaseApplication.getInstance().getSharedPreferencesManager()
-                    .isAlreadyTwitterLogged()) {
-                mLoginTwitterButton.setVisibility(View.GONE);
-                User user = BaseApplication.getInstance().getCacheObjectsManager().user;
-                if (user == null) {
-                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
-                } else {
-                    setUserInformation(user);
-                }
-            } else {
-                mTweetButton.setEnabled(false);
-                mTweetText.setEnabled(false);
-            }
-        } catch (Exception e) {
-            Logger.e("LOADING TWITTER", e);
-        }
-    }
 
     @Override
     public void onClick(View v) {
@@ -157,6 +146,21 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
     }
 
 
+    public void changeUserInformation(User user) {
+        try {
+            if (BaseApplication.getInstance().getSharedPreferencesManager()
+                    .isAlreadyTwitterLogged()) {
+                mLoginTwitterButton.setVisibility(View.GONE);
+                setUserInformation(user);
+            } else {
+                mTweetButton.setEnabled(false);
+                mTweetText.setEnabled(false);
+            }
+        } catch (Exception e) {
+            Logger.e("LOADING TWITTER", e);
+        }
+    }
+
     private void setUserInformation(User user) {
         mUsername.setText(String.format(getString(R.string.twitter_username), user.getScreenName()));
         mUserFullName.setText(user.getName());
@@ -167,6 +171,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
         mTweetText.setEnabled(true);
         mLoginTwitterButton.setVisibility(View.GONE);
     }
+}
 
 
 
@@ -192,61 +197,3 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
 //        }
 //
 //    }
-
-//    public class LoadUserInformation extends AsyncTask<Void, Void, User> {
-//
-//        @Override
-//        protected User doInBackground(Void... params) {
-//            User user = BaseApplication.getInstance().getCacheObjectsManager().user;
-//            try {
-//                if (user == null) {
-//                    user = BaseApplication.getInstance().getTwitterManager().getUser();
-//                    BaseApplication.getInstance().getCacheObjectsManager().user = user;
-//                }
-//            } catch (Exception e) {
-//                Logger.e("LOADING TWITTER", e);
-//            }
-//            if (user != null) {
-//                return user;
-//            } else {
-//                return null;
-//            }
-//        }
-//
-//        @Override
-//        protected void onPostExecute(User user) {
-//            super.onPostExecute(user);
-//            if (user != null) {
-//                mUsername.setText(String.format(getString(R.string.twitter_username), user.getScreenName()));
-//                mUserFullName.setText(user.getName());
-//                if (user.getProfileImageURL() != null) {
-//                    Picasso.with(getActivity()).load(user.getOriginalProfileImageURL()).transform(mCircleTransformation).into(mUserPicture);
-//                }
-//                mTweetButton.setEnabled(true);
-//                mTweetText.setEnabled(true);
-//                mLoginTwitterButton.setVisibility(View.GONE);
-//                hideUtilsAndShowContentOverlay();
-//            }
-//        }
-//    }
-
-//    private class TwitterLoader extends AsyncTask<Void, Void, Boolean> {
-//        @Override
-//        protected Boolean doInBackground(Void... params) {
-//            return BaseApplication.getInstance().getTwitterManager().loginToTwitter(getActivity(), null);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Boolean result) {
-//            super.onPostExecute(result);
-//            if (result) {
-//                hideUtilsAndShowContentOverlay();
-//
-//                //new LoadUserInformation().execute();
-//            }
-//        }
-//    }
-}
-
-
-

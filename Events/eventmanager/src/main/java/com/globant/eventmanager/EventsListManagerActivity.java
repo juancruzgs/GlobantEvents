@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.globant.eventscorelib.BaseTweetActivity;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.fragments.BaseTwitterStreamFragment;
 
 
 public class EventsListManagerActivity extends BaseActivity {

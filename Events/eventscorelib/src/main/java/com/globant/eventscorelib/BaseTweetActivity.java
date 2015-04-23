@@ -43,36 +43,8 @@ public abstract class BaseTweetActivity extends BaseActivity implements BaseServ
 //        }
 //    }
 
-    @Override
-    public Activity getBindingActivity() {
-        return this;
-    }
 
-    @Override
-    public Object getBindingKey() {
-        return null;
-    }
 
-    @Override
-    public void onStartAction(BaseService.ACTIONS theAction) {
-        showProgressOverlay();
-    }
-
-    @Override
-    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        switch (theAction) {
-            case TWITTER_LOADER_RESPONSE:
-                if ((Boolean) result) {
-                    getService().executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
-                }
-                break;
-        }
-    }
-
-    @Override
-    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        showErrorOverlay();
-    }
 
 //    private class TwitterLoaderResponse extends AsyncTask<Uri, Void, Boolean> {
 //        @Override
