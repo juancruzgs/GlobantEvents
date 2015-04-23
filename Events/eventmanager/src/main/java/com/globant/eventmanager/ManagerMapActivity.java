@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Address;
-import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.widget.SearchView;
@@ -17,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseMapActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
@@ -25,17 +22,30 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-import java.io.IOException;
-import java.util.List;
-
 
 public class ManagerMapActivity extends BaseMapActivity implements BaseService.ActionListener{
 
     private Marker mMarker;
     private long mBackPressedTime;
     private long mUpPressedTime;
+    private LatLng mInitialMarkerPosition;
 
     BaseService mService = null;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mMarker != null) {
+            LatLng latLng = mMarker.getPosition();
+            outState.putParcelable(CoreConstants.MAP_MARKER_POSITION_INTENT, latLng);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mInitialMarkerPosition = (LatLng)savedInstanceState.get(CoreConstants.MAP_MARKER_POSITION_INTENT);
+    }
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -87,6 +97,7 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
             LatLng latLng = (LatLng)result;
             if (latLng != null) {
                 mMarker = addMarkerToMap(latLng);
+                changeCameraPosition(latLng);
             }
         }
     }
@@ -121,10 +132,14 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
+        if (mInitialMarkerPosition != null) {
+            mMarker = addMarkerToMap(mInitialMarkerPosition);
+        }
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 mMarker = addMarkerToMap(latLng);
+                changeCameraPosition(latLng);
             }
         });
     }

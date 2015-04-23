@@ -68,6 +68,7 @@ public class CoreConstants {
     public static final int MAX_GEOCODER_RESULTS = 1;
     public static final String MAP_ADDRESS_INTENT = "address";
     public static final String MAP_MARKER_POSITION_INTENT = "markerPosition";
+    public static final String MAP_CAMERA_POSITION_INTENT = "cameraPosition";
     public static final int DOUBLE_TAP_TIME_INTERVAL = 2000;
 
     // Twitter
