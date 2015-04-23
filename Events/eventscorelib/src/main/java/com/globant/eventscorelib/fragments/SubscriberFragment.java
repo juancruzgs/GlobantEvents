@@ -16,6 +16,8 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,15 +49,15 @@ public class SubscriberFragment extends BaseFragment {
     Bitmap mPhoto;
     ImageView mPhotoProfile;
     ActionButton mFloatingActionButtonPhoto;
-    EditText mEditTextFirstName;
-    EditText mEditTextLastName;
-    EditText mEditTextPhone;
-    EditText mEditTextOccupation;
-    EditText mEditTextEmail;
-    EditText mEditTextTwitter;
-    EditText mEditTextCountry;
-    EditText mEditTextCity;
-    CheckBox mCheckBoxEnglishKnowledge;
+    AppCompatEditText mEditTextFirstName;
+    AppCompatEditText mEditTextLastName;
+    AppCompatEditText mEditTextPhone;
+    AppCompatEditText mEditTextOccupation;
+    AppCompatEditText mEditTextEmail;
+    AppCompatEditText mEditTextTwitter;
+    AppCompatEditText mEditTextCountry;
+    AppCompatEditText mEditTextCity;
+    AppCompatCheckBox mCheckBoxEnglishKnowledge;
     ImageView mIconOccupation;
     ImageView mIconLastName;
     ImageView mIconCountry;
@@ -228,15 +230,15 @@ public class SubscriberFragment extends BaseFragment {
     }
 
     private void wireUpViews(View rootView) {
-        mEditTextFirstName=(EditText)rootView.findViewById(R.id.edit_text_first_name);
-        mEditTextLastName=(EditText)rootView.findViewById(R.id.edit_text_last_name);
-        mEditTextPhone=(EditText)rootView.findViewById(R.id.edit_text_phone);
-        mEditTextOccupation=(EditText)rootView.findViewById(R.id.edit_text_occupation);
-        mEditTextTwitter=(EditText)rootView.findViewById(R.id.edit_text_twitter);
-        mEditTextEmail=(EditText)rootView.findViewById(R.id.edit_text_email);
-        mEditTextCountry=(EditText)rootView.findViewById(R.id.edit_text_country);
-        mEditTextCity=(EditText)rootView.findViewById(R.id.edit_text_city);
-        mCheckBoxEnglishKnowledge=(CheckBox)rootView.findViewById(R.id.check_box_english_knowledge);
+        mEditTextFirstName=(AppCompatEditText)rootView.findViewById(R.id.edit_text_first_name);
+        mEditTextLastName=(AppCompatEditText)rootView.findViewById(R.id.edit_text_last_name);
+        mEditTextPhone=(AppCompatEditText)rootView.findViewById(R.id.edit_text_phone);
+        mEditTextOccupation=(AppCompatEditText)rootView.findViewById(R.id.edit_text_occupation);
+        mEditTextTwitter=(AppCompatEditText)rootView.findViewById(R.id.edit_text_twitter);
+        mEditTextEmail=(AppCompatEditText)rootView.findViewById(R.id.edit_text_email);
+        mEditTextCountry=(AppCompatEditText)rootView.findViewById(R.id.edit_text_country);
+        mEditTextCity=(AppCompatEditText)rootView.findViewById(R.id.edit_text_city);
+        mCheckBoxEnglishKnowledge=(AppCompatCheckBox)rootView.findViewById(R.id.check_box_english_knowledge);
         mFloatingActionButtonPhoto=(ActionButton)rootView.findViewById(R.id.fab);
         mPhotoProfile=(ImageView)rootView.findViewById(R.id.header);
         mIconFirstName=(ImageView)rootView.findViewById(R.id.icon_first_name);

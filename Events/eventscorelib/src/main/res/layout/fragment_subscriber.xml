@@ -49,48 +49,68 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/header"
-            android:layout_marginTop="40dp"
-            android:layout_weight="0.7"
-            >
+            android:layout_marginTop="35dp"
+            android:layout_weight="0.7">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_names"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp">
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:id="@+id/first_name"
-                android:paddingBottom="8dp"
-                android:layout_weight="0.1"
-                android:minHeight="56dp">
+                android:layout_height="fill_parent">
 
-                <ImageView
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:id="@+id/first_name"
+                    android:paddingBottom="8dp"
+                    android:layout_weight="0.1"
+                    android:minHeight="56dp">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:id="@+id/icon_first_name"
+                        android:src="@mipmap/ic_first_name"
+                        android:layout_weight="0.1"
+                        android:layout_gravity="center_vertical"/>
+                    <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                    android:id="@+id/nameErrorLayoutFirstName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/icon_first_name"
-                    android:src="@mipmap/ic_first_name"
-                    android:layout_weight="0.1"
-                    android:layout_gravity="center_vertical"/>
-                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
-                android:id="@+id/nameErrorLayoutFirstName"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.9"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="20dp">
-                <EditText
-                    style="@style/condensed_normal_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
-                    android:ems="10"
-                    android:id="@+id/edit_text_first_name"
-                    android:hint="@string/edit_text_first_name_hint"
-                    android:paddingTop="15dp"
-                    android:background="#00000000"/>
-                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
-            </LinearLayout>
-            <LinearLayout
+                    android:layout_weight="0.9"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="20dp">
+                    <android.support.v7.widget.AppCompatEditText
+                        style="@style/condensed_normal_small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:ems="10"
+                        android:id="@+id/edit_text_first_name"
+                        android:hint="@string/edit_text_first_name_hint"
+                        android:paddingTop="15dp"
+                        android:background="#00000000"/>
+                    </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.25dp"
+                    android:background="@color/grey"
+                    android:layout_marginLeft="65dp">
+                </View>
+
+                <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
@@ -114,7 +134,8 @@
                     android:layout_weight="0.9"
                     android:gravity="center_vertical"
                     android:layout_marginLeft="20dp">
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
+
                     style="@style/condensed_normal_small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -129,9 +150,23 @@
 
 
             </LinearLayout>
-            <View android:layout_width="match_parent"
-                  android:layout_height="0.25dp"
-                  android:background="@color/grey_dark"/>
+            </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_contact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="30dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -156,7 +191,7 @@
                     android:layout_weight="0.9"
                     android:gravity="center_vertical"
                     android:layout_marginLeft="20dp">
-                <EditText
+                  <android.support.v7.widget.AppCompatEditText
                     style="@style/condensed_normal_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -170,7 +205,14 @@
                 </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
 
             </LinearLayout>
-            <LinearLayout
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.25dp"
+                        android:background="@color/grey"
+                        android:layout_marginLeft="65dp">
+                    </View>
+
+                    <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
@@ -194,7 +236,7 @@
                     android:layout_weight="0.9"
                     android:gravity="center_vertical"
                     android:layout_marginLeft="20dp">
-                <EditText
+                  <android.support.v7.widget.AppCompatEditText
                     style="@style/condensed_normal_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -205,11 +247,18 @@
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"
                     android:paddingTop="15dp"/>
-                    </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
 
             </LinearLayout>
 
-            <LinearLayout
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.25dp"
+                        android:background="@color/grey"
+                        android:layout_marginLeft="65dp">
+                    </View>
+
+             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
@@ -233,7 +282,7 @@
                     android:layout_weight="0.9"
                     android:gravity="center_vertical"
                     android:layout_marginLeft="20dp">
-                <EditText
+                  <android.support.v7.widget.AppCompatEditText
                     style="@style/condensed_normal_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -244,12 +293,26 @@
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"
                     android:paddingTop="15dp"/>
-                    </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
 
             </LinearLayout>
-            <View android:layout_width="match_parent"
-                  android:layout_height="0.25dp"
-                  android:background="@color/grey_dark"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -274,7 +337,7 @@
                     android:layout_weight="0.9"
                     android:gravity="center_vertical"
                     android:layout_marginLeft="20dp">
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     style="@style/condensed_normal_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -288,6 +351,12 @@
                 </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
 
             </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.25dp"
+                    android:background="@color/grey"
+                    android:layout_marginLeft="65dp">
+                </View>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -314,7 +383,7 @@
                     android:layout_weight="0.9"
                     android:gravity="center_vertical"
                     android:layout_marginLeft="20dp">
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     style="@style/condensed_normal_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -329,9 +398,21 @@
 
 
             </LinearLayout>
-               <View android:layout_width="match_parent"
-                   android:layout_height="0.25dp"
-                   android:background="@color/grey_dark"/>
+            </LinearLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_personal_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -356,7 +437,7 @@
                     android:layout_weight="0.9"
                     android:gravity="center_vertical"
                     android:layout_marginLeft="20dp">
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     style="@style/condensed_normal_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -371,6 +452,13 @@
 
 
             </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.25dp"
+                    android:background="@color/grey"
+                    android:layout_marginLeft="65dp">
+                </View>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -390,7 +478,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"/>
 
-                <CheckBox
+                <android.support.v7.widget.AppCompatCheckBox
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/check_box_english_knowledge"
@@ -403,9 +491,11 @@
                     android:layout_marginLeft="10dp"/>
 
             </LinearLayout>
-
+            </LinearLayout>
+            </android.support.v7.widget.CardView>
 
         </LinearLayout>
+
     </RelativeLayout>
 
 </LinearLayout>
