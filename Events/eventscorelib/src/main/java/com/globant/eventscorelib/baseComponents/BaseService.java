@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.IBinder;
 
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.managers.TwitterManager;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
@@ -113,7 +114,7 @@ public class BaseService extends Service {
     }
 
     public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
-    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN}
+    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS}
 
     public TwitterManager getTwitterManager() {
         return mTwitterManager;
@@ -143,6 +144,10 @@ public class BaseService extends Service {
                 try {
                     currentSubscriber.startAction(theAction);
                     switch (theAction) {
+                        case EVENT_SPEAKERS:
+                            List<Speaker> speakers = mCloudDataController.getEventSpeakers((String)argument);
+                            currentSubscriber.finishAction(theAction, speakers);
+                            break;
                         case EVENT_CREATE:
                             mCloudDataController.createEvent((Event)argument);
                             currentSubscriber.finishAction(theAction, null);

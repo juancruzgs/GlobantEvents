@@ -52,8 +52,7 @@
         <activity
             android:name=".ClientMapActivity"
             android:label="@string/title_activity_map"
-            android:parentActivityName=".EventListClientActivity"
-            android:screenOrientation="portrait" >
+            android:parentActivityName=".EventListClientActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EventListClientActivity" />
