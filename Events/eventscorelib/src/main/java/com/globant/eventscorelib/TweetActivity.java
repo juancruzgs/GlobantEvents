@@ -15,11 +15,6 @@ public class TweetActivity extends BaseActivity {
     TweetFragment mTweetFragment;
 
     @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return null;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tweet);

@@ -23,11 +23,6 @@ public class EventDetailManagerActivity extends BasePagerActivity {
     }
 
     @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return ManagerDataService.class;
-    }
-
-    @Override
     protected List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new EventDescriptionManagerFragment());

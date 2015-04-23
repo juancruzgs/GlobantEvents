@@ -89,7 +89,9 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
     }
 
     // TODO: This function is used to set the service (a subclass of BaseService)
-    abstract protected Class<? extends BaseService> getServiceClass();
+    protected Class<? extends BaseService> getServiceClass() {
+        return ((BaseApplication)getApplication()).getServiceClass();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

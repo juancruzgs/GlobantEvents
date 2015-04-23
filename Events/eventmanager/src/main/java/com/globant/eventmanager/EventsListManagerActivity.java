@@ -9,11 +9,6 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 public class EventsListManagerActivity extends BaseActivity {
 
     @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return ManagerDataService.class;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);

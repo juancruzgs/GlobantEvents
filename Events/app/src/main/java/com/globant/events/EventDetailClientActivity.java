@@ -13,11 +13,6 @@ import java.util.List;
 public class EventDetailClientActivity extends BasePagerActivity {
 
     @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return ClientDataService.class;
-    }
-
-    @Override
     protected List<Fragment> getFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new EventDescriptionClientFragment());
