@@ -28,8 +28,10 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     private Marker mMarker;
     private long mBackPressedTime;
     private long mUpPressedTime;
-
-    BaseService mService = null;
+    private LatLng mInitialMarkerPosition;
+    private BaseService mService = null;
+    private SearchView mSearchView;
+    private String mInitialQuery = "";
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -61,9 +63,7 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     }
 
     @Override
-    public void onStartAction(BaseService.ACTIONS theAction) {
-
-    }
+    public void onStartAction(BaseService.ACTIONS theAction) {}
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
@@ -81,14 +81,13 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
             LatLng latLng = (LatLng)result;
             if (latLng != null) {
                 mMarker = addMarkerToMap(latLng);
+                changeCameraPosition(latLng);
             }
         }
     }
 
     @Override
-    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-
-    }
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,22 +97,33 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     }
 
     @Override
-    protected int getMapLayout() {
-        return R.layout.activity_manager_map;
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mMarker != null) {
+            LatLng latLng = mMarker.getPosition();
+            outState.putParcelable(CoreConstants.MAP_MARKER_POSITION_INTENT, latLng);
+        }
+        outState.putString(CoreConstants.MAP_SEARCH_QUERY_INTENT, mSearchView.getQuery().toString());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected int getMapContainer() {
-        return R.id.container;
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mInitialMarkerPosition = (LatLng)savedInstanceState.get(CoreConstants.MAP_MARKER_POSITION_INTENT);
+        mInitialQuery = savedInstanceState.getString(CoreConstants.MAP_SEARCH_QUERY_INTENT);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
+        if (mInitialMarkerPosition != null) {
+            mMarker = addMarkerToMap(mInitialMarkerPosition);
+        }
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 mMarker = addMarkerToMap(latLng);
+                changeCameraPosition(latLng);
             }
         });
     }
@@ -127,10 +137,10 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
 
     private void prepareSearchView(Menu menu) {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchView.setQueryHint(getString(R.string.search_hint));
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 mService.executeAction(BaseService.ACTIONS.POSITION_COORDINATES, s);
@@ -142,6 +152,15 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
                 return false;
             }
         });
+        prepareInitialSearchState();
+    }
+
+    private void prepareInitialSearchState() {
+        if (!mInitialQuery.isEmpty()) {
+            mSearchView.setQuery(mInitialQuery, false);
+            mSearchView.setIconified(false);
+            mSearchView.clearFocus();
+        }
     }
 
     @Override
@@ -214,5 +233,15 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
         }
 
         return false;
+    }
+
+    @Override
+    protected int getMapLayout() {
+        return R.layout.activity_manager_map;
+    }
+
+    @Override
+    protected int getMapContainer() {
+        return R.id.container;
     }
 }
