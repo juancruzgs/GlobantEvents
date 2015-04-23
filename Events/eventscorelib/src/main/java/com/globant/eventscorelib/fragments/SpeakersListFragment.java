@@ -75,12 +75,17 @@ public class SpeakersListFragment extends BaseFragment implements BaseService.Ac
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
         mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ");
     }
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return null;
+        return this;
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import twitter4j.Status;
@@ -120,10 +121,13 @@ public class BaseService extends Service {
         return mTwitterManager;
     }
 
-    private ActionWrapper currentSubscriber;
+    private HashMap<ActionListener, ActionWrapper> currentSubscribers = new HashMap<>();
 
     public void subscribeActor(ActionListener anActionListener){
-        currentSubscriber = new ActionWrapper(anActionListener);
+        if (!currentSubscribers.containsKey(anActionListener)) {
+            ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
+            currentSubscribers.put(anActionListener, currentSubscriber);
+        }
 
         if (cachedElements.containsKey(anActionListener.getBindingKey())){
             HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(anActionListener.getBindingKey());
@@ -134,58 +138,62 @@ public class BaseService extends Service {
     }
 
     public void unSubscribeActor(ActionListener anActionListener){
-        currentSubscriber = null;
+        if (currentSubscribers.containsKey(anActionListener)) {
+            currentSubscribers.remove(anActionListener);
+        }
     }
 
     public void executeAction(final ACTIONS theAction, final Object argument) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                try {
-                    currentSubscriber.startAction(theAction);
-                    switch (theAction) {
-                        case EVENT_SPEAKERS:
-                            List<Speaker> speakers = mCloudDataController.getEventSpeakers((String)argument);
-                            currentSubscriber.finishAction(theAction, speakers);
-                            break;
-                        case EVENT_CREATE:
-                            mCloudDataController.createEvent((Event)argument);
-                            currentSubscriber.finishAction(theAction, null);
-                            break;
-                        case EVENT_DELETE:
-                            break;
-                        case EVENT_LIST:
-                            List<Event> theEvents = mCloudDataController.getEvents();
-                            currentSubscriber.finishAction(theAction, theEvents);
-                            break;
-                        case EVENT_DETAIL:
-                            Event event = mCloudDataController.getEvent((String)argument);
-                            currentSubscriber.finishAction(theAction, event);
-                            break;
-                        case POSITION_ADDRESS:
-                            Address address = mGeocoderController.getAddressFromCoordinates((LatLng)argument);
-                            currentSubscriber.finishAction(theAction, address);
-                            break;
-                        case POSITION_COORDINATES:
-                            LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String)argument);
-                            currentSubscriber.finishAction(theAction, latLng);
-                            break;
-                        case GET_TWITTER_USER:
-                            User user = mTwitterManager.getUser();
-                            currentSubscriber.finishAction(theAction, user);
-                            break;
-                        case TWEETS_LIST:
-                            List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
-                            currentSubscriber.finishAction(theAction, tweetList);
-                            break;
-                        case SUBSCRIBER_CHECKIN:
-                            mCloudDataController.setCheckIn((String) argument, getBaseContext());
-                            currentSubscriber.finishAction(theAction, null);
-                            break;
+                for (ActionWrapper currentSubscriber : currentSubscribers.values()) {
+                    try {
+                        currentSubscriber.startAction(theAction);
+                        switch (theAction) {
+                            case EVENT_SPEAKERS:
+                                List<Speaker> speakers = mCloudDataController.getEventSpeakers((String) argument);
+                                currentSubscriber.finishAction(theAction, speakers);
+                                break;
+                            case EVENT_CREATE:
+                                mCloudDataController.createEvent((Event) argument);
+                                currentSubscriber.finishAction(theAction, null);
+                                break;
+                            case EVENT_DELETE:
+                                break;
+                            case EVENT_LIST:
+                                List<Event> theEvents = mCloudDataController.getEvents();
+                                currentSubscriber.finishAction(theAction, theEvents);
+                                break;
+                            case EVENT_DETAIL:
+                                Event event = mCloudDataController.getEvent((String) argument);
+                                currentSubscriber.finishAction(theAction, event);
+                                break;
+                            case POSITION_ADDRESS:
+                                Address address = mGeocoderController.getAddressFromCoordinates((LatLng) argument);
+                                currentSubscriber.finishAction(theAction, address);
+                                break;
+                            case POSITION_COORDINATES:
+                                LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String) argument);
+                                currentSubscriber.finishAction(theAction, latLng);
+                                break;
+                            case GET_TWITTER_USER:
+                                User user = mTwitterManager.getUser();
+                                currentSubscriber.finishAction(theAction, user);
+                                break;
+                            case TWEETS_LIST:
+                                List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
+                                currentSubscriber.finishAction(theAction, tweetList);
+                                break;
+                            case SUBSCRIBER_CHECKIN:
+                                mCloudDataController.setCheckIn((String) argument, getBaseContext());
+                                currentSubscriber.finishAction(theAction, null);
+                                break;
+                        }
+                    } catch (Exception e) {
+                        currentSubscriber.failAction(theAction, e);
+                        Logger.e("executeAction", e);
                     }
-                } catch (Exception e) {
-                    currentSubscriber.failAction(theAction, e);
-                    Logger.e("executeAction", e);
                 }
             }
         };
