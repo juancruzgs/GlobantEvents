@@ -69,7 +69,16 @@ public class SubscriberFragment extends BaseFragment {
     Drawable mDrawableToApply;
     final int CAMERA_CAPTURE = 1;
     final int CROP_PIC = 2;
-    ErrorLabelLayout errorLabelLayoutFirstName;
+    ErrorLabelLayout mErrorLabelLayoutFirstName;
+    ErrorLabelLayout mErrorLabelLayoutLastName;
+    ErrorLabelLayout mErrorLabelLayoutEmail;
+    ErrorLabelLayout mErrorLabelLayoutPhone;
+    ErrorLabelLayout mErrorLabelLayoutOccupation;
+    ErrorLabelLayout mErrorLabelLayoutCity;
+    ErrorLabelLayout mErrorLabelLayoutCountry;
+    ErrorLabelLayout mErrorLabelLayoutTwitter;
+    ErrorLabelLayout mErrorLabelLayout;
+
 
     public SubscriberFragment() {
         // Required empty public constructor
@@ -120,54 +129,7 @@ public class SubscriberFragment extends BaseFragment {
     private View.OnFocusChangeListener editTextFocus =  new View.OnFocusChangeListener() {
         public void onFocusChange(View view, boolean gainFocus) {
 
-            int id = view.getId();
-            //noinspection SimplifiableIfStatement
-
-            //HACERLO UN VOID COMUN
-            if (id== (R.id.edit_text_first_name)) {
-             mIconToChange=mIconFirstName;
-             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_first_name);
-
-
-            } else if (id== (R.id.edit_text_last_name)){
-                mIconToChange=mIconLastName;
-                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_last_name);
-
-            }   else if (id== (R.id.edit_text_phone)){
-                 mIconToChange=mIconPhone;
-                 mDrawableToApply=getResources().getDrawable(R.mipmap.ic_phone);
-
-            }
-                  else if (id== (R.id.edit_text_occupation)){
-                    mIconToChange=mIconOccupation;
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_occupation);
-
-
-            }
-                   else if (id== (R.id.edit_text_email)){
-                     mIconToChange=mIconEmail;
-                     mDrawableToApply=getResources().getDrawable(R.mipmap.ic_email);
-
-
-            }
-                     else if (id== (R.id.edit_text_country)){
-                        mIconToChange=mIconCountry;
-                        mDrawableToApply=getResources().getDrawable(R.mipmap.ic_country);
-
-
-            }
-                        else if (id== (R.id.edit_text_city)){
-                         mIconToChange=mIconCity;
-                         mDrawableToApply=getResources().getDrawable(R.mipmap.ic_city);
-
-
-            }
-                           else if (id== (R.id.edit_text_twitter)){
-                             mIconToChange=mIconTwitter;
-                             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_twitter1);
-
-
-            }
+            getIconToTint(view);
 
             //onFocus
             if (gainFocus) {
@@ -175,6 +137,7 @@ public class SubscriberFragment extends BaseFragment {
                 DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.ambar));
                 mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
                 mIconToChange.setImageDrawable(mDrawableToApply);
+                mErrorLabelLayout.clearError();
             }
             //onBlur
             else {
@@ -186,6 +149,57 @@ public class SubscriberFragment extends BaseFragment {
             }
         };
     };
+
+    private void getIconToTint(View view) {
+        int id = view.getId();
+        //noinspection SimplifiableIfStatement
+
+        if (id== (R.id.edit_text_first_name)) {
+         mIconToChange=mIconFirstName;
+         mDrawableToApply=getResources().getDrawable(R.mipmap.ic_first_name);
+         mErrorLabelLayout=mErrorLabelLayoutFirstName;
+
+        } else if (id== (R.id.edit_text_last_name)){
+            mIconToChange=mIconLastName;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_last_name);
+            mErrorLabelLayout=mErrorLabelLayoutLastName;
+
+        }   else if (id== (R.id.edit_text_phone)){
+             mIconToChange=mIconPhone;
+             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_phone);
+             mErrorLabelLayout=mErrorLabelLayoutPhone;
+
+        }
+              else if (id== (R.id.edit_text_occupation)){
+                mIconToChange=mIconOccupation;
+                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_occupation);
+                mErrorLabelLayout=mErrorLabelLayoutOccupation;
+
+        }
+               else if (id== (R.id.edit_text_email)){
+                 mIconToChange=mIconEmail;
+                 mDrawableToApply=getResources().getDrawable(R.mipmap.ic_email);
+                 mErrorLabelLayout=mErrorLabelLayoutEmail;
+
+        }
+                 else if (id== (R.id.edit_text_country)){
+                    mIconToChange=mIconCountry;
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_country);
+                    mErrorLabelLayout=mErrorLabelLayoutCountry;
+
+        }
+                    else if (id== (R.id.edit_text_city)){
+                     mIconToChange=mIconCity;
+                     mDrawableToApply=getResources().getDrawable(R.mipmap.ic_city);
+                     mErrorLabelLayout=mErrorLabelLayoutCity;
+
+        }
+                       else if (id== (R.id.edit_text_twitter)){
+                         mIconToChange=mIconTwitter;
+                         mDrawableToApply=getResources().getDrawable(R.mipmap.ic_twitter1);
+                         mErrorLabelLayout=mErrorLabelLayoutTwitter;
+        }
+    }
 
     private void checkPreferences() {
         File f = new File("/data/data/" + this.getActivity().getPackageName() +  "/shared_prefs/" +  this.getActivity().getPackageName()+ "_preferences.xml");
@@ -234,7 +248,16 @@ public class SubscriberFragment extends BaseFragment {
         mIconCity=(ImageView)rootView.findViewById(R.id.icon_city);
         mIconEnglishKnowledge=(ImageView)rootView.findViewById(R.id.icon_language);
         mIconTwitter=(ImageView)rootView.findViewById(R.id.icon_twitter);
-        errorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
+        mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
+        mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutLastName);
+        mErrorLabelLayoutPhone = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutPhone);
+        mErrorLabelLayoutEmail = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEmail);
+        mErrorLabelLayoutTwitter = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorTwitter);
+        mErrorLabelLayoutOccupation = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorOccupation);
+        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCity);
+        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCountry);
+
+
     }
 
     @Override
@@ -314,27 +337,47 @@ public class SubscriberFragment extends BaseFragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
-                ////CREAR PROCEDIMIENTO HAGA UN IF COMUN, QUE ENTRE UNA VIEW (EDITTEXT) USE EL VOID DE ARRIBA, SAQUE QUE ICONTOCHANGE Y DRAWTOAPLY Y HAGA LAS 4 LINEAS DE ABAJO
-            if (mEditTextFirstName.getText().toString().trim().length() == 0) {
-                errorLabelLayoutFirstName.setError("*Required");
-                mIconToChange=mIconFirstName;
-                mDrawableToApply=getResources().getDrawable(R.mipmap.ic_first_name);
-                mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
-                DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.red_error));
-                mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
-                mIconToChange.setImageDrawable(mDrawableToApply);
-            }
+            Boolean savePreferences=true;
+            tintRequiredIconsAndShowError(mEditTextFirstName,  savePreferences);
+            tintRequiredIconsAndShowError(mEditTextLastName,  savePreferences);
+            tintRequiredIconsAndShowError(mEditTextPhone,  savePreferences);
+            tintRequiredIconsAndShowError(mEditTextEmail,  savePreferences);
+            tintRequiredIconsAndShowError(mEditTextTwitter, savePreferences);
+            tintRequiredIconsAndShowError(mEditTextOccupation, savePreferences);
+            tintRequiredIconsAndShowError(mEditTextCity,  savePreferences);
+            tintRequiredIconsAndShowError(mEditTextCountry,  savePreferences);
 
-                else {
-                    saveSubscriberPreferences();}
+            if (savePreferences=true){
+                saveSubscriberPreferences();}
+
+            else {
+                 //showToast
+                 }
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    private void tintRequiredIconsAndShowError(EditText requiredField,  Boolean savePreferences){
+        getIconToTint(requiredField);
+
+        if (requiredField.getText().toString().trim().length() == 0) {
+            mErrorLabelLayout.setError("*Required");
+            mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
+            DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.red_error));
+            mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
+            mIconToChange.setImageDrawable(mDrawableToApply);
+            savePreferences=false;
+         }
+        else{
+            mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
+            DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.grey_icon));
+            mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
+            mIconToChange.setImageDrawable(mDrawableToApply);
+        }
     }
 
     private void saveSubscriberPreferences() {
