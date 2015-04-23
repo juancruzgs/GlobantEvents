@@ -78,5 +78,6 @@
     <string name="title_activity_speaker_detail">SpeakerDetailActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_map">Map</string>
+    <string name="checkin_error">The subscriber email doesn\'t exist.</string>
 
 </resources>

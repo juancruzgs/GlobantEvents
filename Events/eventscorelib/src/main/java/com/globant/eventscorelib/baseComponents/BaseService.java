@@ -180,7 +180,6 @@ public class BaseService extends Service {
                             break;
                     }
                 } catch (Exception e) {
-
                     currentSubscriber.failAction(theAction, e);
                     Logger.e("executeAction", e);
                 }
@@ -190,7 +189,6 @@ public class BaseService extends Service {
     }
 
     private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
-
 
     public static interface ActionListener {
         public Activity getBindingActivity();

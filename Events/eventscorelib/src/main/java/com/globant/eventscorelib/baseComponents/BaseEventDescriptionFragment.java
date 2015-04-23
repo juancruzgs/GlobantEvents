@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -73,7 +74,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Refactor with functionality
+                //TODO: Refactor with functionality, first subscribe, then check-in
 //                getActivity().getSupportFragmentManager().beginTransaction()
 //                        .replace(R.id.container, new SubscriberFragment())
 //                        .addToBackStack(null).commit();
@@ -99,8 +100,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             if (resultCode == Activity.RESULT_OK) {
+                showProgressOverlay();
                 String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
-                Logger.d(eventId == null ? "null" : eventId);
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId);
             }
         }
@@ -256,11 +257,12 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-
+        showCheckinOverlay();
     }
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-
+        hideUtilsAndShowContentOverlay();
+        Toast.makeText(getActivity(), getString(R.string.checkin_error),Toast.LENGTH_SHORT).show();
     }
 }
