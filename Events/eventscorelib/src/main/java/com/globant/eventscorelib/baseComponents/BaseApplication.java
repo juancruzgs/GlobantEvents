@@ -11,12 +11,14 @@ import com.parse.Parse;
 /**
  * Created by ignaciopena on 4/1/15.
  */
-public class BaseApplication extends Application{
-    private static BaseApplication ourInstance = new BaseApplication();
+abstract public class BaseApplication extends Application {
+    private static BaseApplication ourInstance;
 
     private SharedPreferencesManager mSharedPreferencesManager;
     private TwitterManager mTwitterManager;
     private CacheObjectsManager mCacheObjectsManager;
+
+    abstract public Class<? extends BaseService> getServiceClass();
 
     public static BaseApplication getInstance()
     {

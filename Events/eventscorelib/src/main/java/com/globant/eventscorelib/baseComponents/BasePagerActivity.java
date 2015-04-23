@@ -39,32 +39,12 @@ abstract public class BasePagerActivity extends BaseActivity{
     }
 
     @Override
-    public String getActivityTitle() {
-        return null;
-    }
-
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_base_pager_acivity, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected List<Fragment> getFragments() {
-        List<Fragment> fList = new ArrayList<Fragment>();
-
-        fList.add(new BaseEventDescriptionFragment());
-        fList.add(new BaseEventDescriptionFragment());
-        fList.add(new BaseEventDescriptionFragment());
-
-        return fList;
-    }
+    protected abstract List<Fragment> getFragments();
 
     public class PageAdapter extends FragmentPagerAdapter {
 
@@ -87,7 +67,7 @@ abstract public class BasePagerActivity extends BaseActivity{
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return ((BaseFragment)fragments.get(position)).getTitle();
+            return ((BaseFragment)fragments.get(position)).getTitle().toUpperCase();
         }
     }
 
