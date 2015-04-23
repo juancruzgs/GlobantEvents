@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Address;
-import android.location.Geocoder;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;

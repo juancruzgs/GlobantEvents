@@ -7,7 +7,6 @@ import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.managers.SharedPreferencesManager;
 import com.globant.eventscorelib.utils.CoreConstants;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
