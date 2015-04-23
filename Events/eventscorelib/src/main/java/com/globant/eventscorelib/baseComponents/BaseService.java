@@ -37,6 +37,7 @@ public class BaseService extends Service {
     protected CloudDataController mCloudDataController = null;
     protected GeocoderController mGeocoderController = null;
     protected TwitterManager mTwitterManager = null;
+
     /**
      * Class for clients to access.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with
@@ -113,27 +114,29 @@ public class BaseService extends Service {
         return mCloudDataController;
     }
 
-    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
-    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN}
 
     public TwitterManager getTwitterManager() {
         return mTwitterManager;
     }
 
+    public enum ACTIONS {
+        EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS, TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN
+    }
+
     private ActionWrapper currentSubscriber;
 
-    public void subscribeActor(ActionListener anActionListener){
+    public void subscribeActor(ActionListener anActionListener) {
         currentSubscriber = new ActionWrapper(anActionListener);
 
-        if (cachedElements.containsKey(anActionListener.getBindingKey())){
-            HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(anActionListener.getBindingKey());
+        if (cachedElements.containsKey(anActionListener.getBindingKey())) {
+            HashMap<ACTIONS, Object> cachedElement = cachedElements.remove(anActionListener.getBindingKey());
             for (ACTIONS key : cachedElement.keySet()) {
-                anActionListener.onFinishAction(key,cachedElement.remove(key));
+                anActionListener.onFinishAction(key, cachedElement.remove(key));
             }
         }
     }
 
-    public void unSubscribeActor(ActionListener anActionListener){
+    public void unSubscribeActor(ActionListener anActionListener) {
         currentSubscriber = null;
     }
 
@@ -145,7 +148,7 @@ public class BaseService extends Service {
                     currentSubscriber.startAction(theAction);
                     switch (theAction) {
                         case EVENT_CREATE:
-                            mCloudDataController.createEvent((Event)argument);
+                            mCloudDataController.createEvent((Event) argument);
                             currentSubscriber.finishAction(theAction, null);
                             break;
                         case EVENT_DELETE:
@@ -155,15 +158,15 @@ public class BaseService extends Service {
                             currentSubscriber.finishAction(theAction, theEvents);
                             break;
                         case EVENT_DETAIL:
-                            Event event = mCloudDataController.getEvent((String)argument);
+                            Event event = mCloudDataController.getEvent((String) argument);
                             currentSubscriber.finishAction(theAction, event);
                             break;
                         case POSITION_ADDRESS:
-                            Address address = mGeocoderController.getAddressFromCoordinates((LatLng)argument);
+                            Address address = mGeocoderController.getAddressFromCoordinates((LatLng) argument);
                             currentSubscriber.finishAction(theAction, address);
                             break;
                         case POSITION_COORDINATES:
-                            LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String)argument);
+                            LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String) argument);
                             currentSubscriber.finishAction(theAction, latLng);
                             break;
                         case SUBSCRIBER_CHECKIN:
@@ -171,7 +174,12 @@ public class BaseService extends Service {
                             currentSubscriber.finishAction(theAction, null);
                             break;
                         case GET_TWITTER_USER:
-                            User user = mTwitterManager.getUser();
+                            User user;
+                            try {
+                                user = mTwitterManager.getUser();
+                            } catch (Exception e) {
+                                user = null;
+                            }
                             currentSubscriber.finishAction(theAction, user);
                             break;
                         case TWEETS_LIST:
@@ -200,20 +208,27 @@ public class BaseService extends Service {
         new Thread(r).start();
     }
 
-    private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
+    private HashMap<Object, HashMap<ACTIONS, Object>> cachedElements = new HashMap();
 
     public static interface ActionListener {
         public Activity getBindingActivity();
+
         public Object getBindingKey();
+
         public void onStartAction(ACTIONS theAction);
+
         public void onFinishAction(ACTIONS theAction, Object result);
+
         public void onFailAction(ACTIONS theAction, Exception e);
     }
 
     public class ActionWrapper {
 
         private Activity anActivity;
-        private Activity getActivity(){return anActivity;}
+
+        private Activity getActivity() {
+            return anActivity;
+        }
 
         ActionListener theListener;
 
@@ -222,43 +237,43 @@ public class BaseService extends Service {
             theListener = aListener;
         }
 
-        void startAction(final ACTIONS theAction){
-            if (getActivity()!=null&& !getActivity().isFinishing()) {
+        void startAction(final ACTIONS theAction) {
+            if (getActivity() != null && !getActivity().isFinishing()) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         theListener.onStartAction(theAction);
                     }
                 });
-            }else{
+            } else {
                 // TODO: Decide what to do with an started action when the Activity isn't available
             }
         }
 
-        void finishAction(final ACTIONS theAction, final Object result){
-            if (getActivity()!=null&& !getActivity().isFinishing()) {
+        void finishAction(final ACTIONS theAction, final Object result) {
+            if (getActivity() != null && !getActivity().isFinishing()) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         theListener.onFinishAction(theAction, result);
                     }
                 });
-            }else{
-                HashMap<ACTIONS,Object> cachedElement = new HashMap();
-                cachedElement.put(theAction,result);
-                cachedElements.put(theListener.getBindingKey(),cachedElement);
+            } else {
+                HashMap<ACTIONS, Object> cachedElement = new HashMap();
+                cachedElement.put(theAction, result);
+                cachedElements.put(theListener.getBindingKey(), cachedElement);
             }
         }
 
-        void failAction(final ACTIONS theAction, final Exception e){
-            if (getActivity()!=null&& !getActivity().isFinishing()) {
+        void failAction(final ACTIONS theAction, final Exception e) {
+            if (getActivity() != null && !getActivity().isFinishing()) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         theListener.onFailAction(theAction, e);
                     }
                 });
-            }else{
+            } else {
                 // TODO: Decide what to do with an failed action when the Activity isn't available
 //                 HashMap<ACTIONS,Object> cachedElement = new HashMap();
 //                 cachedElement.put(theAction,e);

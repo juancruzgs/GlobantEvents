@@ -51,7 +51,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return null;
+        return this;
     }
 
     @Override
@@ -244,10 +244,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         }
     }
 
-    @Override
-    public BaseService.ActionListener getActionListener() {
-        return this;
-    }
 
     @Override
     public Activity getBindingActivity() {

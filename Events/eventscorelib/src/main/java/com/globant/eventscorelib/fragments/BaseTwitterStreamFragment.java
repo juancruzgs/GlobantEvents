@@ -107,7 +107,7 @@ public abstract class BaseTwitterStreamFragment extends BaseFragment implements 
 
     @Override
     public String getTitle() {
-        return "Stream";
+        return getString(R.string.title_fragment_tweets_stream);
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
@@ -148,13 +148,11 @@ public abstract class BaseTwitterStreamFragment extends BaseFragment implements 
         mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), getTweetActivityClass());
+                Intent intent = new Intent(getActivity(), BaseTweetActivity.class);
                 startActivity(intent);
             }
         });
     }
-
-    protected abstract Class<? extends BaseTweetActivity> getTweetActivityClass();
 
     public void setRecyclerViewLayoutManager() {
         int scrollPosition = 0;
