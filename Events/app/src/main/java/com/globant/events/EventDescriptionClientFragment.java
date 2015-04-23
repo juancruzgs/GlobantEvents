@@ -22,6 +22,8 @@ public class EventDescriptionClientFragment extends BaseEventDescriptionFragment
             startActivity(intent);
             return true;
         }
-        return false;
+        else {
+            return false;
+        }
     }
 }

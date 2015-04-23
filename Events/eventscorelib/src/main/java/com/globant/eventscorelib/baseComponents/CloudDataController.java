@@ -1,8 +1,11 @@
 package com.globant.eventscorelib.baseComponents;
 
+import android.content.Context;
+
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.managers.SharedPreferencesManager;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -35,6 +38,25 @@ public class CloudDataController {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject databaseEvent = query.get(eventId);
         return createDomainEventFromDatabase(databaseEvent);
+    }
+
+    public ParseObject getSubscriberByEmail(String subscriberEmail) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
+        return query.getFirst();
+    }
+
+    public void setCheckIn(String eventId, Context context) throws ParseException {
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject event = eventsQuery.get(eventId);
+        String subscriberMail = SharedPreferencesManager.getUserEmail(context);
+        ParseObject subscriber = getSubscriberByEmail(subscriberMail);
+        ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
+        eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, subscriber);
+        ParseObject subscription = eventToSubsQuery.getFirst();
+        subscription.put(CoreConstants.FIELD_CHECK_IN, true);
+        subscription.save();
     }
 
     public List<Speaker> getEventSpeakers(String eventId) throws ParseException {

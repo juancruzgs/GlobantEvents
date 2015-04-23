@@ -13,11 +13,6 @@ import com.globant.eventscorelib.fragments.SpeakerDetailFragment;
 public class SpeakerDetailActivity extends BaseActivity {
 
     @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return BaseService.class;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speaker_detail);
@@ -28,11 +23,4 @@ public class SpeakerDetailActivity extends BaseActivity {
                     .commit();
         }
     }
-
-    @Override
-    public String getActivityTitle() {
-        return getString(R.string.speaker_detail_fragment);
-    }
-
-
 }

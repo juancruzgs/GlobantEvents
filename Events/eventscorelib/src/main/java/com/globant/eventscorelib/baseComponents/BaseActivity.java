@@ -89,7 +89,9 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
     }
 
     // TODO: This function is used to set the service (a subclass of BaseService)
-    abstract protected Class<? extends BaseService> getServiceClass();
+    protected Class<? extends BaseService> getServiceClass() {
+        return ((BaseApplication)getApplication()).getServiceClass();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,9 +140,13 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
+        if (mService != null){
+            ((BaseFragment)fragment).setService(mService);
+        }
         mFragments.add((BaseFragment)fragment);
-        if (mFragments.size()<2){
-            setFragmentTitle((BaseFragment)fragment);
+        if (mFragments.size() == 1) {
+            //Sets the first fragment title
+            setFragmentTitle((BaseFragment) fragment);
         }
     }
 
@@ -169,17 +175,17 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
         mToolbar =  (Toolbar) mainContainer.findViewById(R.id.toolbar);
         mFragmentTitle = (TextView) mToolbar.findViewById(R.id.toolbar_fragment_title);
         setSupportActionBar(mToolbar);
-        setActivityTitle();
+//        setActivityTitle();
     }
 
-    private final void setActivityTitle(){
-        String title = getActivityTitle();
-        if (title != null && !title.isEmpty()){
-            mToolbar.setTitle(title);
-        }
-    }
+//    private void setActivityTitle(){
+//        String title = getActivityTitle();
+//        if (title != null && !title.isEmpty()){
+//            mToolbar.setTitle(title);
+//        }
+//    }
 
-    private final void setFragmentTitle(BaseFragment fragment){
+    private void setFragmentTitle(BaseFragment fragment){
         String title = fragment.getTitle();
         if (title != null && !title.isEmpty() && mFragmentTitle != null){
             mFragmentTitle.setText(title);
@@ -214,7 +220,6 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
         }
     }
 
-
     @Override
     public void changeFragmentTitle(String title) {
         if (title != null && mFragmentTitle != null){
@@ -222,5 +227,5 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
         }
     }
 
-    public abstract String getActivityTitle();
+//    public abstract String getActivityTitle();
 }

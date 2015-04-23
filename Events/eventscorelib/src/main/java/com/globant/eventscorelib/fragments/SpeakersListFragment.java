@@ -119,6 +119,6 @@ public class SpeakersListFragment extends BaseFragment implements BaseService.Ac
     @Override
     public String getTitle() {
         //TODO change hardcoded string
-        return "Speaker List";
+        return "Speakers";
     }
 }

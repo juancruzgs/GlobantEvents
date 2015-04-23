@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Address;
-import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.widget.SearchView;
@@ -17,16 +15,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseMapActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-
-import java.io.IOException;
-import java.util.List;
 
 
 public class ManagerMapActivity extends BaseMapActivity implements BaseService.ActionListener{
@@ -111,11 +105,6 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     @Override
     protected int getMapContainer() {
         return R.id.container;
-    }
-
-    @Override
-    protected String getActivityTitle() {
-        return getString(R.string.title_activity_manager_map);
     }
 
     @Override
