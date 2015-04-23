@@ -6,16 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globant.eventscorelib.BaseEventListFragment;
-import com.globant.eventscorelib.BaseEventsListAdapter;
+import com.globant.eventscorelib.baseComponents.BaseEventListFragment;
+import com.globant.eventscorelib.baseComponents.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 
 /**
 * Created by paula.baudo on 4/17/2015.
 */
 public class EventListClientFragment extends BaseEventListFragment {
-    private RecyclerView mRecyclerView;
-    private BaseEventsListAdapter mAdapter;
     private String[] mDataset;
     private static final int DATASET_COUNT = 60;
 
@@ -46,9 +44,9 @@ public class EventListClientFragment extends BaseEventListFragment {
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        mRecyclerView = (RecyclerView)rootView.findViewById(R.id.event_list_recycler_view);
-        mAdapter = new EventsListAdapterClient(mDataset, getActivity());
-        mRecyclerView.setAdapter(mAdapter);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
+        BaseEventsListAdapter adapter = new EventsListAdapterClient(mDataset, getActivity());
+        recyclerView.setAdapter(adapter);
         return rootView;
     }
 

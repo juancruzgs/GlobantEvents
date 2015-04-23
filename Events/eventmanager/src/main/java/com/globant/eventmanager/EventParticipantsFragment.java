@@ -2,11 +2,9 @@ package com.globant.eventmanager;
 
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -55,7 +53,7 @@ public class EventParticipantsFragment extends BaseFragment {
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
 
-        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+        setRecyclerViewLayoutManager();
         mAdapter = new EventParticipantsListAdapter(getActivity(), mDataset);
         mRecyclerView.setAdapter(mAdapter);
         hideUtilsAndShowContentOverlay();
@@ -64,7 +62,7 @@ public class EventParticipantsFragment extends BaseFragment {
 
     @Override
     public String getTitle() {
-        return null;
+        return "Participants List";
     }
 
     @Override
@@ -73,7 +71,7 @@ public class EventParticipantsFragment extends BaseFragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
+    public void setRecyclerViewLayoutManager() {
         int scrollPosition = 0;
         if (mRecyclerView.getLayoutManager() != null) {
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())

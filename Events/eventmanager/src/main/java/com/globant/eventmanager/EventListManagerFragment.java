@@ -6,16 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globant.eventscorelib.BaseEventListFragment;
-import com.globant.eventscorelib.BaseEventsListAdapter;
+
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.baseComponents.BaseEventListFragment;
+import com.globant.eventscorelib.baseComponents.BaseEventsListAdapter;
 import com.software.shell.fab.ActionButton;
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
     private ActionButton mActionButton;
-    private RecyclerView mRecyclerView;
-    private BaseEventsListAdapter mAdapter;
     private String[] mDataset;
     private static final int DATASET_COUNT = 60;
 
@@ -57,23 +56,23 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     private void prepareRecyclerViewTouchListener(View rootView) {
-        mRecyclerView = (RecyclerView)rootView.findViewById(R.id.event_list_recycler_view);
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)){
+                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)) {
                     mActionButton.hide();
-                }else{
+                } else {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         mActionButton.show();
                     }
                 }
             }
         });
-        mAdapter = new EventListAdapterManager(mDataset, getActivity());
-        mRecyclerView.setAdapter(mAdapter);
+        BaseEventsListAdapter adapter = new EventListAdapterManager(mDataset, getActivity());
+        recyclerView.setAdapter(adapter);
     }
 
     protected void initDataset() {
@@ -88,6 +87,5 @@ public class EventListManagerFragment extends BaseEventListFragment {
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
     }
-
 }
 

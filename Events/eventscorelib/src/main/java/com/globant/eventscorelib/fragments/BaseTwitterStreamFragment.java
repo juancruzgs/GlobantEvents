@@ -130,9 +130,9 @@ public abstract class BaseTwitterStreamFragment extends BaseFragment implements 
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)){
+                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)) {
                     mActionButton.hide();
-                }else{
+                } else {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         mActionButton.show();
                     }

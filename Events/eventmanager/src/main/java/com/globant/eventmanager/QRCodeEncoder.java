@@ -16,6 +16,7 @@ import com.google.zxing.common.BitMatrix;
 import java.util.EnumMap;
 import java.util.Map;
 
+//TODO: Integrate the QR generation into the event creation screen
 /*
     QRCodeEncoder qrCodeEncoder = new QRCodeEncoder("nXL6KSa0KH", getActivity());
     Bitmap bitmap = null;
@@ -29,7 +30,6 @@ import java.util.Map;
 */
 
 public final class QRCodeEncoder {
-
     private int dimension = Integer.MIN_VALUE;
     private String contents = null;
     private BarcodeFormat format = null;

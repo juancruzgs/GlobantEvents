@@ -35,6 +35,9 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
     private Button mTweetButton;
     private Button mLoginTwitterButton;
     CropCircleTransformation mCircleTransformation;
+    private AsyncTask<String, Void, Boolean> mTweetPost;
+    private AsyncTask<Void, Void, User> mLoadTweetUser;
+    private AsyncTask<Void, Void, Boolean> mTwitterLoader;
 
     public TweetFragment() {
         // Required empty public constructor

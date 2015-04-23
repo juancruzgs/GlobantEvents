@@ -7,11 +7,27 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name" >
-        <activity
-            android:name=".baseComponents.BasePagerActivity"
-            android:label="@string/title_activity_base_pager_acivity" >
-        </activity>
 
+        <activity
+            android:name=".TweetActivity"
+            android:label="@string/title_activity_tweet"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="t4jsample"
+                    android:scheme="oauth" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".baseComponents.SpeakerDetailActivity"
+            android:label="@string/title_activity_speaker_detail" >
+        </activity>
     </application>
 
 </manifest>

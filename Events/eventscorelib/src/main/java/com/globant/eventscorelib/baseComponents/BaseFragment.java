@@ -23,8 +23,8 @@ public abstract class BaseFragment extends Fragment{
     private FrameLayout mContentLayout;
     private TextView mTextViewUtilsMessage;
     private ImageView mImageViewUtils;
-    private Boolean mIsCheckin;
     protected BaseService mService = null;
+    private Boolean mIsCheckin;
 
     public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState){
@@ -120,7 +120,6 @@ public abstract class BaseFragment extends Fragment{
         mUtilsLayout.setVisibility(View.GONE);
         mContentLayout.setVisibility(View.VISIBLE);
     }
-    public abstract String getTitle();
 
     public void setService(BaseService service) {
         this.mService = service;
@@ -128,5 +127,11 @@ public abstract class BaseFragment extends Fragment{
         if (listener != null){
             mService.subscribeActor(listener);
         }
+    }
+
+    public abstract String getTitle();
+
+    public interface TitleChangeable{
+        public void changeFragmentTitle(String title);
     }
 }

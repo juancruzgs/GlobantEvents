@@ -1,10 +1,4 @@
 <resources>
-    <string name="app_name">Events</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Globant Events</string>
     <string name="title_activity_test">TestActivity</string>
-    <string name="title_activity_client_map">Map</string>
-    <string name="title_activity_event_detail_client">EventDetailClientActivity</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_tweet_client">TweetClientActivity</string>
 </resources>

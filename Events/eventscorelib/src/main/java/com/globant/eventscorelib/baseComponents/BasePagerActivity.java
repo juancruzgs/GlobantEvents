@@ -11,13 +11,18 @@ import android.view.MenuItem;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasePagerActivity extends BaseActivity {
+import static android.support.v4.view.ViewPager.OnPageChangeListener;
+import static com.globant.eventscorelib.baseComponents.BaseFragment.TitleChangeable;
+
+abstract public class BasePagerActivity extends BaseActivity{
 
     PageAdapter pageAdapter;
+    ViewPager mPager;
 
     @Override
     protected Class<? extends BaseService> getServiceClass() {
@@ -33,16 +38,10 @@ public class BasePagerActivity extends BaseActivity {
 
         pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
 
-        ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
-        pager.setAdapter(pageAdapter);
-        pager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        mPager = (ViewPager)findViewById(R.id.viewpager);
+        mPager.setAdapter(pageAdapter);
+        mPager.setPageTransformer(true, new ZoomOutSlideTransformer());
     }
-
-    @Override
-    public String getActivityTitle() {
-        return "Base Pager Activity";
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -50,21 +49,7 @@ public class BasePagerActivity extends BaseActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected List<Fragment> getFragments() {
-        List<Fragment> fList = new ArrayList<Fragment>();
-
-        fList.add(new BaseEventDescriptionFragment());
-        fList.add(new BaseEventDescriptionFragment());
-        fList.add(new BaseEventDescriptionFragment());
-
-        return fList;
-    }
+    protected abstract List<Fragment> getFragments();
 
     public class PageAdapter extends FragmentPagerAdapter {
 
@@ -87,16 +72,8 @@ public class BasePagerActivity extends BaseActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Description";
-                case 1:
-                    return "Tweets";
-                case 2:
-                    return "Participants";
-                default:
-                    return null;
-            }
+            return ((BaseFragment)fragments.get(position)).getTitle().toUpperCase();
         }
     }
+
 }

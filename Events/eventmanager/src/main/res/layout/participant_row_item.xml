@@ -10,14 +10,17 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:id="@+id/linear_layout_holder">
 
-            <FrameLayout
+        <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="8dp"
                 android:paddingTop="8dp"
-                android:paddingBottom="8dp">
+                android:paddingBottom="8dp"
+                android:id="@+id/frame_layout_left_image"
+            android:visibility="visible">
 
                 <ImageView
                     android:layout_width="72dp"
@@ -32,7 +35,8 @@
                 android:layout_height="fill_parent"
                 android:gravity="center_vertical"
                 android:padding="10dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:id="@+id/linear_layout_middle">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -83,14 +87,14 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:paddingRight="8dp"
-            android:visibility="visible">
+            android:id="@+id/frame_layout_right_image"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="72dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/image_view_participant_right"
-                android:src="@drawable/profile_pic"
-                android:visibility="gone" />
+                android:src="@drawable/profile_pic" />
         </FrameLayout>
 
     </LinearLayout>

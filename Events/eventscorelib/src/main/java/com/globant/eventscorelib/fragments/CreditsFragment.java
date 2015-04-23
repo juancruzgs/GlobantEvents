@@ -15,7 +15,6 @@ import com.globant.eventscorelib.baseComponents.BaseService;
  */
 public class CreditsFragment extends BaseFragment {
 
-
     public CreditsFragment() {
         // Required empty public constructor
     }

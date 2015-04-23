@@ -1,6 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Events Core Lib</string>
     <string name="title_activity_events_stream">Events</string>
+    <string name="title_activity_event_detail">Event</string>
+    <string name="title_activity_map">Map</string>
     <string name="title_fragment_events_stream">Stream</string>
     <string name="loading">Loading..</string>
     <string name="error_message">Oops, something failed :(</string>
@@ -53,7 +57,6 @@
     <string name="title_activity_base_pager_acivity">BasePagerAcivity</string>
     <string name="action_credits">Credits</string>
     <string name="title_activity_credits">Credits</string>
-    <string name="hello_world">Hello world!</string>
     <string name="edit_text_first_name_hint">First name</string>
     <string name="edit_text_laat_name_hint">Last name</string>
     <string name="edit_text_phone_hint">Phone</string>
@@ -73,5 +76,8 @@
     <string name="twitter_username">\@%s</string>
     <string name="placeholder_twitter_username">\@username</string>
     <string name="title_activity_tweet">TweetActivity</string>
-
+    <string name="action_profile">Profile</string>
+    <string name="title_activity_speaker_detail">SpeakerDetailActivity</string>
+    <string name="action_map">Map</string>
+    <string name="checkin_error">The subscriber email doesn\'t exist.</string>
 </resources>

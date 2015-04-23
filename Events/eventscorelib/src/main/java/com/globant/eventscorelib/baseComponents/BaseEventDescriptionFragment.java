@@ -1,27 +1,32 @@
 package com.globant.eventscorelib.baseComponents;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 
 
-public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks {
+public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener {
 
     private static final float MAX_TEXT_SCALE_DELTA = 0.3f;
 
@@ -34,11 +39,15 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
-    String mTitle;
+//    String mTitle;
+    private View mFab;
+    private boolean mFabIsShown;
+    private int mFlexibleSpaceShowFabOffset;
+    private int mFabMargin;
+    private boolean mTitleShown = false;
 
     public BaseEventDescriptionFragment() {
     }
-
 
     @Override
     public BaseService.ActionListener getActionListener() {
@@ -48,25 +57,40 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
-
         hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
-
         wireUpViews(rootView);
         initializeViewParameters();
-
+        setHasOptionsMenu(true);
         return rootView;
     }
 
     private void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
         mActionBarSize = getActionBarSize();
+        mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(R.dimen.flexible_space_show_fab_offset);
         mToolbarColor = getResources().getColor(R.color.globant_green);
         mStickyToolbar = false;
         mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         mToolbar.setBackgroundColor(Color.TRANSPARENT);
         mScrollView.setScrollViewCallbacks(this);
-        mTitle = "";
         mTitleView.setText("La Fiesta del Chori !");
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: Refactor with functionality, first subscribe, then check-in
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.container, new SubscriberFragment())
+//                        .addToBackStack(null).commit();
+                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
+                startActivityForResult(intentScan,0);
+            }
+        });
+
+        mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        ViewHelper.setScaleX(mFab, 0);
+        ViewHelper.setScaleY(mFab, 0);
+
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
             public void run() {
@@ -76,17 +100,29 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            if (resultCode == Activity.RESULT_OK) {
+                showProgressOverlay();
+                String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId);
+            }
+        }
+    }
+
     private void wireUpViews(View rootView) {
         mToolbar = rootView.findViewById(R.id.toolbar);
         mImageView = rootView.findViewById(R.id.image);
         mOverlayView = rootView.findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
         mTitleView = (TextView) rootView.findViewById(R.id.title);
+        mFab = rootView.findViewById(R.id.fab);
     }
 
     @Override
     public String getTitle() {
-        return mTitle;
+        return "Description";
     }
 
     @Override
@@ -136,16 +172,44 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             }
         }
 
-        if (i < mFlexibleSpaceImageHeight){
-            mTitle = "";
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(mTitle);
-        }
-        else {
-            mTitle = "La Fiesta del Chori !";
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(mTitle);
+//        if (i < mFlexibleSpaceImageHeight){
+//            mTitle = "";
+//            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
+//        }
+//        else {
+//            mTitle = "La Fiesta del Chori !";
+//            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
+//        }
+
+        if (i > mFlexibleSpaceImageHeight && !mTitleShown){
+            mTitleShown = true;
+            ((BaseActivity)getActivity()).changeFragmentTitle("La Fiesta del Chori !");
         }
 
+        // Translate FAB
+        int maxFabTranslationY = mFlexibleSpaceImageHeight - mFab.getHeight() / 2;
+        float fabTranslationY = ScrollUtils.getFloat(
+                -i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
+                mActionBarSize - mFab.getHeight() / 2,
+                maxFabTranslationY);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            // On pre-honeycomb, ViewHelper.setTranslationX/Y does not set margin,
+            // which causes FAB's OnClickListener not working.
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFab.getLayoutParams();
+            lp.leftMargin = mOverlayView.getWidth() - mFabMargin - mFab.getWidth();
+            lp.topMargin = (int) fabTranslationY;
+            mFab.requestLayout();
+        } else {
+            ViewHelper.setTranslationX(mFab, mOverlayView.getWidth() - mFabMargin - mFab.getWidth());
+            ViewHelper.setTranslationY(mFab, fabTranslationY);
+        }
 
+        // Show/hide FAB
+        if (fabTranslationY < mFlexibleSpaceShowFabOffset-mActionBarSize) {
+            hideFab();
+        } else {
+            showFab();
+        }
     }
 
     @Override
@@ -156,5 +220,58 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_event_description_fragment, menu);
+    }
+
+    private void showFab() {
+        if (!mFabIsShown) {
+            ViewPropertyAnimator.animate(mFab).cancel();
+            ViewPropertyAnimator.animate(mFab).scaleX(1).scaleY(1).setDuration(200).start();
+            mFabIsShown = true;
+        }
+    }
+
+    private void hideFab() {
+        if (mFabIsShown) {
+            ViewPropertyAnimator.animate(mFab).cancel();
+            ViewPropertyAnimator.animate(mFab).scaleX(0).scaleY(0).setDuration(200).start();
+            mFabIsShown = false;
+        }
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return this;
+    }
+
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
+    }
+
+    @Override
+    public Object getBindingKey() {
+        return null;
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        showCheckinOverlay();
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        hideUtilsAndShowContentOverlay();
+        Toast.makeText(getActivity(), getString(R.string.checkin_error),Toast.LENGTH_SHORT).show();
     }
 }
