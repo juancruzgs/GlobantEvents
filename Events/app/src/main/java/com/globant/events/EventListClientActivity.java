@@ -1,7 +1,6 @@
 package com.globant.events;
 
 import android.os.Bundle;
-import android.view.Menu;
 
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -24,16 +23,4 @@ public class EventListClientActivity extends BaseActivity {
                     .commit();
         }
     }
-
-    @Override
-    public String getActivityTitle() {
-        return getString(R.string.title_activity_events_stream);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_events_stream, menu);
-        return true;
-    }
-
 }

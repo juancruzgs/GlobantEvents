@@ -1,19 +1,14 @@
 package com.globant.eventmanager;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ViewAnimator;
 
 /**
 * Created by paula.baudo on 4/17/2015.
@@ -43,7 +38,6 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
         mImageViewParticipantRight = (ImageView) itemView.findViewById(R.id.image_view_participant_right);
         mParticipantHolderItemLayout = (LinearLayout) itemView.findViewById(R.id.participant_item_holder_layout);
         mLinearLayoutMiddle = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle);
-
     }
 
     public FrameLayout getmFrameLayoutLeft() {

@@ -25,10 +25,4 @@ public class CreditsActivity extends BaseActivity {
                     .commit();
         }
     }
-
-    @Override
-    public String getActivityTitle() {
-        return getString(R.string.title_activity_credits);
-    }
-
 }

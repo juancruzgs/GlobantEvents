@@ -39,11 +39,9 @@ public class BaseTwitterStreamFragment extends BaseFragment {
     }
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-
     public BaseTwitterStreamFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public BaseService.ActionListener getActionListener() {
@@ -69,7 +67,7 @@ public class BaseTwitterStreamFragment extends BaseFragment {
 
     @Override
     public String getTitle() {
-        return "Stream";
+        return "Twitter";
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {

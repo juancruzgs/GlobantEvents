@@ -28,11 +28,4 @@ public class SpeakerDetailActivity extends BaseActivity {
                     .commit();
         }
     }
-
-    @Override
-    public String getActivityTitle() {
-        return getString(R.string.speaker_detail_fragment);
-    }
-
-
 }

@@ -22,12 +22,4 @@ public class EventListAdapterManager extends BaseEventsListAdapter {
                 .inflate(R.layout.event_card_row_item, parent, false);
         return new EventsListViewHolderManager(view, mContext);
     }
-
-//    @Override
-//    public ParticipantsListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext())
-//                .inflate(com.globant.eventmanager.R.layout.participant_row_item, parent, false);
-//        return new ParticipantsListViewHolder(view);
-//    }
-
 }

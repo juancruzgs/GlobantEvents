@@ -59,9 +59,4 @@ public class TweetActivity extends BaseActivity {
             }
         }
     }
-
-    @Override
-    public String getActivityTitle() {
-        return "Twitter";
-    }
 }

@@ -41,11 +41,12 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
-    String mTitle;
+//    String mTitle;
     private View mFab;
     private boolean mFabIsShown;
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
+    private boolean mTitleShown = false;
 
     public BaseEventDescriptionFragment() {
     }
@@ -74,7 +75,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         mToolbar.setBackgroundColor(Color.TRANSPARENT);
         mScrollView.setScrollViewCallbacks(this);
-        mTitle = "";
         mTitleView.setText("La Fiesta del Chori !");
 
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +111,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public String getTitle() {
-        return "Event description";
+        return "Description";
     }
 
     @Override
@@ -161,13 +161,18 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             }
         }
 
-        if (i < mFlexibleSpaceImageHeight){
-            mTitle = "";
-            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
-        }
-        else {
-            mTitle = "La Fiesta del Chori !";
-            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
+//        if (i < mFlexibleSpaceImageHeight){
+//            mTitle = "";
+//            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
+//        }
+//        else {
+//            mTitle = "La Fiesta del Chori !";
+//            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
+//        }
+
+        if (i > mFlexibleSpaceImageHeight && !mTitleShown){
+            mTitleShown = true;
+            ((BaseActivity)getActivity()).changeFragmentTitle("La Fiesta del Chori !");
         }
 
         // Translate FAB
