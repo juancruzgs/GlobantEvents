@@ -1,22 +1,28 @@
 package com.globant.eventscorelib.baseComponents;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class BasePagerActivity extends BaseActivity {
+import static android.support.v4.view.ViewPager.OnPageChangeListener;
+import static com.globant.eventscorelib.baseComponents.BaseFragment.TitleChangeable;
+
+abstract public class BasePagerActivity extends BaseActivity{
 
     PageAdapter pageAdapter;
+    ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,16 +33,10 @@ abstract public class BasePagerActivity extends BaseActivity {
 
         pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
 
-        ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
-        pager.setAdapter(pageAdapter);
-        pager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        mPager = (ViewPager)findViewById(R.id.viewpager);
+        mPager.setAdapter(pageAdapter);
+        mPager.setPageTransformer(true, new ZoomOutSlideTransformer());
     }
-
-    @Override
-    public String getActivityTitle() {
-        return "Base Pager Activity";
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -44,21 +44,7 @@ abstract public class BasePagerActivity extends BaseActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected List<Fragment> getFragments() {
-        List<Fragment> fList = new ArrayList<Fragment>();
-
-        fList.add(new BaseEventDescriptionFragment());
-        fList.add(new BaseEventDescriptionFragment());
-        fList.add(new BaseEventDescriptionFragment());
-
-        return fList;
-    }
+    protected abstract List<Fragment> getFragments();
 
     public class PageAdapter extends FragmentPagerAdapter {
 
@@ -81,18 +67,8 @@ abstract public class BasePagerActivity extends BaseActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "DESCRIPTION";
-                case 1:
-                    return "PARTICIPANTS";
-                case 2:
-                    return "SPEAKERS";
-                case 3:
-                    return "TWEETS";
-                default:
-                    return null;
-            }
+            return ((BaseFragment)fragments.get(position)).getTitle().toUpperCase();
         }
     }
+
 }

@@ -23,10 +23,12 @@ import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
 
+import static com.globant.eventscorelib.baseComponents.BaseFragment.TitleChangeable;
+
 /**
  * Created by ignaciopena on 4/1/15.
  */
-public abstract class BaseActivity extends ActionBarActivity {
+public abstract class BaseActivity extends ActionBarActivity implements TitleChangeable{
 
     BroadcastReceiver mReceiver;
     TextView mConnectionRibbon;
@@ -81,13 +83,18 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected void doUnbindService() {
         if (mIsBound) {
             // Detach our existing connection.
+            for (BaseFragment fragment : mFragments) {
+                mService.unSubscribeActor(fragment.getActionListener());
+            }
             unbindService(mConnection);
             mIsBound = false;
         }
     }
 
     // TODO: This function is used to set the service (a subclass of BaseService)
-    abstract protected Class<? extends BaseService> getServiceClass();
+    protected Class<? extends BaseService> getServiceClass() {
+        return ((BaseApplication)getApplication()).getServiceClass();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +143,14 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
+        if (mService != null){
+            ((BaseFragment)fragment).setService(mService);
+        }
         mFragments.add((BaseFragment)fragment);
-        setFragmentTitle((BaseFragment)fragment);
+        if (mFragments.size() == 1) {
+            //Sets the first fragment title
+            setFragmentTitle((BaseFragment) fragment);
+        }
     }
 
     private void setConnectionReceiver() {
@@ -165,17 +178,17 @@ public abstract class BaseActivity extends ActionBarActivity {
         mToolbar =  (Toolbar) mainContainer.findViewById(R.id.toolbar);
         mFragmentTitle = (TextView) mToolbar.findViewById(R.id.toolbar_fragment_title);
         setSupportActionBar(mToolbar);
-        setActivityTitle();
+//        setActivityTitle();
     }
 
-    private final void setActivityTitle(){
-        String title = getActivityTitle();
-        if (title != null && !title.isEmpty()){
-            mToolbar.setTitle(title);
-        }
-    }
+//    private void setActivityTitle(){
+//        String title = getActivityTitle();
+//        if (title != null && !title.isEmpty()){
+//            mToolbar.setTitle(title);
+//        }
+//    }
 
-    private final void setFragmentTitle(BaseFragment fragment){
+    private void setFragmentTitle(BaseFragment fragment){
         String title = fragment.getTitle();
         if (title != null && !title.isEmpty() && mFragmentTitle != null){
             mFragmentTitle.setText(title);
@@ -210,7 +223,12 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
-    // Anstract methods
-    public abstract String getActivityTitle();
-//    public abstract String getFragmentTitle(BaseFragment fragment);
+    @Override
+    public void changeFragmentTitle(String title) {
+        if (title != null && mFragmentTitle != null){
+             mFragmentTitle.setText(title);
+        }
+    }
+
+//    public abstract String getActivityTitle();
 }

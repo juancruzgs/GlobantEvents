@@ -21,6 +21,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public abstract class BaseMapActivity extends ActionBarActivity implements OnMapReadyCallback {
 
     private GoogleMap mGoogleMap;
+    private CameraPosition mInitialCameraPosition;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        CameraPosition cameraPosition = mGoogleMap.getCameraPosition();
+        outState.putParcelable(CoreConstants.MAP_CAMERA_POSITION_INTENT, cameraPosition);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mInitialCameraPosition = (CameraPosition)savedInstanceState.get(CoreConstants.MAP_CAMERA_POSITION_INTENT);
+    }
 
     protected GoogleMap getGoogleMap() {
         return mGoogleMap;
@@ -48,14 +62,11 @@ public abstract class BaseMapActivity extends ActionBarActivity implements OnMap
 
     private void prepareToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle(getActivityTitle());
         TextView textView = (TextView)toolbar.findViewById(R.id.toolbar_fragment_title);
         textView.setText("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-    protected abstract String getActivityTitle();
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -64,17 +75,22 @@ public abstract class BaseMapActivity extends ActionBarActivity implements OnMap
         uiSettings.setZoomControlsEnabled(true);
         uiSettings.setCompassEnabled(true);
         mGoogleMap.setMyLocationEnabled(true);
+        if (mInitialCameraPosition != null) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(mInitialCameraPosition));
+        }
+    }
+
+    protected CameraPosition getInitialCameraPosition() {
+        return mInitialCameraPosition;
     }
 
     protected Marker addMarkerToMap(LatLng latLng) {
         getGoogleMap().clear();
-        Marker marker = getGoogleMap().addMarker(new MarkerOptions()
+        return getGoogleMap().addMarker(new MarkerOptions()
                 .position(latLng));
-        changeCameraPosition(latLng);
-        return marker;
     }
 
-    private void changeCameraPosition(LatLng latLng) {
+    protected void changeCameraPosition(LatLng latLng) {
         CameraPosition cameraPosition = CameraPosition.builder()
                 .target(latLng)
                 .zoom(CoreConstants.MAP_CAMERA_ZOOM)

@@ -1,17 +1,14 @@
 package com.globant.events;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.baseComponents.BaseEventListFragment;
 import com.globant.eventscorelib.baseComponents.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.baseComponents.CreditsActivity;
 
 /**
 * Created by paula.baudo on 4/17/2015.
