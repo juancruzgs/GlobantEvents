@@ -4,6 +4,7 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -36,11 +37,17 @@ public class CloudDataController {
         return createDomainEventFromDatabase(databaseEvent);
     }
 
-    public List<Speaker> getEventSpeakers(String eventId) {
-//        List<Speaker> speakers = new ArrayList<>();
-//        mQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-//        mParseObjectList = mQuery.find();
-        return null;
+    public List<Speaker> getEventSpeakers(String eventId) throws ParseException {
+        List<Speaker> speakers = new ArrayList<>();
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject event = eventsQuery.get(eventId);
+        ParseQuery<ParseObject> speakersQuery = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
+        ParseRelation<ParseObject> relation = event.getRelation(CoreConstants.FIELD_SPEAKERS);
+        List<ParseObject> speakersEvents = relation.getQuery().find();
+        for (ParseObject speakerParseObject: speakersEvents){
+            speakers.add(createSpeakerFromDatabaseInformation(speakersQuery.get(speakerParseObject.getObjectId())));
+        }
+        return speakers;
     }
 
     public List<Subscriber> getEventSubscribers(String eventId) throws ParseException {
@@ -195,5 +202,24 @@ public class CloudDataController {
         databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSpeaker.getLastName());
         databaseSpeaker.put(CoreConstants.FIELD_BIOGRAPHY, domainSpeaker.getBiography());
         databaseSpeaker.put(CoreConstants.FIELD_PICTURE, domainSpeaker.getPicture());
+    }
+
+    private Speaker createSpeakerFromDatabaseInformation(ParseObject databaseSpeaker) throws ParseException {
+        final Speaker speaker = new Speaker();
+        speaker.setName((String) databaseSpeaker.get(CoreConstants.FIELD_NAME));
+        speaker.setLastName((String) databaseSpeaker.get(CoreConstants.FIELD_LAST_NAME));
+        speaker.setTitle((String) databaseSpeaker.get(CoreConstants.FIELD_TITLE));
+//        databaseSpeaker.getParseFile(CoreConstants.FIELD_PICTURE).getData();
+        ParseFile image = (ParseFile) databaseSpeaker.get(CoreConstants.FIELD_PICTURE);
+        image.getDataInBackground(new GetDataCallback() {
+            @Override
+            public void done(byte[] bytes, ParseException e) {
+                if (e != null) {
+                    speaker.setPicture(bytes);
+                }
+            }
+        });
+
+        return speaker;
     }
 }

@@ -10,16 +10,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.utils.CropCircleTransformation;
 import com.globant.eventscorelib.R;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 /**
  * Created by agustin.gugliotta on 15/04/2015.
  */
 public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapter.ViewHolder>{
-    private String[] mDatasetName;
-    private String[] mDatasetDescription;
+//    private String[] mDatasetName;
+//    private String[] mDatasetDescription;
+    private List<Speaker> mSpeakers;
     private CropCircleTransformation transformation;
     private final Context mContext;
 
@@ -48,9 +52,8 @@ public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapte
         }
     }
 
-    public SpeakersListAdapter(Context context, String[] datasetName, String[] datasetDescription) {
-        mDatasetName = datasetName;
-        mDatasetDescription = datasetDescription;
+    public SpeakersListAdapter(Context context, List<Speaker> speakers) {
+        mSpeakers = speakers;
         mContext = context;
         transformation = new CropCircleTransformation(context);
     }
@@ -64,14 +67,14 @@ public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.getTextViewName().setText(mDatasetName[position]);
-        holder.getTextViewDescription().setText(mDatasetDescription[position]);
+        holder.getTextViewName().setText(mSpeakers.get(position).getName());
+        holder.getTextViewDescription().setText(mSpeakers.get(position).getTitle());
         Picasso.with(mContext).load(R.drawable.speaker_image).transform(transformation).into(holder.getImageView());
     }
 
     @Override
     public int getItemCount() {
-        return mDatasetName.length;
+        return mSpeakers.size();
     }
 
 
