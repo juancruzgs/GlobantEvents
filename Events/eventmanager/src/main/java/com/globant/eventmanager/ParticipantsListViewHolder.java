@@ -1,26 +1,22 @@
 package com.globant.eventmanager;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ViewAnimator;
 
 /**
-* Created by paula.baudo on 4/17/2015.
-*/
-public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener{
+ * Created by paula.baudo on 4/17/2015.
+ */
+public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
 
     private final TextView mTextViewName;
     private final TextView mTextViewGlober;
@@ -34,12 +30,24 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
     private Boolean mScrolling;
     private EventParticipantsFragment mFragment;
     private Boolean mBooleanIsPressed;
+    private TranslateAnimation mTranslateAnimationPhoto;
+    private TranslateAnimation mTranslateAnimationText;
+    private Boolean mAnimationCancelled;
+    private View mView;
+    private Boolean mRunnableIsRunning;
 
-    private final Handler handler = new Handler();
-    private final Runnable runnable = new Runnable() {
+    private final Handler mHandler = new Handler();
+    private final Runnable mRunnable = new Runnable() {
         public void run() {
-            if (mBooleanIsPressed) {
-                addTranslateAnimation(mFrameLayoutLeft,mFrameLayoutRight,mLinearLayoutHolder,true);
+            mRunnableIsRunning = true;
+            if ((!mScrolling) && (mBooleanIsPressed)){
+                if (mView.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
+                    addTranslateAnimationPhoto(mFrameLayoutLeft, mFrameLayoutRight, mLinearLayoutHolder, true);
+                    addTranslateAnimationText(mLinearLayoutMiddle,mLinearLayoutHolder,true);
+                }else{
+                    addTranslateAnimationPhoto(mFrameLayoutRight, mFrameLayoutLeft, mLinearLayoutHolder, false);
+                    addTranslateAnimationText(mLinearLayoutMiddle,mLinearLayoutHolder,false);
+                }
             }
         }
     };
@@ -60,22 +68,42 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
         itemView.setOnTouchListener(this);
     }
 
+    public float getFrameLayoutWidth(){
+        return mFrameLayoutLeft.getWidth();
+    }
+
     public FrameLayout getmFrameLayoutLeft() {
         return mFrameLayoutLeft;
     }
 
-    public void addTranslateAnimation(final FrameLayout frameLayoutFrom, final FrameLayout frameLayoutTo, LinearLayout linearLayoutHolder, boolean leftToRight) {
+    public void addTranslateAnimationText(LinearLayout linearLayoutMiddle, LinearLayout linearLayoutHolder, Boolean leftToRight){
         TranslateAnimation translateAnimation;
-        float position = frameLayoutFrom.getWidth();
-        if (leftToRight) {
-            translateAnimation = new TranslateAnimation(frameLayoutFrom.getX(),linearLayoutHolder.getRight()-position
-                    ,frameLayoutFrom.getY(),frameLayoutFrom.getY());
+        if (leftToRight){
+            translateAnimation = new TranslateAnimation(0, -getFrameLayoutWidth(), 0, 0);
         }else{
-            translateAnimation = new TranslateAnimation(0, -linearLayoutHolder.getWidth()+position
-                    ,frameLayoutFrom.getY(),frameLayoutFrom.getY());
+            translateAnimation = new TranslateAnimation(0, getFrameLayoutWidth()+2, 0, 0);
+        }
+        translateAnimation.setDuration(650);
+        translateAnimation.initialize(linearLayoutMiddle.getWidth(), linearLayoutMiddle.getHeight(),
+                linearLayoutHolder.getWidth(), linearLayoutHolder.getHeight());
+        mTranslateAnimationText = translateAnimation;
+        linearLayoutMiddle.startAnimation(translateAnimation);
+
+    }
+
+    public void addTranslateAnimationPhoto(final FrameLayout frameLayoutFrom, final FrameLayout frameLayoutTo, LinearLayout linearLayoutHolder,
+                                           final boolean leftToRight) {
+        TranslateAnimation translateAnimation;
+        if (leftToRight) {
+            translateAnimation = new TranslateAnimation(frameLayoutFrom.getX(), linearLayoutHolder.getRight() - getFrameLayoutWidth()
+                    , frameLayoutFrom.getY(), frameLayoutFrom.getY());
+        } else {
+            translateAnimation = new TranslateAnimation(0, -linearLayoutHolder.getWidth() + getFrameLayoutWidth()
+                    , frameLayoutFrom.getY(), frameLayoutFrom.getY());
         }
 
-        translateAnimation.setDuration(500);
+        translateAnimation.setDuration(650);
+        translateAnimation.setInterpolator(new DecelerateInterpolator());
         translateAnimation.initialize(frameLayoutFrom.getWidth(),
                 frameLayoutFrom.getHeight(), linearLayoutHolder.getWidth(), linearLayoutHolder.getHeight());
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -85,8 +113,19 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                frameLayoutFrom.setVisibility(View.GONE);
-                frameLayoutTo.setVisibility(View.VISIBLE);
+                if (mAnimationCancelled){
+                    animation.reset();
+                    mTranslateAnimationText.cancel();
+                    mTranslateAnimationText.reset();
+                }else {
+                    frameLayoutFrom.setVisibility(View.GONE);
+                    frameLayoutTo.setVisibility(View.VISIBLE);
+                    if (leftToRight){
+                        mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
+                    }else{
+                        mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
+                    }
+                }
 
             }
 
@@ -95,6 +134,7 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
 
             }
         });
+        mTranslateAnimationPhoto = translateAnimation;
         frameLayoutFrom.startAnimation(translateAnimation);
     }
 
@@ -120,11 +160,11 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
     /*@Override
     public boolean onLongClick(View v) {
         if (v.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
-            addTranslateAnimation(mFrameLayoutLeft,mFrameLayoutRight,mLinearLayoutHolder,true);
+            addTranslateAnimationPhoto(mFrameLayoutLeft,mFrameLayoutRight,mLinearLayoutHolder,true);
             mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
 
         }else{
-            addTranslateAnimation(mFrameLayoutRight,mFrameLayoutLeft,mLinearLayoutHolder,false);
+            addTranslateAnimationPhoto(mFrameLayoutRight,mFrameLayoutLeft,mLinearLayoutHolder,false);
             mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
         }
         return true;
@@ -133,22 +173,28 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         mScrolling = mFragment.getScrolling();
-        if(event.getAction() == MotionEvent.ACTION_UP) {
-            if(mBooleanIsPressed) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (mBooleanIsPressed) {
                 mBooleanIsPressed = false;
-                handler.removeCallbacks(runnable);
+                mAnimationCancelled = true;
+                if (mRunnableIsRunning) {
+                    mTranslateAnimationPhoto.cancel();
+                }
+                mHandler.removeCallbacks(mRunnable);
                 return true;
             }
             return false;
-        }else{
-            if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        } else {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 // Execute your Runnable after 5000 milliseconds = 5 seconds.
-                handler.postDelayed(runnable, 1000);
+                mRunnableIsRunning = false;
+                mView = v;
+                mHandler.postDelayed(mRunnable, 500);
+                mAnimationCancelled = false;
                 mBooleanIsPressed = true;
+                return true;
             }
             return false;
         }
-
-
     }
 }
