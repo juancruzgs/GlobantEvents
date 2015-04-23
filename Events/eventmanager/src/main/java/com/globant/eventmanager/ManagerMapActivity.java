@@ -30,7 +30,9 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     private long mUpPressedTime;
     private LatLng mInitialMarkerPosition;
 
-    BaseService mService = null;
+    private BaseService mService = null;
+    private SearchView mSearchView;
+    private String mInitialQuery = "";
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -38,6 +40,7 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
             LatLng latLng = mMarker.getPosition();
             outState.putParcelable(CoreConstants.MAP_MARKER_POSITION_INTENT, latLng);
         }
+        outState.putString("string", mSearchView.getQuery().toString());
         super.onSaveInstanceState(outState);
     }
 
@@ -45,6 +48,7 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mInitialMarkerPosition = (LatLng)savedInstanceState.get(CoreConstants.MAP_MARKER_POSITION_INTENT);
+        mInitialQuery = savedInstanceState.getString("string");
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -153,10 +157,11 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
 
     private void prepareSearchView(Menu menu) {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        MenuItem searchItem = menu.findItem(R.id.search);
+        mSearchView = (SearchView)searchItem.getActionView();
+        mSearchView.setQueryHint(getString(R.string.search_hint));
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 mService.executeAction(BaseService.ACTIONS.POSITION_COORDINATES, s);
@@ -168,6 +173,11 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
                 return false;
             }
         });
+        if (!mInitialQuery.isEmpty()) {
+            mSearchView.setQuery(mInitialQuery, false);
+            mSearchView.setIconified(false);
+            mSearchView.clearFocus();
+        }
     }
 
     @Override
