@@ -1,6 +1,7 @@
 package com.globant.eventscorelib.baseComponents;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -9,12 +10,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,12 +21,12 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.fragments.SubscriberFragment;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
 
-public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks {
+public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener {
 
     private static final float MAX_TEXT_SCALE_DELTA = 0.3f;
 
@@ -49,11 +47,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private boolean mTitleShown = false;
 
     public BaseEventDescriptionFragment() {
-    }
-
-    @Override
-    public BaseService.ActionListener getActionListener() {
-        return null;
     }
 
     @Override
@@ -80,10 +73,12 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Refactor with functionality
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, new SubscriberFragment())
-                        .addToBackStack(null).commit();
+                //TODO: Refactor with functionality, first subscribe, then check-in
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.container, new SubscriberFragment())
+//                        .addToBackStack(null).commit();
+                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
+                startActivityForResult(intentScan,0);
             }
         });
 
@@ -98,6 +93,17 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
                 mScrollView.scrollTo(0, 0 );
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            if (resultCode == Activity.RESULT_OK) {
+                showProgressOverlay();
+                String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId);
+            }
+        }
     }
 
     private void wireUpViews(View rootView) {
@@ -231,5 +237,36 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             ViewPropertyAnimator.animate(mFab).scaleX(0).scaleY(0).setDuration(200).start();
             mFabIsShown = false;
         }
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return this;
+    }
+
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
+    }
+
+    @Override
+    public Object getBindingKey() {
+        return null;
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        showCheckinOverlay();
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        hideUtilsAndShowContentOverlay();
+        Toast.makeText(getActivity(), getString(R.string.checkin_error),Toast.LENGTH_SHORT).show();
     }
 }

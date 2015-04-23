@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Events Core Lib</string>
     <string name="title_activity_events_stream">Events</string>
     <string name="title_activity_event_detail">Event</string>
@@ -78,4 +79,5 @@
     <string name="action_profile">Profile</string>
     <string name="title_activity_speaker_detail">SpeakerDetailActivity</string>
     <string name="action_map">Map</string>
+    <string name="checkin_error">The subscriber email doesn\'t exist.</string>
 </resources>

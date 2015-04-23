@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Address;
-import android.location.Geocoder;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -114,7 +113,7 @@ public class BaseService extends Service {
     }
 
     public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
-    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST}
+    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN}
 
     public TwitterManager getTwitterManager() {
         return mTwitterManager;
@@ -174,20 +173,21 @@ public class BaseService extends Service {
                             List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
                             currentSubscriber.finishAction(theAction, tweetList);
                             break;
+                        case SUBSCRIBER_CHECKIN:
+                            mCloudDataController.setCheckIn((String) argument, getBaseContext());
+                            currentSubscriber.finishAction(theAction, null);
+                            break;
                     }
                 } catch (Exception e) {
-
                     currentSubscriber.failAction(theAction, e);
                     Logger.e("executeAction", e);
                 }
-
             }
         };
         new Thread(r).start();
     }
 
     private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
-
 
     public static interface ActionListener {
         public Activity getBindingActivity();
