@@ -21,7 +21,7 @@ public class EventsListAdapterClient extends BaseEventsListAdapter {
     @Override
     public EventsListViewHolderClient onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.event_card_row_item, parent, false);
+                .inflate(R.layout.event_card_row_item_technical, parent, false);
         return new EventsListViewHolderClient(view, mContext);
     }
 }

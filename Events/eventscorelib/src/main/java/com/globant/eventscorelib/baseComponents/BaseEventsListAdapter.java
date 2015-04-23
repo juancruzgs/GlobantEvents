@@ -34,7 +34,7 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
     @Override
     public BaseEventsListViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.event_card_row_item, viewGroup, false);
+                .inflate(R.layout.event_card_row_item_technical, viewGroup, false);
         return new BaseEventsListViewHolder(view);
     }
 
