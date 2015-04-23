@@ -24,6 +24,10 @@ public class ClientMapActivity extends BaseMapActivity {
         LatLng latLng = getIntent().getParcelableExtra(CoreConstants.MAP_MARKER_POSITION_INTENT);
         if (latLng != null){
             addMarkerToMap(latLng);
+            if (getInitialCameraPosition() == null) {
+                //First create
+                changeCameraPosition(latLng);
+            }
         }
     }
 }
