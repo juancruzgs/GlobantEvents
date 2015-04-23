@@ -137,10 +137,10 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
 
     private void prepareSearchView(Menu menu) {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchView.setQueryHint(getString(R.string.search_hint));
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 mService.executeAction(BaseService.ACTIONS.POSITION_COORDINATES, s);
@@ -243,10 +243,5 @@ public class ManagerMapActivity extends BaseMapActivity implements BaseService.A
     @Override
     protected int getMapContainer() {
         return R.id.container;
-    }
-
-    @Override
-    protected String getActivityTitle() {
-        return getString(R.string.title_activity_manager_map);
     }
 }
