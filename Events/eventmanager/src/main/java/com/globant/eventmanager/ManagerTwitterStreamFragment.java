@@ -4,4 +4,5 @@ import com.globant.eventscorelib.fragments.BaseTwitterStreamFragment;
 
 
 public class ManagerTwitterStreamFragment extends BaseTwitterStreamFragment {
+
 }

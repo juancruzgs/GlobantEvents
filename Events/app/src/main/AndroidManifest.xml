@@ -68,6 +68,7 @@
         </activity>
         <service android:name=".ClientDataService"
                  android:exported="false"/>
+
     </application>
 
 </manifest>

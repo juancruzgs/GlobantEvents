@@ -25,6 +25,11 @@ abstract public class BasePagerActivity extends BaseActivity{
     ViewPager mPager;
 
     @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return null;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_pager_acivity);

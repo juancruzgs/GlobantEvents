@@ -50,6 +50,11 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     }
 
     @Override
+    public BaseService.ActionListener getActionListener() {
+        return this;
+    }
+
+    @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
         hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
@@ -239,10 +244,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         }
     }
 
-    @Override
-    public BaseService.ActionListener getActionListener() {
-        return this;
-    }
 
     @Override
     public Activity getBindingActivity() {

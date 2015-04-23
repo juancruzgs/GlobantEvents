@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseComponents.BaseEventListFragment;
 import com.globant.eventscorelib.baseComponents.BaseEventsListAdapter;
