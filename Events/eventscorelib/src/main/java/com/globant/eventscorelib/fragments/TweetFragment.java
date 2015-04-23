@@ -69,7 +69,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
         mUsername = (TextView) rootView.findViewById(R.id.textView_username);
         mUserFullName = (TextView) rootView.findViewById(R.id.textView_user_full_name);
         mTweetText = (EditText) rootView.findViewById(R.id.textView_tweet);
-        mTweetText.setFocusable(false);
+        //mTweetText.setText(getString(R.string.general_hashtag) + event.hashtag); TODO put the event hashtag when the activity starts
         mTweetButton = (Button) rootView.findViewById(R.id.button_tweet);
         mTweetButton.setOnClickListener(this);
         mLoginTwitterButton.setOnClickListener(this);
@@ -147,6 +147,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
                 }
                 break;
             case TWITTER_LOADER:
+
                 break;
             case TWEET_POST:
                 if ((Boolean) result) {
@@ -162,7 +163,6 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
                     mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
                 }
                 break;
-
         }
         hideUtilsAndShowContentOverlay();
     }
