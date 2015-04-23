@@ -29,7 +29,6 @@ import java.util.Map;
 */
 
 public final class QRCodeEncoder {
-
     private int dimension = Integer.MIN_VALUE;
     private String contents = null;
     private BarcodeFormat format = null;

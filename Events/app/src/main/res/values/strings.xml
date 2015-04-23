@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">Globant Events</string>
     <string name="title_activity_test">TestActivity</string>
-    <string name="title_activity_event_detail_client">Description</string>
 </resources>

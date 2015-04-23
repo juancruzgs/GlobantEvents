@@ -1,6 +1,5 @@
 package com.globant.eventmanager;
 
-import android.app.Application;
 
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 

@@ -39,14 +39,12 @@
         </activity>
         <activity
             android:name=".ManagerMapActivity"
-            android:label="@string/title_activity_manager_map"
-            android:parentActivityName=".TestActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName=".EventsListManagerActivity"
             android:screenOrientation="portrait" >
-
-            <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.globant.eventmanager.TestActivity" />
+                android:value=".EventsListManagerActivity" />
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
