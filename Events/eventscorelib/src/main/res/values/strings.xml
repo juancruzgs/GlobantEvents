@@ -84,5 +84,8 @@
     <string name="title_base_activity_twitter">Twitter</string>
     <string name="title_fragment_tweet">Tweet</string>
     <string name="title_fragment_tweets_stream">Stream</string>
-
+    <string name="title_page_description">Description</string>
+    <string name="title_page_participants">Participants</string>
+    <string name="title_page_speakers">Speakers</string>
+    <string name="title_page_twitter">Twitter</string>
 </resources>
