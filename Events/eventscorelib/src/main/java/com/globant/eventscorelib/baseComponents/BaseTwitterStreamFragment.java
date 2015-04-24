@@ -103,7 +103,8 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public String getTitle() {
-        return getString(R.string.title_fragment_tweets_stream);
+        return "Twitter";
+//        return getString(R.string.title_fragment_tweets_stream);
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {

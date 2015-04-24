@@ -21,8 +21,6 @@ import java.util.List;
  * Created by agustin.gugliotta on 15/04/2015.
  */
 public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapter.ViewHolder>{
-//    private String[] mDatasetName;
-//    private String[] mDatasetDescription;
     private List<Speaker> mSpeakers;
     private CropCircleTransformation transformation;
     private final Context mContext;
@@ -75,6 +73,12 @@ public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapte
     @Override
     public int getItemCount() {
         return mSpeakers.size();
+    }
+
+    public void addSpeaker(Speaker speaker){
+        mSpeakers.add(speaker);
+
+
     }
 
 

@@ -30,7 +30,7 @@ import java.util.List;
         */
 public class SpeakersListFragment extends BaseFragment implements BaseService.ActionListener{
 
-    private List<Speaker> mSpeakers = new ArrayList<>();
+    private List<Speaker> mSpeakers = new ArrayList();
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -54,7 +54,7 @@ public class SpeakersListFragment extends BaseFragment implements BaseService.Ac
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-
+        showProgressOverlay("Loading Speakers");
     }
 
     @Override
@@ -64,11 +64,11 @@ public class SpeakersListFragment extends BaseFragment implements BaseService.Ac
             mAdapter = new SpeakersListAdapter(getActivity(), mSpeakers);
             mRecyclerView.setAdapter(mAdapter);
         }
+        hideUtilsAndShowContentOverlay();
     }
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-
     }
 
     public SpeakersListFragment() {
@@ -105,6 +105,9 @@ public class SpeakersListFragment extends BaseFragment implements BaseService.Ac
         }
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
+
+        mAdapter = new SpeakersListAdapter(getActivity(),mSpeakers);
+        mRecyclerView.setAdapter(mAdapter);
 
         mRecyclerView.setHasFixedSize(true);
 
