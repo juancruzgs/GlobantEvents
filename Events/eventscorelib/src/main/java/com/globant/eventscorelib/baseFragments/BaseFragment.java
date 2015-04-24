@@ -1,0 +1,143 @@
+package com.globant.eventscorelib.baseFragments;
+
+
+import android.content.res.TypedArray;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseComponents.BaseService;
+
+
+public abstract class BaseFragment extends Fragment{
+
+    private LinearLayout mUtilsLayout;
+    private FrameLayout mContentLayout;
+    private TextView mTextViewUtilsMessage;
+    private ImageView mImageViewUtils;
+    protected BaseService mService = null;
+    private Boolean mIsCheckin;
+
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container,
+                         Bundle savedInstanceState){
+
+        View rootView = inflater.inflate(R.layout.fragment_base, container, false);
+        wireUpLayouts(rootView);
+        wireUpViews(rootView);
+        prepareCheckinTouch();
+        View content=this.onCreateEventView(inflater, null, savedInstanceState);
+        mContentLayout.addView(content);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mService.unSubscribeActor(getActionListener());
+    }
+
+    // TODO: This function can return an ActionListener to manage the db actions... or just null
+    abstract public BaseService.ActionListener getActionListener();
+
+
+    abstract protected View onCreateEventView(LayoutInflater inflater, ViewGroup container,
+                                              Bundle savedInstanceState);
+
+
+    protected int getActionBarSize() {
+        TypedValue typedValue = new TypedValue();
+        int[] textSizeAttr = new int[]{R.attr.actionBarSize};
+        int indexOfAttrTextSize = 0;
+        TypedArray a = getActivity().obtainStyledAttributes(typedValue.data, textSizeAttr);
+        int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
+        a.recycle();
+        return actionBarSize;
+    }
+
+    private void wireUpLayouts(View rootView) {
+        mUtilsLayout = (LinearLayout)rootView.findViewById(R.id.utilsPanel);
+        mContentLayout=(FrameLayout)rootView.findViewById(R.id.contentPanel);
+    }
+
+    private void wireUpViews(View rootView) {
+        mTextViewUtilsMessage=(TextView)rootView.findViewById(R.id.textView_utils);
+        mImageViewUtils=(ImageView)rootView.findViewById(R.id.imageView_utils);
+    }
+
+    private void prepareCheckinTouch() {
+        mIsCheckin = false;
+        mImageViewUtils.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsCheckin){
+                    hideUtilsAndShowContentOverlay();
+                    mIsCheckin = false;
+                }
+            }
+        });
+    }
+
+    public void showProgressOverlay(){
+        mTextViewUtilsMessage.setText(getResources().getString(R.string.loading));
+        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.loading));
+        mContentLayout.setVisibility(View.GONE);
+        mUtilsLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void showProgressOverlay(String messageProgress){
+        mTextViewUtilsMessage.setText(messageProgress);
+        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.loading));
+        mContentLayout.setVisibility(View.GONE);
+        mUtilsLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void showErrorOverlay(){
+        mTextViewUtilsMessage.setText(getResources().getString(R.string.error_message));
+        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.error));
+        mContentLayout.setVisibility(View.GONE);
+        mUtilsLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void showErrorOverlay(String messageError){
+        mTextViewUtilsMessage.setText(messageError);
+        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.error));
+        mContentLayout.setVisibility(View.GONE);
+        mUtilsLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void showCheckinOverlay(){
+        mTextViewUtilsMessage.setText(getResources().getString(R.string.checkin_successfully));
+        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.mipmap.ic_location));
+        mContentLayout.setVisibility(View.GONE);
+        mUtilsLayout.setVisibility(View.VISIBLE);
+        mIsCheckin = true;
+    }
+
+    public void hideUtilsAndShowContentOverlay(){
+        mUtilsLayout.setVisibility(View.GONE);
+        mContentLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void setService(BaseService service) {
+        this.mService = service;
+        BaseService.ActionListener listener = getActionListener();
+        if (listener != null){
+            mService.subscribeActor(listener);
+        }
+    }
+
+    public abstract String getTitle();
+
+    public interface TitleChangeable{
+        public void changeFragmentTitle(String title);
+    }
+}

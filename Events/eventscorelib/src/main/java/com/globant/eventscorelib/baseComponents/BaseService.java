@@ -6,26 +6,17 @@ import android.content.Intent;
 import android.location.Address;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.adapters.TweetListAdapter;
+import com.globant.eventscorelib.controllers.CloudDataController;
+import com.globant.eventscorelib.controllers.DatabaseController;
+import com.globant.eventscorelib.controllers.GeocoderController;
+import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
-import com.globant.eventscorelib.managers.TwitterManager;
-import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
-import com.software.shell.fab.ActionButton;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +41,7 @@ public class BaseService extends Service {
     protected DatabaseController mDatabaseController = null;
     protected CloudDataController mCloudDataController = null;
     protected GeocoderController mGeocoderController = null;
-    protected TwitterManager mTwitterManager = null;
+    protected TwitterController mTwitterController = null;
 
     /**
      * Class for clients to access.  Because we know this service always
@@ -67,7 +58,7 @@ public class BaseService extends Service {
     public void onCreate() {
         mCloudDataController = new CloudDataController();
         mGeocoderController = new GeocoderController(getBaseContext());
-        mTwitterManager = new TwitterManager();
+        mTwitterController = new TwitterController();
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -131,8 +122,8 @@ public class BaseService extends Service {
     public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS}
 
-    public TwitterManager getTwitterManager() {
-        return mTwitterManager;
+    public TwitterController getTwitterController() {
+        return mTwitterController;
     }
 
     private HashMap<ActionListener, ActionWrapper> currentSubscribers = new HashMap<>();
@@ -195,26 +186,26 @@ public class BaseService extends Service {
                             case GET_TWITTER_USER:
                                 User user;
                                 try {
-                                    user = mTwitterManager.getUser();
+                                    user = mTwitterController.getUser();
                                 } catch (Exception e) {
                                     user = null;
                                 }
                                 currentSubscriber.finishAction(theAction, user);
                                 break;
                             case TWEETS_LIST:
-                                List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
+                                List<Status> tweetList = mTwitterController.getTweetList(getBaseContext(), (String) argument);
                                 currentSubscriber.finishAction(theAction, tweetList);
                                 break;
                             case TWITTER_LOADER:
-                                Boolean login = mTwitterManager.loginToTwitter(getBaseContext());
+                                Boolean login = mTwitterController.loginToTwitter(getBaseContext());
                                 currentSubscriber.finishAction(theAction, login);
                                 break;
                             case TWITTER_LOADER_RESPONSE:
-                                Boolean response = mTwitterManager.getLoginResponse((Uri) argument);
+                                Boolean response = mTwitterController.getLoginResponse((Uri) argument);
                                 currentSubscriber.finishAction(theAction, response);
                                 break;
                             case TWEET_POST:
-                                Boolean post = mTwitterManager.publishPost((String) argument);
+                                Boolean post = mTwitterController.publishPost((String) argument);
                                 currentSubscriber.finishAction(theAction, post);
                                 break;
                             case SUBSCRIBER_CHECKIN:

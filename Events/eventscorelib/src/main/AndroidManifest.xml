@@ -8,7 +8,7 @@
         android:allowBackup="true"
         android:label="@string/app_name" >
         <activity
-            android:name=".baseComponents.TweetActivity"
+            android:name=".baseActivities.BaseTweetActivity"
             android:label="@string/title_base_activity_twitter"
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTop">
@@ -22,11 +22,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".baseComponents.SpeakerDetailActivity"
+            android:name=".baseActivities.BaseSpeakerDetailActivity"
             android:label="@string/title_activity_speaker_detail" >
         </activity>
         <activity
-            android:name=".baseComponents.SubscriberActivity"
+            android:name=".baseActivities.BaseSubscriberActivity"
             android:label="@string/title_activity_subscriber" >
         </activity>
     </application>

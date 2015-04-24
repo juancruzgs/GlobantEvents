@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name=".EventsClientApplication"
+        android:name=".components.EventsClientApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,12 +23,12 @@
             android:value="AIzaSyDliO57CRqONNUhD6uPQV9IrqB8oU2ahhI" />
 
         <activity
-            android:name=".TestActivity"
+            android:name=".activities.TestActivity"
             android:label="@string/title_activity_test"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".EventListClientActivity"
+            android:name=".activities.EventListClientActivity"
             android:label="@string/title_activity_events_stream"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -50,23 +50,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ClientMapActivity"
+            android:name=".activities.MapClientActivity"
             android:label="@string/title_activity_map"
-            android:parentActivityName=".EventListClientActivity" >
+            android:parentActivityName=".activities.EventListClientActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".EventListClientActivity" />
+                android:value=".activities.EventListClientActivity" />
         </activity>
         <activity
-            android:name="com.globant.eventscorelib.baseComponents.CreditsActivity"
+            android:name="com.globant.eventscorelib.baseActivities.BaseCreditsActivity"
             android:label="@string/title_activity_credits"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".EventDetailClientActivity"
+            android:name=".activities.EventDetailClientActivity"
             android:label="@string/title_activity_event_detail" >
         </activity>
-        <service android:name=".ClientDataService"
+        <service android:name=".components.DataServiceClient"
                  android:exported="false"/>
 
     </application>

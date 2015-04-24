@@ -2,9 +2,9 @@ package com.globant.eventscorelib.baseComponents;
 
 import android.app.Application;
 
-import com.globant.eventscorelib.managers.CacheObjectsManager;
-import com.globant.eventscorelib.managers.SharedPreferencesManager;
-import com.globant.eventscorelib.managers.TwitterManager;
+import com.globant.eventscorelib.controllers.CacheObjectsController;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
+import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.parse.Parse;
 
@@ -14,9 +14,9 @@ import com.parse.Parse;
 abstract public class BaseApplication extends Application {
     private static BaseApplication ourInstance;
 
-    private SharedPreferencesManager mSharedPreferencesManager;
-    private TwitterManager mTwitterManager;
-    private CacheObjectsManager mCacheObjectsManager;
+    private SharedPreferencesController mSharedPreferencesController;
+    private TwitterController mTwitterController;
+    private CacheObjectsController mCacheObjectsController;
 
     abstract public Class<? extends BaseService> getServiceClass();
 
@@ -30,21 +30,21 @@ abstract public class BaseApplication extends Application {
         super.onCreate();
         ourInstance = this;
         Parse.initialize(this, CoreConstants.APPLICATION_ID, CoreConstants.CLIENT_KEY);
-        mTwitterManager = new TwitterManager();
-        mSharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
-        mCacheObjectsManager = new CacheObjectsManager();
+        mTwitterController = new TwitterController();
+        mSharedPreferencesController = new SharedPreferencesController(getApplicationContext());
+        mCacheObjectsController = new CacheObjectsController();
     }
 
-    public SharedPreferencesManager getSharedPreferencesManager() {
-        return mSharedPreferencesManager;
+    public SharedPreferencesController getSharedPreferencesController() {
+        return mSharedPreferencesController;
     }
 
-    public CacheObjectsManager getCacheObjectsManager() {
-        return mCacheObjectsManager;
+    public CacheObjectsController getCacheObjectsController() {
+        return mCacheObjectsController;
     }
 
-    public TwitterManager getTwitterManager() {
-        return mTwitterManager;
+    public TwitterController getTwitterController() {
+        return mTwitterController;
     }
 }
 
