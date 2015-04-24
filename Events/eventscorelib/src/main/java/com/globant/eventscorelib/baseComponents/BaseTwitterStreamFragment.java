@@ -49,18 +49,19 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case TWEETS_LIST:
-            mTweetList = (List<Status>) result;
-            if (mTweetList != null) {
-                BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
-                if (getActivity() == null) return;
-                setAdapterRecyclerView();
-                hideUtilsAndShowContentOverlay();
-            } else {
-                mSwipeRefreshLayout.setRefreshing(false);
-                showErrorOverlay();
-            }
-            break;
+                mTweetList = (List<Status>) result;
+                if (mTweetList != null) {
+                    BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
+                    if (getActivity() == null) return;
+                    setAdapterRecyclerView();
+
+                } else {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    showErrorOverlay();
+                }
+                break;
         }
+        hideUtilsAndShowContentOverlay();
     }
 
     @Override
@@ -165,10 +166,10 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     @Override
     public void onResume() {
         super.onResume();
-        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
-        if (mTweetList != null) {
-            setAdapterRecyclerView();
-        }
+//        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
+//        if (mTweetList != null) {
+//            setAdapterRecyclerView();
+//        }
     }
 
     private void setAdapterRecyclerView() {
