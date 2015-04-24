@@ -156,7 +156,7 @@ public class BaseService extends Service {
         }
     }
 
-    public void executeAction(final ACTIONS theAction, final Object argument) {
+    synchronized public void executeAction(final ACTIONS theAction, final Object argument) {
         Runnable r = new Runnable() {
             @Override
             public void run() {

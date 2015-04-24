@@ -59,9 +59,11 @@ public class SpeakersListFragment extends BaseFragment implements BaseService.Ac
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        mSpeakers = (List<Speaker>) result;
-        mAdapter = new SpeakersListAdapter(getActivity(),mSpeakers);
-        mRecyclerView.setAdapter(mAdapter);
+        if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
+            mSpeakers = (List<Speaker>) result;
+            mAdapter = new SpeakersListAdapter(getActivity(), mSpeakers);
+            mRecyclerView.setAdapter(mAdapter);
+        }
     }
 
     @Override
