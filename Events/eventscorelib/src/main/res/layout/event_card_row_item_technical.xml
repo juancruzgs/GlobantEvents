@@ -6,7 +6,7 @@
              android:padding="@dimen/padding_framelayout">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/card_view_social_event"
+        android:id="@+id/card_view_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -25,7 +25,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/event_logo_card_row_height"
                     android:id="@+id/event_image_view"
-                    android:src="@drawable/party_image"
+                    android:src="@drawable/technical"
                     android:scaleType="centerCrop"
                     pew:interpolation="accelerate"/>
 
@@ -42,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:id="@+id/event_title_text_view"
-                    android:text="La Fiesta del Chorizo"
+                    android:text="Curso de Java"
                     style="@style/condensed_normal_extra_large"
                     android:textColor="@color/white"
                     pew:parallax_y="60dp"
@@ -81,15 +81,49 @@
 
             </RelativeLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="En la fiesta del chorizo, nos vamos a comer tremendo choripan"
-                android:id="@+id/event_short_description_text_view"
-                style="@style/condensed_normal_small"
-                android:singleLine="false"
-                android:padding="@dimen/padding_text_view_card_row" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/speakers_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:id="@+id/speaker_image_view"
+                            android:src="@mipmap/ic_speaker"
+                            android:padding="5dp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Tony Stark - Bruce Banner - Jarvis"
+                            android:id="@+id/event_speakers_text_view"
+                            style="@style/condensed_normal_medium"
+                            android:singleLine="false"
+                            android:padding="@dimen/padding_text_view_card_row" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Curso avanzado sobre Java para estudiantes de Ingeniería y Licenciatura en Sistemas."
+                        android:id="@+id/event_short_description_text_view"
+                        style="@style/condensed_normal_small"
+                        android:singleLine="false"
+                        android:padding="@dimen/padding_text_view_card_row"/>
+
+                </LinearLayout>
 
         </LinearLayout>
 

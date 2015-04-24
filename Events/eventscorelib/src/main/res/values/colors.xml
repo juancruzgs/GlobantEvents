@@ -4,6 +4,7 @@
     <color name="globant_green_dark">#B9D52D</color>
     <color name="globant_green_light">#DDF36E</color>
     <color name="grey">#787878</color>
+    <color name="semi_transparent_grey">#7E787878</color>
     <color name="almost_black">#212121</color>
     <color name="grey_dark">#707070</color>
     <color name="Semi_transparent_grey_dark">#96000000</color>
