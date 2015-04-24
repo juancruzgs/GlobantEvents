@@ -7,17 +7,24 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseComponents.BaseEventListFragment;
 import com.globant.eventscorelib.baseComponents.BaseEventsListAdapter;
 import com.software.shell.fab.ActionButton;
 
-public class EventListManagerFragment extends BaseEventListFragment {
+public class EventListManagerFragment extends BaseEventListFragment
+{
 
     private ActionButton mActionButton;
     private String[] mDataset;
-    private static final int DATASET_COUNT = 60;
+    ObservableRecyclerView mRecyclerView;
+    private static final int DATASET_COUNT = 10;
 
     @Override
     protected int getFragmentLayout() {
@@ -88,5 +95,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
     }
+
 }
 
