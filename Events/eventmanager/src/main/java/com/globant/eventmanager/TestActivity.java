@@ -13,11 +13,6 @@ import com.globant.eventscorelib.fragments.SpeakerFragment;
 public class TestActivity extends BaseActivity {
 
     @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return null;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);

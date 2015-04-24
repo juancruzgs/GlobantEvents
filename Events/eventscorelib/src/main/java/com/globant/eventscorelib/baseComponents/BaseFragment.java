@@ -38,6 +38,12 @@ public abstract class BaseFragment extends Fragment{
         return rootView;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mService.unSubscribeActor(getActionListener());
+    }
 
     // TODO: This function can return an ActionListener to manage the db actions... or just null
     abstract public BaseService.ActionListener getActionListener();

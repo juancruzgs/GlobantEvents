@@ -6,16 +6,29 @@ import android.content.Intent;
 import android.location.Address;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.adapters.TweetListAdapter;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.managers.TwitterManager;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
+import com.software.shell.fab.ActionButton;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import twitter4j.Status;
@@ -124,7 +137,7 @@ public class BaseService extends Service {
 
     private HashMap<ActionListener, ActionWrapper> currentSubscribers = new HashMap<>();
 
-    public void subscribeActor(ActionListener anActionListener){
+    synchronized public void subscribeActor(ActionListener anActionListener){
         if (!currentSubscribers.containsKey(anActionListener)) {
             ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
             currentSubscribers.put(anActionListener, currentSubscriber);
@@ -138,17 +151,18 @@ public class BaseService extends Service {
         }
     }
     
-    public void unSubscribeActor(ActionListener anActionListener){
+    synchronized public void unSubscribeActor(ActionListener anActionListener){
         if (currentSubscribers.containsKey(anActionListener)) {
             currentSubscribers.remove(anActionListener);
         }
     }
 
-    public void executeAction(final ACTIONS theAction, final Object argument) {
+    synchronized public void executeAction(final ACTIONS theAction, final Object argument) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                for (ActionWrapper currentSubscriber : currentSubscribers.values()) {
+                HashSet<ActionWrapper> subscribers = new HashSet<>(currentSubscribers.values());
+                for (ActionWrapper currentSubscriber : subscribers) {
                     try {
                         currentSubscriber.startAction(theAction);
                         switch (theAction) {
@@ -163,7 +177,7 @@ public class BaseService extends Service {
                             case EVENT_DELETE:
                                 break;
                             case EVENT_LIST:
-                                List<Event> theEvents = mCloudDataController.getEvents();
+                                List<Event> theEvents = mCloudDataController.getEvents((boolean)argument);
                                 currentSubscriber.finishAction(theAction, theEvents);
                                 break;
                             case EVENT_DETAIL:
@@ -192,7 +206,7 @@ public class BaseService extends Service {
                                 currentSubscriber.finishAction(theAction, tweetList);
                                 break;
                             case TWITTER_LOADER:
-                                Boolean login = mTwitterManager.loginToTwitter(getBaseContext(), null);
+                                Boolean login = mTwitterManager.loginToTwitter(getBaseContext());
                                 currentSubscriber.finishAction(theAction, login);
                                 break;
                             case TWITTER_LOADER_RESPONSE:

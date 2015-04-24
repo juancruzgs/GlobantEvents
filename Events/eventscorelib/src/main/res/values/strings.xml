@@ -71,8 +71,8 @@
     <string name="editText_twitter_what_is_happening">What\'s happening?</string>
     <string name="tweet_success">You are a RockStar!</string>
     <string name="tweet_failure">Try again or check your connection</string>
-    <string name="button_login_twitter">Login using Twitter</string>
-    <string name="button_tweet">Tweet!</string>
+    <string name="button_login_twitter">LOGIN USING TWITTER</string>
+    <string name="button_tweet">TWEET!</string>
     <string name="general_hashtag">#GlobantEvents </string>
     <string name="twitter_username">\@%s</string>
     <string name="placeholder_twitter_username">\@username</string>
@@ -81,9 +81,19 @@
     <string name="title_activity_speaker_detail">SpeakerDetailActivity</string>
     <string name="action_map">Map</string>
     <string name="checkin_error">The subscriber email doesn\'t exist.</string>
+    <string name="field_required">*Required</string>
+    <string name="title_activity_subscriber">SubscriberActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="email_required">*Email not valid</string>
+
     <string name="title_base_activity_twitter">Twitter</string>
     <string name="title_fragment_tweet">Tweet</string>
     <string name="title_fragment_tweets_stream">Stream</string>
+    <string name="title_page_description">Description</string>
+    <string name="title_page_participants">Participants</string>
+    <string name="title_page_speakers">Speakers</string>
+    <string name="title_page_twitter">Twitter</string>
     <string name="edit_text_title_hint">Title</string>
     <string name="edit_text_hint_name">Name</string>
 </resources>

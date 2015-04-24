@@ -3,7 +3,10 @@ package com.globant.eventscorelib.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.globant.eventscorelib.baseComponents.TweetActivity;
 import com.globant.eventscorelib.utils.CropCircleTransformation;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
@@ -25,18 +29,26 @@ import com.squareup.picasso.Picasso;
 import twitter4j.User;
 
 
-public class TweetFragment extends BaseFragment implements View.OnClickListener, BaseService.ActionListener {
+public class TweetFragment extends BaseFragment implements BaseService.ActionListener, TweetActivity.NewFragmentIntent {
 
     private ImageView mUserPicture;
     private TextView mUsername;
     private TextView mUserFullName;
     private EditText mTweetText;
     private Button mTweetButton;
-    private Button mLoginTwitterButton;
+   // private Button mLoginTwitterButton;
     CropCircleTransformation mCircleTransformation;
 
     public TweetFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Uri uri = intent.getData();
+        if (uri != null) {
+            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri);
+        }
     }
 
     @Override
@@ -56,14 +68,23 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
+        mTweetText.clearFocus();
         User user = BaseApplication.getInstance().getCacheObjectsManager().user;
         if (user != null) {
-          setUserInformation(user);
+            setUserInformation(user);
+        }
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
+        User user = BaseApplication.getInstance().getCacheObjectsManager().user;
+        if (user == null) {
+            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
         }
     }
 
     private void wireUpViews(View rootView) {
-        mLoginTwitterButton = (Button) rootView.findViewById(R.id.button_login_twitter);
         mUserPicture = (ImageView) rootView.findViewById(R.id.imageView_user);
         Picasso.with(getActivity()).load(R.mipmap.placeholder).transform(mCircleTransformation).into(mUserPicture);
         mUsername = (TextView) rootView.findViewById(R.id.textView_username);
@@ -71,33 +92,30 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
         mTweetText = (EditText) rootView.findViewById(R.id.textView_tweet);
         //mTweetText.setText(getString(R.string.general_hashtag) + event.hashtag); TODO put the event hashtag when the activity starts
         mTweetButton = (Button) rootView.findViewById(R.id.button_tweet);
-        mTweetButton.setOnClickListener(this);
-        mLoginTwitterButton.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.button_tweet) {
-            String tweet = mTweetText.getText().toString();
-            if (!tweet.equals("")) {
-                InputMethodManager imm = (InputMethodManager) getActivity()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), 0);
-                mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet);
+        mTweetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mTweetText.getText().toString().equals(getString(R.string.button_tweet))) {
+                    String tweet = mTweetText.getText().toString();
+                    if (!tweet.equals("")) {
+                        InputMethodManager imm = (InputMethodManager) getActivity()
+                                .getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), 0);
+                        mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet);
+                    }
+                } else {
+                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, null);
+                }
             }
-        } else if (v.getId() == R.id.button_login_twitter) {
-            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, null);
-        }
+        });
     }
 
     public void changeUserInformation(User user) {
         try {
             if (BaseApplication.getInstance().getSharedPreferencesManager()
                     .isAlreadyTwitterLogged()) {
-                mLoginTwitterButton.setVisibility(View.GONE);
                 setUserInformation(user);
             } else {
-                mTweetButton.setEnabled(false);
                 mTweetText.setEnabled(false);
             }
         } catch (Exception e) {
@@ -111,9 +129,8 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
         if (user.getProfileImageURL() != null) {
             Picasso.with(getActivity()).load(user.getOriginalProfileImageURL()).transform(mCircleTransformation).into(mUserPicture);
         }
-        mTweetButton.setEnabled(true);
         mTweetText.setEnabled(true);
-        mLoginTwitterButton.setVisibility(View.GONE);
+        mTweetButton.setText(getString(R.string.button_tweet));
     }
 
     @Override
@@ -141,13 +158,13 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
         switch (theAction) {
             case GET_TWITTER_USER:
                 User user = (User) result;
-                BaseApplication.getInstance().getCacheObjectsManager().user = user;
                 if (user != null) {
+                    BaseApplication.getInstance().getCacheObjectsManager().user = user;
                     changeUserInformation(user);
                 }
+                hideUtilsAndShowContentOverlay();
                 break;
             case TWITTER_LOADER:
-
                 break;
             case TWEET_POST:
                 if ((Boolean) result) {
@@ -157,6 +174,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
                 } else {
                     Toast.makeText(getActivity(), getActivity().getString(R.string.tweet_failure), Toast.LENGTH_SHORT).show();
                 }
+                hideUtilsAndShowContentOverlay();
                 break;
             case TWITTER_LOADER_RESPONSE:
                 if ((Boolean) result) {
@@ -164,7 +182,6 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
                 }
                 break;
         }
-        hideUtilsAndShowContentOverlay();
     }
 
     @Override

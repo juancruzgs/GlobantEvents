@@ -3,6 +3,7 @@ package com.globant.eventscorelib.baseComponents;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -11,13 +12,9 @@ import android.view.MenuItem;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.support.v4.view.ViewPager.OnPageChangeListener;
-import static com.globant.eventscorelib.baseComponents.BaseFragment.TitleChangeable;
 
 abstract public class BasePagerActivity extends BaseActivity{
 
@@ -25,22 +22,19 @@ abstract public class BasePagerActivity extends BaseActivity{
     ViewPager mPager;
 
     @Override
-    protected Class<? extends BaseService> getServiceClass() {
-        return null;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_pager_acivity);
+        setContentView(R.layout.activity_base_pager);
 
         List<Fragment> fragments = getFragments();
 
         pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
 
-        mPager = (ViewPager)findViewById(R.id.viewpager);
-        mPager.setAdapter(pageAdapter);
-        mPager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
+        pager.setAdapter(pageAdapter);
+        pager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
+        titleStrip.setTextColor(getResources().getColor(R.color.white));
     }
 
     @Override
@@ -50,30 +44,30 @@ abstract public class BasePagerActivity extends BaseActivity{
     }
 
     protected abstract List<Fragment> getFragments();
+    protected abstract List<String> getTitlesList();
 
     public class PageAdapter extends FragmentPagerAdapter {
 
-        private List<Fragment> fragments;
+        private List<Fragment> mFragments;
 
-        public PageAdapter(FragmentManager fm, List<Fragment> fragments) {
-            super(fm);
-            this.fragments = fragments;
+        public PageAdapter(FragmentManager mFragmentManager, List<Fragment> fragments) {
+            super(mFragmentManager);
+            this.mFragments = fragments;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return this.fragments.get(position);
+            return this.mFragments.get(position);
         }
 
         @Override
         public int getCount() {
-            return this.fragments.size();
+            return this.mFragments.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return ((BaseFragment)fragments.get(position)).getTitle().toUpperCase();
+            return getTitlesList().get(position).toUpperCase();
         }
     }
-
 }

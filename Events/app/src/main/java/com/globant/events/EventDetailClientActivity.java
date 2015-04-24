@@ -22,4 +22,14 @@ public class EventDetailClientActivity extends BasePagerActivity {
         fragmentList.add(new ClientStreamTwitterFragment());
         return fragmentList;
     }
+
+    @Override
+    protected List<String> getTitlesList() {
+        List<String> titles = new ArrayList<>();
+        titles.add(getString(R.string.title_page_description));
+//        titles.add(getString(R.string.title_page_participants));
+        titles.add(getString(R.string.title_page_speakers));
+        titles.add(getString(R.string.title_page_twitter));
+        return titles;
+    }
 }

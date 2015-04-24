@@ -40,7 +40,7 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
 
     @Override
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
-        holder.getTextView().setText(mDataSet[position]);
+      //  holder.getTextView().setText(mDataSet[position]);
     }
 
     @Override

@@ -92,15 +92,7 @@
 
             <Button
                 android:id="@+id/button_tweet"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/button_tweet"
-                android:background="@color/globant_green"
-                android:layout_marginTop="5dp"/>
-
-            <Button
-                android:id="@+id/button_login_twitter"
+                style="@style/condensed_normal_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

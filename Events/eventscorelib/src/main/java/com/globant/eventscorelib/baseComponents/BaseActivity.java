@@ -83,16 +83,13 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
     protected void doUnbindService() {
         if (mIsBound) {
             // Detach our existing connection.
-            for (BaseFragment fragment : mFragments) {
-                mService.unSubscribeActor(fragment.getActionListener());
-            }
             unbindService(mConnection);
             mIsBound = false;
         }
     }
 
     // TODO: This function is used to set the service (a subclass of BaseService)
-    protected Class<? extends BaseService> getServiceClass() {
+    private Class<? extends BaseService> getServiceClass() {
         return ((BaseApplication)getApplication()).getServiceClass();
     }
 
@@ -126,7 +123,9 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
             if (!BaseService.isRunning) {
                 doStartService();
             }
-            doBindService();
+            if (!mIsBound) {
+                doBindService();
+            }
         }
     }
 
@@ -135,7 +134,18 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
         unregisterReceiver(mReceiver);
         super.onPause();
 
+/*
         if (mServiceClass != null) {
+            doUnbindService();
+        }
+*/
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mIsBound) {
             doUnbindService();
         }
     }

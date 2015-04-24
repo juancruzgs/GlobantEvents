@@ -1,4 +1,4 @@
-package com.globant.eventscorelib.fragments;
+package com.globant.eventscorelib.baseComponents;
 
 
 import android.app.Activity;
@@ -13,11 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.BaseTweetActivity;
 import com.globant.eventscorelib.adapters.TweetListAdapter;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
-import com.globant.eventscorelib.baseComponents.BaseFragment;
-import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
@@ -26,7 +22,7 @@ import java.util.List;
 import twitter4j.Status;
 
 
-public abstract class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener{
+public class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener{
 
     private LayoutManagerType mCurrentLayoutManagerType;
     private RecyclerView mRecyclerView;
@@ -53,18 +49,19 @@ public abstract class BaseTwitterStreamFragment extends BaseFragment implements 
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case TWEETS_LIST:
-            mTweetList = (List<Status>) result;
-            BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
-            if (mTweetList != null) {
-                if (getActivity() == null) return;
-                setAdapterRecyclerView();
-                hideUtilsAndShowContentOverlay();
-            } else {
-                mSwipeRefreshLayout.setRefreshing(false);
-                showErrorOverlay();
-            }
-            break;
+                mTweetList = (List<Status>) result;
+                if (mTweetList != null) {
+                    BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
+                    if (getActivity() == null) return;
+                    setAdapterRecyclerView();
+
+                } else {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    showErrorOverlay();
+                }
+                break;
         }
+        hideUtilsAndShowContentOverlay();
     }
 
     @Override
@@ -107,7 +104,8 @@ public abstract class BaseTwitterStreamFragment extends BaseFragment implements 
 
     @Override
     public String getTitle() {
-        return getString(R.string.title_fragment_tweets_stream);
+        return "Twitter";
+//        return getString(R.string.title_fragment_tweets_stream);
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
@@ -129,7 +127,6 @@ public abstract class BaseTwitterStreamFragment extends BaseFragment implements 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
                 if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)) {
                     mActionButton.hide();
                 } else {
@@ -148,7 +145,7 @@ public abstract class BaseTwitterStreamFragment extends BaseFragment implements 
         mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), BaseTweetActivity.class);
+                Intent intent = new Intent(getActivity(), TweetActivity.class);
                 startActivity(intent);
             }
         });
@@ -163,7 +160,6 @@ public abstract class BaseTwitterStreamFragment extends BaseFragment implements 
         }
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
@@ -171,10 +167,10 @@ public abstract class BaseTwitterStreamFragment extends BaseFragment implements 
     @Override
     public void onResume() {
         super.onResume();
-        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
-        if (mTweetList != null) {
-            setAdapterRecyclerView();
-        }
+//        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
+//        if (mTweetList != null) {
+//            setAdapterRecyclerView();
+//        }
     }
 
     private void setAdapterRecyclerView() {
