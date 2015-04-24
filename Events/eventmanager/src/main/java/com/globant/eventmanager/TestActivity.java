@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.fragments.SpeakerFragment;
 
 
 public class TestActivity extends BaseActivity {
@@ -20,7 +21,7 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        BaseFragment fragment = new EventParticipantsFragment();
+        BaseFragment fragment = new SpeakerFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)

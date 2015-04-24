@@ -84,5 +84,6 @@
     <string name="title_base_activity_twitter">Twitter</string>
     <string name="title_fragment_tweet">Tweet</string>
     <string name="title_fragment_tweets_stream">Stream</string>
-
+    <string name="edit_text_title_hint">Title</string>
+    <string name="edit_text_hint_name">Name</string>
 </resources>
