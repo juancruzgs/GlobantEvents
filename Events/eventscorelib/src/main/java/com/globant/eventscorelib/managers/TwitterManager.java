@@ -87,8 +87,10 @@ public class TwitterManager {
                 if (!BaseApplication.getInstance().getSharedPreferencesManager()
                         .isAlreadyTwitterLogged()) {
                     requestToken = twitter.getOAuthRequestToken(CoreConstants.TWITTER_CALLBACK_URL);
-                    context.startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse(requestToken.getAuthenticationURL())));
+                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(requestToken.getAuthenticationURL()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
                 }
                 if (listener != null) {
                     listener.onLogin(true);

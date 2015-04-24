@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Address;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -15,7 +16,6 @@ import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import twitter4j.Status;
@@ -38,6 +38,7 @@ public class BaseService extends Service {
     protected CloudDataController mCloudDataController = null;
     protected GeocoderController mGeocoderController = null;
     protected TwitterManager mTwitterManager = null;
+
     /**
      * Class for clients to access.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with
@@ -136,7 +137,7 @@ public class BaseService extends Service {
             }
         }
     }
-
+    
     public void unSubscribeActor(ActionListener anActionListener){
         if (currentSubscribers.containsKey(anActionListener)) {
             currentSubscribers.remove(anActionListener);
@@ -178,12 +179,29 @@ public class BaseService extends Service {
                                 currentSubscriber.finishAction(theAction, latLng);
                                 break;
                             case GET_TWITTER_USER:
-                                User user = mTwitterManager.getUser();
+                                User user;
+                                try {
+                                    user = mTwitterManager.getUser();
+                                } catch (Exception e) {
+                                    user = null;
+                                }
                                 currentSubscriber.finishAction(theAction, user);
                                 break;
                             case TWEETS_LIST:
                                 List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
                                 currentSubscriber.finishAction(theAction, tweetList);
+                                break;
+                            case TWITTER_LOADER:
+                                Boolean login = mTwitterManager.loginToTwitter(getBaseContext(), null);
+                                currentSubscriber.finishAction(theAction, login);
+                                break;
+                            case TWITTER_LOADER_RESPONSE:
+                                Boolean response = mTwitterManager.getLoginResponse((Uri) argument);
+                                currentSubscriber.finishAction(theAction, response);
+                                break;
+                            case TWEET_POST:
+                                Boolean post = mTwitterManager.publishPost((String) argument);
+                                currentSubscriber.finishAction(theAction, post);
                                 break;
                             case SUBSCRIBER_CHECKIN:
                                 mCloudDataController.setCheckIn((String) argument, getBaseContext());

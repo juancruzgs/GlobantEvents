@@ -9,6 +9,11 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 public class EventListClientActivity extends BaseActivity {
 
     @Override
+    protected Class<? extends BaseService> getServiceClass() {
+        return null;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_stream);
