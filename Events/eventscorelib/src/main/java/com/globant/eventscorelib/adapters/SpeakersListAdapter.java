@@ -1,6 +1,10 @@
 package com.globant.eventscorelib.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -15,6 +19,7 @@ import com.globant.eventscorelib.utils.CropCircleTransformation;
 import com.globant.eventscorelib.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
@@ -65,9 +70,22 @@ public class SpeakersListAdapter extends RecyclerView.Adapter<SpeakersListAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.getTextViewName().setText(mSpeakers.get(position).getName());
-        holder.getTextViewDescription().setText(mSpeakers.get(position).getTitle());
-        Picasso.with(mContext).load(R.drawable.speaker_image).transform(transformation).into(holder.getImageView());
+        Speaker speaker = mSpeakers.get(position);
+        holder.getTextViewName().setText(speaker.getName()+" "+speaker.getLastName());
+        holder.getTextViewDescription().setText(speaker.getTitle());
+        Uri speaker_picture = getImageUri(position, speaker);
+        Picasso.with(mContext).load(speaker_picture).transform(transformation).into(holder.getImageView());
+    }
+
+    public Uri getImageUri(int position, Speaker speaker) {
+        Bitmap speaker_picture;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = true;
+        speaker_picture = BitmapFactory.decodeByteArray(speaker.getPicture(), 0, speaker.getPicture().length, options);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        speaker_picture.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(mContext.getContentResolver(), speaker_picture, "Title", null);
+        return Uri.parse(path);
     }
 
     @Override
