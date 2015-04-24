@@ -53,7 +53,7 @@ public class EventListClientFragment extends BaseEventListFragment {
     protected void initDataset() {
         mDataset = new String[DATASET_COUNT];
         for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "Curso de Java";
+            mDataset[i] = "La Fiesta del Chorizo";
         }
     }
 }
