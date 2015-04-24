@@ -136,7 +136,7 @@ public class BaseService extends Service {
 
     private HashMap<ActionListener, ActionWrapper> currentSubscribers = new HashMap<>();
 
-    public void subscribeActor(ActionListener anActionListener){
+    synchronized public void subscribeActor(ActionListener anActionListener){
         if (!currentSubscribers.containsKey(anActionListener)) {
             ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
             currentSubscribers.put(anActionListener, currentSubscriber);
@@ -150,7 +150,7 @@ public class BaseService extends Service {
         }
     }
     
-    public void unSubscribeActor(ActionListener anActionListener){
+    synchronized public void unSubscribeActor(ActionListener anActionListener){
         if (currentSubscribers.containsKey(anActionListener)) {
             currentSubscribers.remove(anActionListener);
         }

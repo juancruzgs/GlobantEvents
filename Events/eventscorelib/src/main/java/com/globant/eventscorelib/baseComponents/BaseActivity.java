@@ -126,7 +126,9 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
             if (!BaseService.isRunning) {
                 doStartService();
             }
-            doBindService();
+            if (!mIsBound) {
+                doBindService();
+            }
         }
     }
 
@@ -135,7 +137,18 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
         unregisterReceiver(mReceiver);
         super.onPause();
 
+/*
         if (mServiceClass != null) {
+            doUnbindService();
+        }
+*/
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mIsBound) {
             doUnbindService();
         }
     }
