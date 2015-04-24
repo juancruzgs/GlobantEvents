@@ -83,9 +83,6 @@ public abstract class BaseActivity extends ActionBarActivity implements TitleCha
     protected void doUnbindService() {
         if (mIsBound) {
             // Detach our existing connection.
-            for (BaseFragment fragment : mFragments) {
-                mService.unSubscribeActor(fragment.getActionListener());
-            }
             unbindService(mConnection);
             mIsBound = false;
         }
