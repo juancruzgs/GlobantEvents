@@ -130,7 +130,7 @@ public class TweetFragment extends BaseFragment implements BaseService.ActionLis
             Picasso.with(getActivity()).load(user.getOriginalProfileImageURL()).transform(mCircleTransformation).into(mUserPicture);
         }
         mTweetText.setEnabled(true);
-        mTweetText.setText(getString(R.string.button_tweet));
+        mTweetButton.setText(getString(R.string.button_tweet));
     }
 
     @Override
