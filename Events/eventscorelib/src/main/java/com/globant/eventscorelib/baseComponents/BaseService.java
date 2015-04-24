@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.software.shell.fab.ActionButton;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import twitter4j.Status;
@@ -160,7 +161,8 @@ public class BaseService extends Service {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                for (ActionWrapper currentSubscriber : currentSubscribers.values()) {
+                HashSet<ActionWrapper> subscribers = new HashSet<>(currentSubscribers.values());
+                for (ActionWrapper currentSubscriber : subscribers) {
                     try {
                         currentSubscriber.startAction(theAction);
                         switch (theAction) {
