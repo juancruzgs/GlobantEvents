@@ -50,8 +50,8 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         switch (theAction) {
             case TWEETS_LIST:
             mTweetList = (List<Status>) result;
-            BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
             if (mTweetList != null) {
+                BaseApplication.getInstance().getCacheObjectsManager().tweetList = mTweetList;
                 if (getActivity() == null) return;
                 setAdapterRecyclerView();
                 hideUtilsAndShowContentOverlay();
@@ -125,7 +125,6 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
                 if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)) {
                     mActionButton.hide();
                 } else {
@@ -159,7 +158,6 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         }
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }

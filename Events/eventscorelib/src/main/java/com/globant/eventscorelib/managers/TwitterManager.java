@@ -31,10 +31,6 @@ public class TwitterManager {
     public TwitterManager() {
     }
 
-    public interface TwitterLoginListener {
-        public void onLogin(boolean status);
-    }
-
     public boolean getLoginResponse(Uri uri) {
         if (uri != null && uri.toString().startsWith(CoreConstants.TWITTER_CALLBACK_URL)) {
             String verifier = uri.getQueryParameter(CoreConstants.URL_TWITTER_OAUTH_VERIFIER);
@@ -45,7 +41,7 @@ public class TwitterManager {
                 BaseApplication.getInstance().getSharedPreferencesManager()
                         .setTwitterStatusResponse(accessToken.getToken(),
                                 accessToken.getTokenSecret());
-                long userID = accessToken.getUserId();
+                accessToken.getUserId();
                 return true;
             } catch (TwitterException e) {
                    return false;
@@ -69,7 +65,7 @@ public class TwitterManager {
         try {
             Twitter twitter = getTwitter(true);
             if (twitter != null) {
-                twitter4j.Status status = getTwitter(true).updateStatus(post);
+                getTwitter(true).updateStatus(post);
                 return true;
             } else {
                 return false;
@@ -80,7 +76,7 @@ public class TwitterManager {
 
     }
 
-    public boolean loginToTwitter(Context context, TwitterLoginListener listener) {
+    public boolean loginToTwitter(Context context) {
         try {
             Twitter twitter = getTwitterNoTokens();
             if (twitter != null) {
@@ -92,17 +88,11 @@ public class TwitterManager {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
-                if (listener != null) {
-                    listener.onLogin(true);
-                }
                 return true;
             } else {
                 return false;
             }
         } catch (TwitterException e) {
-            if (listener != null) {
-                listener.onLogin(false);
-            }
             return false;
         }
     }
@@ -110,7 +100,7 @@ public class TwitterManager {
     public List<Status> getTweetList(Context context, String hashtag) {
         //context.getString(R.string.general_hashtag)
         Query query = new Query(hashtag); // TODO change the hashtag
-        query.setCount(50);
+        query.setCount(30);
         try {
             Twitter twitter = getTwitter(false);
             if (twitter != null) {

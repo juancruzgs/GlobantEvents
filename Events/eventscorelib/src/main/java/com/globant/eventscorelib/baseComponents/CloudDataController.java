@@ -23,8 +23,12 @@ import java.util.List;
  */
 public class CloudDataController {
 
-    public List<Event> getEvents() throws ParseException {
+    public List<Event> getEvents(boolean isGlober) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        if (!isGlober) {
+            query.whereEqualTo(CoreConstants.FIELD_PUBLIC, true);
+        }
+
         List<ParseObject> databaseEventsList = query.find();
         List<Event> domainEventsList = new ArrayList<>();
         for (ParseObject databaseEvent : databaseEventsList) {
