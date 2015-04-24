@@ -177,7 +177,7 @@ public class BaseService extends Service {
                             case EVENT_DELETE:
                                 break;
                             case EVENT_LIST:
-                                List<Event> theEvents = mCloudDataController.getEvents();
+                                List<Event> theEvents = mCloudDataController.getEvents((boolean)argument);
                                 currentSubscriber.finishAction(theAction, theEvents);
                                 break;
                             case EVENT_DETAIL:
@@ -206,7 +206,7 @@ public class BaseService extends Service {
                                 currentSubscriber.finishAction(theAction, tweetList);
                                 break;
                             case TWITTER_LOADER:
-                                Boolean login = mTwitterManager.loginToTwitter(getBaseContext(), null);
+                                Boolean login = mTwitterManager.loginToTwitter(getBaseContext());
                                 currentSubscriber.finishAction(theAction, login);
                                 break;
                             case TWITTER_LOADER_RESPONSE:

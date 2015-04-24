@@ -14,7 +14,7 @@ public class EventsListManagerActivity extends BaseActivity {
         setContentView(R.layout.activity_events);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new EventListManagerFragment())
+                    .add(R.id.container, new ManagerTwitterStreamFragment())
                     .commit();
         }
     }
