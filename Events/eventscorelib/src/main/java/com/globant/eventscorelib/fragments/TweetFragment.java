@@ -3,6 +3,8 @@ package com.globant.eventscorelib.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.globant.eventscorelib.baseComponents.TweetActivity;
 import com.globant.eventscorelib.utils.CropCircleTransformation;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
@@ -25,7 +28,7 @@ import com.squareup.picasso.Picasso;
 import twitter4j.User;
 
 
-public class TweetFragment extends BaseFragment implements View.OnClickListener, BaseService.ActionListener {
+public class TweetFragment extends BaseFragment implements View.OnClickListener, BaseService.ActionListener, TweetActivity.NewFragmentIntent {
 
     private ImageView mUserPicture;
     private TextView mUsername;
@@ -34,6 +37,14 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
     private Button mTweetButton;
     private Button mLoginTwitterButton;
     CropCircleTransformation mCircleTransformation;
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Uri uri = intent.getData();
+        if (uri != null) {
+            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri);
+        }
+    }
 
     public TweetFragment() {
         // Required empty public constructor
@@ -140,6 +151,7 @@ public class TweetFragment extends BaseFragment implements View.OnClickListener,
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case GET_TWITTER_USER:
+                Logger.d("GET_TWITTER_USER");
                 User user = (User) result;
                 BaseApplication.getInstance().getCacheObjectsManager().user = user;
                 if (user != null) {

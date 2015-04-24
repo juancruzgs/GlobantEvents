@@ -1,19 +1,15 @@
 package com.globant.eventscorelib.baseComponents;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseComponents.BaseActivity;
-import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.fragments.TweetFragment;
 
 
-public class TweetActivity extends BaseActivity implements BaseService.ActionListener {
+public class TweetActivity extends BaseActivity {
 
-     @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tweet);
@@ -27,33 +23,11 @@ public class TweetActivity extends BaseActivity implements BaseService.ActionLis
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Uri uri = intent.getData();
-        if (uri != null) {
-            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri);
-        }
+        NewFragmentIntent fragment = (NewFragmentIntent)getSupportFragmentManager().findFragmentById(R.id.container);
+        fragment.onNewIntent(intent);
     }
 
-    @Override
-    public Activity getBindingActivity() {
-        return this;
-    }
-
-    @Override
-    public Object getBindingKey() {
-        return null;
-    }
-
-    @Override
-    public void onStartAction(BaseService.ACTIONS theAction) {
-        showProgressOverlay();
-    }
-
-    @Override
-    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-    }
-
-    @Override
-    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        showErrorOverlay();
+    public interface NewFragmentIntent {
+        public void onNewIntent(Intent intent);
     }
 }
