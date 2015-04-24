@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
@@ -67,6 +68,7 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
         super(itemView);
         //itemView.setOnLongClickListener(this);
         mFrameLayoutHolder = (FrameLayout) itemView.findViewById(R.id.relative_layout_holder);
+        mTextViewNameLeft = (TextView) itemView.findViewById(R.id.text_view_participant_name_left);
         mFrameLayoutLeft = (FrameLayout) itemView.findViewById(R.id.frame_layout_left_image);
         mFrameLayoutRight = (FrameLayout) itemView.findViewById(R.id.frame_layout_right_image);
         mTextViewName = (TextView) itemView.findViewById(R.id.text_view_participant_name);
@@ -75,6 +77,9 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
         mImageViewParticipantRight = (ImageView) itemView.findViewById(R.id.image_view_participant_right);
         mParticipantHolderItemLayout = (LinearLayout) itemView.findViewById(R.id.participant_item_holder_layout);
         mLinearLayoutMiddle = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle);
+        mFragment = fragment;
+        mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
+        itemView.setOnTouchListener(this);
 
     }
 
@@ -151,17 +156,17 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (mAnimationCancelled){
+                if (mAnimationCancelled) {
                     animation.reset();
                     mTranslateAnimationText.cancel();
                     mTranslateAnimationText.reset();
-                }else {
+                } else {
                     frameLayoutFrom.setVisibility(View.INVISIBLE);
                     frameLayoutTo.setVisibility(View.VISIBLE);
-                    if (leftToRight){
+                    if (leftToRight) {
                         mLinearLayoutMiddle.setX(-getFrameLayoutWidth());
                         mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
-                    }else{
+                    } else {
                         mLinearLayoutMiddle.setX(getFrameLayoutWidth());
                         mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
                     }

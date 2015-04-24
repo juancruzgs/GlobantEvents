@@ -7,11 +7,17 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <view
+  <!--  <view
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="android.support.v7.widget.RecyclerView"
         android:id="@+id/event_list_recycler_view"
         android:layout_gravity="center" />
+        -->
+    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+        android:id="@+id/event_list_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
 
 </RelativeLayout>
