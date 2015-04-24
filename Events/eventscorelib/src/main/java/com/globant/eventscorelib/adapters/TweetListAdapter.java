@@ -17,7 +17,7 @@ import java.util.List;
 
 import twitter4j.Status;
 
-public class TweetListAdapter extends RecyclerView.Adapter<TweetListAdapter.ViewHolder> {
+public class TweetListAdapter extends RecyclerView.Adapter<TweetListAdapter.TweetListViewHolder> {
 
     private Context mContext;
     private List<Status> mTweetsList;
@@ -27,12 +27,12 @@ public class TweetListAdapter extends RecyclerView.Adapter<TweetListAdapter.View
         mContext = context;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class TweetListViewHolder extends RecyclerView.ViewHolder {
         private TextView mTweetText;
         private TextView mUserName;
         private ImageView mUserPicture;
 
-        public ViewHolder(View v) {
+        public TweetListViewHolder(View v) {
             super(v);
             mTweetText = (TextView) v.findViewById(R.id.textView_tweet);
             mUserName =  (TextView) v.findViewById(R.id.textView_user_name);
@@ -53,16 +53,16 @@ public class TweetListAdapter extends RecyclerView.Adapter<TweetListAdapter.View
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public TweetListViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.tweet_card_row_item, viewGroup, false);
 
-        return new ViewHolder(v);
+        return new TweetListViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(TweetListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(TweetListViewHolder holder, int position) {
         CropCircleTransformation transformation = new CropCircleTransformation(mContext);
         holder.getTweetText().setText(mTweetsList.get(position).getText());
         holder.getUserName().setText(mTweetsList.get(position).getUser().getName());

@@ -172,6 +172,12 @@ public class SharedPreferencesManager {
         editor.commit();
     }
 
+    public void elMetododeAriel() {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean(CoreConstants.TWITTER_IS_LOGGED_IN, false);
+        editor.commit();
+    }
+
     public String getAccessToken() {
         return mSharedPreferences.getString(CoreConstants.TWITTER_PREF_KEY_OAUTH_TOKEN, null);
     }

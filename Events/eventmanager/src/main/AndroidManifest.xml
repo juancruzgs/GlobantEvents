@@ -51,7 +51,7 @@
         <activity
             android:name=".EventDetailManagerActivity"
             android:label="@string/title_activity_event_detail"
-            android:screenOrientation="portrait" >
+         >
         </activity>
         <activity
             android:name="com.globant.eventscorelib.baseComponents.CreditsActivity"

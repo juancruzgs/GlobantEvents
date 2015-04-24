@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.software.shell.fab.ActionButton;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import twitter4j.Status;
@@ -156,11 +157,12 @@ public class BaseService extends Service {
         }
     }
 
-    public void executeAction(final ACTIONS theAction, final Object argument) {
+    synchronized public void executeAction(final ACTIONS theAction, final Object argument) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                for (ActionWrapper currentSubscriber : currentSubscribers.values()) {
+                HashSet<ActionWrapper> subscribers = new HashSet<>(currentSubscribers.values());
+                for (ActionWrapper currentSubscriber : subscribers) {
                     try {
                         currentSubscriber.startAction(theAction);
                         switch (theAction) {
@@ -175,7 +177,7 @@ public class BaseService extends Service {
                             case EVENT_DELETE:
                                 break;
                             case EVENT_LIST:
-                                List<Event> theEvents = mCloudDataController.getEvents();
+                                List<Event> theEvents = mCloudDataController.getEvents((boolean)argument);
                                 currentSubscriber.finishAction(theAction, theEvents);
                                 break;
                             case EVENT_DETAIL:
@@ -204,7 +206,7 @@ public class BaseService extends Service {
                                 currentSubscriber.finishAction(theAction, tweetList);
                                 break;
                             case TWITTER_LOADER:
-                                Boolean login = mTwitterManager.loginToTwitter(getBaseContext(), null);
+                                Boolean login = mTwitterManager.loginToTwitter(getBaseContext());
                                 currentSubscriber.finishAction(theAction, login);
                                 break;
                             case TWITTER_LOADER_RESPONSE:

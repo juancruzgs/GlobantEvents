@@ -23,8 +23,12 @@ import java.util.List;
  */
 public class CloudDataController {
 
-    public List<Event> getEvents() throws ParseException {
+    public List<Event> getEvents(boolean isGlober) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        if (!isGlober) {
+            query.whereEqualTo(CoreConstants.FIELD_PUBLIC, true);
+        }
+
         List<ParseObject> databaseEventsList = query.find();
         List<Event> domainEventsList = new ArrayList<>();
         for (ParseObject databaseEvent : databaseEventsList) {
@@ -231,16 +235,17 @@ public class CloudDataController {
         speaker.setName((String) databaseSpeaker.get(CoreConstants.FIELD_NAME));
         speaker.setLastName((String) databaseSpeaker.get(CoreConstants.FIELD_LAST_NAME));
         speaker.setTitle((String) databaseSpeaker.get(CoreConstants.FIELD_TITLE));
+        speaker.setPicture(getImageFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
 //        databaseSpeaker.getParseFile(CoreConstants.FIELD_PICTURE).getData();
-        ParseFile image = (ParseFile) databaseSpeaker.get(CoreConstants.FIELD_PICTURE);
-        image.getDataInBackground(new GetDataCallback() {
-            @Override
-            public void done(byte[] bytes, ParseException e) {
-                if (e != null) {
-                    speaker.setPicture(bytes);
-                }
-            }
-        });
+//        ParseFile image = (ParseFile) databaseSpeaker.get(CoreConstants.FIELD_PICTURE);
+//        image.getDataInBackground(new GetDataCallback() {
+//            @Override
+//            public void done(byte[] bytes, ParseException e) {
+//                if (e != null) {
+//                    speaker.setPicture(bytes);
+//                }
+//            }
+//        });
 
         return speaker;
     }

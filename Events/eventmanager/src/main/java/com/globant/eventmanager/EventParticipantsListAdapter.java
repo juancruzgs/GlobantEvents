@@ -17,7 +17,6 @@ public class EventParticipantsListAdapter extends RecyclerView.Adapter<Participa
     private CropCircleTransformation transformation;
     private String[] mDataSet;
     private final Context mContext;
-    private float mX;
 
     public EventParticipantsListAdapter (Context context, String[] dataSet) {
         mContext = context;
