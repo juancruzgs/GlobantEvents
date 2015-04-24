@@ -85,7 +85,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
     protected void initDataset() {
         mDataset = new String[DATASET_COUNT];
         for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "La Fiesta del Chorizo";
+            mDataset[i] = "Curso de Java";
         }
     }
 
