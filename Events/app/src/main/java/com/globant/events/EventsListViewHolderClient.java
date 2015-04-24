@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
-import com.globant.eventscorelib.BaseEventsListViewHolder;
+import com.globant.eventscorelib.baseComponents.BaseEventsListViewHolder;
 
 /**
  * Created by paula.baudo on 4/17/2015.

@@ -1,9 +1,13 @@
 package com.globant.eventscorelib.baseComponents;
 
+import android.content.Context;
+
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.managers.SharedPreferencesManager;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -19,8 +23,12 @@ import java.util.List;
  */
 public class CloudDataController {
 
-    public List<Event> getEvents() throws ParseException {
+    public List<Event> getEvents(boolean isGlober) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        if (!isGlober) {
+            query.whereEqualTo(CoreConstants.FIELD_PUBLIC, true);
+        }
+
         List<ParseObject> databaseEventsList = query.find();
         List<Event> domainEventsList = new ArrayList<>();
         for (ParseObject databaseEvent : databaseEventsList) {
@@ -36,11 +44,36 @@ public class CloudDataController {
         return createDomainEventFromDatabase(databaseEvent);
     }
 
-    public List<Speaker> getEventSpeakers(String eventId) {
-//        List<Speaker> speakers = new ArrayList<>();
-//        mQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-//        mParseObjectList = mQuery.find();
-        return null;
+    public ParseObject getSubscriberByEmail(String subscriberEmail) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
+        return query.getFirst();
+    }
+
+    public void setCheckIn(String eventId, Context context) throws ParseException {
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject event = eventsQuery.get(eventId);
+        String subscriberMail = SharedPreferencesManager.getUserEmail(context);
+        ParseObject subscriber = getSubscriberByEmail(subscriberMail);
+        ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
+        eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, subscriber);
+        ParseObject subscription = eventToSubsQuery.getFirst();
+        subscription.put(CoreConstants.FIELD_CHECK_IN, true);
+        subscription.save();
+    }
+
+    public List<Speaker> getEventSpeakers(String eventId) throws ParseException {
+        List<Speaker> speakers = new ArrayList<>();
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject event = eventsQuery.get(eventId);
+        ParseQuery<ParseObject> speakersQuery = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
+        ParseRelation<ParseObject> relation = event.getRelation(CoreConstants.FIELD_SPEAKERS);
+        List<ParseObject> speakersEvents = relation.getQuery().find();
+        for (ParseObject speakerParseObject: speakersEvents){
+            speakers.add(createSpeakerFromDatabaseInformation(speakersQuery.get(speakerParseObject.getObjectId())));
+        }
+        return speakers;
     }
 
     public List<Subscriber> getEventSubscribers(String eventId) throws ParseException {
@@ -195,5 +228,25 @@ public class CloudDataController {
         databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSpeaker.getLastName());
         databaseSpeaker.put(CoreConstants.FIELD_BIOGRAPHY, domainSpeaker.getBiography());
         databaseSpeaker.put(CoreConstants.FIELD_PICTURE, domainSpeaker.getPicture());
+    }
+
+    private Speaker createSpeakerFromDatabaseInformation(ParseObject databaseSpeaker) throws ParseException {
+        final Speaker speaker = new Speaker();
+        speaker.setName((String) databaseSpeaker.get(CoreConstants.FIELD_NAME));
+        speaker.setLastName((String) databaseSpeaker.get(CoreConstants.FIELD_LAST_NAME));
+        speaker.setTitle((String) databaseSpeaker.get(CoreConstants.FIELD_TITLE));
+        speaker.setPicture(getImageFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
+//        databaseSpeaker.getParseFile(CoreConstants.FIELD_PICTURE).getData();
+//        ParseFile image = (ParseFile) databaseSpeaker.get(CoreConstants.FIELD_PICTURE);
+//        image.getDataInBackground(new GetDataCallback() {
+//            @Override
+//            public void done(byte[] bytes, ParseException e) {
+//                if (e != null) {
+//                    speaker.setPicture(bytes);
+//                }
+//            }
+//        });
+
+        return speaker;
     }
 }

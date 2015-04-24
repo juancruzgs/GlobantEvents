@@ -23,10 +23,12 @@ import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
 
+import static com.globant.eventscorelib.baseComponents.BaseFragment.TitleChangeable;
+
 /**
  * Created by ignaciopena on 4/1/15.
  */
-public abstract class BaseActivity extends ActionBarActivity {
+public abstract class BaseActivity extends ActionBarActivity implements TitleChangeable{
 
     BroadcastReceiver mReceiver;
     TextView mConnectionRibbon;
@@ -35,13 +37,12 @@ public abstract class BaseActivity extends ActionBarActivity {
     ArrayList<BaseFragment> mFragments = new ArrayList<>();
 
     BaseService mService = null;
-    Class<? extends BaseService> mServiceClass;
+    protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
-    boolean mPendingRequest = false;
-    enum Requestable {EVENT, SPEAKER, SUBSCRIBER}
-    Requestable mRequestedType;
-    String mRequestedId;
-    Object mRequestedObject;
+
+    public BaseService getService() {
+        return mService;
+    }
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -52,20 +53,8 @@ public abstract class BaseActivity extends ActionBarActivity {
             // cast its IBinder to a concrete class and directly access it.
             mService = ((BaseService.BaseBinder)service).getService();
 
-            if (mPendingRequest) {
-                switch (mRequestedType) {
-                    case EVENT:
-//                        mRequestedObject = mService.getEvent(mRequestedId);
-                        break;
-                    default:
-                        // TODO: Throw an exception
-                }
-
-                // TODO: Trigger some trigger
-                // Perhaps to a previously registered listener
-
-                mPendingRequest = false;
-                doUnbindService();
+            for (BaseFragment fragment : mFragments) {
+                fragment.setService(mService);
             }
         }
 
@@ -75,8 +64,16 @@ public abstract class BaseActivity extends ActionBarActivity {
             // Because it is running in our same process, we should never
             // see this happen.
             mService = null;
+
+            for (BaseFragment fragment : mFragments) {
+                fragment.setService(null);
+            }
         }
     };
+
+    private void doStartService() {
+        startService(new Intent(this, mServiceClass));
+    }
 
     protected void doBindService() {
         bindService(new Intent(this, mServiceClass), mConnection, Context.BIND_AUTO_CREATE);
@@ -91,24 +88,16 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
-    // TODO: This function will be used to set the service (a subclass of BaseService)
-    //abstract protected void setServiceInternally();
+    // TODO: This function is used to set the service (a subclass of BaseService)
+    private Class<? extends BaseService> getServiceClass() {
+        return ((BaseApplication)getApplication()).getServiceClass();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setConnectionReceiver();
-
-        // TODO: Uncomment when we are ready to use the service
-        //setServiceInternally();
-
-        if (mServiceClass == null) {
-            // TODO: This will become an exception
-            Logger.d("Service not defined");
-        }
-        else {
-            startService(new Intent(this, mServiceClass));
-        }
+        mServiceClass = getServiceClass();
     }
 
     @Override
@@ -127,21 +116,51 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         registerReceiver(mReceiver,
-                         new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+                new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         super.onResume();
+
+        if (mServiceClass != null) {
+            if (!BaseService.isRunning) {
+                doStartService();
+            }
+            if (!mIsBound) {
+                doBindService();
+            }
+        }
     }
 
     @Override
     protected void onPause() {
         unregisterReceiver(mReceiver);
         super.onPause();
+
+/*
+        if (mServiceClass != null) {
+            doUnbindService();
+        }
+*/
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mIsBound) {
+            doUnbindService();
+        }
     }
 
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
+        if (mService != null){
+            ((BaseFragment)fragment).setService(mService);
+        }
         mFragments.add((BaseFragment)fragment);
-        setFragmentTitle((BaseFragment)fragment);
+        if (mFragments.size() == 1) {
+            //Sets the first fragment title
+            setFragmentTitle((BaseFragment) fragment);
+        }
     }
 
     private void setConnectionReceiver() {
@@ -169,17 +188,17 @@ public abstract class BaseActivity extends ActionBarActivity {
         mToolbar =  (Toolbar) mainContainer.findViewById(R.id.toolbar);
         mFragmentTitle = (TextView) mToolbar.findViewById(R.id.toolbar_fragment_title);
         setSupportActionBar(mToolbar);
-        setActivityTitle();
+//        setActivityTitle();
     }
 
-    private final void setActivityTitle(){
-        String title = getActivityTitle();
-        if (title != null && !title.isEmpty()){
-            mToolbar.setTitle(title);
-        }
-    }
+//    private void setActivityTitle(){
+//        String title = getActivityTitle();
+//        if (title != null && !title.isEmpty()){
+//            mToolbar.setTitle(title);
+//        }
+//    }
 
-    private final void setFragmentTitle(BaseFragment fragment){
+    private void setFragmentTitle(BaseFragment fragment){
         String title = fragment.getTitle();
         if (title != null && !title.isEmpty() && mFragmentTitle != null){
             mFragmentTitle.setText(title);
@@ -214,13 +233,12 @@ public abstract class BaseActivity extends ActionBarActivity {
         }
     }
 
-    // Anstract methods
-    public abstract String getActivityTitle();
-
-    public void requestEvent(String id) {
-        mPendingRequest = true;
-        mRequestedType = Requestable.EVENT;
-        mRequestedId = id;
-        doBindService();
+    @Override
+    public void changeFragmentTitle(String title) {
+        if (title != null && mFragmentTitle != null){
+             mFragmentTitle.setText(title);
+        }
     }
+
+//    public abstract String getActivityTitle();
 }

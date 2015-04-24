@@ -1,58 +1,129 @@
 package com.globant.eventmanager;
 
 
+import android.app.Activity;
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.location.Address;
-import android.location.Geocoder;
-import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.globant.eventscorelib.MapActivity;
+import com.globant.eventscorelib.baseComponents.BaseMapActivity;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-import java.io.IOException;
-import java.util.List;
 
-
-public class ManagerMapActivity extends MapActivity {
+public class ManagerMapActivity extends BaseMapActivity implements BaseService.ActionListener{
 
     private Marker mMarker;
-    private Geocoder mGeocoder;
     private long mBackPressedTime;
     private long mUpPressedTime;
-    private AsyncTask<String, Void, LatLng> mGetAddressFromDecoderTask;
+    private LatLng mInitialMarkerPosition;
+    private BaseService mService = null;
+    private SearchView mSearchView;
+    private String mInitialQuery = "";
 
-    @Override
-    protected int getMapLayout() {
-        return R.layout.activity_manager_map;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mService = ((BaseService.BaseBinder)service).getService();
+            mService.subscribeActor(ManagerMapActivity.this);
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            mService = null;
+        }
+    };
+
+    private void doStartService() {
+        startService(new Intent(this, ManagerDataService.class));
+    }
+
+    protected void doBindService() {
+        bindService(new Intent(this, ManagerDataService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
-    protected int getMapContainer() {
-        return R.id.container;
+    public Activity getBindingActivity() {
+        return this;
     }
 
     @Override
-    protected String getActivityTitle() {
-        return getString(R.string.title_activity_manager_map);
+    public Object getBindingKey() {
+        return null;
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {}
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        if (theAction == BaseService.ACTIONS.POSITION_ADDRESS) {
+            Address address = (Address)result;
+            if (address != null) {
+                setMapActivityResult(address);
+            }
+            else {
+                setResult(ManagerMapActivity.RESULT_CANCELED);
+            }
+            finish();
+        }
+        else if (theAction == BaseService.ACTIONS.POSITION_COORDINATES) {
+            LatLng latLng = (LatLng)result;
+            if (latLng != null) {
+                mMarker = addMarkerToMap(latLng);
+                changeCameraPosition(latLng);
+            }
+        }
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {}
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        doStartService();
+        doBindService();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mMarker != null) {
+            LatLng latLng = mMarker.getPosition();
+            outState.putParcelable(CoreConstants.MAP_MARKER_POSITION_INTENT, latLng);
+        }
+        outState.putString(CoreConstants.MAP_SEARCH_QUERY_INTENT, mSearchView.getQuery().toString());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mInitialMarkerPosition = (LatLng)savedInstanceState.get(CoreConstants.MAP_MARKER_POSITION_INTENT);
+        mInitialQuery = savedInstanceState.getString(CoreConstants.MAP_SEARCH_QUERY_INTENT);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
-        mGeocoder = new Geocoder(getBaseContext());
+        if (mInitialMarkerPosition != null) {
+            mMarker = addMarkerToMap(mInitialMarkerPosition);
+        }
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 mMarker = addMarkerToMap(latLng);
+                changeCameraPosition(latLng);
             }
         });
     }
@@ -66,13 +137,13 @@ public class ManagerMapActivity extends MapActivity {
 
     private void prepareSearchView(Menu menu) {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchView.setQueryHint(getString(R.string.search_hint));
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                mGetAddressFromDecoderTask = new getAddressFromGeocoderTask().execute(s);
+                mService.executeAction(BaseService.ACTIONS.POSITION_COORDINATES, s);
                 return false;
             }
 
@@ -81,28 +152,14 @@ public class ManagerMapActivity extends MapActivity {
                 return false;
             }
         });
+        prepareInitialSearchState();
     }
 
-    private class getAddressFromGeocoderTask extends AsyncTask<String, Void, LatLng> {
-        @Override
-        protected LatLng doInBackground(String... params) {
-            List<Address> addresses;
-            try {
-                addresses = mGeocoder.getFromLocationName(params[0], CoreConstants.MAX_GEOCODER_RESULTS);
-                Address address = addresses.get(CoreConstants.ZERO);
-                return new LatLng(address.getLatitude(), address.getLongitude());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(LatLng latLng) {
-            if (latLng != null) {
-                mMarker = addMarkerToMap(latLng);
-            }
-            //TODO Else internet issue
+    private void prepareInitialSearchState() {
+        if (!mInitialQuery.isEmpty()) {
+            mSearchView.setQuery(mInitialQuery, false);
+            mSearchView.setIconified(false);
+            mSearchView.clearFocus();
         }
     }
 
@@ -130,30 +187,11 @@ public class ManagerMapActivity extends MapActivity {
 
     private void finishActivityWithResult(boolean backButton) {
         if (mMarker != null) {
-            finishActivityWithMarkerData();
+            LatLng latLng = mMarker.getPosition();
+            mService.executeAction(BaseService.ACTIONS.POSITION_ADDRESS, latLng);
         }
         else {
             finishActivityWithoutMarkerData(backButton);
-        }
-    }
-
-    private void finishActivityWithMarkerData() {
-        Address address = getMarkerLocation();
-        if (address != null) {
-            setMapActivityResult(address);
-            finish();
-        }
-    }
-
-    private Address getMarkerLocation(){
-        List<Address> addresses;
-        LatLng latLng = mMarker.getPosition();
-        try {
-            addresses = mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, CoreConstants.MAX_GEOCODER_RESULTS);
-            return addresses.get(CoreConstants.ZERO);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
@@ -198,11 +236,12 @@ public class ManagerMapActivity extends MapActivity {
     }
 
     @Override
-    protected void onPause() {
-        //TODO Implement Service, don't cancel the activity
-        if (mGetAddressFromDecoderTask != null && mGetAddressFromDecoderTask.getStatus() == AsyncTask.Status.RUNNING) {
-            mGetAddressFromDecoderTask.cancel(true);
-        }
-        super.onPause();
+    protected int getMapLayout() {
+        return R.layout.activity_manager_map;
+    }
+
+    @Override
+    protected int getMapContainer() {
+        return R.id.container;
     }
 }

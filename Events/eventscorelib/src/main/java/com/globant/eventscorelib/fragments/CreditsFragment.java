@@ -8,15 +8,20 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class CreditsFragment extends BaseFragment {
 
-
     public CreditsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return null;
     }
 
     @Override

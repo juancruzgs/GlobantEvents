@@ -4,33 +4,185 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ViewAnimator;
 
 /**
-* Created by paula.baudo on 4/17/2015.
-*/
-public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
+ * Created by paula.baudo on 4/17/2015.
+ */
+public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
 
     private final TextView mTextViewName;
     private final TextView mTextViewGlober;
     private final ImageView mImageViewParticipantLeft;
     private final ImageView mImageViewParticipantRight;
     private final LinearLayout mParticipantHolderItemLayout;
+    private final FrameLayout mFrameLayoutLeft;
+    private final FrameLayout mFrameLayoutRight;
+    private final FrameLayout mFrameLayoutHolder;
+    private final LinearLayout mLinearLayoutMiddle;
+    private Boolean mScrolling;
+    private EventParticipantsFragment mFragment;
+    private Boolean mBooleanIsPressed;
+    private TranslateAnimation mTranslateAnimationPhoto;
+    private TranslateAnimation mTranslateAnimationText;
+    private Boolean mAnimationCancelled;
+    private View mView;
+    private Boolean mRunnableIsRunning;
+    private LinearLayout mLinearLayoutMiddleLeft;
+    private TextView mTextViewNameLeft;
 
-    public ParticipantsListViewHolder(View itemView) {
+    private final Handler mHandler = new Handler();
+    private final Runnable mRunnable = new Runnable() {
+        public void run() {
+            mRunnableIsRunning = true;
+            if ((!mScrolling) && (mBooleanIsPressed)){
+                if (mView.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
+                    addTranslateAnimationPhoto(mFrameLayoutLeft, mFrameLayoutRight, mFrameLayoutHolder, true);
+                    addTranslateAnimationText(mLinearLayoutMiddle, mLinearLayoutMiddleLeft, mFrameLayoutHolder,true);
+                }else{
+                    addTranslateAnimationPhoto(mFrameLayoutRight, mFrameLayoutLeft, mFrameLayoutHolder, false);
+                    addTranslateAnimationText(mLinearLayoutMiddle, mLinearLayoutMiddleLeft, mFrameLayoutHolder,false);
+                }
+            }
+        }
+    };
+
+    public TextView getmTextViewNameLeft() {
+        return mTextViewNameLeft;
+    }
+
+    public ParticipantsListViewHolder(View itemView, EventParticipantsFragment fragment) {
         super(itemView);
-        itemView.setOnLongClickListener(this);
+        //itemView.setOnLongClickListener(this);
+        mFrameLayoutHolder = (FrameLayout) itemView.findViewById(R.id.relative_layout_holder);
+        mTextViewNameLeft = (TextView) itemView.findViewById(R.id.text_view_participant_name_left);
+        mFrameLayoutLeft = (FrameLayout) itemView.findViewById(R.id.frame_layout_left_image);
+        mFrameLayoutRight = (FrameLayout) itemView.findViewById(R.id.frame_layout_right_image);
         mTextViewName = (TextView) itemView.findViewById(R.id.text_view_participant_name);
         mTextViewGlober = (TextView) itemView.findViewById(R.id.text_view_glober);
         mImageViewParticipantLeft = (ImageView) itemView.findViewById(R.id.image_view_participant_left);
         mImageViewParticipantRight = (ImageView) itemView.findViewById(R.id.image_view_participant_right);
         mParticipantHolderItemLayout = (LinearLayout) itemView.findViewById(R.id.participant_item_holder_layout);
+        mLinearLayoutMiddle = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle);
+        mFragment = fragment;
+        mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
+        itemView.setOnTouchListener(this);
+
     }
+
+    public float getFrameLayoutWidth(){
+        return mFrameLayoutLeft.getWidth();
+    }
+
+    public LinearLayout getmLinearLayoutMiddle() {
+        return mLinearLayoutMiddle;
+    }
+
+    public void addTranslateAnimationText(final LinearLayout linearLayoutMiddle, final LinearLayout linearLayoutMiddleLeft, final FrameLayout frameLayoutHolder, final Boolean leftToRight){
+        TranslateAnimation translateAnimation;
+        LinearLayout currentAnimated;
+        if (leftToRight){
+            translateAnimation = new TranslateAnimation(0, -mFrameLayoutLeft.getWidth(), 0, 0);
+            currentAnimated = linearLayoutMiddle;
+        }else{
+            translateAnimation = new TranslateAnimation(0, mFrameLayoutLeft.getWidth(), 0, 0);
+            currentAnimated = linearLayoutMiddleLeft;
+        }
+        translateAnimation.setDuration(650);
+        translateAnimation.setInterpolator(new DecelerateInterpolator());
+        translateAnimation.initialize(linearLayoutMiddle.getWidth(), linearLayoutMiddle.getHeight(),
+                frameLayoutHolder.getWidth(), frameLayoutHolder.getHeight());
+        mTranslateAnimationText = translateAnimation;
+        translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (!mAnimationCancelled){
+                    if (leftToRight){
+                        linearLayoutMiddle.setVisibility(View.INVISIBLE);
+                        linearLayoutMiddleLeft.setVisibility(View.VISIBLE);
+                    } else{
+                        linearLayoutMiddleLeft.setVisibility(View.INVISIBLE);
+                        linearLayoutMiddle.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        currentAnimated.startAnimation(translateAnimation);
+
+    }
+
+    public void addTranslateAnimationPhoto(final FrameLayout frameLayoutFrom, final FrameLayout frameLayoutTo, FrameLayout frameLayoutHolder,
+                                           final boolean leftToRight) {
+        TranslateAnimation translateAnimation;
+        if (leftToRight) {
+            translateAnimation = new TranslateAnimation(frameLayoutFrom.getX(), frameLayoutHolder.getRight() - getFrameLayoutWidth()
+                    , frameLayoutFrom.getY(), frameLayoutFrom.getY());
+        } else {
+            translateAnimation = new TranslateAnimation(0, -frameLayoutHolder.getWidth() + getFrameLayoutWidth()
+                    , frameLayoutFrom.getY(), frameLayoutFrom.getY());
+        }
+
+        translateAnimation.setDuration(650);
+        translateAnimation.setInterpolator(new DecelerateInterpolator());
+        translateAnimation.initialize(frameLayoutFrom.getWidth(),
+                frameLayoutFrom.getHeight(), frameLayoutHolder.getWidth(), frameLayoutHolder.getHeight());
+        translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (mAnimationCancelled) {
+                    animation.reset();
+                    mTranslateAnimationText.cancel();
+                    mTranslateAnimationText.reset();
+                } else {
+                    frameLayoutFrom.setVisibility(View.INVISIBLE);
+                    frameLayoutTo.setVisibility(View.VISIBLE);
+                    if (leftToRight) {
+                        mLinearLayoutMiddle.setX(-getFrameLayoutWidth());
+                        mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
+                    } else {
+                        mLinearLayoutMiddle.setX(getFrameLayoutWidth());
+                        mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
+                    }
+                }
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mTranslateAnimationPhoto = translateAnimation;
+        frameLayoutFrom.startAnimation(translateAnimation);
+    }
+
 
     public TextView getTextViewName() {
         return mTextViewName;
@@ -48,57 +200,46 @@ public class ParticipantsListViewHolder extends RecyclerView.ViewHolder implemen
         return mImageViewParticipantRight;
     }
 
-    private void animateInvisibility(final View myView) {
-        int cx = (myView.getLeft() + myView.getRight()) / 2;
-        int cy = (myView.getTop() + myView.getBottom()) / 2;
 
-        int initialRadius = myView.getWidth();
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
 
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                myView.setVisibility(View.GONE);
-            }
-        });
-
-        anim.start();
-    }
-
-    private void animateVisibility(View myView) {
-        int cx = (myView.getLeft() + myView.getRight()) / 2;
-        int cy = (myView.getTop() + myView.getBottom()) / 2;
-        int finalRadius = Math.max(myView.getWidth(), myView.getHeight());
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
-        myView.setVisibility(View.VISIBLE);
-        anim.start();
-    }
-
-    @Override
+    /*@Override
     public boolean onLongClick(View v) {
-        int currentApiVersion = Build.VERSION.SDK_INT;
-        if (mImageViewParticipantLeft.getVisibility() == View.VISIBLE) {
-            if (currentApiVersion >= Build.VERSION_CODES.LOLLIPOP) {
-                animateInvisibility(mImageViewParticipantLeft);
-                animateVisibility(mImageViewParticipantRight);
-            } else {
-                mImageViewParticipantLeft.setVisibility(View.GONE);
-                mImageViewParticipantRight.setVisibility(View.VISIBLE);
-            }
+        if (v.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
+            addTranslateAnimationPhoto(mFrameLayoutLeft,mFrameLayoutRight,mFrameLayoutHolder,true);
             mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
+
         }else{
-            if (currentApiVersion >= Build.VERSION_CODES.LOLLIPOP) {
-                animateInvisibility(mImageViewParticipantRight);
-                animateVisibility(mImageViewParticipantLeft);
-            } else {
-                mImageViewParticipantLeft.setVisibility(View.VISIBLE);
-                mImageViewParticipantRight.setVisibility(View.GONE);
-            }
+            addTranslateAnimationPhoto(mFrameLayoutRight,mFrameLayoutLeft,mFrameLayoutHolder,false);
             mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
         }
         return true;
+    }*/
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        mScrolling = mFragment.getScrolling();
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (mBooleanIsPressed) {
+                mBooleanIsPressed = false;
+                mAnimationCancelled = true;
+                if (mRunnableIsRunning) {
+                    mTranslateAnimationPhoto.cancel();
+                }
+                mHandler.removeCallbacks(mRunnable);
+                return true;
+            }
+            return false;
+        } else {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // Execute your Runnable after 5000 milliseconds = 5 seconds.
+                mRunnableIsRunning = false;
+                mView = v;
+                mHandler.postDelayed(mRunnable, 500);
+                mAnimationCancelled = false;
+                mBooleanIsPressed = true;
+                return true;
+            }
+            return false;
+        }
     }
 }

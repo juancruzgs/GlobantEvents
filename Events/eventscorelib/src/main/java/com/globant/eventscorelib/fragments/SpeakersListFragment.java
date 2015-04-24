@@ -1,24 +1,36 @@
 package com.globant.eventscorelib.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.adapters.SpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseFragment;
+import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.baseComponents.CloudDataController;
+import com.globant.eventscorelib.baseComponents.CreditsActivity;
+import com.globant.eventscorelib.baseComponents.SpeakerDetailActivity;
+import com.globant.eventscorelib.domainObjects.Speaker;
+import com.parse.ParseException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
         * Created by agustin.gugliotta on 15/04/2015.
         */
-public class SpeakersListFragment extends BaseFragment {
+public class SpeakersListFragment extends BaseFragment implements BaseService.ActionListener{
 
-    //TODO delete this two attr
-    private static final int DATASET_COUNT = 60;
-    protected String[] mDataset;
+    private List<Speaker> mSpeakers = new ArrayList();
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -30,13 +42,52 @@ public class SpeakersListFragment extends BaseFragment {
     protected SpeakersListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
 
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
+    }
+
+    @Override
+    public Object getBindingKey() {
+        return null;
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay("Loading Speakers");
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
+            mSpeakers = (List<Speaker>) result;
+            mAdapter = new SpeakersListAdapter(getActivity(), mSpeakers);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+        hideUtilsAndShowContentOverlay();
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+    }
+
     public SpeakersListFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initDataset();
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
+        mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ");
+    }
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return this;
     }
 
     @Override
@@ -52,16 +103,25 @@ public class SpeakersListFragment extends BaseFragment {
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
         }
-
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
 
-        mAdapter = new SpeakersListAdapter(mDataset);
+        mAdapter = new SpeakersListAdapter(getActivity(),mSpeakers);
         mRecyclerView.setAdapter(mAdapter);
 
         mRecyclerView.setHasFixedSize(true);
 
         hideUtilsAndShowContentOverlay();
+
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        //TODO juan.ramirez,  send speaker id or speaker object from backend.
+                        Intent intentSpeakerDetail = new Intent(getActivity(), SpeakerDetailActivity.class);
+                        startActivity(intentSpeakerDetail);
+                    }
+                })
+        );
 
         return rootView;
     }
@@ -69,14 +129,6 @@ public class SpeakersListFragment extends BaseFragment {
     @Override
     public String getTitle() {
         //TODO change hardcoded string
-        return "Speaker List";
-    }
-
-    //TODO delete method
-    private void initDataset() {
-        mDataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "This is element #" + i;
-        }
+        return "Speakers";
     }
 }
