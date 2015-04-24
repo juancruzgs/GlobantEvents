@@ -231,16 +231,17 @@ public class CloudDataController {
         speaker.setName((String) databaseSpeaker.get(CoreConstants.FIELD_NAME));
         speaker.setLastName((String) databaseSpeaker.get(CoreConstants.FIELD_LAST_NAME));
         speaker.setTitle((String) databaseSpeaker.get(CoreConstants.FIELD_TITLE));
+        speaker.setPicture(getImageFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
 //        databaseSpeaker.getParseFile(CoreConstants.FIELD_PICTURE).getData();
-        ParseFile image = (ParseFile) databaseSpeaker.get(CoreConstants.FIELD_PICTURE);
-        image.getDataInBackground(new GetDataCallback() {
-            @Override
-            public void done(byte[] bytes, ParseException e) {
-                if (e != null) {
-                    speaker.setPicture(bytes);
-                }
-            }
-        });
+//        ParseFile image = (ParseFile) databaseSpeaker.get(CoreConstants.FIELD_PICTURE);
+//        image.getDataInBackground(new GetDataCallback() {
+//            @Override
+//            public void done(byte[] bytes, ParseException e) {
+//                if (e != null) {
+//                    speaker.setPicture(bytes);
+//                }
+//            }
+//        });
 
         return speaker;
     }
