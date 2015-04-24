@@ -1,16 +1,17 @@
-package com.globant.eventscorelib;
+package com.globant.eventscorelib.baseComponents;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.fragments.TweetFragment;
 
 
-public class BaseTweetActivity extends BaseActivity implements BaseService.ActionListener {
+public class TweetActivity extends BaseActivity implements BaseService.ActionListener {
 
      @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,7 @@ public class BaseTweetActivity extends BaseActivity implements BaseService.Actio
         super.onNewIntent(intent);
         Uri uri = intent.getData();
         if (uri != null) {
-            getService().executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri);
+            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri);
         }
     }
 

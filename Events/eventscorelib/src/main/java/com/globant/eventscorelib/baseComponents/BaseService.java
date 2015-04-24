@@ -6,14 +6,26 @@ import android.content.Intent;
 import android.location.Address;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.adapters.TweetListAdapter;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.managers.TwitterManager;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
+import com.software.shell.fab.ActionButton;
 
 import java.util.HashMap;
 import java.util.List;
