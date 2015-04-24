@@ -122,9 +122,8 @@ public abstract class BaseEventListFragment extends BaseFragment {
                 handled = true;
             } else {
                 if (id == R.id.action_profile) {
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, new SubscriberFragment())
-                            .addToBackStack(null).commit();
+                    Intent intentSubscriber = new Intent(getActivity(), SubscriberActivity.class);
+                    startActivity(intentSubscriber);
                     handled = true;
                 }
             }
