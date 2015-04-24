@@ -92,6 +92,32 @@
                     android:orientation="vertical"
                     android:layout_weight="3">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:id="@+id/speaker_image_view"
+                            android:src="@mipmap/ic_speaker"
+                            android:padding="5dp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Tony Stark - Bruce Banner - Jarvis - Steve Rogers"
+                            android:id="@+id/event_speakers_text_view"
+                            style="@style/condensed_normal_small"
+                            android:singleLine="false"
+                            android:padding="@dimen/padding_text_view_card_row" />
+
+                    </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -100,19 +126,9 @@
                         android:id="@+id/event_short_description_text_view"
                         style="@style/condensed_normal_small"
                         android:singleLine="false"
-                        android:padding="@dimen/padding_text_view_card_row" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Speakers - Tony Stark - Bruce Banner - Jarvis - Steve Rogers"
-                        android:id="@+id/event_speakers_text_view"
-                        style="@style/condensed_normal_small"
-                        android:singleLine="false"
-                        android:paddingLeft="@dimen/padding_text_view_card_row"
+                        android:paddingBottom="@dimen/padding_text_view_card_row"
                         android:paddingRight="@dimen/padding_text_view_card_row"
-                        android:paddingBottom="@dimen/padding_text_view_card_row" />
+                        android:paddingLeft="@dimen/padding_text_view_card_row"/>
 
                 </LinearLayout>
 
