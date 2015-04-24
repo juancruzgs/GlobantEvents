@@ -2,11 +2,14 @@ package com.globant.eventmanager;
 
 
 import android.os.Bundle;
+import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 
 import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -25,9 +28,14 @@ public class EventParticipantsFragment extends BaseFragment {
     protected EventParticipantsListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected String[] mDataset;
+    protected Boolean scrolling = false;
 
     public EventParticipantsFragment() {
         // Required empty public constructor
+    }
+
+    public Boolean getScrolling() {
+        return scrolling;
     }
 
     @Override
@@ -53,11 +61,29 @@ public class EventParticipantsFragment extends BaseFragment {
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
 
-        setRecyclerViewLayoutManager();
-        mAdapter = new EventParticipantsListAdapter(getActivity(), mDataset);
+        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+        mAdapter = new EventParticipantsListAdapter(getActivity(), mDataset, this);
         mRecyclerView.setAdapter(mAdapter);
         hideUtilsAndShowContentOverlay();
+        setOnScrollListener();
         return rootView;
+    }
+
+    private void setOnScrollListener() {
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)) {
+                    scrolling = true;
+                } else {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        scrolling = false;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -71,7 +97,7 @@ public class EventParticipantsFragment extends BaseFragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void setRecyclerViewLayoutManager() {
+    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
         int scrollPosition = 0;
         if (mRecyclerView.getLayoutManager() != null) {
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
