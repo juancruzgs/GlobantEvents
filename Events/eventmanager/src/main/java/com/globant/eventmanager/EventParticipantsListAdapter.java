@@ -37,6 +37,7 @@ public class EventParticipantsListAdapter extends RecyclerView.Adapter<Participa
     @Override
     public void onBindViewHolder(ParticipantsListViewHolder holder, int position) {
         holder.getTextViewName().setText(mDataSet[position]);
+        holder.getmTextViewNameLeft().setText(mDataSet[position]);
         Picasso.with(mContext).load(R.drawable.profile_pic).transform(transformation).into(holder.getImageViewParticipantLeft());
         Picasso.with(mContext).load(R.drawable.profile_pic).transform(transformation).into(holder.getImageViewParticipantRight());
         holder.getmLinearLayoutMiddle().setX(holder.getFrameLayoutWidth());

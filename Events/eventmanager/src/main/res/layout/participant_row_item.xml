@@ -7,7 +7,7 @@
     android:id="@+id/participant_item_holder_layout">
 
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/relative_layout_holder">
@@ -15,11 +15,9 @@
         <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:id="@+id/frame_layout_left_image"
-            android:visibility="visible">
+            android:id="@+id/frame_layout_left_image"
+            android:visibility="visible"
+            android:padding="8dp">
 
                 <ImageView
                     android:layout_width="72dp"
@@ -27,6 +25,59 @@
                     android:id="@+id/image_view_participant_left"
                     android:src="@drawable/profile_pic" />
             </FrameLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:id="@+id/linear_layout_middle_left"
+            android:visibility="invisible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hermione Granger"
+                android:id="@+id/text_view_participant_name_left"
+                style="@style/condensed_normal_large" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lawyer"
+                    style="@style/condensed_normal_medium"
+                    android:id="@+id/text_view_occupation_left" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Glober"
+                    android:id="@+id/text_view_glober_left"
+                    style="@style/condensed_normal_medium"
+                    android:textColor="@color/globant_green_dark"
+                    android:paddingLeft="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mar del Plata, Argentina"
+                    style="@style/condensed_light_small"
+                    android:id="@+id/text_view_location_left" />
+            </LinearLayout>
+
+        </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -83,12 +134,11 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingRight="8dp"
             android:id="@+id/frame_layout_right_image"
             android:visibility="invisible"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:padding="8dp">
 
             <ImageView
                 android:layout_width="72dp"
@@ -97,7 +147,7 @@
                 android:src="@drawable/profile_pic" />
         </FrameLayout>
 
-    </RelativeLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"
