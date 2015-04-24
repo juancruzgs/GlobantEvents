@@ -58,8 +58,9 @@
     <string name="action_credits">Credits</string>
     <string name="title_activity_credits">Credits</string>
     <string name="edit_text_first_name_hint">First name</string>
-    <string name="edit_text_laat_name_hint">Last name</string>
+    <string name="edit_text_last_name_hint">Last name</string>
     <string name="edit_text_phone_hint">Phone</string>
+    <string name="edit_text_biography_hint">Biography</string>
     <string name="edit_text_email_hint">Email</string>
     <string name="edit_text_twitter_hint">Twitter user</string>
     <string name="edit_text_occupation_hint">Occupation</string>

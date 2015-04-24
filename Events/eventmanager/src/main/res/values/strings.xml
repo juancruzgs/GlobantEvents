@@ -6,4 +6,7 @@
     <string name="toast_double_tap_to_cancel">Double tap to cancel</string>
     <string name="edit_text_hint_name">Name</string>
     <string name="button_execute_action">Execute action</string>
+    <string name="edit_text_biography_hint">Biography</string>
+    <string name="edit_text_title_hint">Title</string>
+    <string name="edit_text_last_name_hint">Last name</string>
 </resources>
