@@ -83,10 +83,8 @@
     <string name="checkin_error">The subscriber email doesn\'t exist.</string>
     <string name="field_required">*Required</string>
     <string name="title_activity_subscriber">SubscriberActivity</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="email_required">*Email not valid</string>
-
     <string name="title_base_activity_twitter">Twitter</string>
     <string name="title_fragment_tweet">Tweet</string>
     <string name="title_fragment_tweets_stream">Stream</string>
@@ -96,4 +94,6 @@
     <string name="title_page_twitter">Twitter</string>
     <string name="edit_text_title_hint">Title</string>
     <string name="edit_text_hint_name">Name</string>
+    <string name="title_activity_speaker">SpeakerActivity</string>
+
 </resources>
