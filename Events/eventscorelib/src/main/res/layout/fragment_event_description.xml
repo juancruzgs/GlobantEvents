@@ -2,8 +2,8 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:pew="http://schemas.android.com/apk/res-auto"
              xmlns:fab="http://schemas.android.com/apk/res-auto"
+             xmlns:pew="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
@@ -59,62 +59,104 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="4dp"
                         android:layout_marginTop="3dp"
-                        android:paddingBottom="4dp"
-                        android:paddingTop="4dp">
+                        android:visibility="visible">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <LinearLayout
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="horizontal"
+                                android:paddingBottom="6dp"
+                                android:paddingLeft="6dp"
+                                android:paddingTop="6dp">
 
-                                <TextView
-                                    android:id="@+id/textView_Event_Start_Title"
-                                    style="@style/condensed_light_small"
-                                    android:textColor="@color/grey_light"
-                                    android:layout_width="match_parent"
+                                <ImageView
+                                    android:id="@+id/imageView_Event_Start"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:paddingLeft="6dp"
-                                    android:text="@string/textView_Event_Start_Title"/>
+                                    android:layout_weight="0.1"
+                                    android:src="@mipmap/ic_play"
+                                    />
 
-                                <TextView
-                                    android:id="@+id/textView_Event_Start_Date"
-                                    style="@style/condensed_normal_medium"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:paddingLeft="6dp"
-                                    android:text="11/05/2015 9:30 PM"/>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.9"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Start_Title"
+                                        style="@style/condensed_light_small"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="@string/textView_Event_Start_Title"
+                                        android:textColor="@color/grey_light"/>
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Start_Date"
+                                        style="@style/condensed_normal_medium"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="11/05/2015 9:30 PM"/>
+
+                                </LinearLayout>
 
                             </LinearLayout>
 
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.25dp"
+                                android:layout_marginLeft="43dp"
+                                android:background="@color/grey"/>
+
                             <LinearLayout
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="horizontal"
+                                android:paddingBottom="6dp"
+                                android:paddingLeft="6dp"
+                                android:paddingTop="6dp">
 
-                                <TextView
-                                    android:id="@+id/textView_Event_End_Title"
-                                    style="@style/condensed_light_small"
-                                    android:textColor="@color/grey_light"
-                                    android:layout_width="wrap_content"
+                                <ImageView
+                                    android:id="@+id/imageView_Even_End"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:paddingLeft="6dp"
-                                    android:text="@string/textView_Event_End_Title"/>
+                                    android:layout_weight="0.1"
+                                    android:src="@mipmap/ic_stop"/>
 
-                                <TextView
-                                    android:id="@+id/textView_Event_End_Date"
-                                    style="@style/condensed_normal_medium"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:paddingLeft="6dp"
-                                    android:text="12/05/2015 3:00 AM"/>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.9"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
 
+                                    <TextView
+                                        android:id="@+id/textView_Event_End_Title"
+                                        style="@style/condensed_light_small"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="@string/textView_Event_End_Title"
+                                        android:textColor="@color/grey_light"/>
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_End_Date"
+                                        style="@style/condensed_normal_medium"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="12/05/2015 3:00 AM"/>
+
+
+                                </LinearLayout>
 
                             </LinearLayout>
 
@@ -127,51 +169,93 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginBottom="4dp"
-                        android:paddingBottom="4dp"
-                        android:paddingTop="4dp">
+                        android:visibility="visible">
 
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/textView_Event_Address_Title"
-                                style="@style/condensed_light_small"
-                                android:textColor="@color/grey_light"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingLeft="6dp"
-                                android:text="@string/textView_Event_Address_Title"/>
-
-                            <TextView
-                                android:id="@+id/textView_Event_Address"
-                                style="@style/condensed_normal_medium"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingLeft="6dp"
-                                android:text="Av. Colon 1100 - PB."/>
-
                             <LinearLayout
-                                android:layout_width="fill_parent"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:layout_marginTop="6dp">
+                                android:paddingBottom="6dp"
+                                android:paddingLeft="6dp"
+                                android:paddingTop="6dp">
+
+
+                                <ImageView
+                                    android:id="@+id/imageView_Event_Address"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.1"
+                                    android:src="@mipmap/ic_place"/>
 
                                 <LinearLayout
                                     android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.9"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Address_Title"
+                                        style="@style/condensed_light_small"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="@string/textView_Event_Address_Title"
+                                        android:textColor="@color/grey_light"/>
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Address"
+                                        style="@style/condensed_normal_medium"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="Av. Colon 1100 - PB."/>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.25dp"
+                                android:layout_marginLeft="43dp"
+                                android:background="@color/grey"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:paddingBottom="6dp"
+                                android:paddingLeft="6dp"
+                                android:paddingTop="6dp">
+
+                                <ImageView
+                                    android:id="@+id/imageView_Event_City"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:layout_weight="1">
+                                    android:layout_weight="0.1"
+                                    android:src="@mipmap/ic_city"/>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.9"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/textView_Event_City_Title"
                                         style="@style/condensed_light_small"
-                                        android:textColor="@color/grey_light"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:paddingLeft="6dp"
-                                        android:text="@string/textView_Event_City_Title"/>
+                                        android:text="@string/textView_Event_City_Title"
+                                        android:textColor="@color/grey_light"/>
 
                                     <TextView
                                         android:id="@+id/textView_Event_City"
@@ -183,20 +267,44 @@
 
                                 </LinearLayout>
 
-                                <LinearLayout
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.25dp"
+                                android:layout_marginLeft="43dp"
+                                android:background="@color/grey"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:paddingBottom="6dp"
+                                android:paddingLeft="6dp"
+                                android:paddingTop="6dp">
+
+                                <ImageView
+                                    android:id="@+id/imageView_Event_Country"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:layout_weight="1">
+                                    android:layout_weight="0.1"
+                                    android:src="@mipmap/ic_country"/>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.9"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/textView_Event_Country_Title"
                                         style="@style/condensed_light_small"
-                                        android:textColor="@color/grey_light"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:paddingLeft="6dp"
-                                        android:text="@string/textView_Event_Country_Title"/>
+                                        android:text="@string/textView_Event_Country_Title"
+                                        android:textColor="@color/grey_light"/>
 
                                     <TextView
                                         android:id="@+id/textView_Event_Country"
@@ -220,93 +328,159 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginBottom="4dp"
-                        android:paddingBottom="4dp"
-                        android:paddingTop="4dp">
+                        android:visibility="visible">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/textView_Event_Language_Title"
-                                style="@style/condensed_light_small"
-                                android:textColor="@color/grey_light"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingLeft="6dp"
-                                android:text="@string/textView_Event_Language_Title"/>
-
-                            <TextView
-                                android:id="@+id/textView_Event_Language"
-                                style="@style/condensed_normal_medium"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:paddingBottom="6dp"
                                 android:paddingLeft="6dp"
-                                android:text="Spanish - English"/>
+                                android:paddingTop="6dp">
 
-                            <TextView
-                                android:id="@+id/textView_Event_Add_Info_Title"
-                                style="@style/condensed_light_small"
-                                android:textColor="@color/grey_light"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingLeft="6dp"
-                                android:text="@string/texView_Add_Info_Title"
-                                android:layout_marginTop="6dp"/>
+                                <ImageView
+                                    android:id="@+id/imageView_Event_Language"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.1"
+                                    android:src="@mipmap/ic_language"/>
 
-                            <TextView
-                                android:id="@+id/textView_Event_Additional_Info"
-                                style="@style/condensed_normal_medium"
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.9"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Language_Title"
+                                        style="@style/condensed_light_small"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="@string/textView_Event_Language_Title"
+                                        android:textColor="@color/grey_light"/>
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Language"
+                                        style="@style/condensed_normal_medium"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="Spanish - English"/>
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.25dp"
+                                android:layout_marginLeft="43dp"
+                                android:background="@color/grey"/>
+
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:paddingBottom="6dp"
                                 android:paddingLeft="6dp"
-                                android:text="Bring clean underwear"/>
+                                android:paddingTop="6dp">
+
+                                <ImageView
+                                    android:id="@+id/imageView_Event_Add_Info"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.1"
+                                    android:src="@mipmap/ic_info"/>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.9"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Add_Info_Title"
+                                        style="@style/condensed_light_small"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="6dp"
+                                        android:paddingLeft="6dp"
+                                        android:text="@string/texView_Add_Info_Title"
+                                        android:textColor="@color/grey_light"/>
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Additional_Info"
+                                        style="@style/condensed_normal_medium"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="Bring clean underwear"/>
+                                </LinearLayout>
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
                     </android.support.v7.widget.CardView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="vertical"
-                    >
 
                     <android.support.v7.widget.CardView
                         xmlns:card_view="http://schemas.android.com/apk/res-auto"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        >
+                        android:layout_gravity="center">
 
-                        <LinearLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/textView_Event_Desc_Title"
-                                style="@style/condensed_light_medium"
-                                android:textColor="@color/grey_light"
+                            <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
                                 android:paddingLeft="6dp"
-                                android:text="@string/textView_Event_Desc_Title"/>
+                                android:paddingTop="6dp"
+                                android:paddingBottom="6dp">
 
-                            <TextView
-                                android:id="@+id/textView_Event_Full_Description"
-                                style="@style/condensed_normal_large"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:paddingLeft="6dp"
-                                android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."/>
+                                <ImageView
+                                    android:id="@+id/imageView"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.1"
+                                    android:src="@mipmap/ic_assignment"/>
 
-                        </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.9"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Desc_Title"
+                                        style="@style/condensed_light_small"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="@string/textView_Event_Desc_Title"
+                                        android:textColor="@color/grey_light"/>
+
+                                    <TextView
+                                        android:id="@+id/textView_Event_Full_Description"
+                                        style="@style/condensed_normal_medium"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingLeft="6dp"
+                                        android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."/>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
 
                     </android.support.v7.widget.CardView>
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -353,11 +527,11 @@
 
     <com.software.shell.fab.ActionButton
         android:id="@+id/fab"
-        fab:type="DEFAULT"
         style="@style/fab_action_button_style"
+        fab:button_color="@color/globant_green_dark"
         fab:image="@drawable/fab_plus_icon"
         fab:image_size="24dp"
-        fab:button_color="@color/globant_green_dark"/>
+        fab:type="DEFAULT"/>
 
 </FrameLayout>
 
