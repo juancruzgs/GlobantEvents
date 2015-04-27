@@ -7,6 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.RelativeLayout;
 
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.R;
@@ -28,6 +31,7 @@ public class EventParticipantsManagerFragment extends BaseFragment {
     protected RecyclerView.LayoutManager mLayoutManager;
     protected String[] mDataset;
     protected Boolean scrolling = false;
+    private RelativeLayout mViewButtonsAddDeclineAll;
 
     public EventParticipantsManagerFragment() {
         // Required empty public constructor
@@ -65,6 +69,7 @@ public class EventParticipantsManagerFragment extends BaseFragment {
         mRecyclerView.setAdapter(mAdapter);
         hideUtilsAndShowContentOverlay();
         setOnScrollListener();
+        mViewButtonsAddDeclineAll = (RelativeLayout) rootView.findViewById(R.id.relative_layout_buttons_add_and_decline);
         return rootView;
     }
 
@@ -80,6 +85,31 @@ public class EventParticipantsManagerFragment extends BaseFragment {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         scrolling = false;
                     }
+                }
+            }
+
+            private static final int HIDE_THRESHOLD = 20;
+            private int scrolledDistance = 0;
+            private boolean controlsVisible = true;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (scrolledDistance > HIDE_THRESHOLD && controlsVisible) {
+                    //hide
+                    mViewButtonsAddDeclineAll.animate().translationY(mViewButtonsAddDeclineAll.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+                    controlsVisible = false;
+                    scrolledDistance = 0;
+                } else if (scrolledDistance < -HIDE_THRESHOLD && !controlsVisible) {
+                    //show
+                    mViewButtonsAddDeclineAll.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                    controlsVisible = true;
+                    scrolledDistance = 0;
+                }
+
+                if((controlsVisible && dy>0) || (!controlsVisible && dy<0)) {
+                    scrolledDistance += dy;
                 }
             }
         });
