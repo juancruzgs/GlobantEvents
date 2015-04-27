@@ -105,6 +105,10 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
                     .getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager();
+
+        if (mTweetList != null) {
+            setAdapterRecyclerView();
+        }
         return rootView;
     }
 
