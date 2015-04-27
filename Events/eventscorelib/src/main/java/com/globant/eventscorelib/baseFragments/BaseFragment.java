@@ -45,7 +45,7 @@ public abstract class BaseFragment extends Fragment{
         mService.unSubscribeActor(getActionListener());
     }
 
-    // TODO: This function can return an ActionListener to manage the db actions... or just null
+    /// Return an ActionListener to manage the db actions... or just null
     abstract public BaseService.ActionListener getActionListener();
 
 
