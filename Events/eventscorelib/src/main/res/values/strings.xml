@@ -82,7 +82,7 @@
     <string name="action_map">Map</string>
     <string name="checkin_error">The subscriber email doesn\'t exist.</string>
     <string name="field_required">*Required</string>
-    <string name="title_activity_subscriber">SubscriberActivity</string>
+    <string name="title_activity_subscriber">Subscriber</string>
     <string name="email_required">*Email not valid</string>
     <string name="title_base_activity_twitter">Twitter</string>
     <string name="title_fragment_tweet">Tweet</string>
@@ -91,4 +91,7 @@
     <string name="title_page_participants">Participants</string>
     <string name="title_page_speakers">Speakers</string>
     <string name="title_page_twitter">Twitter</string>
+    <string name="missing_fields">Required fields missing!</string>
+    <string name="profile_saved">Profile updated!</string>
+    <string name="title_fragment_subscriber">Profile</string>
 </resources>

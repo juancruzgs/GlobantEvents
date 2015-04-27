@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
@@ -103,6 +104,8 @@ public class BaseSubscriberFragment extends BaseFragment {
     ErrorLabelLayout mErrorLabelLayoutTwitter;
     ErrorLabelLayout mErrorLabelLayout;
     final Pattern emailPattern = Patterns.EMAIL_ADDRESS;
+    Boolean mSavePreferences;
+    LinearLayout mLayoutToFocus;
 
 
     public BaseSubscriberFragment() {
@@ -291,11 +294,12 @@ public class BaseSubscriberFragment extends BaseFragment {
         mErrorLabelLayoutOccupation = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorOccupation);
         mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCity);
         mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCountry);
+        mLayoutToFocus= (LinearLayout)rootView.findViewById(R.id.autoFocusable);
     }
 
     @Override
     public String getTitle() {
-        return null;
+        return getString(R.string.title_fragment_subscriber);
     }
 
     @Override
@@ -369,25 +373,30 @@ public class BaseSubscriberFragment extends BaseFragment {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        mLayoutToFocus.requestFocus();
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
-            Boolean savePreferences=true;
-            tintRequiredIconsAndShowError(mEditTextFirstName,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextLastName,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextPhone,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextEmail,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextTwitter, savePreferences);
-            tintRequiredIconsAndShowError(mEditTextOccupation, savePreferences);
-            tintRequiredIconsAndShowError(mEditTextCity,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextCountry,  savePreferences);
+            mSavePreferences=true;
+            tintRequiredIconsAndShowError(mEditTextFirstName);
+            tintRequiredIconsAndShowError(mEditTextLastName);
+            tintRequiredIconsAndShowError(mEditTextPhone);
+            tintRequiredIconsAndShowError(mEditTextEmail);
+            tintRequiredIconsAndShowError(mEditTextTwitter);
+            tintRequiredIconsAndShowError(mEditTextOccupation);
+            tintRequiredIconsAndShowError(mEditTextCity);
+            tintRequiredIconsAndShowError(mEditTextCountry);
 
-            if (savePreferences=true){
-                saveSubscriberPreferences();}
+            if (mSavePreferences){
+                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved),
+                        Toast.LENGTH_SHORT).show();
+                saveSubscriberPreferences();
+                getActivity().finish();
+            }
 
             else {
-                Toast.makeText(getActivity(), "Required fields missing!",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.missing_fields),
+                        Toast.LENGTH_SHORT).show();
                  }
 
             return true;
@@ -395,34 +404,32 @@ public class BaseSubscriberFragment extends BaseFragment {
 
         return super.onOptionsItemSelected(item);
     }
-    private void tintRequiredIconsAndShowError(EditText requiredField,  Boolean savePreferences){
+    private void tintRequiredIconsAndShowError(EditText requiredField){
         getIconToTint(requiredField);
-            if (requiredField==mEditTextEmail) {
-                if ((!emailPattern.matcher(mEditTextEmail.getText().toString()).matches()) && (!(requiredField.getText().toString().trim().length() == 0))){
-                    mErrorLabelLayout.setError(getResources().getString(R.string.email_required));
-                    mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
-                    DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.red_error));
-                    mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
-                    mIconToChange.setImageDrawable(mDrawableToApply);
-                    savePreferences=false;
-
-                } else{
-                    tintGrey();
-                }
-
-        } else
-            if (requiredField.getText().toString().trim().length() == 0) {
+        if (requiredField.getText().toString().trim().length() == 0) {
             mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
             mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
             DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.red_error));
             mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
             mIconToChange.setImageDrawable(mDrawableToApply);
-            savePreferences=false;
-         }
-        else{
-                tintGrey();
+            mSavePreferences=false;
         }
-    }
+        else{
+            tintGrey();}
+
+        if (requiredField==mEditTextEmail) {
+                if ((!emailPattern.matcher(mEditTextEmail.getText().toString()).matches()) && (!(requiredField.getText().toString().trim().length() == 0))) {
+                    mErrorLabelLayout.setError(getResources().getString(R.string.email_required));
+                    mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+                    DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
+                    mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
+                    mIconToChange.setImageDrawable(mDrawableToApply);
+                    mSavePreferences = false;
+                }
+            }
+
+        }
+
 
     private void tintGrey() {
         mDrawableToApply= DrawableCompat.wrap(mDrawableToApply);

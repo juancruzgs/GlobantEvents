@@ -1,10 +1,13 @@
 package com.globant.eventscorelib.baseActivities;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseSubscriberFragment;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 
 public class BaseSubscriberActivity extends BaseActivity {
 
@@ -12,6 +15,7 @@ public class BaseSubscriberActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscriber);
+        prepareToolbar();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new BaseSubscriberFragment())
@@ -19,5 +23,14 @@ public class BaseSubscriberActivity extends BaseActivity {
         }
 
     }
+
+    private void prepareToolbar() {
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (SharedPreferencesController.getUserFirstName(this)!=null){
+            getSupportActionBar().setTitle(SharedPreferencesController.getUserFirstName(this)+" "+SharedPreferencesController.getUserLastName(this));        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
 
 }
