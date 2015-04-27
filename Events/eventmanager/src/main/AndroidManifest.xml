@@ -24,7 +24,7 @@
 
         <activity
             android:name=".activities.EventsListManagerActivity"
-            android:label="@string/title_activity_events_stream"
+            android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
