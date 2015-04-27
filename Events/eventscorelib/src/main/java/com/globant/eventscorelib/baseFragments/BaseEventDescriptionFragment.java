@@ -263,7 +263,13 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        showCheckinOverlay();
+        switch (theAction){
+            case SUBSCRIBER_CHECKIN:
+                showCheckinOverlay();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
