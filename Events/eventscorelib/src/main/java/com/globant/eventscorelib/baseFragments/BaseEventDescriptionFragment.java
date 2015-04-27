@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,13 +22,14 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
 
-public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener {
+public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
 
     private static final float MAX_TEXT_SCALE_DELTA = 0.3f;
 
@@ -277,5 +279,16 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         hideUtilsAndShowContentOverlay();
         Toast.makeText(getActivity(), getString(R.string.checkin_error),Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void onPauseFragment() {
+        Log.i("asd", "onPauseFragment()");
+    }
+
+    @Override
+    public void onResumeFragment() {
+        Log.i("asd", "onResumeFragment()");
     }
 }

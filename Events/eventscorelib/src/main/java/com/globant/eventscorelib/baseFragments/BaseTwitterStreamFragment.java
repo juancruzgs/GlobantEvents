@@ -8,11 +8,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseTweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -25,7 +27,7 @@ import java.util.List;
 import twitter4j.Status;
 
 
-public class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener {
+public class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     private LayoutManagerType mCurrentLayoutManagerType;
     private RecyclerView mRecyclerView;
@@ -196,5 +198,15 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onPauseFragment() {
+        Log.i("asd", "onPauseFragment()");
+    }
+
+    @Override
+    public void onResumeFragment() {
+        Log.i("asd", "onResumeFragment()");
     }
 }

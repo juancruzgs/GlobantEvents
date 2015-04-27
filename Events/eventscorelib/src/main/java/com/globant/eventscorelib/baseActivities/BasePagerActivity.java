@@ -17,7 +17,6 @@ import java.util.List;
 abstract public class BasePagerActivity extends BaseActivity {
 
     PageAdapter pageAdapter;
-    ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +30,35 @@ abstract public class BasePagerActivity extends BaseActivity {
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
         pager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            int currentPosition = 0;
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int newPosition) {
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle)pageAdapter.getItem(newPosition);
+                fragmentToShow.onResumeFragment();
+
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle)pageAdapter.getItem(currentPosition);
+                fragmentToHide.onPauseFragment();
+
+                currentPosition = newPosition;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        //onResume first fragment
+        FragmentLifecycle fragmentToShow = (FragmentLifecycle)pageAdapter.getItem(0);
+        fragmentToShow.onResumeFragment();
+
         PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
         titleStrip.setTextColor(getResources().getColor(R.color.white));
     }
@@ -67,5 +95,12 @@ abstract public class BasePagerActivity extends BaseActivity {
         public CharSequence getPageTitle(int position) {
             return getTitlesList().get(position).toUpperCase();
         }
+    }
+
+    public interface FragmentLifecycle {
+
+        public void onPauseFragment();
+        public void onResumeFragment();
+
     }
 }

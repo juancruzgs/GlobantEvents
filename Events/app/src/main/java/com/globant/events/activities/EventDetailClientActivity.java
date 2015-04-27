@@ -1,6 +1,7 @@
 package com.globant.events.activities;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.globant.events.fragments.StreamTwitterClientFragment;
 import com.globant.events.fragments.EventDescriptionClientFragment;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EventDetailClientActivity extends BasePagerActivity {
+public class EventDetailClientActivity extends BasePagerActivity{
 
     @Override
     protected List<Fragment> getFragments() {

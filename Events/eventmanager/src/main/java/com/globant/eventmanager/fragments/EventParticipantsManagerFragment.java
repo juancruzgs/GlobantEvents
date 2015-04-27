@@ -10,10 +10,11 @@ import android.view.ViewGroup;
 
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.R;
+import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
 
-public class EventParticipantsManagerFragment extends BaseFragment {
+public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle{
 
     private static final String TAG = "EventParticipantsFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
@@ -114,5 +115,15 @@ public class EventParticipantsManagerFragment extends BaseFragment {
         for (int i = 0; i < DATASET_COUNT; i++) {
             mDataset[i] = "Hermione Granger #" + i;
         }
+    }
+
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+
     }
 }

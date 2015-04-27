@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseActivities.BaseSpeakerDetailActivity;
@@ -22,7 +24,7 @@ import java.util.List;
 /**
         * Created by agustin.gugliotta on 15/04/2015.
         */
-public class BaseSpeakersListFragment extends BaseFragment implements BaseService.ActionListener{
+public class BaseSpeakersListFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
 
     private List<Speaker> mSpeakers = new ArrayList();
 
@@ -128,5 +130,13 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         return "Speakers";
     }
 
+    @Override
+    public void onPauseFragment() {
+        Log.i("asd", "onPauseFragment()");
+    }
 
+    @Override
+    public void onResumeFragment() {
+        Log.i("asd", "onResumeFragment()");
+    }
 }
