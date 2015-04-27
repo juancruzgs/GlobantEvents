@@ -143,8 +143,8 @@ public class BaseService extends Service {
     }
     
     synchronized public void unSubscribeActor(ActionListener anActionListener){
-        if (currentSubscribers.containsKey(anActionListener)) {
-            currentSubscribers.remove(anActionListener);
+        if (anActionListener != null && currentSubscribers.containsKey(anActionListener.getBindingKey())) {
+            currentSubscribers.remove(anActionListener.getBindingKey());
         }
     }
 
