@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,7 @@ import static com.globant.eventscorelib.baseFragments.BaseFragment.TitleChangeab
 /**
  * Created by ignaciopena on 4/1/15.
  */
-public abstract class BaseActivity extends ActionBarActivity implements TitleChangeable{
+public abstract class BaseActivity extends AppCompatActivity implements TitleChangeable{
 
     BroadcastReceiver mReceiver;
     TextView mConnectionRibbon;

@@ -49,7 +49,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        showProgressOverlay("Loading Speakers");
+
     }
 
     @Override
@@ -64,15 +64,13 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
     }
 
     public BaseSpeakersListFragment() {
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+
 
     @Override
     public void setService(BaseService service) {
@@ -89,6 +87,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         int scrollPosition = 0;
         View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
+
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.speaker_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
@@ -105,9 +104,11 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         mRecyclerView.setAdapter(mAdapter);
 
         mRecyclerView.setHasFixedSize(true);
-
-        hideUtilsAndShowContentOverlay();
-
+        if (mAdapter.getItemCount() == 0){
+            showProgressOverlay();
+        } else {
+            hideUtilsAndShowContentOverlay();
+        }
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {

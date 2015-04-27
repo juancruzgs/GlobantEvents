@@ -2,6 +2,7 @@ package com.globant.eventscorelib.baseActivities;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
@@ -18,7 +19,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public abstract class BaseMapActivity extends ActionBarActivity implements OnMapReadyCallback {
+public abstract class BaseMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mGoogleMap;
     private CameraPosition mInitialCameraPosition;
