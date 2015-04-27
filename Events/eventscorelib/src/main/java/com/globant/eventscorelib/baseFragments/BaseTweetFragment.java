@@ -45,7 +45,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     public void onNewIntent(Intent intent) {
         Uri uri = intent.getData();
         if (uri != null) {
-            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri);
+            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri, getBindingKey());
         }
     }
 
@@ -78,7 +78,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         super.setService(service);
         User user = BaseApplication.getInstance().getCacheObjectsController().user;
         if (user == null) {
-            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
+            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null, getBindingKey());
         }
     }
 
@@ -99,10 +99,10 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                         InputMethodManager imm = (InputMethodManager) getActivity()
                                 .getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), 0);
-                        mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet);
+                        mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
                     }
                 } else {
-                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, null);
+                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, null, getBindingKey());
                 }
             }
         });
@@ -142,8 +142,9 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     }
 
     @Override
-    public Object getBindingKey() {
-        return null;
+    public String getBindingKey() {
+        // TODO: Return an appropriated key
+        return "BaseTweetFragment";
     }
 
     @Override
@@ -176,7 +177,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                 break;
             case TWITTER_LOADER_RESPONSE:
                 if ((Boolean) result) {
-                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
+                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null, getBindingKey());
                 }
                 break;
         }

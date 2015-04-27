@@ -39,8 +39,9 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     }
 
     @Override
-    public Object getBindingKey() {
-        return null;
+    public String getBindingKey() {
+        // TODO: Return an appropriated key
+        return "BaseTwitterStreamFragment";
     }
 
     @Override
@@ -117,7 +118,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
             @Override
             public void onRefresh() {
                 BaseApplication.getInstance().getCacheObjectsController().tweetList = null;
-                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "#GameOfThrones"); // TODO: put the event hashtag
+                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "#GameOfThrones", getBindingKey()); // TODO: put the event hashtag
             }
         });
     }
@@ -187,7 +188,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         super.setService(service);
         mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
         if (mTweetList == null) {
-            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones"); // TODO: put the event hashtag
+            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
         }
     }
 
