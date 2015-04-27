@@ -42,8 +42,9 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     @Override
-    public Object getBindingKey() {
-        return null;
+    public String getBindingKey() {
+        // TODO: Return an appropriated key
+        return "BaseSpeakersListFragment";
     }
 
     @Override
@@ -76,7 +77,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     @Override
     public void setService(BaseService service) {
         super.setService(service);
-        mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ");
+        mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
     }
 
     @Override

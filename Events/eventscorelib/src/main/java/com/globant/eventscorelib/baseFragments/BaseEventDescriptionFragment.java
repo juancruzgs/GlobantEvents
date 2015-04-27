@@ -107,7 +107,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             if (resultCode == Activity.RESULT_OK) {
                 showProgressOverlay();
                 String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
-                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId);
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId, getBindingKey());
             }
         }
     }
@@ -252,8 +252,9 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     }
 
     @Override
-    public Object getBindingKey() {
-        return null;
+    public String getBindingKey() {
+        // TODO: Return an appropriated key
+        return "BaseEventDescriptionFragment";
     }
 
     @Override
