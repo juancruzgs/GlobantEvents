@@ -6,26 +6,17 @@ import android.content.Intent;
 import android.location.Address;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.adapters.TweetListAdapter;
+import com.globant.eventscorelib.controllers.CloudDataController;
+import com.globant.eventscorelib.controllers.DatabaseController;
+import com.globant.eventscorelib.controllers.GeocoderController;
+import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
-import com.globant.eventscorelib.managers.TwitterManager;
-import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
-import com.software.shell.fab.ActionButton;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +41,7 @@ public class BaseService extends Service {
     protected DatabaseController mDatabaseController = null;
     protected CloudDataController mCloudDataController = null;
     protected GeocoderController mGeocoderController = null;
-    protected TwitterManager mTwitterManager = null;
+    protected TwitterController mTwitterController = null;
 
     /**
      * Class for clients to access.  Because we know this service always
@@ -67,7 +58,7 @@ public class BaseService extends Service {
     public void onCreate() {
         mCloudDataController = new CloudDataController();
         mGeocoderController = new GeocoderController(getBaseContext());
-        mTwitterManager = new TwitterManager();
+        mTwitterController = new TwitterController();
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -131,16 +122,16 @@ public class BaseService extends Service {
     public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS}
 
-    public TwitterManager getTwitterManager() {
-        return mTwitterManager;
+    public TwitterController getTwitterController() {
+        return mTwitterController;
     }
 
-    private HashMap<ActionListener, ActionWrapper> currentSubscribers = new HashMap<>();
+    private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
     synchronized public void subscribeActor(ActionListener anActionListener){
-        if (!currentSubscribers.containsKey(anActionListener)) {
+        if (!currentSubscribers.containsKey(anActionListener.getBindingKey())) {
             ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
-            currentSubscribers.put(anActionListener, currentSubscriber);
+            currentSubscribers.put(anActionListener.getBindingKey(), currentSubscriber);
         }
 
         if (cachedElements.containsKey(anActionListener.getBindingKey())){
@@ -152,79 +143,81 @@ public class BaseService extends Service {
     }
     
     synchronized public void unSubscribeActor(ActionListener anActionListener){
-        if (currentSubscribers.containsKey(anActionListener)) {
-            currentSubscribers.remove(anActionListener);
+        if (anActionListener != null && currentSubscribers.containsKey(anActionListener.getBindingKey())) {
+            currentSubscribers.remove(anActionListener.getBindingKey());
         }
     }
 
-    synchronized public void executeAction(final ACTIONS theAction, final Object argument) {
+    synchronized public void executeAction(final ACTIONS theAction, final Object argument, final String bindingKey) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
                 HashSet<ActionWrapper> subscribers = new HashSet<>(currentSubscribers.values());
                 for (ActionWrapper currentSubscriber : subscribers) {
-                    try {
-                        currentSubscriber.startAction(theAction);
-                        switch (theAction) {
-                            case EVENT_SPEAKERS:
-                                List<Speaker> speakers = mCloudDataController.getEventSpeakers((String) argument);
-                                currentSubscriber.finishAction(theAction, speakers);
-                                break;
-                            case EVENT_CREATE:
-                                mCloudDataController.createEvent((Event) argument);
-                                currentSubscriber.finishAction(theAction, null);
-                                break;
-                            case EVENT_DELETE:
-                                break;
-                            case EVENT_LIST:
-                                List<Event> theEvents = mCloudDataController.getEvents((boolean)argument);
-                                currentSubscriber.finishAction(theAction, theEvents);
-                                break;
-                            case EVENT_DETAIL:
-                                Event event = mCloudDataController.getEvent((String) argument);
-                                currentSubscriber.finishAction(theAction, event);
-                                break;
-                            case POSITION_ADDRESS:
-                                Address address = mGeocoderController.getAddressFromCoordinates((LatLng) argument);
-                                currentSubscriber.finishAction(theAction, address);
-                                break;
-                            case POSITION_COORDINATES:
-                                LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String) argument);
-                                currentSubscriber.finishAction(theAction, latLng);
-                                break;
-                            case GET_TWITTER_USER:
-                                User user;
-                                try {
-                                    user = mTwitterManager.getUser();
-                                } catch (Exception e) {
-                                    user = null;
-                                }
-                                currentSubscriber.finishAction(theAction, user);
-                                break;
-                            case TWEETS_LIST:
-                                List<Status> tweetList = mTwitterManager.getTweetList(getBaseContext(), (String) argument);
-                                currentSubscriber.finishAction(theAction, tweetList);
-                                break;
-                            case TWITTER_LOADER:
-                                Boolean login = mTwitterManager.loginToTwitter(getBaseContext());
-                                currentSubscriber.finishAction(theAction, login);
-                                break;
-                            case TWITTER_LOADER_RESPONSE:
-                                Boolean response = mTwitterManager.getLoginResponse((Uri) argument);
-                                currentSubscriber.finishAction(theAction, response);
-                                break;
-                            case TWEET_POST:
-                                Boolean post = mTwitterManager.publishPost((String) argument);
-                                currentSubscriber.finishAction(theAction, post);
-                                break;
-                            case SUBSCRIBER_CHECKIN:
-                                mCloudDataController.setCheckIn((String) argument, getBaseContext());
-                                currentSubscriber.finishAction(theAction, null);
-                                break;
+                    if (currentSubscriber.getBindingKey().equals(bindingKey)) {
+                        try {
+                            currentSubscriber.startAction(theAction);
+                            switch (theAction) {
+                                case EVENT_SPEAKERS:
+                                    List<Speaker> speakers = mCloudDataController.getEventSpeakers((String) argument);
+                                    currentSubscriber.finishAction(theAction, speakers);
+                                    break;
+                                case EVENT_CREATE:
+                                    mCloudDataController.createEvent((Event) argument);
+                                    currentSubscriber.finishAction(theAction, null);
+                                    break;
+                                case EVENT_DELETE:
+                                    break;
+                                case EVENT_LIST:
+                                    List<Event> theEvents = mCloudDataController.getEvents((boolean) argument);
+                                    currentSubscriber.finishAction(theAction, theEvents);
+                                    break;
+                                case EVENT_DETAIL:
+                                    Event event = mCloudDataController.getEvent((String) argument);
+                                    currentSubscriber.finishAction(theAction, event);
+                                    break;
+                                case POSITION_ADDRESS:
+                                    Address address = mGeocoderController.getAddressFromCoordinates((LatLng) argument);
+                                    currentSubscriber.finishAction(theAction, address);
+                                    break;
+                                case POSITION_COORDINATES:
+                                    LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String) argument);
+                                    currentSubscriber.finishAction(theAction, latLng);
+                                    break;
+                                case GET_TWITTER_USER:
+                                    User user;
+                                    try {
+                                        user = mTwitterController.getUser();
+                                    } catch (Exception e) {
+                                        user = null;
+                                    }
+                                    currentSubscriber.finishAction(theAction, user);
+                                    break;
+                                case TWEETS_LIST:
+                                    List<Status> tweetList = mTwitterController.getTweetList(getBaseContext(), (String) argument);
+                                    currentSubscriber.finishAction(theAction, tweetList);
+                                    break;
+                                case TWITTER_LOADER:
+                                    Boolean login = mTwitterController.loginToTwitter(getBaseContext());
+                                    currentSubscriber.finishAction(theAction, login);
+                                    break;
+                                case TWITTER_LOADER_RESPONSE:
+                                    Boolean response = mTwitterController.getLoginResponse((Uri) argument);
+                                    currentSubscriber.finishAction(theAction, response);
+                                    break;
+                                case TWEET_POST:
+                                    Boolean post = mTwitterController.publishPost((String) argument);
+                                    currentSubscriber.finishAction(theAction, post);
+                                    break;
+                                case SUBSCRIBER_CHECKIN:
+                                    mCloudDataController.setCheckIn((String) argument, getBaseContext());
+                                    currentSubscriber.finishAction(theAction, null);
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            currentSubscriber.failAction(theAction, e);
+                            Logger.e("executeAction", e);
                         }
-                    } catch (Exception e) {
-                        currentSubscriber.failAction(theAction, e);
-                        Logger.e("executeAction", e);
                     }
                 }
             }
@@ -236,7 +229,7 @@ public class BaseService extends Service {
 
     public static interface ActionListener {
         public Activity getBindingActivity();
-        public Object getBindingKey();
+        public String getBindingKey();
         public void onStartAction(ACTIONS theAction);
         public void onFinishAction(ACTIONS theAction, Object result);
         public void onFailAction(ACTIONS theAction, Exception e);
@@ -248,6 +241,8 @@ public class BaseService extends Service {
         private Activity getActivity(){return anActivity;}
 
         ActionListener theListener;
+
+        public String getBindingKey() {return theListener.getBindingKey();}
 
         public ActionWrapper(ActionListener aListener) {
             this.anActivity = aListener.getBindingActivity();

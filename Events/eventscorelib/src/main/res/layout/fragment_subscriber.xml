@@ -7,13 +7,19 @@
     android:layout_height="match_parent">
 <LinearLayout android:layout_width="match_parent"
               android:layout_height="match_parent"
-              tools:context="com.globant.eventscorelib.fragments.SubscriberFragment"
+              tools:context="com.globant.eventscorelib.baseFragments.BaseSubscriberFragment"
               android:weightSum="1"
               android:orientation="vertical"
     >
 
     <!-- TODO: Update blank fragment layout -->
-
+    <LinearLayout android:focusable="true"
+                  android:focusableInTouchMode="true"
+                  android:layout_width="0px"
+                  android:layout_height="0px"
+                  android:id="@+id/autoFocusable">
+        <requestFocus />
+    </LinearLayout>
 
     <RelativeLayout
         android:orientation="vertical"
@@ -57,9 +63,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="30dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginLeft="@dimen/margin_cards"
+                android:layout_marginRight="@dimen/margin_cards"
+                android:layout_marginBottom="@dimen/margin_cards">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -70,8 +76,8 @@
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="@dimen/margin_layout_inside_card"
+                    android:layout_marginRight="@dimen/margin_layout_inside_card"
                     android:id="@+id/first_name"
                     android:paddingBottom="8dp"
                     android:layout_weight="0.1"
@@ -84,7 +90,7 @@
                         android:src="@mipmap/ic_first_name"
                         android:layout_weight="0.1"
                         android:layout_gravity="center_vertical"/>
-                    <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                    <com.globant.eventscorelib.utils.ErrorLabelLayout
                     android:id="@+id/nameErrorLayoutFirstName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -101,7 +107,7 @@
                         android:hint="@string/edit_text_first_name_hint"
                         android:paddingTop="15dp"
                         android:background="#00000000"/>
-                    </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                    </com.globant.eventscorelib.utils.ErrorLabelLayout>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -115,8 +121,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:minHeight="56dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/margin_layout_inside_card"
+                android:layout_marginRight="@dimen/margin_layout_inside_card"
                 android:id="@+id/last_name"
                 android:layout_weight="0.1">
 
@@ -127,7 +133,7 @@
                     android:src="@mipmap/ic_last_name"
                     android:layout_weight="0.1"
                     android:layout_gravity="center_vertical"/>
-                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                <com.globant.eventscorelib.utils.ErrorLabelLayout
                     android:id="@+id/nameErrorLayoutLastName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -146,7 +152,7 @@
                     android:layout_gravity="center_vertical"
                     android:paddingTop="15dp"
                     android:background="#00000000"/>
-                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
 
             </LinearLayout>
@@ -160,9 +166,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="30dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginBottom="@dimen/margin_cards"
+                android:layout_marginLeft="@dimen/margin_cards"
+                android:layout_marginRight="@dimen/margin_cards">
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
@@ -172,8 +178,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:minHeight="56dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/margin_layout_inside_card"
+                android:layout_marginRight="@dimen/margin_layout_inside_card"
                 android:id="@+id/phone"
                 android:layout_weight="0.1">
 
@@ -184,7 +190,7 @@
                     android:src="@mipmap/ic_phone"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"/>
-                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                <com.globant.eventscorelib.utils.ErrorLabelLayout
                     android:id="@+id/nameErrorLayoutPhone"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -202,7 +208,7 @@
                     android:background="#00000000"
                     android:paddingTop="15dp"
                     android:inputType="phone"/>
-                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
             </LinearLayout>
                     <View
@@ -217,8 +223,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:minHeight="56dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/margin_layout_inside_card"
+                android:layout_marginRight="@dimen/margin_layout_inside_card"
                 android:id="@+id/email"
                 android:layout_weight="0.1">
 
@@ -229,7 +235,7 @@
                     android:src="@mipmap/ic_email"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"/>
-                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                <com.globant.eventscorelib.utils.ErrorLabelLayout
                     android:id="@+id/nameErrorLayoutEmail"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -247,7 +253,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"
                     android:paddingTop="15dp"/>
-                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
             </LinearLayout>
 
@@ -263,8 +269,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:minHeight="56dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/margin_layout_inside_card"
+                android:layout_marginRight="@dimen/margin_layout_inside_card"
                 android:id="@+id/twitter"
                 android:layout_weight="0.1">
 
@@ -275,7 +281,7 @@
                     android:src="@mipmap/ic_twitter1"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"/>
-                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                <com.globant.eventscorelib.utils.ErrorLabelLayout
                     android:id="@+id/nameErrorTwitter"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -293,7 +299,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"
                     android:paddingTop="15dp"/>
-                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
             </LinearLayout>
                 </LinearLayout>
@@ -305,9 +311,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="30dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginLeft="@dimen/margin_cards"
+                android:layout_marginRight="@dimen/margin_cards"
+                android:layout_marginBottom="@dimen/margin_cards">
 
             <LinearLayout
                     android:orientation="vertical"
@@ -318,8 +324,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:minHeight="56dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/margin_layout_inside_card"
+                android:layout_marginRight="@dimen/margin_layout_inside_card"
                 android:id="@+id/country"
                 android:layout_weight="0.1">
 
@@ -330,7 +336,7 @@
                     android:src="@mipmap/ic_country"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"/>
-                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                <com.globant.eventscorelib.utils.ErrorLabelLayout
                     android:id="@+id/nameErrorCountry"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -347,8 +353,9 @@
                     android:hint="@string/edit_text_country_hint"
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"
-                    android:paddingTop="15dp"/>
-                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                    android:paddingTop="15dp"
+                    />
+                </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
             </LinearLayout>
                 <View
@@ -363,8 +370,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:minHeight="56dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/margin_layout_inside_card"
+                android:layout_marginRight="@dimen/margin_layout_inside_card"
                 android:id="@+id/city"
                 android:layout_weight="0.1">
 
@@ -376,7 +383,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"
                     android:focusableInTouchMode="false"/>
-                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                <com.globant.eventscorelib.utils.ErrorLabelLayout
                     android:id="@+id/nameErrorCity"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -394,7 +401,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"
                     android:paddingTop="15dp"/>
-                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
 
             </LinearLayout>
@@ -405,9 +412,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="30dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginLeft="@dimen/margin_cards"
+                android:layout_marginRight="@dimen/margin_cards"
+                android:layout_marginBottom="@dimen/margin_cards">
 
             <LinearLayout
                     android:orientation="vertical"
@@ -418,8 +425,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:minHeight="56dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/margin_layout_inside_card"
+                android:layout_marginRight="@dimen/margin_layout_inside_card"
                 android:id="@+id/occupation"
                 android:layout_weight="0.1">
 
@@ -430,7 +437,7 @@
                     android:src="@mipmap/ic_occupation"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"/>
-                <com.globant.eventscorelib.baseComponents.ErrorLabelLayout
+                <com.globant.eventscorelib.utils.ErrorLabelLayout
                     android:id="@+id/nameErrorOccupation"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -448,7 +455,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="#00000000"
                     android:paddingTop="15dp"/>
-                </com.globant.eventscorelib.baseComponents.ErrorLabelLayout>
+                </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
 
             </LinearLayout>
@@ -465,8 +472,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:minHeight="56dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/margin_layout_inside_card"
+                android:layout_marginRight="@dimen/margin_layout_inside_card"
                 android:id="@+id/english"
                 android:layout_weight="0.1">
 
