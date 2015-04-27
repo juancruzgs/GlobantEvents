@@ -1,4 +1,4 @@
-package com.globant.eventscorelib.fragments;
+package com.globant.eventscorelib.baseFragments;
 
 
 import android.app.Activity;
@@ -21,16 +21,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseComponents.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.baseComponents.ErrorLabelLayout;
+import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
-
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SpeakerFragment extends BaseFragment {
+public class BaseSpeakerFragment extends BaseFragment {
 
     Bitmap mPhoto;
     ImageView mPhotoProfile;
@@ -69,7 +67,7 @@ public class SpeakerFragment extends BaseFragment {
     public static final String URI_NAME = "image/*";
 
 
-    public SpeakerFragment() {
+    public BaseSpeakerFragment() {
         // Required empty public constructor
     }
 
@@ -82,7 +80,7 @@ public class SpeakerFragment extends BaseFragment {
     public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                   Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView= inflater.inflate(R.layout.fragment_speaker, container, false);
+        View rootView= inflater.inflate(R.layout.fragment_base_speaker, container, false);
         wireUpViews(rootView);
         prepareImageButton();
         setOnFocusListeners();
@@ -288,4 +286,6 @@ public class SpeakerFragment extends BaseFragment {
             tintGrey();
         }
     }
+
+
 }
