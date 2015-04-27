@@ -19,6 +19,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.Logger;
 
 import java.util.List;
 
@@ -108,7 +109,8 @@ public class TwitterController {
                 return null;
             }
         } catch (TwitterException e) {
-             return null;
+            Logger.e("No Twitter Post", e);
+            return null;
         }
     }
 

@@ -21,7 +21,9 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -95,8 +97,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
             public void run() {
-                mScrollView.scrollTo(0, 1 );
-                mScrollView.scrollTo(0, 0 );
+                mScrollView.scrollTo(0, 1);
+                mScrollView.scrollTo(0, 0);
             }
         });
     }
@@ -245,6 +247,13 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         }
     }
 
+    private void postCheckinTweet(Event event) {
+        if (BaseApplication.getInstance().getSharedPreferencesController()
+                .isAlreadyTwitterLogged()){
+            String tweet = "I'm at " + event.getTitle() + " " + event.getHashtag();
+            mService.executeAction(BaseService.ACTIONS.TWEET_POST,tweet);
+        }
+    }
 
     @Override
     public Activity getBindingActivity() {
@@ -265,6 +274,12 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction){
             case SUBSCRIBER_CHECKIN:
+                mService.executeAction(BaseService.ACTIONS.EVENT_DETAIL, result);
+                break;
+            case EVENT_DETAIL:
+                postCheckinTweet((Event) result);
+                break;
+            case TWEET_POST:
                 showCheckinOverlay();
                 break;
             default:
