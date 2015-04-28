@@ -16,13 +16,12 @@ import com.parse.ParseRelation;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by ariel.cattaneo on 13/04/2015.
- */
+
 public class CloudDataController {
 
     public List<Event> getEvents(boolean isGlober) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        query.orderByDescending(CoreConstants.FIELD_START_DATE);
         if (!isGlober) {
             query.whereEqualTo(CoreConstants.FIELD_PUBLIC, true);
         }

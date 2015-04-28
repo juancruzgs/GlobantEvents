@@ -2,6 +2,7 @@ package com.globant.eventmanager.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
     private ActionButton mActionButton;
     private List<Event> mEventList;
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected int getFragmentLayout() {
@@ -47,8 +49,19 @@ public class EventListManagerFragment extends BaseEventListFragment {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
         wireUpFloatingButton(rootView);
         prepareRecyclerViewTouchListener(rootView);
+        prepareSwipeRefreshLayout(rootView);
         wireUpFAB(rootView);
         return rootView;
+    }
+
+    private void prepareSwipeRefreshLayout(View rootView) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_manager_swipe);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
+            }
+        });
     }
 
     private void wireUpFloatingButton(View rootView) {
@@ -56,7 +69,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     private void prepareRecyclerViewTouchListener(View rootView) {
-       mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -72,7 +85,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
             }
         });
     }
-
 
     private void wireUpFAB(View rootView) {
         mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
@@ -92,7 +104,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        showProgressOverlay();
+        mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -102,6 +114,9 @@ public class EventListManagerFragment extends BaseEventListFragment {
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
                     setAdapterRecyclerView();
+                } else {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    showErrorOverlay();
                 }
                 break;
         }
@@ -117,6 +132,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
     private void setAdapterRecyclerView() {
         EventListAdapterManager adapter = new EventListAdapterManager(mEventList, getActivity());
         mRecyclerView.setAdapter(adapter);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

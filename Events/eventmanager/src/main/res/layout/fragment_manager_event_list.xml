@@ -5,11 +5,18 @@
                 android:layout_height="match_parent"
                 tools:context=".EventsStreamActivity">
 
-    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-        android:id="@+id/event_list_recycler_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/events_manager_swipe"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+        android:layout_height="match_parent">
+
+        <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+            android:id="@+id/event_list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.software.shell.fab.ActionButton
         android:id="@+id/action_button"

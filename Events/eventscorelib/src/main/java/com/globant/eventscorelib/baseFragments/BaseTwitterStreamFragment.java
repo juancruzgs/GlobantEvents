@@ -185,28 +185,16 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onPauseFragment() {
-        Log.i("asd", "onPauseFragment()");
     }
 
     @Override
     public void onResumeFragment() {
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
-        if (mTweetList != null) {
-            setAdapterRecyclerView();
-        }
-    }
-
-    @Override
-    public void setService(BaseService service) {
-        super.setService(service);
         mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
         if (mTweetList == null) {
             mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
+        }
+        else {
+            setAdapterRecyclerView();
         }
     }
 }
