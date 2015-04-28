@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
+import com.globant.eventscorelib.utils.Logger;
 
 /**
  * Created by paula.baudo on 4/17/2015.
@@ -41,10 +42,11 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     private LinearLayout mLinearLayoutMiddleLeft;
     private TextView mTextViewNameLeft;
 
-    public final Handler mHandler = new Handler();
-    public final Runnable mRunnable = new Runnable() {
+    private final Handler mHandler = new Handler();
+    private final Runnable mRunnable = new Runnable() {
         public void run() {
             mRunnableIsRunning = true;
+            Logger.d("true");
             if ((!mScrolling) && (mBooleanIsPressed)){
                 if (mView.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
                     addTranslateAnimationPhoto(mFrameLayoutLeft, mFrameLayoutRight, mFrameLayoutHolder, true);
@@ -57,13 +59,16 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         }
     };
 
+    public Boolean getmBooleanIsPressed() {
+        return mBooleanIsPressed;
+    }
+
     public TextView getmTextViewNameLeft() {
         return mTextViewNameLeft;
     }
 
     public ParticipantsListViewHolderManager(View itemView, EventParticipantsManagerFragment fragment) {
         super(itemView);
-        //itemView.setOnLongClickListener(this);
         mFrameLayoutHolder = (FrameLayout) itemView.findViewById(R.id.relative_layout_holder);
         mTextViewNameLeft = (TextView) itemView.findViewById(R.id.text_view_participant_name_left);
         mFrameLayoutLeft = (FrameLayout) itemView.findViewById(R.id.frame_layout_left_image);
@@ -225,6 +230,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 // Execute your Runnable after 5000 milliseconds = 5 seconds.
                 mRunnableIsRunning = false;
+                Logger.d("false");
                 mView = v;
                 mHandler.postDelayed(mRunnable, 500);
                 mAnimationCancelled = false;

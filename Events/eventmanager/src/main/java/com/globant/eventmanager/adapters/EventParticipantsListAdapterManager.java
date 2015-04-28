@@ -21,6 +21,8 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
     private final Context mContext;
     private float mX;
     private EventParticipantsManagerFragment mFragment;
+    public Boolean mBooleanIsPressed;
+    public ParticipantsListViewHolderManager mParticipantsListViewHolderManager;
 
     public EventParticipantsListAdapterManager(Context context, String[] dataSet, EventParticipantsManagerFragment fragment) {
         mContext = context;
@@ -33,6 +35,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
     public ParticipantsListViewHolderManager onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(com.globant.eventmanager.R.layout.participant_row_item, parent, false);
+
         return new ParticipantsListViewHolderManager(view, mFragment);
     }
 
@@ -43,7 +46,8 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         Picasso.with(mContext).load(R.drawable.profile_pic).transform(transformation).into(holder.getImageViewParticipantLeft());
         Picasso.with(mContext).load(R.drawable.profile_pic).transform(transformation).into(holder.getImageViewParticipantRight());
         holder.getmLinearLayoutMiddle().setX(holder.getFrameLayoutWidth());
-
+        mBooleanIsPressed = holder.getmBooleanIsPressed();
+        mParticipantsListViewHolderManager = holder;
     }
 
     @Override
