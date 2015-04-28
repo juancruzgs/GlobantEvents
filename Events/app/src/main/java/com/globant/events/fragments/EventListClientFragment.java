@@ -2,6 +2,7 @@ package com.globant.events.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +20,10 @@ import com.globant.eventscorelib.domainObjects.Event;
 import java.util.List;
 
 public class EventListClientFragment extends BaseEventListFragment {
+
     private List<Event> mEventList;
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected int getFragmentLayout() {
@@ -44,7 +47,18 @@ public class EventListClientFragment extends BaseEventListFragment {
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
+        prepareSwipeRefreshLayout(rootView);
         return rootView;
+    }
+
+    private void prepareSwipeRefreshLayout(View rootView) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_client_swipe);
+        mSwipeRefreshLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
+            }
+        });
     }
 
     @Override
@@ -59,7 +73,7 @@ public class EventListClientFragment extends BaseEventListFragment {
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        showProgressOverlay();
+        mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -69,6 +83,9 @@ public class EventListClientFragment extends BaseEventListFragment {
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
                     setAdapterRecyclerView();
+                } else {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    showErrorOverlay();
                 }
                 break;
         }
@@ -84,6 +101,7 @@ public class EventListClientFragment extends BaseEventListFragment {
     private void setAdapterRecyclerView() {
         EventsListAdapterClient adapter = new EventsListAdapterClient(mEventList, getActivity());
         mRecyclerView.setAdapter(adapter);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
