@@ -163,8 +163,6 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                 }
                 hideUtilsAndShowContentOverlay();
                 break;
-            case TWITTER_LOADER:
-                break;
             case TWEET_POST:
                 if ((Boolean) result) {
                     mTweetText.setText(getActivity().getString(R.string.general_hashtag));
