@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -23,6 +24,7 @@ import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;
 
@@ -93,6 +95,18 @@ public abstract class BaseActivity extends AppCompatActivity implements TitleCha
 
     private Class<? extends BaseService> getServiceClass() {
         return ((BaseApplication)getApplication()).getServiceClass();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CoreConstants.ACTIVITY_TITLE_INTENT, mFragmentTitle.getText().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mFragmentTitle.setText(savedInstanceState.getString(CoreConstants.ACTIVITY_TITLE_INTENT));
     }
 
     @Override
@@ -208,31 +222,32 @@ public abstract class BaseActivity extends AppCompatActivity implements TitleCha
     }
 
     protected void showErrorOverlay(){
-        for (BaseFragment f : mFragments) {
-            f.showErrorOverlay();
+        for (BaseFragment fragment : mFragments) {
+            fragment.showErrorOverlay();
         }
     }
+
     protected void showErrorOverlay(String messageError){
-        for (BaseFragment f : mFragments) {
-            f.showErrorOverlay(messageError);
+        for (BaseFragment fragment : mFragments) {
+            fragment.showErrorOverlay(messageError);
         }
     }
 
     protected void showProgressOverlay(){
-        for (BaseFragment f : mFragments) {
-            f.showProgressOverlay();
+        for (BaseFragment fragment : mFragments) {
+            fragment.showProgressOverlay();
         }
     }
 
     protected void showProgressOverlay(String messageProgress){
-        for (BaseFragment f : mFragments) {
-            f.showProgressOverlay(messageProgress);
+        for (BaseFragment fragment : mFragments) {
+            fragment.showProgressOverlay(messageProgress);
         }
     }
 
     protected void hideUtilsAndShowContentOverlay(){
-        for (BaseFragment f : mFragments) {
-            f.hideUtilsAndShowContentOverlay();
+        for (BaseFragment fragment : mFragments) {
+            fragment.hideUtilsAndShowContentOverlay();
         }
     }
 
