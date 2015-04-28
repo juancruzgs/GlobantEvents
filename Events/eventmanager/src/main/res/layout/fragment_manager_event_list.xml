@@ -6,7 +6,7 @@
                 tools:context=".EventsStreamActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+        android:id="@+id/events_manager_swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
