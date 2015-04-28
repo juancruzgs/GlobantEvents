@@ -128,6 +128,13 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onResumeFragment() {
+        //mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
+
         mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
     }
 }
