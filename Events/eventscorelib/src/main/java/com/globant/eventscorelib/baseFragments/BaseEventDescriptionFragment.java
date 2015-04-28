@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +26,7 @@ import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.Logger;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -307,11 +307,11 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public void onPauseFragment() {
-        Log.i("asd", "onPauseFragment()");
+        Logger.i("onPauseFragment()");
     }
 
     @Override
     public void onResumeFragment() {
-        Log.i("asd", "onResumeFragment()");
+        Logger.i("onResumeFragment()");
     }
 }
