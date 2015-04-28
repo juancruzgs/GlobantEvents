@@ -41,6 +41,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     private Boolean mRunnableIsRunning;
     private LinearLayout mLinearLayoutMiddleLeft;
     private TextView mTextViewNameLeft;
+    private TouchListenerItem mAdapter;
 
     private final Handler mHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
@@ -67,7 +68,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         return mTextViewNameLeft;
     }
 
-    public ParticipantsListViewHolderManager(View itemView, EventParticipantsManagerFragment fragment) {
+    public ParticipantsListViewHolderManager(View itemView, EventParticipantsManagerFragment fragment, TouchListenerItem adapter) {
         super(itemView);
         mFrameLayoutHolder = (FrameLayout) itemView.findViewById(R.id.relative_layout_holder);
         mTextViewNameLeft = (TextView) itemView.findViewById(R.id.text_view_participant_name_left);
@@ -81,6 +82,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         mLinearLayoutMiddle = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle);
         mFragment = fragment;
         mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
+        mAdapter = adapter;
         itemView.setOnTouchListener(this);
 
     }
@@ -203,20 +205,6 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     }
 
 
-
-    /*@Override
-    public boolean onLongClick(View v) {
-        if (v.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
-            addTranslateAnimationPhoto(mFrameLayoutLeft,mFrameLayoutRight,mFrameLayoutHolder,true);
-            mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
-
-        }else{
-            addTranslateAnimationPhoto(mFrameLayoutRight,mFrameLayoutLeft,mFrameLayoutHolder,false);
-            mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
-        }
-        return true;
-    }*/
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         mScrolling = mFragment.getScrolling();
@@ -229,6 +217,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         } else {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 // Execute your Runnable after 5000 milliseconds = 5 seconds.
+                mAdapter.onTouchListenerItem(this);
                 mRunnableIsRunning = false;
                 Logger.d("false");
                 mView = v;
@@ -248,5 +237,9 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
             mTranslateAnimationPhoto.cancel();
         }
         mHandler.removeCallbacks(mRunnable);
+    }
+
+    public interface TouchListenerItem {
+        public void onTouchListenerItem(ParticipantsListViewHolderManager participantsListViewHolderManager);
     }
 }

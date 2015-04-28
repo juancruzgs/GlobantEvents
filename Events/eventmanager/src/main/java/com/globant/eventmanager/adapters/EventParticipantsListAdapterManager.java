@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by gonzalo.lodi on 4/16/2015.
  */
-public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<ParticipantsListViewHolderManager> {
+public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<ParticipantsListViewHolderManager> implements  ParticipantsListViewHolderManager.TouchListenerItem {
 
     private CropCircleTransformation transformation;
     private String[] mDataSet;
@@ -22,7 +22,12 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
     private float mX;
     private EventParticipantsManagerFragment mFragment;
     public Boolean mBooleanIsPressed;
-    public ParticipantsListViewHolderManager mParticipantsListViewHolderManager;
+    public ParticipantsListViewHolderManager mCurrentParticipant;
+
+    @Override
+    public void onTouchListenerItem(ParticipantsListViewHolderManager participantsListViewHolderManager) {
+        mCurrentParticipant = participantsListViewHolderManager;
+    }
 
     public EventParticipantsListAdapterManager(Context context, String[] dataSet, EventParticipantsManagerFragment fragment) {
         mContext = context;
@@ -36,7 +41,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(com.globant.eventmanager.R.layout.participant_row_item, parent, false);
 
-        return new ParticipantsListViewHolderManager(view, mFragment);
+        return new ParticipantsListViewHolderManager(view, mFragment, this);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         Picasso.with(mContext).load(R.drawable.profile_pic).transform(transformation).into(holder.getImageViewParticipantRight());
         holder.getmLinearLayoutMiddle().setX(holder.getFrameLayoutWidth());
         mBooleanIsPressed = holder.getmBooleanIsPressed();
-        mParticipantsListViewHolderManager = holder;
+
     }
 
     @Override
