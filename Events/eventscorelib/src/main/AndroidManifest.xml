@@ -10,12 +10,14 @@
         <activity
             android:name=".baseActivities.BaseTweetActivity"
             android:label="@string/title_base_activity_twitter"
-            android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="t4jsample"
                     android:scheme="oauth" />
@@ -28,6 +30,10 @@
         <activity
             android:name=".baseActivities.BaseSubscriberActivity"
             android:label="@string/title_activity_subscriber" >
+        </activity>
+        <activity
+            android:name=".baseActivities.BaseSpeakerActivity"
+            android:label="@string/title_activity_base_speaker" >
         </activity>
     </application>
 

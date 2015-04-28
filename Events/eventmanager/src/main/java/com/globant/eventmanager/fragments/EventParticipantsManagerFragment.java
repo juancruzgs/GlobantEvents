@@ -7,6 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.R;
@@ -29,6 +33,9 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     protected RecyclerView.LayoutManager mLayoutManager;
     protected String[] mDataset;
     protected Boolean scrolling = false;
+    private RelativeLayout mViewButtonsAddDeclineAll;
+    private TextView mTextViewAcceptAll;
+    private TextView mTextViewDeclineAll;
 
     public EventParticipantsManagerFragment() {
         // Required empty public constructor
@@ -60,12 +67,14 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
-
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
         mAdapter = new EventParticipantsListAdapterManager(getActivity(), mDataset, this);
         mRecyclerView.setAdapter(mAdapter);
         hideUtilsAndShowContentOverlay();
         setOnScrollListener();
+        mViewButtonsAddDeclineAll = (RelativeLayout) rootView.findViewById(R.id.relative_layout_buttons_add_and_decline);
+        mTextViewAcceptAll = (TextView) rootView.findViewById(R.id.text_view_accept_all);
+        mTextViewDeclineAll = (TextView) rootView.findViewById(R.id.text_view_decline_all);
         return rootView;
     }
 
@@ -81,6 +90,31 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         scrolling = false;
                     }
+                }
+            }
+
+            private static final int HIDE_THRESHOLD = 20;
+            private int scrolledDistance = 0;
+            private boolean controlsVisible = true;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (scrolledDistance > HIDE_THRESHOLD && controlsVisible) {
+                    //hide
+                    mViewButtonsAddDeclineAll.animate().translationY(mViewButtonsAddDeclineAll.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+                    controlsVisible = false;
+                    scrolledDistance = 0;
+                } else if (scrolledDistance < -HIDE_THRESHOLD && !controlsVisible) {
+                    //show
+                    mViewButtonsAddDeclineAll.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                    controlsVisible = true;
+                    scrolledDistance = 0;
+                }
+
+                if((controlsVisible && dy>0) || (!controlsVisible && dy<0)) {
+                    scrolledDistance += dy;
                 }
             }
         });

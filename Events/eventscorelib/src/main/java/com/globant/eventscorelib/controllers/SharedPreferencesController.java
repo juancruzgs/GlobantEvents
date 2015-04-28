@@ -13,12 +13,10 @@ public class SharedPreferencesController {
     private Context mContext;
     private SharedPreferences mSharedPreferences;
 
-
     public SharedPreferencesController(Context ctx) {
         this.mContext = ctx;
         mSharedPreferences = mContext.getSharedPreferences("Globant", Context.MODE_PRIVATE);
     }
-
 
     public static String getUserFirstName(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -148,7 +146,7 @@ public class SharedPreferencesController {
         editor.commit();
     }
 
-    public static void setUserImage(byte[] image, Context context) {                     //Converts Bytearray  into String
+    public static void setUserImage(byte[] image, Context context) { //Converts Bytearray  into String
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String encoded = Base64.encodeToString(image, Base64.DEFAULT);
@@ -195,6 +193,7 @@ public class SharedPreferencesController {
     public boolean isAlreadyTwitterLogged() {
         return mSharedPreferences.getBoolean(CoreConstants.TWITTER_IS_LOGGED_IN, false);
     }
+
 }
 
 
