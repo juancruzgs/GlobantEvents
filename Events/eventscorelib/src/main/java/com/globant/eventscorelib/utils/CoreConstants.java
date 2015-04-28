@@ -5,7 +5,6 @@ package com.globant.eventscorelib.utils;
  */
 public class CoreConstants {
 
-
     public static int ZERO = 0;
 
     //Parse
@@ -104,4 +103,7 @@ public class CoreConstants {
     public static final String SHARED_PREF_ROOT = "/data/data/";
     public static final String SHARED_PREF_FILE = "_preferences.xml";
     public static final String DONE_CLICKED="doneClicked";
+
+    //Base Activity
+    public static final String ACTIVITY_TITLE_INTENT = "ActivityTitle";
 }

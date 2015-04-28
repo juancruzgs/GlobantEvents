@@ -21,13 +21,12 @@
                 android:elevation="@dimen/elevation_event_card_row"
                 android:gravity="bottom">
 
-                <com.fmsirvent.ParallaxEverywhere.PEWImageView
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/event_logo_card_row_height"
                     android:id="@+id/event_image_view"
                     android:src="@drawable/party_image"
-                    android:scaleType="centerCrop"
-                    pew:interpolation="accelerate"/>
+                    android:scaleType="centerCrop"/>
 
                 <FrameLayout
                     android:orientation="vertical"

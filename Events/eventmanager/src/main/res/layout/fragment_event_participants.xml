@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
@@ -10,8 +10,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="android.support.v7.widget.RecyclerView"
-        android:id="@+id/event_participants_recycler_view"
-        android:layout_gravity="center" />
+        android:id="@+id/event_participants_recycler_view" />
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/globant_green"
+        android:gravity="center"
+        android:id="@+id/relative_layout_buttons_add_and_decline"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/text_view_add_all_participants"
+            android:id="@+id/text_view_accept_all"
+            style="@style/condensed_normal_small"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_marginLeft="50dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"></LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/text_view_decline_all_participants"
+            android:id="@+id/text_view_decline_all"
+            style="@style/condensed_normal_small"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="50dp" />
+
+    </RelativeLayout>
 
 
-</RelativeLayout>
+</FrameLayout>

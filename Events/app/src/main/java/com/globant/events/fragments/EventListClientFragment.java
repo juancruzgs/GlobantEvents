@@ -1,5 +1,6 @@
 package com.globant.events.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,16 +9,18 @@ import android.view.ViewGroup;
 
 import com.globant.events.adapters.EventsListAdapterClient;
 import com.globant.events.R;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
+import com.globant.eventscorelib.domainObjects.Event;
 
-/**
-* Created by paula.baudo on 4/17/2015.
-*/
+import java.util.List;
+
 public class EventListClientFragment extends BaseEventListFragment {
-    private String[] mDataset;
-    private static final int DATASET_COUNT = 60;
+    private List<Event> mEventList;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected int getFragmentLayout() {
@@ -33,29 +36,60 @@ public class EventListClientFragment extends BaseEventListFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initDataset();
-    }
-
-    @Override
     public BaseService.ActionListener getActionListener() {
-        return null;
+        return this;
     }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
-        BaseEventsListAdapter adapter = new EventsListAdapterClient(mDataset, getActivity());
-        recyclerView.setAdapter(adapter);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
         return rootView;
     }
 
-    protected void initDataset() {
-        mDataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "La Fiesta del Chorizo";
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
+    }
+
+    @Override
+    public String getBindingKey() {
+        return "EventListClientFragment";
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay();
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        switch (theAction) {
+            case EVENT_LIST:
+                mEventList = (List<Event>) result;
+                if (mEventList != null) {
+                    setAdapterRecyclerView();
+                }
+                break;
         }
+        hideUtilsAndShowContentOverlay();
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
+    }
+
+
+    private void setAdapterRecyclerView() {
+        EventsListAdapterClient adapter = new EventsListAdapterClient(mEventList, getActivity());
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
+        boolean isGlober = SharedPreferencesController.isGlober(getActivity());
+        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, isGlober, getBindingKey());
     }
 }

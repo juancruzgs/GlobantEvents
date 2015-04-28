@@ -72,14 +72,6 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     public BaseSpeakersListFragment() {
     }
 
-
-
-    @Override
-    public void setService(BaseService service) {
-        super.setService(service);
-        mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
-    }
-
     @Override
     public BaseService.ActionListener getActionListener() {
         return this;
@@ -126,8 +118,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public String getTitle() {
-        //TODO change hardcoded string
-        return "Speakers";
+        return getString(R.string.title_base_speaker_list_fragment);
     }
 
     @Override
@@ -137,6 +128,6 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onResumeFragment() {
-        Log.i("asd", "onResumeFragment()");
+        mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
     }
 }

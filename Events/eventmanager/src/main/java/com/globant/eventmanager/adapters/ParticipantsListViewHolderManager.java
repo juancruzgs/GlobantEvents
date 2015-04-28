@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
+import com.globant.eventscorelib.utils.Logger;
 
 /**
  * Created by paula.baudo on 4/17/2015.
@@ -40,11 +41,13 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     private Boolean mRunnableIsRunning;
     private LinearLayout mLinearLayoutMiddleLeft;
     private TextView mTextViewNameLeft;
+    private TouchListenerItem mAdapter;
 
     private final Handler mHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
         public void run() {
             mRunnableIsRunning = true;
+            Logger.d("true");
             if ((!mScrolling) && (mBooleanIsPressed)){
                 if (mView.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
                     addTranslateAnimationPhoto(mFrameLayoutLeft, mFrameLayoutRight, mFrameLayoutHolder, true);
@@ -57,13 +60,16 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         }
     };
 
+    public Boolean getmBooleanIsPressed() {
+        return mBooleanIsPressed;
+    }
+
     public TextView getmTextViewNameLeft() {
         return mTextViewNameLeft;
     }
 
-    public ParticipantsListViewHolderManager(View itemView, EventParticipantsManagerFragment fragment) {
+    public ParticipantsListViewHolderManager(View itemView, EventParticipantsManagerFragment fragment, TouchListenerItem adapter) {
         super(itemView);
-        //itemView.setOnLongClickListener(this);
         mFrameLayoutHolder = (FrameLayout) itemView.findViewById(R.id.relative_layout_holder);
         mTextViewNameLeft = (TextView) itemView.findViewById(R.id.text_view_participant_name_left);
         mFrameLayoutLeft = (FrameLayout) itemView.findViewById(R.id.frame_layout_left_image);
@@ -76,6 +82,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         mLinearLayoutMiddle = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle);
         mFragment = fragment;
         mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
+        mAdapter = adapter;
         itemView.setOnTouchListener(this);
 
     }
@@ -198,38 +205,21 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     }
 
 
-
-    /*@Override
-    public boolean onLongClick(View v) {
-        if (v.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
-            addTranslateAnimationPhoto(mFrameLayoutLeft,mFrameLayoutRight,mFrameLayoutHolder,true);
-            mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
-
-        }else{
-            addTranslateAnimationPhoto(mFrameLayoutRight,mFrameLayoutLeft,mFrameLayoutHolder,false);
-            mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
-        }
-        return true;
-    }*/
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         mScrolling = mFragment.getScrolling();
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (mBooleanIsPressed) {
-                mBooleanIsPressed = false;
-                mAnimationCancelled = true;
-                if (mRunnableIsRunning) {
-                    mTranslateAnimationPhoto.cancel();
-                }
-                mHandler.removeCallbacks(mRunnable);
+                cancelAnimations();
                 return true;
             }
             return false;
         } else {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 // Execute your Runnable after 5000 milliseconds = 5 seconds.
+                mAdapter.onTouchListenerItem(this);
                 mRunnableIsRunning = false;
+                Logger.d("false");
                 mView = v;
                 mHandler.postDelayed(mRunnable, 500);
                 mAnimationCancelled = false;
@@ -238,5 +228,18 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
             }
             return false;
         }
+    }
+
+    public void cancelAnimations() {
+        mBooleanIsPressed = false;
+        mAnimationCancelled = true;
+        if (mRunnableIsRunning) {
+            mTranslateAnimationPhoto.cancel();
+        }
+        mHandler.removeCallbacks(mRunnable);
+    }
+
+    public interface TouchListenerItem {
+        public void onTouchListenerItem(ParticipantsListViewHolderManager participantsListViewHolderManager);
     }
 }

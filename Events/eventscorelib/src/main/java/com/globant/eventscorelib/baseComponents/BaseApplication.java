@@ -15,7 +15,6 @@ abstract public class BaseApplication extends Application {
     private static BaseApplication ourInstance;
 
     private SharedPreferencesController mSharedPreferencesController;
-    private TwitterController mTwitterController;
     private CacheObjectsController mCacheObjectsController;
 
     abstract public Class<? extends BaseService> getServiceClass();
@@ -30,7 +29,6 @@ abstract public class BaseApplication extends Application {
         super.onCreate();
         ourInstance = this;
         Parse.initialize(this, CoreConstants.APPLICATION_ID, CoreConstants.CLIENT_KEY);
-        mTwitterController = new TwitterController();
         mSharedPreferencesController = new SharedPreferencesController(getApplicationContext());
         mCacheObjectsController = new CacheObjectsController();
     }
@@ -41,10 +39,6 @@ abstract public class BaseApplication extends Application {
 
     public CacheObjectsController getCacheObjectsController() {
         return mCacheObjectsController;
-    }
-
-    public TwitterController getTwitterController() {
-        return mTwitterController;
     }
 }
 

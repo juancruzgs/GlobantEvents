@@ -18,6 +18,7 @@
     <string name="preference_user_city">preference_user_city</string>
     <string name="preference_user_english_knowledge">preference_user_english_knowledge</string>
     <string name="preference_user_picture">preference_user_picture</string>
+    <string name="preference_user_is_glober">preference_user_is_glober</string>
     <string name="name_baudo">Paula Veronica Baudo</string>
     <string name="mail_baudo">paula.baudo@globant.com</string>
     <string name="name_burgos">David Alejandro Burgos Rodas</string>
@@ -92,6 +93,7 @@
     <string name="title_page_participants">Participants</string>
     <string name="title_page_speakers">Speakers</string>
     <string name="title_page_twitter">Twitter</string>
+    <string name="tweet_checkin">I\'m at</string>
     <string name="edit_text_title_hint">Title</string>
     <string name="edit_text_hint_name">Name</string>
     <string name="title_activity_speaker">SpeakerActivity</string>
@@ -99,5 +101,6 @@
     <string name="profile_saved">Profile updated!</string>
     <string name="title_fragment_subscriber">Profile</string>
     <string name="title_activity_base_speaker">BaseSpeakerActivity</string>
+    <string name="title_base_speaker_list_fragment">Speakers</string>
 
 </resources>

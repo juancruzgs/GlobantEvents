@@ -143,7 +143,6 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
 
     @Override
     public String getBindingKey() {
-        // TODO: Return an appropriated key
         return "BaseTweetFragment";
     }
 
@@ -162,8 +161,6 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                     changeUserInformation(user);
                 }
                 hideUtilsAndShowContentOverlay();
-                break;
-            case TWITTER_LOADER:
                 break;
             case TWEET_POST:
                 if ((Boolean) result) {
