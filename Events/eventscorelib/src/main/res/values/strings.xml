@@ -102,5 +102,6 @@
     <string name="title_fragment_subscriber">Profile</string>
     <string name="title_activity_base_speaker">BaseSpeakerActivity</string>
     <string name="title_base_speaker_list_fragment">Speakers</string>
+    <string name="simple_date_format">MM/dd/yyyy hh:mm aa z</string>
 
 </resources>

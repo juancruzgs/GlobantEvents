@@ -35,7 +35,9 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListViewHolder> {
 
@@ -58,9 +60,9 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
         byte[] eventLogo = mEventList.get(position).getEventLogo();
         if (eventLogo == null) {
-           Picasso.with(mContext).load(R.mipmap.placeholder).into(holder.getImageEvent());
+           holder.getImageEvent().setImageResource(R.mipmap.placeholder);
         } else {
-            Picasso.with(mContext).load(getImageUri(eventLogo)).into(holder.getImageEvent());
+           holder.getImageEvent().setImageBitmap(convertByteToBitmap(eventLogo));
         }
         holder.getEventTitle().setText(mEventList.get(position).getTitle());
         holder.getEventDate().setText(getDate(mEventList.get(position).getStartDate()));
@@ -69,22 +71,17 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
     }
 
     public String getDate(Date startDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
-        return calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE)
-                + " " + date.format(startDate);
+        SimpleDateFormat date = new SimpleDateFormat(mContext.getString(R.string.simple_date_format), Locale.US);
+        return  date.format(startDate);
     }
 
-    public Uri getImageUri(byte[] eventLogo) {
-        Bitmap eventImage;
+    public Bitmap convertByteToBitmap(byte[] eventLogo) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;
-        eventImage = BitmapFactory.decodeByteArray(eventLogo, 0, eventLogo.length, options);
+        Bitmap eventImage = BitmapFactory.decodeByteArray(eventLogo, 0, eventLogo.length, options);
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         eventImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(mContext.getContentResolver(), eventImage, "Title", null);
-        return Uri.parse(path);
+        return eventImage;
     }
 
 
