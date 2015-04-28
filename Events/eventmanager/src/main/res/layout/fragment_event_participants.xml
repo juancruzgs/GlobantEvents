@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:text="@string/text_view_add_all_participants"
-            android:id="@+id/text_view_add_all"
+            android:id="@+id/text_view_accept_all"
             style="@style/condensed_normal_medium"
             android:textColor="@color/white"
             android:gravity="center"
@@ -36,7 +36,7 @@
             android:orientation="horizontal"
             android:layout_width="1dp"
             android:layout_height="fill_parent"
-            android:background="@color/grey"
+            android:background="@color/white"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"></LinearLayout>
