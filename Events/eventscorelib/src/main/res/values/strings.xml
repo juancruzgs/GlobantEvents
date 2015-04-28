@@ -91,4 +91,5 @@
     <string name="title_page_participants">Participants</string>
     <string name="title_page_speakers">Speakers</string>
     <string name="title_page_twitter">Twitter</string>
+    <string name="tweet_checkin">I\'m at </string>
 </resources>

@@ -250,7 +250,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private void postCheckinTweet(Event event) {
         if (BaseApplication.getInstance().getSharedPreferencesController()
                 .isAlreadyTwitterLogged()){
-            String tweet = "I'm at " + event.getTitle() + " " + event.getHashtag();
+            String tweet = getString(R.string.tweet_checkin) + event.getTitle() + " " + event.getHashtag();
             mService.executeAction(BaseService.ACTIONS.TWEET_POST,tweet);
         }
     }
