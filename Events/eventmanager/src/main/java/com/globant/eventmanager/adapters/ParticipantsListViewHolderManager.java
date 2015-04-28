@@ -41,8 +41,8 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     private LinearLayout mLinearLayoutMiddleLeft;
     private TextView mTextViewNameLeft;
 
-    private final Handler mHandler = new Handler();
-    private final Runnable mRunnable = new Runnable() {
+    public final Handler mHandler = new Handler();
+    public final Runnable mRunnable = new Runnable() {
         public void run() {
             mRunnableIsRunning = true;
             if ((!mScrolling) && (mBooleanIsPressed)){
@@ -217,12 +217,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         mScrolling = mFragment.getScrolling();
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (mBooleanIsPressed) {
-                mBooleanIsPressed = false;
-                mAnimationCancelled = true;
-                if (mRunnableIsRunning) {
-                    mTranslateAnimationPhoto.cancel();
-                }
-                mHandler.removeCallbacks(mRunnable);
+                cancelAnimations();
                 return true;
             }
             return false;
@@ -238,5 +233,14 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
             }
             return false;
         }
+    }
+
+    public void cancelAnimations() {
+        mBooleanIsPressed = false;
+        mAnimationCancelled = true;
+        if (mRunnableIsRunning) {
+            mTranslateAnimationPhoto.cancel();
+        }
+        mHandler.removeCallbacks(mRunnable);
     }
 }
