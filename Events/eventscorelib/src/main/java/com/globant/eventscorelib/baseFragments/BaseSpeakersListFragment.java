@@ -118,8 +118,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public String getTitle() {
-        //TODO change hardcoded string
-        return "Speakers";
+        return getString(R.string.title_base_speaker_list_fragment);
     }
 
     @Override

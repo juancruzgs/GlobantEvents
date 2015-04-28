@@ -101,5 +101,6 @@
     <string name="profile_saved">Profile updated!</string>
     <string name="title_fragment_subscriber">Profile</string>
     <string name="title_activity_base_speaker">BaseSpeakerActivity</string>
+    <string name="title_base_speaker_list_fragment">Speakers</string>
 
 </resources>
