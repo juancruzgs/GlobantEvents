@@ -50,9 +50,10 @@ public class CropCircleTransformation implements Transformation {
 		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
 		canvas.drawBitmap(source, rect, rect, paint);
 
-		if (output != source) {
-			source.recycle();
-		}
+//		if (output != source) {
+//			source.recycle();
+//		}
+        source.recycle();
 
 		return output;
 	}
