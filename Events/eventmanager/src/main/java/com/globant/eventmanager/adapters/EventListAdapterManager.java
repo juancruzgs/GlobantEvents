@@ -7,13 +7,16 @@ import android.view.ViewGroup;
 
 import com.globant.eventmanager.R;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
+import com.globant.eventscorelib.domainObjects.Event;
+
+import java.util.List;
 
 public class EventListAdapterManager extends BaseEventsListAdapter {
 
     Context mContext;
 
-    public EventListAdapterManager(String[] dataSet, Context context) {
-        super(dataSet);
+    public EventListAdapterManager(List<Event> eventList, Context context) {
+        super(eventList, context);
         mContext = context;
     }
 

@@ -19,6 +19,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.nineoldandroids.view.ViewHelper;
 
@@ -26,12 +27,10 @@ import com.nineoldandroids.view.ViewHelper;
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  */
-public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks {
+public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener {
 
     private static final String TAG = "EventListFragment";
-    private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private static final int SPAN_COUNT = 2;
-//    private static final int DATASET_COUNT = 60;
+
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
@@ -40,18 +39,14 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     protected abstract int getFragmentLayout();
     protected abstract int getEventListRecyclerView();
     private ObservableRecyclerView mRecyclerView;
-//    private EventsListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-//    private String[] mDataset;
 
     public BaseEventListFragment(){
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        initDataset();
     }
 
     @Override
@@ -76,9 +71,9 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
         if (savedInstanceState != null) {
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                    .getSerializable(KEY_LAYOUT_MANAGER);
+                    .getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
-        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+        setRecyclerViewLayoutManager();
         hideUtilsAndShowContentOverlay();
         setHasOptionsMenu(true);
 
@@ -90,7 +85,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         return getString(R.string.title_fragment_events_stream);
     }
 
-    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
+    public void setRecyclerViewLayoutManager() {
         int scrollPosition = 0;
 
         if (mRecyclerView.getLayoutManager() != null) {
@@ -102,56 +97,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
-
-
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
+        savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-//    protected void initDataset() {
-//        mDataset = new String[DATASET_COUNT];
-//        for (int i = 0; i < DATASET_COUNT; i++) {
-//            mDataset[i] = "La Fiesta del Chorizo";
-//        }
-//    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_event_list_fragment, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        boolean handled = false;
-
-        if (id == R.id.action_credits) {
-            Intent intentCredits = new Intent(getActivity(), BaseCreditsActivity.class);
-            startActivity(intentCredits);
-            handled = true;
-        } else {
-            if (id == R.id.action_checkin) {
-                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                startActivityForResult(intentScan, 0);
-                handled = true;
-            } else {
-                if (id == R.id.action_profile) {
-                    Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
-                    startActivity(intentSubscriber);
-                    handled = true;
-                }
-            }
-        }
-
-        if (!handled) {
-            handled = super.onOptionsItemSelected(item);
-        }
-        return handled;
     }
 
     @Override
@@ -203,7 +154,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             ViewHelper.setAlpha(locationView, 1 - (alpha / 128));
 
             //((TextView)mRecyclerView.getChildAt(n).findViewById(R.id.event_title_text_view)).setText(String.format("%.02f", movementY) + " | " + String.format("%.02f", cardY));
-
         }
 
     }
@@ -216,5 +166,40 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_event_list_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.action_credits) {
+            Intent intentCredits = new Intent(getActivity(), BaseCreditsActivity.class);
+            startActivity(intentCredits);
+            handled = true;
+        } else {
+            if (id == R.id.action_checkin) {
+                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
+                startActivityForResult(intentScan, 0);
+                handled = true;
+            } else {
+                if (id == R.id.action_profile) {
+                    Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
+                    startActivity(intentSubscriber);
+                    handled = true;
+                }
+            }
+        }
+
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
     }
 }

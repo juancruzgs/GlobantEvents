@@ -16,19 +16,35 @@
 
 package com.globant.eventscorelib.baseAdapters;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Speaker;
+import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListViewHolder> {
 
-    private String[] mDataSet;
+    private Context mContext;
+    private List<Event> mEventList;
 
-    public BaseEventsListAdapter(String[] dataSet) {
-        mDataSet = dataSet;
+    public BaseEventsListAdapter(List<Event> eventList, Context context) {
+        mEventList = eventList;
+        mContext = context;
     }
 
     @Override
@@ -40,12 +56,41 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
 
     @Override
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
-      //  holder.getTextView().setText(mDataSet[position]);
+        byte[] eventLogo = mEventList.get(position).getEventLogo();
+        if (eventLogo == null) {
+           Picasso.with(mContext).load(R.mipmap.placeholder).into(holder.getImageEvent());
+        } else {
+            Picasso.with(mContext).load(getImageUri(eventLogo)).into(holder.getImageEvent());
+        }
+        holder.getEventTitle().setText(mEventList.get(position).getTitle());
+        holder.getEventDate().setText(getDate(mEventList.get(position).getStartDate()));
+        holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
+        holder.getShortDescriptionEvent().setText(mEventList.get(position).getShortDescription());
     }
+
+    public String getDate(Date startDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
+        return calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE)
+                + " " + date.format(startDate);
+    }
+
+    public Uri getImageUri(byte[] eventLogo) {
+        Bitmap eventImage;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = true;
+        eventImage = BitmapFactory.decodeByteArray(eventLogo, 0, eventLogo.length, options);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        eventImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(mContext.getContentResolver(), eventImage, "Title", null);
+        return Uri.parse(path);
+    }
+
 
     @Override
     public int getItemCount() {
-        return mDataSet.length;
+        return mEventList.size();
     }
 
 }
