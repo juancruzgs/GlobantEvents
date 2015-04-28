@@ -40,6 +40,7 @@ import com.software.shell.fab.ActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 
@@ -120,17 +121,24 @@ public class BaseSubscriberFragment extends BaseFragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if ((savedInstanceState != null) && (savedInstanceState.getString(CoreConstants.DONE_CLICKED) != null)) {
+        if (savedInstanceState != null) {
             {
-                doneClick();
+                if (savedInstanceState.getString(CoreConstants.DONE_CLICKED) != null)
+                    doneClick();
             }
+                Bitmap bitmapToSave=savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
+                mPhotoProfile.setImageBitmap(bitmapToSave);
         }
+
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(CoreConstants.DONE_CLICKED, mDoneClicked.toString());
+        BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
+        Bitmap bitmapToSave = drawable.getBitmap();
+        outState.putParcelable(CoreConstants.PHOTO_ROTATE,bitmapToSave);
     }
 
     private void setOnFocusListeners() {
