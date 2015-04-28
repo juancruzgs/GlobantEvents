@@ -70,6 +70,7 @@ public class TwitterController {
                 return false;
             }
         } catch (TwitterException e) {
+            Logger.e("No twitter post", e);
             return false;
         }
 

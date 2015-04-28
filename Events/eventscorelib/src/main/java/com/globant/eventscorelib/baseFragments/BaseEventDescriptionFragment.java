@@ -295,8 +295,14 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        hideUtilsAndShowContentOverlay();
-        Toast.makeText(getActivity(), getString(R.string.checkin_error),Toast.LENGTH_SHORT).show();
+        switch (theAction) {
+            case SUBSCRIBER_CHECKIN:
+                hideUtilsAndShowContentOverlay();
+                Toast.makeText(getActivity(), getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
