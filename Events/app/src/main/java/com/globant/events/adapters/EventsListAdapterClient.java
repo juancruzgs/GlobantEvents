@@ -7,15 +7,19 @@ import android.view.ViewGroup;
 
 import com.globant.events.R;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
+import com.globant.eventscorelib.domainObjects.Event;
+
+import java.util.List;
 
 /**
  * Created by paula.baudo on 4/17/2015.
  */
 public class EventsListAdapterClient extends BaseEventsListAdapter {
+
     Context mContext;
 
-    public EventsListAdapterClient(String[] dataSet, Context context) {
-        super(dataSet);
+    public EventsListAdapterClient(List<Event> eventList, Context context) {
+        super(eventList, context);
         mContext = context;
     }
 

@@ -161,6 +161,19 @@ public class SharedPreferencesController {
         return image;
     }
 
+    public static void setGlober (boolean glober, Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(context.getString(R.string.preference_user_is_glober), glober);
+        editor.commit();
+    }
+
+    public static boolean isGlober (Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean(
+                context.getString(R.string.preference_user_is_glober), false);
+    }
+
     public void setTwitterStatusResponse(String token, String tokenSecret) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(CoreConstants.TWITTER_PREF_KEY_OAUTH_TOKEN, token);

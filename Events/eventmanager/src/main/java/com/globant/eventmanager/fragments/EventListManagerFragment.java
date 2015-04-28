@@ -1,5 +1,6 @@
 package com.globant.eventmanager.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,14 +13,16 @@ import com.globant.eventmanager.R;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
+import com.globant.eventscorelib.domainObjects.Event;
 import com.software.shell.fab.ActionButton;
+
+import java.util.List;
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
     private ActionButton mActionButton;
-    private String[] mDataset;
-    ObservableRecyclerView mRecyclerView;
-    private static final int DATASET_COUNT = 10;
+    private List<Event> mEventList;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected int getFragmentLayout() {
@@ -35,14 +38,8 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initDataset();
-    }
-
-    @Override
     public BaseService.ActionListener getActionListener() {
-        return null;
+        return this;
     }
 
     @Override
@@ -55,12 +52,12 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     private void wireUpFloatingButton(View rootView) {
-        mActionButton = (ActionButton)rootView.findViewById(R.id.action_button);
+        mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
     }
 
     private void prepareRecyclerViewTouchListener(View rootView) {
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+       mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -74,16 +71,8 @@ public class EventListManagerFragment extends BaseEventListFragment {
                 }
             }
         });
-        BaseEventsListAdapter adapter = new EventListAdapterManager(mDataset, getActivity());
-        recyclerView.setAdapter(adapter);
     }
 
-    protected void initDataset() {
-        mDataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "Curso de Java";
-        }
-    }
 
     private void wireUpFAB(View rootView) {
         mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
@@ -91,5 +80,49 @@ public class EventListManagerFragment extends BaseEventListFragment {
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
     }
 
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
+    }
+
+    @Override
+    public String getBindingKey() {
+        return "EventListManagerFragment";
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay();
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        switch (theAction) {
+            case EVENT_LIST:
+                mEventList = (List<Event>) result;
+                if (mEventList != null) {
+                    setAdapterRecyclerView();
+                }
+                break;
+        }
+        hideUtilsAndShowContentOverlay();
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
+    }
+
+
+    private void setAdapterRecyclerView() {
+        EventListAdapterManager adapter = new EventListAdapterManager(mEventList, getActivity());
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
+        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
+    }
 }
 

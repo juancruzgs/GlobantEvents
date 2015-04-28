@@ -15,6 +15,7 @@ public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final TextView mEventTitle;
     private final TextView mEventDate;
     private final TextView mLocationEvent;
+    private final TextView mShortDescriptionEvent;
 
     public BaseEventsListViewHolder(final View itemView) {
         super(itemView);
@@ -22,12 +23,14 @@ public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         mEventTitle = (TextView) itemView.findViewById(R.id.event_title_text_view);
         mEventDate = (TextView) itemView.findViewById(R.id.event_date_text_view);
         mLocationEvent = (TextView) itemView.findViewById(R.id.event_location_text_view);
+        mShortDescriptionEvent = (TextView) itemView.findViewById(R.id.event_short_description_text_view);
     }
 
     private void hideSpeakersLayout(View itemView) {
         LinearLayout linearLayoutSpeakers = (LinearLayout) itemView.findViewById(R.id.speakers_layout);
         linearLayoutSpeakers.setVisibility(View.GONE);
     }
+
 
     private void showSpeakersLayout(View itemView) {
         LinearLayout linearLayoutSpeakers = (LinearLayout) itemView.findViewById(R.id.speakers_layout);
@@ -42,6 +45,8 @@ public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         speakerIcon.setImageDrawable(drawableToApply);
         speakerIcon.setImageDrawable(itemView.getResources().getDrawable(R.mipmap.ic_speaker));
     }
+    
+    // TODO JUAN DON'T DELETE THIS, PLEASE, PLEASE, PLEASE
 
     public TextView getLocationEvent() {
         return mLocationEvent;
@@ -57,5 +62,9 @@ public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
 
     public ImageView getImageEvent() {
         return mImageEvent;
+    }
+
+    public TextView getShortDescriptionEvent() {
+        return mShortDescriptionEvent;
     }
 }

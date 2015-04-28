@@ -143,7 +143,6 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
 
     @Override
     public String getBindingKey() {
-        // TODO: Return an appropriated key
         return "BaseTweetFragment";
     }
 

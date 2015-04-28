@@ -34,6 +34,16 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     private RecyclerView.LayoutManager mLayoutManager;
     private ActionButton mActionButton;
     private List<Status> mTweetList;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    public BaseTwitterStreamFragment() {
+        // Required empty public constructor
+    }
+
+    private enum LayoutManagerType {
+        GRID_LAYOUT_MANAGER,
+        LINEAR_LAYOUT_MANAGER
+    }
 
     @Override
     public Activity getBindingActivity() {
@@ -42,14 +52,13 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public String getBindingKey() {
-        // TODO: Return an appropriated key
         return "BaseTwitterStreamFragment";
     }
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
         showProgressOverlay();
-    }
+            }
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
@@ -73,17 +82,6 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         showErrorOverlay();
-    }
-
-    private enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
-    }
-
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    public BaseTwitterStreamFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -163,7 +161,6 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     public void setRecyclerViewLayoutManager() {
         int scrollPosition = 0;
-
         if (mRecyclerView.getLayoutManager() != null) {
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
@@ -174,28 +171,10 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
-//        if (mTweetList != null) {
-//            setAdapterRecyclerView();
-//        }
-    }
-
     private void setAdapterRecyclerView() {
-        BaseTweetListAdapter mAdapter = new BaseTweetListAdapter(mTweetList, getActivity());
-        mRecyclerView.setAdapter(mAdapter);
+        BaseTweetListAdapter adapter = new BaseTweetListAdapter(mTweetList, getActivity());
+        mRecyclerView.setAdapter(adapter);
         mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void setService(BaseService service) {
-        super.setService(service);
-        mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
-        if (mTweetList == null) {
-            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
-        }
     }
 
     @Override
@@ -211,6 +190,23 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onResumeFragment() {
-        Log.i("asd", "onResumeFragment()");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
+        if (mTweetList != null) {
+            setAdapterRecyclerView();
+        }
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
+        mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
+        if (mTweetList == null) {
+            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
+        }
     }
 }
