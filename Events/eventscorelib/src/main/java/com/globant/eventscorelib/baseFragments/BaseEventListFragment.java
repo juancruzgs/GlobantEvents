@@ -60,8 +60,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
             @Override
             public void run() {
-                ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0,1);
-                ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0,0);
+                mRecyclerView.smoothScrollToPosition(1);
 
             }
         });
