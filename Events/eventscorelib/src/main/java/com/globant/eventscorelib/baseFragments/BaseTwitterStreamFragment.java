@@ -178,15 +178,6 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     }
 
     @Override
-    public void setService(BaseService service) {
-        super.setService(service);
-//        mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
-//        if (mTweetList == null) {
-//            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones"); // TODO: put the event hashtag
-//        }
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
@@ -199,6 +190,20 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onResumeFragment() {
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
+        if (mTweetList != null) {
+            setAdapterRecyclerView();
+        }
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
         mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
         if (mTweetList == null) {
             mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
