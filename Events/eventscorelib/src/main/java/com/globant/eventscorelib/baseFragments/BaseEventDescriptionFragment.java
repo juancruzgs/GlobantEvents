@@ -252,8 +252,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private void postCheckinTweet(Event event) {
         if (BaseApplication.getInstance().getSharedPreferencesController()
                 .isAlreadyTwitterLogged()){
-            String tweet = getString(R.string.tweet_checkin) + event.getTitle() + " " + event.getHashtag();
-            mService.executeAction(BaseService.ACTIONS.TWEET_POST,tweet);
+            String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
+            mService.executeAction(BaseService.ACTIONS.TWEET_POST,tweet,getBindingKey());
         }
     }
 
@@ -277,7 +277,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction){
             case SUBSCRIBER_CHECKIN:
-                mService.executeAction(BaseService.ACTIONS.EVENT_DETAIL, result);
+                mService.executeAction(BaseService.ACTIONS.EVENT_DETAIL, result, getBindingKey());
                 break;
             case EVENT_DETAIL:
                 postCheckinTweet((Event) result);
@@ -295,7 +295,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         hideUtilsAndShowContentOverlay();
         Toast.makeText(getActivity(), getString(R.string.checkin_error),Toast.LENGTH_SHORT).show();
     }
-
 
     @Override
     public void onPauseFragment() {
