@@ -257,6 +257,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
                 .append(event.getTitle()).append(" ").append(event.getHashtag());
             String tweet = stringBuilder.toString();
             mService.executeAction(BaseService.ACTIONS.TWEET_POST,tweet,getBindingKey());
+        } else {
+            showCheckinOverlay();
         }
     }
 
