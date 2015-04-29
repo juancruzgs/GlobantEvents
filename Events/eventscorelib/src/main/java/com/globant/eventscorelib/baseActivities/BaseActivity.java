@@ -11,10 +11,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,22 +26,30 @@ import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;
 
-import static com.globant.eventscorelib.baseFragments.BaseFragment.TitleChangeable;
-
 /**
  * Created by ignaciopena on 4/1/15.
  */
-public abstract class BaseActivity extends AppCompatActivity implements TitleChangeable{
+public abstract class BaseActivity extends AppCompatActivity{
 
-    BroadcastReceiver mReceiver;
-    TextView mConnectionRibbon;
-    TextView mFragmentTitle;
-    Toolbar mToolbar;
+    private BroadcastReceiver mReceiver;
+    private TextView mConnectionRibbon;
+    private TextView mFragmentTitle;
     protected ArrayList<BaseFragment> mFragments = new ArrayList<>();
-
-    BaseService mService = null;
+    private BaseService mService = null;
     protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CoreConstants.ACTIVITY_TITLE_INTENT, mFragmentTitle.getText().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mFragmentTitle.setText(savedInstanceState.getString(CoreConstants.ACTIVITY_TITLE_INTENT));
+    }
 
     public BaseService getService() {
         return mService;
@@ -51,25 +57,14 @@ public abstract class BaseActivity extends AppCompatActivity implements TitleCha
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            // This is called when the connection with the service has been
-            // established, giving us the service object we can use to
-            // interact with the service.  Because we have bound to a explicit
-            // service that we know is running in our own process, we can
-            // cast its IBinder to a concrete class and directly access it.
             mService = ((BaseService.BaseBinder)service).getService();
-
             for (BaseFragment fragment : mFragments) {
                 fragment.setService(mService);
             }
         }
 
         public void onServiceDisconnected(ComponentName className) {
-            // This is called when the connection with the service has been
-            // unexpectedly disconnected -- that is, its process crashed.
-            // Because it is running in our same process, we should never
-            // see this happen.
             mService = null;
-
             for (BaseFragment fragment : mFragments) {
                 fragment.setService(null);
             }
@@ -87,26 +82,9 @@ public abstract class BaseActivity extends AppCompatActivity implements TitleCha
 
     protected void doUnbindService() {
         if (mIsBound) {
-            // Detach our existing connection.
             unbindService(mConnection);
             mIsBound = false;
         }
-    }
-
-    private Class<? extends BaseService> getServiceClass() {
-        return ((BaseApplication)getApplication()).getServiceClass();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(CoreConstants.ACTIVITY_TITLE_INTENT, mFragmentTitle.getText().toString());
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mFragmentTitle.setText(savedInstanceState.getString(CoreConstants.ACTIVITY_TITLE_INTENT));
     }
 
     @Override
@@ -116,54 +94,44 @@ public abstract class BaseActivity extends AppCompatActivity implements TitleCha
         mServiceClass = getServiceClass();
     }
 
+    private void setConnectionReceiver() {
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (isOnline(context)){
+                    mConnectionRibbon.setVisibility(View.GONE);
+                }else {
+                    mConnectionRibbon.setVisibility(View.VISIBLE);
+                }
+            }
+
+            private boolean isOnline(Context context) {
+                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                return (netInfo != null && netInfo.isConnected());
+            }
+        };
+    }
+
+    private Class<? extends BaseService> getServiceClass() {
+        return ((BaseApplication)getApplication()).getServiceClass();
+    }
+
     @Override
     public void setContentView(int layoutResID) {
         ViewGroup mainContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.activity_base, null);
         FrameLayout frameLayout = (FrameLayout) mainContainer.findViewById(R.id.container);
         ViewGroup content = (ViewGroup) getLayoutInflater().inflate(layoutResID, frameLayout, false);
         frameLayout.addView(content);
-
         mConnectionRibbon = (TextView) mainContainer.findViewById(R.id.connection_ribbon);
-
         setToolbar(mainContainer);
         super.setContentView(mainContainer);
     }
 
-    @Override
-    protected void onResume() {
-        registerReceiver(mReceiver,
-                new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-        super.onResume();
-
-        if (mServiceClass != null) {
-            if (!BaseService.isRunning) {
-                doStartService();
-            }
-            if (!mIsBound) {
-                doBindService();
-            }
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        unregisterReceiver(mReceiver);
-        super.onPause();
-
-/*
-        if (mServiceClass != null) {
-            doUnbindService();
-        }
-*/
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if (mIsBound) {
-            doUnbindService();
-        }
+    private void setToolbar(ViewGroup mainContainer) {
+        Toolbar toolbar = (Toolbar) mainContainer.findViewById(R.id.toolbar);
+        mFragmentTitle = (TextView) toolbar.findViewById(R.id.toolbar_fragment_title);
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -179,45 +147,38 @@ public abstract class BaseActivity extends AppCompatActivity implements TitleCha
         }
     }
 
-    private void setConnectionReceiver() {
-        mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (isOnline(context)){
-                    //TextView Gone
-                    mConnectionRibbon.setVisibility(View.GONE);
-                }else {
-                    //TextView Enable
-                    mConnectionRibbon.setVisibility(View.VISIBLE);
-                }
-            }
-
-            private boolean isOnline(Context context) {
-                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                return (netInfo != null && netInfo.isConnected());
-            }
-        };
-    }
-
-    private void setToolbar(ViewGroup mainContainer) {
-        mToolbar =  (Toolbar) mainContainer.findViewById(R.id.toolbar);
-        mFragmentTitle = (TextView) mToolbar.findViewById(R.id.toolbar_fragment_title);
-        setSupportActionBar(mToolbar);
-//        setActivityTitle();
-    }
-
-//    private void setActivityTitle(){
-//        String title = getActivityTitle();
-//        if (title != null && !title.isEmpty()){
-//            mToolbar.setTitle(title);
-//        }
-//    }
-
     private void setFragmentTitle(BaseFragment fragment){
         String title = fragment.getTitle();
         if (title != null && !title.isEmpty() && mFragmentTitle != null){
             mFragmentTitle.setText(title);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        registerReceiver(mReceiver, new IntentFilter(CoreConstants.INTENT_FILTER_CONNECTIVITY));
+        super.onResume();
+        if (mServiceClass != null) {
+            if (!BaseService.isRunning) {
+                doStartService();
+            }
+            if (!mIsBound) {
+                doBindService();
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mReceiver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mIsBound) {
+            doUnbindService();
         }
     }
 
@@ -251,12 +212,9 @@ public abstract class BaseActivity extends AppCompatActivity implements TitleCha
         }
     }
 
-    @Override
     public void changeFragmentTitle(String title) {
         if (title != null && mFragmentTitle != null){
              mFragmentTitle.setText(title);
         }
     }
-
-//    public abstract String getActivityTitle();
 }
