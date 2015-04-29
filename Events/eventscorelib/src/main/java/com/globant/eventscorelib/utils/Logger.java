@@ -11,4 +11,6 @@ public class Logger {
     public static void d(String message){
         Log.d(CoreConstants.LOG_TAG, message);
     }
+
+    public static void i(String message) { Log.i(CoreConstants.LOG_TAG, message); }
 }
