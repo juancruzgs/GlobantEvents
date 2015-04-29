@@ -132,6 +132,8 @@ public abstract class BaseActivity extends AppCompatActivity{
         Toolbar toolbar = (Toolbar) mainContainer.findViewById(R.id.toolbar);
         mFragmentTitle = (TextView) toolbar.findViewById(R.id.toolbar_fragment_title);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
     }
 
     @Override
