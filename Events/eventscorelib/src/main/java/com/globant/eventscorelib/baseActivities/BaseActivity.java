@@ -39,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity implements TitleCha
     TextView mConnectionRibbon;
     TextView mFragmentTitle;
     Toolbar mToolbar;
-    ArrayList<BaseFragment> mFragments = new ArrayList<>();
+    protected ArrayList<BaseFragment> mFragments = new ArrayList<>();
 
     BaseService mService = null;
     protected Class<? extends BaseService> mServiceClass;

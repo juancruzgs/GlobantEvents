@@ -153,7 +153,9 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void onPauseFragment() {
-        mAdapter.mCurrentParticipant.cancelAnimations();
+        if (mAdapter.mCurrentParticipant != null) {
+            mAdapter.mCurrentParticipant.cancelAnimations();
+        }
     }
 
     @Override
