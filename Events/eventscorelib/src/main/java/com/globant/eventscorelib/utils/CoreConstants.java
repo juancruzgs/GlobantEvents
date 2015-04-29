@@ -105,8 +105,9 @@ public class CoreConstants {
     public static final String DONE_CLICKED="doneClicked";
     public static final String PHOTO_ROTATE="photoRotate";
 
-
-
     //Base Activity
     public static final String ACTIVITY_TITLE_INTENT = "ActivityTitle";
+
+    //Pager
+    public static final String CURRENT_FRAGMENT_INTENT = "currentFragmentPosition";
 }
