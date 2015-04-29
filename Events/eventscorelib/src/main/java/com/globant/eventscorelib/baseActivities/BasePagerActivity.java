@@ -10,6 +10,7 @@ import android.view.Menu;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;
 
@@ -21,12 +22,12 @@ abstract public class BasePagerActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("asd", mCurrentFragmentPosition);
+        outState.putInt(CoreConstants.CURRENT_FRAGMENT_INTENT, mCurrentFragmentPosition);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        mCurrentFragmentPosition = savedInstanceState.getInt("asd");
+        mCurrentFragmentPosition = savedInstanceState.getInt(CoreConstants.CURRENT_FRAGMENT_INTENT);
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -35,6 +36,25 @@ abstract public class BasePagerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_pager);
         List<Fragment> fragments = getFragments();
+        prepareAdapter(fragments);
+        initialResumeFragment();
+        prepareTitleStrip();
+    }
+
+    private void prepareTitleStrip() {
+        PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
+        titleStrip.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    private void initialResumeFragment() {
+        //onResume first fragment
+        if (mCurrentFragmentPosition == 0) {
+            FragmentLifecycle fragmentToShow = (FragmentLifecycle) pageAdapter.getItem(0);
+            fragmentToShow.onResumeFragment();
+        }
+    }
+
+    private void prepareAdapter(List<Fragment> fragments) {
         pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
@@ -62,18 +82,6 @@ abstract public class BasePagerActivity extends BaseActivity {
 
             }
         });
-        //onResume first fragment
-        FragmentLifecycle fragmentToShow = (FragmentLifecycle)pageAdapter.getItem(0);
-        fragmentToShow.onResumeFragment();
-
-        PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
-        titleStrip.setTextColor(getResources().getColor(R.color.white));
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_base_pager_acivity, menu);
-        return true;
     }
 
     protected abstract List<Fragment> getFragments();

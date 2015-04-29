@@ -107,8 +107,12 @@ public class CoreConstants {
     public static final String SHARED_PREF_FILE = "_preferences.xml";
     public static final String DONE_CLICKED="done_clicked";
     public static final String PHOTO_ROTATE="photoRotate";
+
     public static final String PHOTO_TAKEN ="photo_taken";
 
     //Base Activity
     public static final String ACTIVITY_TITLE_INTENT = "ActivityTitle";
+
+    //Pager
+    public static final String CURRENT_FRAGMENT_INTENT = "currentFragmentPosition";
 }
