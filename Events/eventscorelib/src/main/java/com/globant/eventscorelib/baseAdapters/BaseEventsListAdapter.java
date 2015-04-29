@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -45,6 +46,7 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
     private List<Event> mEventList;
 
     public BaseEventsListAdapter(List<Event> eventList, Context context) {
+        eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
         mEventList = eventList;
         mContext = context;
     }
@@ -59,29 +61,43 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
     @Override
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
         byte[] eventLogo = mEventList.get(position).getEventLogo();
-        if (eventLogo == null) {
-           holder.getImageEvent().setImageResource(R.mipmap.placeholder);
-        } else {
-           holder.getImageEvent().setImageBitmap(convertByteToBitmap(eventLogo));
+        if (mEventList.get(position).getTitle().equals(CoreConstants.KEY_LAYOUT_PLACEHOLDER)){
+            holder.getEventTitle().setText(mEventList.get(position).getTitle());
+            holder.getViewGroup().setVisibility(View.INVISIBLE);
         }
-        holder.getEventTitle().setText(mEventList.get(position).getTitle());
-        holder.getEventDate().setText(getDate(mEventList.get(position).getStartDate()));
-        holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
-        holder.getShortDescriptionEvent().setText(mEventList.get(position).getShortDescription());
+        else {
+            if (holder.getViewGroup().getVisibility() == View.INVISIBLE){
+                holder.getViewGroup().setVisibility(View.VISIBLE);
+            }
+            if (eventLogo == null) {
+                Picasso.with(mContext).load(R.mipmap.placeholder).into(holder.getImageEvent());
+            } else {
+                Picasso.with(mContext).load(getImageUri(eventLogo)).into(holder.getImageEvent());
+            }
+            holder.getEventTitle().setText(mEventList.get(position).getTitle());
+            holder.getEventDate().setText(getDate(mEventList.get(position).getStartDate()));
+            holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
+            holder.getShortDescriptionEvent().setText(mEventList.get(position).getShortDescription());
+        }
     }
 
     public String getDate(Date startDate) {
-        SimpleDateFormat date = new SimpleDateFormat(mContext.getString(R.string.simple_date_format), Locale.US);
-        return  date.format(startDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
+        return calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE)
+                + " " + date.format(startDate);
     }
 
-    public Bitmap convertByteToBitmap(byte[] eventLogo) {
+    public Uri getImageUri(byte[] eventLogo) {
+        Bitmap eventImage;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;
-        Bitmap eventImage = BitmapFactory.decodeByteArray(eventLogo, 0, eventLogo.length, options);
+        eventImage = BitmapFactory.decodeByteArray(eventLogo, 0, eventLogo.length, options);
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         eventImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        return eventImage;
+        String path = MediaStore.Images.Media.insertImage(mContext.getContentResolver(), eventImage, "Title", null);
+        return Uri.parse(path);
     }
 
 

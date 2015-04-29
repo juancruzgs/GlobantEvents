@@ -88,6 +88,7 @@ public class CoreConstants {
 
     // RecyclerView
     public static final String KEY_LAYOUT_MANAGER = "layoutManager";
+    public static final String KEY_LAYOUT_PLACEHOLDER = "placeholder666";
 
     //SubscriberProfile
     public static final String SHARED_PREF_IMG = "img.jpg";

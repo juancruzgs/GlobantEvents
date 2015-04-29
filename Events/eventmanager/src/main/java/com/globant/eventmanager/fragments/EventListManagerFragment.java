@@ -8,10 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventmanager.R;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
+import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.software.shell.fab.ActionButton;
 
@@ -98,6 +101,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay();
     }
 
     @Override
@@ -114,6 +118,13 @@ public class EventListManagerFragment extends BaseEventListFragment {
                 break;
         }
         hideUtilsAndShowContentOverlay();
+        ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.smoothScrollToPosition(1);
+
+            }
+        });
     }
 
     @Override

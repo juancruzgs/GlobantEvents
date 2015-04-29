@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.globant.eventscorelib.R;
 
 public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
+    private final View mViewGroup;
     private final ImageView mImageEvent;
     private final TextView mEventTitle;
     private final TextView mEventDate;
@@ -19,6 +20,7 @@ public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
 
     public BaseEventsListViewHolder(final View itemView) {
         super(itemView);
+        mViewGroup = itemView;
         mImageEvent = (ImageView) itemView.findViewById(R.id.event_image_view);
         mEventTitle = (TextView) itemView.findViewById(R.id.event_title_text_view);
         mEventDate = (TextView) itemView.findViewById(R.id.event_date_text_view);
@@ -47,6 +49,10 @@ public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     }
     
     // TODO JUAN DON'T DELETE THIS, PLEASE, PLEASE, PLEASE
+
+    public View getViewGroup() {
+        return mViewGroup;
+    }
 
     public TextView getLocationEvent() {
         return mLocationEvent;
