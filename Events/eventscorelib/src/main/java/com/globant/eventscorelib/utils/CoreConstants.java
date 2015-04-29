@@ -86,6 +86,29 @@ public class CoreConstants {
     // RecyclerView
     public static final String KEY_LAYOUT_MANAGER = "layoutManager";
 
+    //SubscriberProfile
+    public static final String SHARED_PREF_IMG = "img.jpg";
+    public static final String IMAGE_CAPTURE = "android.media.action.IMAGE_CAPTURE";
+    public static final String IMAGE_CROP = "com.android.camera.action.CROP";
+    public static final String URI_NAME = "image/*";
+    public static final String EXTRA_CROP = "crop";
+    public static final String EXTRA_TRUE = "true";
+    public static final String EXTRA_ASPECTX = "aspectX";
+    public static final String EXTRA_ASPECTY = "aspectY";
+    public static final String EXTRA_OUTPUTX = "outputX";
+    public static final String EXTRA_OUTPUTY= "outputY";
+    public static final String EXTRA_RETURN_DATA= "return-data";
+    public static final String DATA= "data";
+    public static final String SHARED_PREF_DIR = "/shared_prefs/";
+    public static final String SHARED_PREF_ROOT = "/data/data/";
+    public static final String SHARED_PREF_FILE = "_preferences.xml";
+    public static final String DONE_CLICKED="done_clicked";
+    public static final String PHOTO_ROTATE="photoRotate";
+    public static final String PHOTO_TAKEN ="photo_taken";
+
+
+
+
     //Base Activity
     public static final String ACTIVITY_TITLE_INTENT = "ActivityTitle";
 }

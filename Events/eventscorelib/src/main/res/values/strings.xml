@@ -6,7 +6,7 @@
     <string name="title_activity_event_detail">Event</string>
     <string name="title_activity_map">Map</string>
     <string name="title_fragment_events_stream">Stream</string>
-    <string name="loading">Loading..</string>
+    <string name="loading">Loading</string>
     <string name="error_message">Oops, something failed :(</string>
     <string name="action_settings">Settings</string>
     <string name="preference_user_first_name">preference_user_first_name</string>
@@ -44,7 +44,7 @@
     <string name="action_done">Done</string>
     <string name="preference_user_twitter">preference_user_twitter</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="speaker_detail_fragment">Speaker Detail</string>
+    <string name="speaker_detail_fragment">Description</string>
     <string name="checkin_successfully">Check-in Successful</string>
     <string name="no_connection">No Connection</string>
     <string name="textView_Event_Start_Title">Starts</string>
@@ -79,7 +79,7 @@
     <string name="placeholder_twitter_username">\@username</string>
     <string name="title_activity_tweet">TweetActivity</string>
     <string name="action_profile">Profile</string>
-    <string name="title_activity_speaker_detail">SpeakerDetailActivity</string>
+    <string name="title_activity_speaker_detail">Speaker</string>
     <string name="action_map">Map</string>
     <string name="checkin_error">The subscriber email doesn\'t exist.</string>
     <string name="field_required">*Required</string>
@@ -102,5 +102,8 @@
     <string name="title_fragment_subscriber">Profile</string>
     <string name="title_activity_base_speaker">BaseSpeakerActivity</string>
     <string name="title_base_speaker_list_fragment">Speakers</string>
+    <string name="simple_date_format">MM/dd/yyyy hh:mm aa z</string>
+    <string name="missing_photo">Take a picture right now!</string>
+
 
 </resources>

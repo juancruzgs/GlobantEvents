@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseActivities.BaseSpeakerDetailActivity;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.baseAdapters.RecyclerItemClickListener;
+import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,11 +123,18 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onPauseFragment() {
-        Log.i("asd", "onPauseFragment()");
+        Logger.i("onPauseFragment()");
     }
 
     @Override
     public void onResumeFragment() {
+        //mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
+
         mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
     }
 }

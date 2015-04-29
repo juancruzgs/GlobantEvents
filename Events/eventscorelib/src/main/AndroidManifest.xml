@@ -28,10 +28,6 @@
             android:label="@string/title_activity_speaker_detail" >
         </activity>
         <activity
-            android:name=".baseActivities.BaseSubscriberActivity"
-            android:label="@string/title_activity_subscriber" >
-        </activity>
-        <activity
             android:name=".baseActivities.BaseSpeakerActivity"
             android:label="@string/title_activity_base_speaker" >
         </activity>
