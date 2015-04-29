@@ -20,8 +20,10 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 public abstract class BaseFragment extends Fragment{
 
     private LinearLayout mUtilsLayout;
+    private LinearLayout mLoadingLayout;
     private FrameLayout mContentLayout;
     private TextView mTextViewUtilsMessage;
+    private TextView mTextViewLoadingMessage;
     private ImageView mImageViewUtils;
     protected BaseService mService = null;
     private Boolean mIsCheckin;
@@ -65,11 +67,13 @@ public abstract class BaseFragment extends Fragment{
 
     private void wireUpLayouts(View rootView) {
         mUtilsLayout = (LinearLayout)rootView.findViewById(R.id.utilsPanel);
+        mLoadingLayout = (LinearLayout)rootView.findViewById(R.id.loading_panel);
         mContentLayout=(FrameLayout)rootView.findViewById(R.id.contentPanel);
     }
 
     private void wireUpViews(View rootView) {
         mTextViewUtilsMessage=(TextView)rootView.findViewById(R.id.textView_utils);
+        mTextViewLoadingMessage=(TextView)rootView.findViewById(R.id.text_view_loading);
         mImageViewUtils=(ImageView)rootView.findViewById(R.id.imageView_utils);
     }
 
@@ -87,17 +91,20 @@ public abstract class BaseFragment extends Fragment{
     }
 
     public void showProgressOverlay(){
-        mTextViewUtilsMessage.setText(getResources().getString(R.string.loading));
-        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.loading));
+//        mTextViewUtilsMessage.setText(getResources().getString(R.string.loading));
+//        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.loading));
+        mLoadingLayout.setVisibility(View.VISIBLE);
         mContentLayout.setVisibility(View.GONE);
-        mUtilsLayout.setVisibility(View.VISIBLE);
+        mUtilsLayout.setVisibility(View.GONE);
     }
 
     public void showProgressOverlay(String messageProgress){
-        mTextViewUtilsMessage.setText(messageProgress);
-        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.loading));
+//        mTextViewUtilsMessage.setText(messageProgress);
+//        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.loading));
+        mTextViewLoadingMessage.setText(messageProgress);
+        mLoadingLayout.setVisibility(View.VISIBLE);
         mContentLayout.setVisibility(View.GONE);
-        mUtilsLayout.setVisibility(View.VISIBLE);
+        mUtilsLayout.setVisibility(View.GONE);
     }
 
     public void showErrorOverlay(){
@@ -105,6 +112,7 @@ public abstract class BaseFragment extends Fragment{
         mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.error));
         mContentLayout.setVisibility(View.GONE);
         mUtilsLayout.setVisibility(View.VISIBLE);
+        mLoadingLayout.setVisibility(View.GONE);
     }
 
     public void showErrorOverlay(String messageError){
@@ -112,12 +120,14 @@ public abstract class BaseFragment extends Fragment{
         mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.error));
         mContentLayout.setVisibility(View.GONE);
         mUtilsLayout.setVisibility(View.VISIBLE);
+        mLoadingLayout.setVisibility(View.GONE);
     }
 
     public void showCheckinOverlay(){
         mTextViewUtilsMessage.setText(getResources().getString(R.string.checkin_successfully));
         mImageViewUtils.setImageDrawable(getResources().getDrawable(R.mipmap.ic_location));
         mContentLayout.setVisibility(View.GONE);
+        mLoadingLayout.setVisibility(View.GONE);
         mUtilsLayout.setVisibility(View.VISIBLE);
         mIsCheckin = true;
     }
@@ -125,6 +135,7 @@ public abstract class BaseFragment extends Fragment{
     public void hideUtilsAndShowContentOverlay(){
         mUtilsLayout.setVisibility(View.GONE);
         mContentLayout.setVisibility(View.VISIBLE);
+        mLoadingLayout.setVisibility(View.GONE);
     }
 
     public void setService(BaseService service) {
