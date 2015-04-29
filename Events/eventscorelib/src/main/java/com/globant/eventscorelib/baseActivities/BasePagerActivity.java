@@ -63,8 +63,10 @@ abstract public class BasePagerActivity extends BaseActivity {
             }
         });
         //onResume first fragment
-        FragmentLifecycle fragmentToShow = (FragmentLifecycle)pageAdapter.getItem(0);
-        fragmentToShow.onResumeFragment();
+        if (mCurrentFragmentPosition == 0) {
+            FragmentLifecycle fragmentToShow = (FragmentLifecycle) pageAdapter.getItem(0);
+            fragmentToShow.onResumeFragment();
+        }
 
         PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
         titleStrip.setTextColor(getResources().getColor(R.color.white));
