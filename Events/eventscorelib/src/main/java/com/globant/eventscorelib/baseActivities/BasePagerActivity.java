@@ -48,10 +48,10 @@ abstract public class BasePagerActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int newPosition) {
-                FragmentLifecycle fragmentToHide = (FragmentLifecycle)pageAdapter.getItem(mCurrentFragmentPosition);
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle)mFragments.get(mCurrentFragmentPosition);
                 fragmentToHide.onPauseFragment();
 
-                FragmentLifecycle fragmentToShow = (FragmentLifecycle)pageAdapter.getItem(newPosition);
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle)mFragments.get(newPosition);
                 fragmentToShow.onResumeFragment();
 
                 mCurrentFragmentPosition = newPosition;
