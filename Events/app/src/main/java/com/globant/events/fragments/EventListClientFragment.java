@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 
 import com.globant.events.adapters.EventsListAdapterClient;
 import com.globant.events.R;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
-import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
@@ -53,10 +51,11 @@ public class EventListClientFragment extends BaseEventListFragment {
 
     private void prepareSwipeRefreshLayout(View rootView) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_client_swipe);
-        mSwipeRefreshLayout.setOnClickListener(new View.OnClickListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View v) {
-                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
+            public void onRefresh() {
+                boolean isGlober = SharedPreferencesController.isGlober(getActivity());
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, isGlober, getBindingKey());
             }
         });
     }

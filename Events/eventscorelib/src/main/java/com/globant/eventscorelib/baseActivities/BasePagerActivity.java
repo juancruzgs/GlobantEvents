@@ -10,29 +10,36 @@ import android.view.Menu;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseActivities.BaseActivity;
 
 import java.util.List;
 
 abstract public class BasePagerActivity extends BaseActivity {
 
     PageAdapter pageAdapter;
+    int mCurrentFragmentPosition = 0;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("asd", mCurrentFragmentPosition);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        mCurrentFragmentPosition = savedInstanceState.getInt("asd");
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_pager);
-
         List<Fragment> fragments = getFragments();
-
         pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
-
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
         pager.setPageTransformer(true, new ZoomOutSlideTransformer());
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            int currentPosition = 0;
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -41,13 +48,13 @@ abstract public class BasePagerActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int newPosition) {
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle)pageAdapter.getItem(mCurrentFragmentPosition);
+                fragmentToHide.onPauseFragment();
+
                 FragmentLifecycle fragmentToShow = (FragmentLifecycle)pageAdapter.getItem(newPosition);
                 fragmentToShow.onResumeFragment();
 
-                FragmentLifecycle fragmentToHide = (FragmentLifecycle)pageAdapter.getItem(currentPosition);
-                fragmentToHide.onPauseFragment();
-
-                currentPosition = newPosition;
+                mCurrentFragmentPosition = newPosition;
             }
 
             @Override
