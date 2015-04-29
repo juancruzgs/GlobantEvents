@@ -53,10 +53,11 @@ public class EventListClientFragment extends BaseEventListFragment {
 
     private void prepareSwipeRefreshLayout(View rootView) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_client_swipe);
-        mSwipeRefreshLayout.setOnClickListener(new View.OnClickListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View v) {
-                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
+            public void onRefresh() {
+                boolean isGlober = SharedPreferencesController.isGlober(getActivity());
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, isGlober, getBindingKey());
             }
         });
     }
