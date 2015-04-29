@@ -33,20 +33,24 @@ public class EventListClientFragment extends BaseEventListFragment {
         return R.id.event_list_recycler_view;
     }
 
-    public EventListClientFragment() {
-    }
-
     @Override
     public BaseService.ActionListener getActionListener() {
         return this;
     }
 
+    public EventListClientFragment() {
+    }
+
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
+        prepareRecyclerView(rootView);
         prepareSwipeRefreshLayout(rootView);
         return rootView;
+    }
+
+    private void prepareRecyclerView(View rootView) {
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
@@ -56,6 +60,7 @@ public class EventListClientFragment extends BaseEventListFragment {
             public void onRefresh() {
                 boolean isGlober = SharedPreferencesController.isGlober(getActivity());
                 mService.executeAction(BaseService.ACTIONS.EVENT_LIST, isGlober, getBindingKey());
+                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
@@ -72,7 +77,6 @@ public class EventListClientFragment extends BaseEventListFragment {
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -91,12 +95,6 @@ public class EventListClientFragment extends BaseEventListFragment {
         hideUtilsAndShowContentOverlay();
     }
 
-    @Override
-    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        showErrorOverlay();
-    }
-
-
     private void setAdapterRecyclerView() {
         EventsListAdapterClient adapter = new EventsListAdapterClient(mEventList, getActivity());
         mRecyclerView.setAdapter(adapter);
@@ -104,9 +102,15 @@ public class EventListClientFragment extends BaseEventListFragment {
     }
 
     @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
+    }
+
+    @Override
     public void setService(BaseService service) {
         super.setService(service);
         boolean isGlober = SharedPreferencesController.isGlober(getActivity());
         mService.executeAction(BaseService.ACTIONS.EVENT_LIST, isGlober, getBindingKey());
+        showProgressOverlay();
     }
 }

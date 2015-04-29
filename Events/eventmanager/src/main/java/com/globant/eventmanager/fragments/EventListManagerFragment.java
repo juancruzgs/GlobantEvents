@@ -34,39 +34,24 @@ public class EventListManagerFragment extends BaseEventListFragment {
         return R.id.event_list_recycler_view;
     }
 
-    public EventListManagerFragment() {
-    }
-
     @Override
     public BaseService.ActionListener getActionListener() {
         return this;
     }
 
+    public EventListManagerFragment() {
+    }
+
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        wireUpFloatingButton(rootView);
-        prepareRecyclerViewTouchListener(rootView);
+        prepareRecyclerView(rootView);
         prepareSwipeRefreshLayout(rootView);
         wireUpFAB(rootView);
         return rootView;
     }
 
-    private void prepareSwipeRefreshLayout(View rootView) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_manager_swipe);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
-            }
-        });
-    }
-
-    private void wireUpFloatingButton(View rootView) {
-        mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
-    }
-
-    private void prepareRecyclerViewTouchListener(View rootView) {
+    private void prepareRecyclerView(View rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -80,6 +65,17 @@ public class EventListManagerFragment extends BaseEventListFragment {
                         mActionButton.show();
                     }
                 }
+            }
+        });
+    }
+
+    private void prepareSwipeRefreshLayout(View rootView) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_manager_swipe);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
+                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
@@ -102,7 +98,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -126,7 +121,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
         showErrorOverlay();
     }
 
-
     private void setAdapterRecyclerView() {
         EventListAdapterManager adapter = new EventListAdapterManager(mEventList, getActivity());
         mRecyclerView.setAdapter(adapter);
@@ -137,6 +131,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
     public void setService(BaseService service) {
         super.setService(service);
         mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
+        showProgressOverlay();
     }
 }
-
