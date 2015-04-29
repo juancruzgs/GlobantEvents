@@ -103,5 +103,7 @@
     <string name="title_activity_base_speaker">BaseSpeakerActivity</string>
     <string name="title_base_speaker_list_fragment">Speakers</string>
     <string name="simple_date_format">MM/dd/yyyy hh:mm aa z</string>
+    <string name="missing_photo">Take a picture right now!</string>
+
 
 </resources>

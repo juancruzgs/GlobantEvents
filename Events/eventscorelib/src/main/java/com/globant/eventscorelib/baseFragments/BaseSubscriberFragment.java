@@ -90,6 +90,7 @@ public class BaseSubscriberFragment extends BaseFragment {
     Boolean mSavePreferences;
     LinearLayout mLayoutToFocus;
     Boolean mDoneClicked;
+    Boolean mPhotoTaken;
 
 
     public BaseSubscriberFragment() {
@@ -112,6 +113,7 @@ public class BaseSubscriberFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_subscriber, container, false);
         wireUpViews(rootView);
         prepareImageButton();
+        mPhotoTaken=false;
         checkPreferences();
         setOnFocusListeners();
         hideUtilsAndShowContentOverlay();
@@ -123,11 +125,12 @@ public class BaseSubscriberFragment extends BaseFragment {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             {
-                if (savedInstanceState.getString(CoreConstants.DONE_CLICKED) != null)
+                if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false")))
                     doneClick();
             }
                 Bitmap bitmapToSave=savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
                 mPhotoProfile.setImageBitmap(bitmapToSave);
+                mPhotoTaken=Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
         }
 
     }
@@ -136,6 +139,7 @@ public class BaseSubscriberFragment extends BaseFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(CoreConstants.DONE_CLICKED, mDoneClicked.toString());
+        outState.putString(CoreConstants.PHOTO_TAKEN, mPhotoTaken.toString());
         BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
         Bitmap bitmapToSave = drawable.getBitmap();
         outState.putParcelable(CoreConstants.PHOTO_ROTATE,bitmapToSave);
@@ -270,7 +274,9 @@ public class BaseSubscriberFragment extends BaseFragment {
         if (value != null) {
             byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
             mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
+            mPhotoTaken=true;
         }
+
     }
 
     public void wireUpViews(View rootView) {
@@ -323,6 +329,7 @@ public class BaseSubscriberFragment extends BaseFragment {
                 // get the cropped bitmap
                 mPhoto = extras.getParcelable(CoreConstants.DATA);
                 mPhotoProfile.setImageBitmap(mPhoto);
+                mPhotoTaken=true;
 
             }
         }
@@ -389,11 +396,13 @@ public class BaseSubscriberFragment extends BaseFragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
             doneClick();
-            if (mSavePreferences) {
-                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved),
-                        Toast.LENGTH_SHORT).show();
+            if ((mSavePreferences) && (mPhotoTaken)){
+                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved),Toast.LENGTH_SHORT).show();
                 saveSubscriberPreferences();
                 getActivity().finish();
+            } else if (!(mPhotoTaken)){
+                Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo),
+                        Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_fields),
                         Toast.LENGTH_SHORT).show();
