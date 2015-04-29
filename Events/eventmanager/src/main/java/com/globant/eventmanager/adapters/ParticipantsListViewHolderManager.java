@@ -36,30 +36,34 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     private Boolean mBooleanIsPressed;
     private TranslateAnimation mTranslateAnimationPhoto;
     private TranslateAnimation mTranslateAnimationText;
-    private Boolean mAnimationCancelled;
+    private Boolean mAnimationCancelled = false;
     private View mView;
     private Boolean mRunnableIsRunning;
     private LinearLayout mLinearLayoutMiddleLeft;
     private TextView mTextViewNameLeft;
     private TouchListenerItem mAdapter;
-    //private final float mTransitionTextDistance;
-
     private final Handler mHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
         public void run() {
             mRunnableIsRunning = true;
             Logger.d("true");
             if ((!mScrolling) && (mBooleanIsPressed)){
-                if (mView.findViewById(R.id.frame_layout_left_image).getVisibility() == View.VISIBLE) {
-                    addTranslateAnimationPhoto(mFrameLayoutLeft, mFrameLayoutRight, mFrameLayoutHolder, true);
-                    addTranslateAnimationText(mLinearLayoutMiddle, mLinearLayoutMiddleLeft, mFrameLayoutHolder,true);
-                }else{
-                    addTranslateAnimationPhoto(mFrameLayoutRight, mFrameLayoutLeft, mFrameLayoutHolder, false);
-                    addTranslateAnimationText(mLinearLayoutMiddle, mLinearLayoutMiddleLeft, mFrameLayoutHolder,false);
-                }
+                startAnimations();
             }
         }
     };
+
+    public void startAnimations() {
+        if (mFrameLayoutLeft.getVisibility() == View.VISIBLE) {
+            addTranslateAnimationPhoto(mFrameLayoutLeft, mFrameLayoutRight, mFrameLayoutHolder, true);
+            addTranslateAnimationText(mLinearLayoutMiddle, mLinearLayoutMiddleLeft, mFrameLayoutHolder,true);
+        }else{
+            addTranslateAnimationPhoto(mFrameLayoutRight, mFrameLayoutLeft, mFrameLayoutHolder, false);
+            addTranslateAnimationText(mLinearLayoutMiddle, mLinearLayoutMiddleLeft, mFrameLayoutHolder,false);
+        }
+    }
+
+    public void addAllAnimation(){};
 
     public Boolean getmBooleanIsPressed() {
         return mBooleanIsPressed;

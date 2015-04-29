@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.R;
+import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -75,6 +76,18 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         mViewButtonsAddDeclineAll = (RelativeLayout) rootView.findViewById(R.id.relative_layout_buttons_add_and_decline);
         mTextViewAcceptAll = (TextView) rootView.findViewById(R.id.text_view_accept_all);
         mTextViewDeclineAll = (TextView) rootView.findViewById(R.id.text_view_decline_all);
+        View.OnClickListener addDeclineAllListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                for (int i=0; i < mRecyclerView.getChildCount(); i++ ){
+                    ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
+                    current.startAnimations();
+                }
+            }
+        };
+        mTextViewAcceptAll.setOnClickListener(addDeclineAllListener);
+        mTextViewDeclineAll.setOnClickListener(addDeclineAllListener);
         return rootView;
     }
 
