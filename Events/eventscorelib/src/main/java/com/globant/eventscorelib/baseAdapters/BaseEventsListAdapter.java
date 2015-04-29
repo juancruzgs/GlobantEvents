@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -43,6 +44,7 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
     private List<Event> mEventList;
 
     public BaseEventsListAdapter(List<Event> eventList, Context context) {
+        eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
         mEventList = eventList;
         mContext = context;
     }
@@ -57,15 +59,24 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
     @Override
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
         byte[] eventLogo = mEventList.get(position).getEventLogo();
-        if (eventLogo == null) {
-           Picasso.with(mContext).load(R.mipmap.placeholder).into(holder.getImageEvent());
-        } else {
-            Picasso.with(mContext).load(getImageUri(eventLogo)).into(holder.getImageEvent());
+        if (mEventList.get(position).getTitle().equals(CoreConstants.KEY_LAYOUT_PLACEHOLDER)){
+            holder.getEventTitle().setText(mEventList.get(position).getTitle());
+            holder.getViewGroup().setVisibility(View.INVISIBLE);
         }
-        holder.getEventTitle().setText(mEventList.get(position).getTitle());
-        holder.getEventDate().setText(getDate(mEventList.get(position).getStartDate()));
-        holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
-        holder.getShortDescriptionEvent().setText(mEventList.get(position).getShortDescription());
+        else {
+            if (holder.getViewGroup().getVisibility() == View.INVISIBLE){
+                holder.getViewGroup().setVisibility(View.VISIBLE);
+            }
+            if (eventLogo == null) {
+                Picasso.with(mContext).load(R.mipmap.placeholder).into(holder.getImageEvent());
+            } else {
+                Picasso.with(mContext).load(getImageUri(eventLogo)).into(holder.getImageEvent());
+            }
+            holder.getEventTitle().setText(mEventList.get(position).getTitle());
+            holder.getEventDate().setText(getDate(mEventList.get(position).getStartDate()));
+            holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
+            holder.getShortDescriptionEvent().setText(mEventList.get(position).getShortDescription());
+        }
     }
 
     public String getDate(Date startDate) {

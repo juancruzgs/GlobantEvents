@@ -85,6 +85,7 @@ public class CoreConstants {
 
     // RecyclerView
     public static final String KEY_LAYOUT_MANAGER = "layoutManager";
+    public static final String KEY_LAYOUT_PLACEHOLDER = "placeholder666";
 
     //Base Activity
     public static final String ACTIVITY_TITLE_INTENT = "ActivityTitle";

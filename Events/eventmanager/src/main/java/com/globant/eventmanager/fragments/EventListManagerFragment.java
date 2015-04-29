@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventmanager.R;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -106,6 +107,13 @@ public class EventListManagerFragment extends BaseEventListFragment {
                 break;
         }
         hideUtilsAndShowContentOverlay();
+        ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.smoothScrollToPosition(1);
+
+            }
+        });
     }
 
     @Override

@@ -16,9 +16,6 @@ import com.parse.ParseRelation;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by ariel.cattaneo on 13/04/2015.
- */
 public class CloudDataController {
 
     public List<Event> getEvents(boolean isGlober) throws ParseException {
