@@ -4,8 +4,6 @@
                 tools:context=".EventsStreamActivity"
     >
 
-    <!-- TODO: Update blank fragment layout -->
-
   <!--  <view
         android:layout_width="match_parent"
         android:layout_height="match_parent"
