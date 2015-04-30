@@ -4,13 +4,16 @@ import android.app.Application;
 
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
-import com.globant.eventscorelib.controllers.TwitterController;
+import twitter4j.User;
+
+import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.parse.Parse;
 
-/**
- * Created by ignaciopena on 4/1/15.
- */
+import java.util.List;
+
+import twitter4j.Status;
+
 abstract public class BaseApplication extends Application {
     private static BaseApplication ourInstance;
 
@@ -37,8 +40,29 @@ abstract public class BaseApplication extends Application {
         return mSharedPreferencesController;
     }
 
-    public CacheObjectsController getCacheObjectsController() {
-        return mCacheObjectsController;
+    public Event getEvent() {
+        return mCacheObjectsController.getEvent();
+    }
+
+    public List<Status> getTweetList () {
+        return mCacheObjectsController.getTweetList();
+    }
+
+    public User getTwitterUser () {
+        return mCacheObjectsController.getUser();
+    }
+
+    public void setEvent (Event event) {
+        mCacheObjectsController.setEvent(event);
+    }
+
+
+    public void setTweetList (List<Status> twitterList) {
+        mCacheObjectsController.setTweetList(twitterList);
+    }
+
+    public void setTwitterUser (User user) {
+        mCacheObjectsController.setUser(user);
     }
 }
 

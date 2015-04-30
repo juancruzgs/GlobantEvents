@@ -46,8 +46,6 @@ public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         speakerIcon.setImageDrawable(itemView.getResources().getDrawable(R.mipmap.ic_speaker));
     }
     
-    // TODO JUAN DON'T DELETE THIS, PLEASE, PLEASE, PLEASE
-
     public TextView getLocationEvent() {
         return mLocationEvent;
     }

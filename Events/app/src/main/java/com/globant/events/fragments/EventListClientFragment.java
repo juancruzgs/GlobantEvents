@@ -11,14 +11,15 @@ import com.globant.events.adapters.EventsListAdapterClient;
 import com.globant.events.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
-import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.baseListeners.GetEventInformation;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;
 
-public class EventListClientFragment extends BaseEventListFragment {
+public class EventListClientFragment extends BaseEventListFragment implements GetEventInformation {
     private List<Event> mEventList;
     private RecyclerView mRecyclerView;
 
@@ -54,7 +55,7 @@ public class EventListClientFragment extends BaseEventListFragment {
 
     @Override
     public String getBindingKey() {
-        return "EventListClientFragment";
+        return CoreConstants.BINDING_KEY_FRAGMENT_CLIENT_EVENT_LIST;
     }
 
     @Override
@@ -82,7 +83,7 @@ public class EventListClientFragment extends BaseEventListFragment {
 
 
     private void setAdapterRecyclerView() {
-        EventsListAdapterClient adapter = new EventsListAdapterClient(mEventList, getActivity());
+        EventsListAdapterClient adapter = new EventsListAdapterClient(mEventList, getActivity(), this);
         mRecyclerView.setAdapter(adapter);
     }
 
@@ -91,5 +92,11 @@ public class EventListClientFragment extends BaseEventListFragment {
         super.setService(service);
         boolean isGlober = SharedPreferencesController.isGlober(getActivity());
         mService.executeAction(BaseService.ACTIONS.EVENT_LIST, isGlober, getBindingKey());
+    }
+
+    @Override
+    public void getEvent(int position) {
+        Event event = mEventList.get(position);
+        BaseApplication.getInstance().setEvent(event);
     }
 }

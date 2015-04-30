@@ -52,7 +52,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public String getBindingKey() {
-        return "BaseTwitterStreamFragment";
+        return CoreConstants.BINDING_KEY_FRAGMENT_TWITTER_STREAM;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
             case TWEETS_LIST:
                 mTweetList = (List<Status>) result;
                 if (mTweetList != null) {
-                    BaseApplication.getInstance().getCacheObjectsController().tweetList = mTweetList;
+                    BaseApplication.getInstance().setTweetList(mTweetList);
                     if (getActivity() == null) return;
                     setAdapterRecyclerView();
 
@@ -86,7 +86,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return BaseTwitterStreamFragment.this;
+        return this;
     }
 
     @Override
@@ -112,8 +112,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public String getTitle() {
-        return "Twitter";
-//        return getString(R.string.title_fragment_tweets_stream);
+        return getString(R.string.title_fragment_tweets_stream);
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
@@ -121,7 +120,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                BaseApplication.getInstance().getCacheObjectsController().tweetList = null;
+                BaseApplication.getInstance().setTweetList(null);
                 mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "#GameOfThrones", getBindingKey()); // TODO: put the event hashtag
             }
         });
@@ -189,7 +188,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onResumeFragment() {
-        mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
+        mTweetList = BaseApplication.getInstance().getTweetList();
         if (mTweetList == null) {
             mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
         }

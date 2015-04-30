@@ -1,26 +1,6 @@
-/*
-* Copyright (C) 2014 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
 package com.globant.eventscorelib.baseAdapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,16 +8,10 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.domainObjects.Event;
-import com.globant.eventscorelib.domainObjects.Speaker;
-import com.squareup.picasso.Picasso;
+import com.globant.eventscorelib.utils.ConvertImage;
+import com.globant.eventscorelib.utils.CustomDateFormat;
 
-import java.io.ByteArrayOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListViewHolder> {
 
@@ -58,30 +32,17 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
 
     @Override
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
+        holder.itemView.setTag(position);
         byte[] eventLogo = mEventList.get(position).getEventLogo();
         if (eventLogo == null) {
            holder.getImageEvent().setImageResource(R.mipmap.placeholder);
         } else {
-           holder.getImageEvent().setImageBitmap(convertByteToBitmap(eventLogo));
+           holder.getImageEvent().setImageBitmap(ConvertImage.convertByteToBitmap(eventLogo));
         }
         holder.getEventTitle().setText(mEventList.get(position).getTitle());
-        holder.getEventDate().setText(getDate(mEventList.get(position).getStartDate()));
+        holder.getEventDate().setText(CustomDateFormat.getDate(mEventList.get(position).getStartDate(), mContext));
         holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
         holder.getShortDescriptionEvent().setText(mEventList.get(position).getShortDescription());
-    }
-
-    public String getDate(Date startDate) {
-        SimpleDateFormat date = new SimpleDateFormat(mContext.getString(R.string.simple_date_format), Locale.US);
-        return  date.format(startDate);
-    }
-
-    public Bitmap convertByteToBitmap(byte[] eventLogo) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inMutable = true;
-        Bitmap eventImage = BitmapFactory.decodeByteArray(eventLogo, 0, eventLogo.length, options);
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        eventImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        return eventImage;
     }
 
 
