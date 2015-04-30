@@ -208,15 +208,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             }
         }
 
-//        if (i < mFlexibleSpaceImageHeight){
-//            mTitle = "";
-//            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
-//        }
-//        else {
-//            mTitle = "La Fiesta del Chori !";
-//            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
-//        }
-
         if (i > mFlexibleSpaceImageHeight && !mTitleShown){
             mTitleShown = true;
             ((BaseActivity) getActivity()).changeFragmentTitle((String) mEventTitle.getText());
@@ -224,8 +215,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
         // Translate FAB
         int maxFabTranslationY = mFlexibleSpaceImageHeight - mFab.getHeight() / 2;
-        float fabTranslationY = ScrollUtils.getFloat( -50
-                -i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
+        float fabTranslationY = ScrollUtils.getFloat( -i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
                 mActionBarSize - mFab.getHeight() / 2,
                 maxFabTranslationY);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -240,7 +230,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             ViewHelper.setTranslationY(mFab, fabTranslationY);
         }
 
-        // Show/hide FAB
+        // Show-hide FAB
         if (fabTranslationY < mFlexibleSpaceShowFabOffset-mActionBarSize) {
             hideFab();
         } else {
