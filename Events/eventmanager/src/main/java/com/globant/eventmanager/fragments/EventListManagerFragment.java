@@ -9,18 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventmanager.R;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
-import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
+import com.globant.eventscorelib.baseListeners.GetEventInformation;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
 import java.util.List;
 
-public class EventListManagerFragment extends BaseEventListFragment {
+public class EventListManagerFragment extends BaseEventListFragment implements GetEventInformation {
 
     private ActionButton mActionButton;
     private List<Event> mEventList;
@@ -37,12 +38,12 @@ public class EventListManagerFragment extends BaseEventListFragment {
         return R.id.event_list_recycler_view;
     }
 
+    public EventListManagerFragment() {
+    }
+
     @Override
     public BaseService.ActionListener getActionListener() {
         return this;
-    }
-
-    public EventListManagerFragment() {
     }
 
     @Override
@@ -96,7 +97,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public String getBindingKey() {
-        return "EventListManagerFragment";
+        return CoreConstants.BINDING_KEY_FRAGMENT_MANAGER_EVENT_LIST;
     }
 
     @Override
@@ -133,7 +134,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     private void setAdapterRecyclerView() {
-        EventListAdapterManager adapter = new EventListAdapterManager(mEventList, getActivity());
+        EventListAdapterManager adapter = new EventListAdapterManager(mEventList, getActivity(), this);
         mRecyclerView.setAdapter(adapter);
         mSwipeRefreshLayout.setRefreshing(false);
     }
@@ -142,6 +143,12 @@ public class EventListManagerFragment extends BaseEventListFragment {
     public void setService(BaseService service) {
         super.setService(service);
         mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
+    }
+
+    @Override
+    public void getEvent(int position) {
+      Event event = mEventList.get(position);
+        BaseApplication.getInstance().setEvent(event);
         showProgressOverlay();
     }
 }
