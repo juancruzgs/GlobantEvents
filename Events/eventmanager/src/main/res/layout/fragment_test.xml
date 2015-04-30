@@ -13,8 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/imageView"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
         android:contentDescription="QR Code"
         android:layout_weight="1"/>
 

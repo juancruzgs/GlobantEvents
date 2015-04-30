@@ -1,11 +1,10 @@
 package com.globant.events.activities;
 
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
-import com.globant.events.fragments.StreamTwitterClientFragment;
-import com.globant.events.fragments.EventDescriptionClientFragment;
 import com.globant.events.R;
+import com.globant.events.fragments.EventDescriptionClientFragment;
+import com.globant.events.fragments.StreamTwitterClientFragment;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
 

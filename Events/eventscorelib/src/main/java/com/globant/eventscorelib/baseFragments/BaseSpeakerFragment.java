@@ -171,7 +171,7 @@ public class BaseSpeakerFragment extends BaseFragment {
             else {
                 tintGrey();
             }
-        };
+        }
     };
 
     private void getIconToTint(View view) {

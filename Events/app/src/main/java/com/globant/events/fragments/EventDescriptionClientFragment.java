@@ -1,11 +1,9 @@
 package com.globant.events.fragments;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.globant.events.activities.MapClientActivity;
-import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.model.LatLng;

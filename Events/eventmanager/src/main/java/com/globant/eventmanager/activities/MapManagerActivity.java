@@ -61,8 +61,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
 
     @Override
     public String getBindingKey() {
-        // TODO: Return an appropriated key
-        return "MapManagerActivity";
+        return MapManagerActivity.class.getSimpleName();
     }
 
     @Override
