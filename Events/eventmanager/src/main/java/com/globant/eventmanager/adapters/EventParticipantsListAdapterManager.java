@@ -20,8 +20,12 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
     private String[] mDataSet;
     private final Context mContext;
     private EventParticipantsManagerFragment mFragment;
-    public Boolean mBooleanIsPressed;
-    public ParticipantsListViewHolderManager mCurrentParticipant;
+
+    public ParticipantsListViewHolderManager getCurrentParticipant() {
+        return mCurrentParticipant;
+    }
+
+    private ParticipantsListViewHolderManager mCurrentParticipant;
 
     @Override
     public void onTouchListenerItem(ParticipantsListViewHolderManager participantsListViewHolderManager) {
@@ -46,13 +50,12 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
     @Override
     public void onBindViewHolder(ParticipantsListViewHolderManager holder, int position) {
         holder.getTextViewName().setText(mDataSet[position]);
-        holder.getmTextViewNameLeft().setText(mDataSet[position]);
+        holder.getTextViewNameLeft().setText(mDataSet[position]);
         //TODO Get From database
         Picasso.with(mContext).load(R.drawable.profile_pic).transform(transformation).into(holder.getImageViewParticipantLeft());
         Picasso.with(mContext).load(R.drawable.profile_pic).transform(transformation).into(holder.getImageViewParticipantRight());
-        holder.getmLinearLayoutMiddle().setX(holder.getFrameLayoutWidth());
-        mBooleanIsPressed = holder.getmBooleanIsPressed();
-
+        holder.getLinearLayoutMiddle().setX(holder.getFrameLayoutWidth());
+//        Boolean booleanIsPressed = holder.getBooleanIsPressed();
     }
 
     @Override

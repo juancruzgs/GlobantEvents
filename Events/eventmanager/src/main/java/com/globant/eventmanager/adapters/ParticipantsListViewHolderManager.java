@@ -61,11 +61,11 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         }
     };
 
-    public Boolean getmBooleanIsPressed() {
+    public Boolean getBooleanIsPressed() {
         return mBooleanIsPressed;
     }
 
-    public TextView getmTextViewNameLeft() {
+    public TextView getTextViewNameLeft() {
         return mTextViewNameLeft;
     }
 
@@ -85,14 +85,13 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
         mAdapter = adapter;
         itemView.setOnTouchListener(this);
-
     }
 
     public float getFrameLayoutWidth(){
         return mFrameLayoutLeft.getWidth();
     }
 
-    public LinearLayout getmLinearLayoutMiddle() {
+    public LinearLayout getLinearLayoutMiddle() {
         return mLinearLayoutMiddle;
     }
 
