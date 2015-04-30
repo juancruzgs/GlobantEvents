@@ -180,7 +180,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         ViewHelper.setPivotY(mEventTitle, 0);
         //ViewHelper.setScaleX(mEventTitle, scale);
         ViewHelper.setScaleY(mEventTitle, scale);
-        mEventStartDate.setText(String.format("%.02f", scale) + " | " + i +  " | " + titleHeight +  " | " + String.format("%.02f", scaleY));
+//        mEventStartDate.setText(String.format("%.02f", scale) + " | " + i +  " | " + titleHeight +  " | " + String.format("%.02f", scaleY));
 
         // Translate title text
         int maxTitleTranslationY = (int) (mFlexibleSpaceImageHeight - mEventTitle.getHeight() * scale);
