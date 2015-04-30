@@ -133,6 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         mFragmentTitle = (TextView) toolbar.findViewById(R.id.toolbar_fragment_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
     }
 
