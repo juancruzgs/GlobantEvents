@@ -1,7 +1,9 @@
 package com.globant.eventscorelib.baseFragments;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
@@ -88,7 +91,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         int scrollPosition = 0;
-        View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.speaker_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -114,9 +117,21 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        //TODO juan.ramirez,  send speaker id or speaker object from backend.
-                        Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
-                        startActivity(intentSpeakerDetail);
+                        if(Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                            ImageView cardImage = (ImageView) rootView.findViewById(R.id.image_view_profile_speaker);
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),view, "cardImage");
+                            Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
+                            intentSpeakerDetail.putExtra("speaker",mSpeakers.get(position));
+                            getActivity().startActivity(intentSpeakerDetail, options.toBundle());
+                        }
+                        else
+                        {
+                            Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
+                            intentSpeakerDetail.putExtra("speaker",mSpeakers.get(position));
+                            startActivity(intentSpeakerDetail);
+                        }
+
+
                     }
                 })
         );

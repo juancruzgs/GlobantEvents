@@ -1,7 +1,9 @@
 package com.globant.eventscorelib.domainObjects;
 
 
-public class Speaker extends BaseObject{
+import java.io.Serializable;
+
+public class Speaker extends BaseObject implements Serializable {
 
     private String mObjectID;
     private String mTitle;

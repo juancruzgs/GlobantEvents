@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -73,6 +74,9 @@ public class BaseSpeakersListAdapter extends RecyclerView.Adapter<BaseSpeakersLi
         holder.getTextViewDescription().setText(speaker.getTitle());
         Uri speaker_picture = getImageUri(position, speaker);
         Picasso.with(mContext).load(speaker_picture).transform(transformation).into(holder.getImageView());
+        if(Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+            holder.getImageView().setTransitionName(String.valueOf(position));
+        }
     }
 
     public Uri getImageUri(int position, Speaker speaker) {
@@ -86,6 +90,7 @@ public class BaseSpeakersListAdapter extends RecyclerView.Adapter<BaseSpeakersLi
         return Uri.parse(path);
     }
 
+
     @Override
     public int getItemCount() {
         return mSpeakers.size();
@@ -93,9 +98,8 @@ public class BaseSpeakersListAdapter extends RecyclerView.Adapter<BaseSpeakersLi
 
     public void addSpeaker(Speaker speaker){
         mSpeakers.add(speaker);
-
-
     }
+
 
 
 }
