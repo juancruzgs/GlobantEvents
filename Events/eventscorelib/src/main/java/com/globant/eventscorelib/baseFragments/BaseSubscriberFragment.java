@@ -32,15 +32,14 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
-import com.globant.eventscorelib.controllers.SharedPreferencesController;
-import com.globant.eventscorelib.baseComponents.BaseService;
 import com.software.shell.fab.ActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 
@@ -187,8 +186,6 @@ public class BaseSubscriberFragment extends BaseFragment {
                 mEditTextToChangeHint.setHint(mHintToReturn);
             }
         }
-
-        ;
     };
 
     private void getIconToTint(View view) {

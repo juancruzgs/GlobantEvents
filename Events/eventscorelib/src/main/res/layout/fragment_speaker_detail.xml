@@ -24,7 +24,6 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/speaker_picture"
             android:background="#82000000"
             android:padding="10dp">
             <TextView

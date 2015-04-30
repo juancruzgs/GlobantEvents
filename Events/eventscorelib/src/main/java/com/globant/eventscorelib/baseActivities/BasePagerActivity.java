@@ -1,16 +1,14 @@
 package com.globant.eventscorelib.baseActivities;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.ViewGroup;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;

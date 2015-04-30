@@ -8,17 +8,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
 import com.globant.eventscorelib.baseAdapters.BaseTweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
