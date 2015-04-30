@@ -58,10 +58,14 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         return rootView;
     }
 
-    @Override
-    public String getTitle() {
-        return getString(R.string.title_fragment_tweet);
-    }
+//    @Override
+//    public String getTitle() {
+//        return getString(R.string.title_fragment_tweet);
+//    }
+      @Override
+      public String getTitle() {
+          return "";
+}
 
     @Override
     public void onResume() {
@@ -129,6 +133,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         }
         mTweetText.setEnabled(true);
         mTweetButton.setText(getString(R.string.button_tweet));
+        mTweetButton.setTextColor(getResources().getColor(R.color.white));
     }
 
     @Override
