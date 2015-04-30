@@ -149,6 +149,5 @@ public class EventListManagerFragment extends BaseEventListFragment implements G
     public void getEvent(int position) {
       Event event = mEventList.get(position);
         BaseApplication.getInstance().setEvent(event);
-        showProgressOverlay();
     }
 }
