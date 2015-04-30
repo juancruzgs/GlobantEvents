@@ -20,7 +20,7 @@
                 android:elevation="@dimen/elevation_event_card_row"
                 android:gravity="bottom">
 
-                <ImageView
+                <com.flaviofaria.kenburnsview.KenBurnsView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/event_logo_card_row_height"
                     android:id="@+id/event_image_view"
