@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/event_title_text_view"
                     android:text="La Fiesta del Chorizo"
-                    style="@style/condensed_normal_extra_large"
+                    style="@style/condensed_normal_large"
                     android:textColor="@color/white"
                     android:paddingLeft="4dp"
                     android:gravity="center_vertical"

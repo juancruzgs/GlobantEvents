@@ -42,6 +42,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     private LinearLayout mLinearLayoutMiddleLeft;
     private TextView mTextViewNameLeft;
     private TouchListenerItem mAdapter;
+    //private final float mTransitionTextDistance;
 
     private final Handler mHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
@@ -60,17 +61,17 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         }
     };
 
-    public Boolean getmBooleanIsPressed() {
+    public Boolean getBooleanIsPressed() {
         return mBooleanIsPressed;
     }
 
-    public TextView getmTextViewNameLeft() {
+    public TextView getTextViewNameLeft() {
         return mTextViewNameLeft;
     }
 
     public ParticipantsListViewHolderManager(View itemView, EventParticipantsManagerFragment fragment, TouchListenerItem adapter) {
         super(itemView);
-        mFrameLayoutHolder = (FrameLayout) itemView.findViewById(R.id.relative_layout_holder);
+        mFrameLayoutHolder = (FrameLayout) itemView.findViewById(R.id.frame_layout_holder);
         mTextViewNameLeft = (TextView) itemView.findViewById(R.id.text_view_participant_name_left);
         mFrameLayoutLeft = (FrameLayout) itemView.findViewById(R.id.frame_layout_left_image);
         mFrameLayoutRight = (FrameLayout) itemView.findViewById(R.id.frame_layout_right_image);
@@ -84,14 +85,13 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
         mAdapter = adapter;
         itemView.setOnTouchListener(this);
-
     }
 
     public float getFrameLayoutWidth(){
         return mFrameLayoutLeft.getWidth();
     }
 
-    public LinearLayout getmLinearLayoutMiddle() {
+    public LinearLayout getLinearLayoutMiddle() {
         return mLinearLayoutMiddle;
     }
 
@@ -107,8 +107,6 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         }
         translateAnimation.setDuration(650);
         translateAnimation.setInterpolator(new DecelerateInterpolator());
-        translateAnimation.initialize(linearLayoutMiddle.getWidth(), linearLayoutMiddle.getHeight(),
-                frameLayoutHolder.getWidth(), frameLayoutHolder.getHeight());
         mTranslateAnimationText = translateAnimation;
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -120,8 +118,8 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
             public void onAnimationEnd(Animation animation) {
                 if (!mAnimationCancelled){
                     if (leftToRight){
-                        linearLayoutMiddle.setVisibility(View.INVISIBLE);
                         linearLayoutMiddleLeft.setVisibility(View.VISIBLE);
+                        linearLayoutMiddle.setVisibility(View.INVISIBLE);
                     } else{
                         linearLayoutMiddleLeft.setVisibility(View.INVISIBLE);
                         linearLayoutMiddle.setVisibility(View.VISIBLE);
@@ -168,10 +166,8 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
                     frameLayoutFrom.setVisibility(View.INVISIBLE);
                     frameLayoutTo.setVisibility(View.VISIBLE);
                     if (leftToRight) {
-                        mLinearLayoutMiddle.setX(-getFrameLayoutWidth());
                         mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#2D27D500"));
                     } else {
-                        mLinearLayoutMiddle.setX(getFrameLayoutWidth());
                         mParticipantHolderItemLayout.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
                     }
                 }

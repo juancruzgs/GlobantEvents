@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -57,14 +58,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mRecyclerView = (ObservableRecyclerView) rootView.findViewById(getEventListRecyclerView());
         mRecyclerView.setScrollViewCallbacks(this);
 
-        ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.smoothScrollToPosition(1);
-
-            }
-        });
-
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
 
@@ -74,6 +67,15 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         }
         setRecyclerViewLayoutManager();
         hideUtilsAndShowContentOverlay();
+
+        ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.smoothScrollToPosition(1);
+
+            }
+        });
+
         setHasOptionsMenu(true);
 
         return rootView;
@@ -116,45 +118,46 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onScrollChanged(int i, boolean b, boolean b2) {
 
-        float height = mRecyclerView.getChildAt(0).getHeight();
-        float childHeight = mRecyclerView.getChildAt(0).findViewById(R.id.event_title_text_view).getHeight();
+        if (mRecyclerView.getChildCount() > 0) {
+            float height = mRecyclerView.getChildAt(0).getHeight();
+            float childHeight = mRecyclerView.getChildAt(0).findViewById(R.id.event_title_text_view).getHeight();
 
-        float z = (childHeight+30) / height;
-        float movementY , movementX;
+            float z = childHeight / height;
+            float movementY, movementX;
 
-        for (int n = 0; n < mRecyclerView.getChildCount(); n++){
+            for (int n = 0; n < mRecyclerView.getChildCount(); n++) {
 
-            View cardView = mRecyclerView.getChildAt(n);
-            View titleView = mRecyclerView.getChildAt(n).findViewById(R.id.event_title_text_view);
-            View dateView = mRecyclerView.getChildAt(n).findViewById(R.id.event_date_text_view);
-            View locationView = mRecyclerView.getChildAt(n).findViewById(R.id.event_location_text_view);
+                View cardView = mRecyclerView.getChildAt(n);
+                View titleView = mRecyclerView.getChildAt(n).findViewById(R.id.event_title_text_view);
+                View dateView = mRecyclerView.getChildAt(n).findViewById(R.id.event_date_text_view);
+                View locationView = mRecyclerView.getChildAt(n).findViewById(R.id.event_location_text_view);
 
-            // Set translation movement
-            float cardY = cardView.getY();
-            movementY = ScrollUtils.getFloat( (cardY - 230) * (-z*2) , -(childHeight * 2) , 30);
-            movementX = ScrollUtils.getFloat( (cardY - 200) * (-z*2) , -(childHeight * 2) , 0);
+                // Set translation movement
+                float cardY = cardView.getY();
+                movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height/childHeight))-1)), 10);
+                movementX = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height/childHeight))-1)), 0);
 
-            // Translate Title
-            ViewHelper.setTranslationY(titleView, movementY);
-            ViewHelper.setTranslationX(titleView, (-movementX)/2.5f );
+                // Translate Title
+                ViewHelper.setTranslationY(titleView, movementY);
+                ViewHelper.setTranslationX(titleView, (-movementX) / 2.5f);
 
-            //Translate Date
-            ViewHelper.setTranslationY(dateView, movementY/2);
-            ViewHelper.setTranslationX(dateView, -(movementX*1.5f));
+                //Translate Date
+                ViewHelper.setTranslationY(dateView, movementY / 2);
+                ViewHelper.setTranslationX(dateView, -(movementX * 1.5f));
 
-            // Alpha of Date
-            float alpha = ScrollUtils.getFloat( cardY * z, 0, 255);
-            ViewHelper.setAlpha(mRecyclerView.getChildAt(n).findViewById(R.id.event_date_text_view), 1 - (alpha / 128));
+                // Alpha of Date
+                float alpha = ScrollUtils.getFloat(cardY * z, 0, 255);
+                ViewHelper.setAlpha(mRecyclerView.getChildAt(n).findViewById(R.id.event_date_text_view), 1 - (alpha / 128));
 
-            // Translate Location
-            ViewHelper.setTranslationX(locationView, -(movementX*3));
+                // Translate Location
+                ViewHelper.setTranslationX(locationView, -(movementX * 3));
 
-            //Alpha of Location
-            ViewHelper.setAlpha(locationView, 1 - (alpha / 128));
+                //Alpha of Location
+                ViewHelper.setAlpha(locationView, 1 - (alpha / 128));
 
-            //((TextView)mRecyclerView.getChildAt(n).findViewById(R.id.event_title_text_view)).setText(String.format("%.02f", movementY) + " | " + String.format("%.02f", cardY));
+                //((TextView) titleView).setText(String.format("%.02f", movementY) + " | " + String.format("%.02f", cardY) + " | " + childHeight + " | " + height);
+            }
         }
-
     }
 
     @Override

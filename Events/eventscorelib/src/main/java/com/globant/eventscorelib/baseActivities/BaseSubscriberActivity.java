@@ -1,5 +1,6 @@
 package com.globant.eventscorelib.baseActivities;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +34,10 @@ public class BaseSubscriberActivity extends BaseActivity {
             getSupportActionBar().setTitle(SharedPreferencesController.getUserFirstName(this) + " " + SharedPreferencesController.getUserLastName(this));
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setIcon( new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+
+
+
     }
 
 

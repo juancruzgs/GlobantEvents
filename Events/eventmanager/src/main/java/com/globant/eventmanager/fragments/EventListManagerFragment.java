@@ -8,18 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventmanager.R;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
-import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
+import com.globant.eventscorelib.baseListeners.GetEventInformation;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
 import java.util.List;
 
-public class EventListManagerFragment extends BaseEventListFragment {
+public class EventListManagerFragment extends BaseEventListFragment implements GetEventInformation {
 
     private ActionButton mActionButton;
     private List<Event> mEventList;
@@ -47,28 +49,13 @@ public class EventListManagerFragment extends BaseEventListFragment {
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        wireUpFloatingButton(rootView);
-        prepareRecyclerViewTouchListener(rootView);
+        prepareRecyclerView(rootView);
         prepareSwipeRefreshLayout(rootView);
         wireUpFAB(rootView);
         return rootView;
     }
 
-    private void prepareSwipeRefreshLayout(View rootView) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_manager_swipe);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
-            }
-        });
-    }
-
-    private void wireUpFloatingButton(View rootView) {
-        mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
-    }
-
-    private void prepareRecyclerViewTouchListener(View rootView) {
+    private void prepareRecyclerView(View rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -86,6 +73,17 @@ public class EventListManagerFragment extends BaseEventListFragment {
         });
     }
 
+    private void prepareSwipeRefreshLayout(View rootView) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_manager_swipe);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+    }
+
     private void wireUpFAB(View rootView) {
         mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
@@ -99,12 +97,12 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public String getBindingKey() {
-        return "EventListManagerFragment";
+        return CoreConstants.BINDING_KEY_FRAGMENT_MANAGER_EVENT_LIST;
     }
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        mSwipeRefreshLayout.setRefreshing(true);
+        showProgressOverlay();
     }
 
     @Override
@@ -121,6 +119,13 @@ public class EventListManagerFragment extends BaseEventListFragment {
                 break;
         }
         hideUtilsAndShowContentOverlay();
+        ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.smoothScrollToPosition(1);
+
+            }
+        });
     }
 
     @Override
@@ -128,9 +133,8 @@ public class EventListManagerFragment extends BaseEventListFragment {
         showErrorOverlay();
     }
 
-
     private void setAdapterRecyclerView() {
-        EventListAdapterManager adapter = new EventListAdapterManager(mEventList, getActivity());
+        EventListAdapterManager adapter = new EventListAdapterManager(mEventList, getActivity(), this);
         mRecyclerView.setAdapter(adapter);
         mSwipeRefreshLayout.setRefreshing(false);
     }
@@ -140,5 +144,11 @@ public class EventListManagerFragment extends BaseEventListFragment {
         super.setService(service);
         mService.executeAction(BaseService.ACTIONS.EVENT_LIST, true, getBindingKey());
     }
-}
 
+    @Override
+    public void getEvent(int position) {
+      Event event = mEventList.get(position);
+        BaseApplication.getInstance().setEvent(event);
+        showProgressOverlay();
+    }
+}

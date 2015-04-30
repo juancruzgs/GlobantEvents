@@ -7,6 +7,9 @@ public class CoreConstants {
 
     public static int ZERO = 0;
 
+    //Base Activity
+    public static final String INTENT_FILTER_CONNECTIVITY = "android.net.conn.CONNECTIVITY_CHANGE";
+
     //Parse
     public static final String APPLICATION_ID = "XFRKSroVgyKznK5gYTqpQoL8fnNZ1zhSwBVc9tJb";
     public static final String CLIENT_KEY = "D00WzyZtzJ3aeNRT93sSUYflBRAR3empdd6YgcLd";
@@ -85,6 +88,7 @@ public class CoreConstants {
 
     // RecyclerView
     public static final String KEY_LAYOUT_MANAGER = "layoutManager";
+    public static final String KEY_LAYOUT_PLACEHOLDER = "placeholder666";
 
     //SubscriberProfile
     public static final String SHARED_PREF_IMG = "img.jpg";
@@ -104,11 +108,19 @@ public class CoreConstants {
     public static final String SHARED_PREF_FILE = "_preferences.xml";
     public static final String DONE_CLICKED="done_clicked";
     public static final String PHOTO_ROTATE="photoRotate";
+
     public static final String PHOTO_TAKEN ="photo_taken";
-
-
-
 
     //Base Activity
     public static final String ACTIVITY_TITLE_INTENT = "ActivityTitle";
+
+    //Binding Keys
+    public static final String BINDING_KEY_FRAGMENT_TWITTER_STREAM = "BaseTwitterStreamFragment";
+    public static final String BINDING_KEY_FRAGMENT_TWEET = "BaseTweetFragment";
+    public static final String BINDING_KEY_FRAGMENT_MANAGER_EVENT_LIST = "EventListManagerFragment";
+    public static final String BINDING_KEY_FRAGMENT_CLIENT_EVENT_LIST = "EventListClientFragment";
+
+
+    //Pager
+    public static final String CURRENT_FRAGMENT_INTENT = "currentFragmentPosition";
 }
