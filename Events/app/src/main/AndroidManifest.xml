@@ -57,9 +57,12 @@
         </activity>
         <activity
             android:name="com.globant.eventscorelib.baseActivities.BaseCreditsActivity"
-            android:label="@string/title_activity_credits" >
+            android:label="@string/title_activity_credits"
+            android:parentActivityName=".activities.EventListClientActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.EventListClientActivity" />
         </activity>
-
         <activity
             android:name="com.globant.eventscorelib.baseActivities.BaseSubscriberActivity"
             android:label="@string/title_activity_subscriber" >

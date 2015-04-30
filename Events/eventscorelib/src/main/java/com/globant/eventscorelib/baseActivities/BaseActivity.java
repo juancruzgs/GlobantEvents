@@ -134,7 +134,6 @@ public abstract class BaseActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-
     }
 
     @Override
