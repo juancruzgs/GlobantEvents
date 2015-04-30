@@ -6,9 +6,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.ViewGroup;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;
@@ -110,6 +112,13 @@ abstract public class BasePagerActivity extends BaseActivity {
         public CharSequence getPageTitle(int position) {
             return getTitlesList().get(position).toUpperCase();
         }
+
+//        @Override
+//        public Object instantiateItem(ViewGroup container, int position) {
+//            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+//            mAdapterFragments.set(position, fragment);
+//            return fragment;
+//        }
     }
 
     public interface FragmentLifecycle {
