@@ -6,23 +6,18 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.globant.events.activities.EventDetailClientActivity;
+import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
 import com.globant.eventscorelib.baseListeners.GetEventInformation;
 
 public class EventsListViewHolderClient extends BaseEventsListViewHolder{
 
-        public EventsListViewHolderClient(final View itemView, final Context context, final Fragment fragment) {
-            super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+    @Override
+    protected Class<? extends BasePagerActivity> getActivityClass() {
+        return EventDetailClientActivity.class;
+    }
 
-                    GetEventInformation getEventInformation = (GetEventInformation) fragment;
-                    getEventInformation.getEvent((Integer) itemView.getTag());
-
-                    Intent intent = new Intent(context, EventDetailClientActivity.class);
-                    context.startActivity(intent);
-                }
-            });
-        }
+    public EventsListViewHolderClient(View itemView, Context context, Fragment fragment) {
+        super(itemView, context, fragment);
+    }
 }

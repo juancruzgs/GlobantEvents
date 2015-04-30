@@ -16,7 +16,7 @@ import com.globant.eventscorelib.utils.CustomDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListViewHolder> {
+public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListViewHolder> {
 
     private Context mContext;
     private List<Event> mEventList;
@@ -32,12 +32,15 @@ public class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListVi
         mEventList = eventList;
     }
 
+    protected abstract BaseEventsListViewHolder getViewHolder(View view);
+
     @Override
     public BaseEventsListViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.event_card_row_item, viewGroup, false);
-        return new BaseEventsListViewHolder(view);
+        return getViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
