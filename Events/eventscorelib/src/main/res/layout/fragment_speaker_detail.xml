@@ -4,7 +4,6 @@
     android:background="@color/grey_lighter"
     tools:context="com.globant.eventscorelib.baseFragments.BaseSpeakerDetailFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <ScrollView
         android:id="@+id/scrollViewSpeakerDetail"
         android:layout_width="match_parent"
