@@ -135,16 +135,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            if (resultCode == -1) {
-                String contents = data.getStringExtra(CoreConstants.SCAN_RESULT);
-                showCheckinOverlay();
-            }
-        }
-    }
-
-    @Override
     public void onScrollChanged(int i, boolean b, boolean b2) {
 
         if (mRecyclerView.getChildCount() > 0) {
@@ -211,16 +201,10 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             startActivity(intentCredits);
             handled = true;
         } else {
-            if (id == R.id.action_checkin) {
-                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                startActivityForResult(intentScan, CoreConstants.ZERO);
+            if (id == R.id.action_profile) {
+                Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
+                startActivity(intentSubscriber);
                 handled = true;
-            } else {
-                if (id == R.id.action_profile) {
-                    Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
-                    startActivity(intentSubscriber);
-                    handled = true;
-                }
             }
         }
 
