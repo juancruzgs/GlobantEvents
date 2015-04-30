@@ -23,26 +23,31 @@ import com.globant.eventscorelib.utils.Logger;
 public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder implements View.OnTouchListener {
 
     private final TextView mTextViewName;
-    private final TextView mTextViewGlober;
+    private TextView mTextViewNameLeft;
+    private TextView mTextViewGlober;
+    private TextView mTextViewGloberLeft;
+    private TextView mTextViewOccupation;
+    private TextView mTextViewOccupationLeft;
     private final ImageView mImageViewParticipantLeft;
     private final ImageView mImageViewParticipantRight;
+    private TextView mTextViewLocation;
+    private TextView mTextViewLocationLeft;
     private final LinearLayout mParticipantHolderItemLayout;
     private final FrameLayout mFrameLayoutLeft;
     private final FrameLayout mFrameLayoutRight;
     private final FrameLayout mFrameLayoutHolder;
     private final LinearLayout mLinearLayoutMiddle;
+    private LinearLayout mLinearLayoutMiddleLeft;
     private Boolean mScrolling;
     private EventParticipantsManagerFragment mFragment;
     private Boolean mBooleanIsPressed;
     private TranslateAnimation mTranslateAnimationPhoto;
     private TranslateAnimation mTranslateAnimationText;
     private Boolean mAnimationCancelled = false;
-    private View mView;
     private Boolean mRunnableIsRunning;
-    private LinearLayout mLinearLayoutMiddleLeft;
-    private TextView mTextViewNameLeft;
     private TouchListenerItem mAdapter;
     private final Handler mHandler = new Handler();
+
     private final Runnable mRunnable = new Runnable() {
         public void run() {
             mRunnableIsRunning = true;
@@ -63,15 +68,66 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         }
     }
 
-    public void addAllAnimation(){};
+    public TextView getTextViewName() {
+        return mTextViewName;
+    }
 
-    public Boolean getmBooleanIsPressed() {
+    public TextView getTextViewNameLeft() {
+        return mTextViewNameLeft;
+    }
+
+    public TextView getTextViewOccupation() {
+        return mTextViewOccupation;
+    }
+
+    public TextView getTextViewOccupationLeft() {
+        return mTextViewOccupationLeft;
+    }
+
+    public TextView getTextViewGlober() {
+        return mTextViewGlober;
+    }
+
+    public TextView getTextViewGloberLeft() {
+        return mTextViewGloberLeft;
+    }
+
+    public ImageView getImageViewParticipantLeft() {
+        return mImageViewParticipantLeft;
+    }
+
+    public ImageView getImageViewParticipantRight() {
+        return mImageViewParticipantRight;
+    }
+
+    public Boolean getBooleanIsPressed() {
         return mBooleanIsPressed;
     }
 
-    public TextView getmTextViewNameLeft() {
-        return mTextViewNameLeft;
+    public TextView getTextViewLocation() {
+        return mTextViewLocation;
     }
+
+    public TextView getTextViewLocationLeft() {
+        return mTextViewLocationLeft;
+    }
+
+    public FrameLayout getFrameLayoutLeft() {
+        return mFrameLayoutLeft;
+    }
+
+    public FrameLayout getFrameLayoutRight() {
+        return mFrameLayoutRight;
+    }
+
+    public LinearLayout getLinearLayoutMiddleLeft() {
+        return mLinearLayoutMiddleLeft;
+    }
+
+    public LinearLayout getLinearLayoutMiddle() {
+        return mLinearLayoutMiddle;
+    }
+
 
     public ParticipantsListViewHolderManager(View itemView, EventParticipantsManagerFragment fragment, TouchListenerItem adapter) {
         super(itemView);
@@ -81,8 +137,13 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         mFrameLayoutRight = (FrameLayout) itemView.findViewById(R.id.frame_layout_right_image);
         mTextViewName = (TextView) itemView.findViewById(R.id.text_view_participant_name);
         mTextViewGlober = (TextView) itemView.findViewById(R.id.text_view_glober);
+        mTextViewGloberLeft = (TextView) itemView.findViewById(R.id.text_view_glober_left);
         mImageViewParticipantLeft = (ImageView) itemView.findViewById(R.id.image_view_participant_left);
         mImageViewParticipantRight = (ImageView) itemView.findViewById(R.id.image_view_participant_right);
+        mTextViewOccupation = (TextView) itemView.findViewById(R.id.text_view_occupation);
+        mTextViewOccupationLeft = (TextView) itemView.findViewById(R.id.text_view_occupation_left);
+        mTextViewLocation = (TextView) itemView.findViewById(R.id.text_view_location);
+        mTextViewLocationLeft = (TextView) itemView.findViewById(R.id.text_view_location_left);
         mParticipantHolderItemLayout = (LinearLayout) itemView.findViewById(R.id.participant_item_holder_layout);
         mLinearLayoutMiddle = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle);
         mFragment = fragment;
@@ -94,10 +155,6 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
 
     public float getFrameLayoutWidth(){
         return mFrameLayoutLeft.getWidth();
-    }
-
-    public LinearLayout getmLinearLayoutMiddle() {
-        return mLinearLayoutMiddle;
     }
 
     public void addTranslateAnimationText(final LinearLayout linearLayoutMiddle, final LinearLayout linearLayoutMiddleLeft, final FrameLayout frameLayoutHolder, final Boolean leftToRight){
@@ -189,23 +246,6 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     }
 
 
-    public TextView getTextViewName() {
-        return mTextViewName;
-    }
-
-    public TextView getTextViewGlober() {
-        return mTextViewGlober;
-    }
-
-    public ImageView getImageViewParticipantLeft() {
-        return mImageViewParticipantLeft;
-    }
-
-    public ImageView getImageViewParticipantRight() {
-        return mImageViewParticipantRight;
-    }
-
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         mScrolling = mFragment.getScrolling();
@@ -221,7 +261,6 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
                 mAdapter.onTouchListenerItem(this);
                 mRunnableIsRunning = false;
                 Logger.d("false");
-                mView = v;
                 mHandler.postDelayed(mRunnable, 500);
                 mAnimationCancelled = false;
                 mBooleanIsPressed = true;

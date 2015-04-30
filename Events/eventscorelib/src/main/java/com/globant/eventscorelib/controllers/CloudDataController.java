@@ -83,6 +83,7 @@ public class CloudDataController {
         List<ParseObject> eventsToSubscribersList = eventsToSubscribersQuery.find();
         List<Subscriber> subscribersList = new ArrayList<>();
         for (ParseObject eventToSubscribersRow : eventsToSubscribersList) {
+            //eventToSubscriberRow get Accepted
             ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
             if (databaseSubscriber != null) {
                 Subscriber domainSubscriber = createDomainSubscriberFromDatabase(databaseSubscriber);
