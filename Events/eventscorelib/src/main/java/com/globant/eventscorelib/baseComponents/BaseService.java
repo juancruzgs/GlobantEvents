@@ -293,4 +293,8 @@ public class BaseService extends Service {
             }
         }
     }
+
+    public void disengage(String key) {
+        cachedElements.remove(key);
+    }
 }

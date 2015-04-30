@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
 
@@ -132,7 +133,10 @@ abstract public class BasePagerActivity extends BaseActivity {
         super.onDestroy();
 
         for (BaseFragment fragment : mFragments) {
-            fragment.getActionListener()
+            BaseService.ActionListener listener = fragment.getActionListener();
+            if (listener != null) {
+                getService().disengage(listener.getBindingKey());
+            }
         }
     }
 }
