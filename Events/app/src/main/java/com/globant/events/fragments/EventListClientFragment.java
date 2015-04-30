@@ -56,7 +56,7 @@ public class EventListClientFragment extends BaseEventListFragment implements Ge
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_client_swipe);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_swipe);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

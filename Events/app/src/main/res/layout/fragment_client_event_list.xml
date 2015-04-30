@@ -14,17 +14,7 @@
         android:id="@+id/event_list_recycler_view"
         android:layout_gravity="center" />
         -->
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/events_client_swipe"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-            android:id="@+id/event_list_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"/>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+    <include
+        layout="@layout/swipe_refresh_layout" />
 
 </RelativeLayout>
