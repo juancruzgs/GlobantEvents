@@ -35,8 +35,6 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 
 public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
 
-    private static final float MAX_TEXT_SCALE_DELTA = 0.3f;
-
     boolean mStickyToolbar;
     private View mToolbar;
     private ImageView mEventImage;
@@ -164,31 +162,30 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     @Override
     public void onScrollChanged(int i, boolean b, boolean b2) {
 
-        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
-        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
-        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
-        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
-
         // Translate overlay and image
         float flexibleRange = mFlexibleSpaceImageHeight - mActionBarSize;
         int minOverlayTransitionY = mActionBarSize - mOverlayView.getHeight();
         ViewHelper.setTranslationY(mOverlayView, ScrollUtils.getFloat(-i, minOverlayTransitionY, 0));
         ViewHelper.setTranslationY(mEventImage, ScrollUtils.getFloat(-i / 2, minOverlayTransitionY, 0));
 
-        // Change alpha of overlay // getFloat(float value, float minValue, float maxValue)
+        // Change alpha of overlay
         ViewHelper.setAlpha(mOverlayView, ScrollUtils.getFloat((float) i / flexibleRange, 0, 1));
         mEventTitle.getBackground().setAlpha(Math.round(255 * (1 - ScrollUtils.getFloat((float) i / flexibleRange, 0, 1))));
 
         // Scale title text
-        float scale = 1 + ScrollUtils.getFloat((flexibleRange - i) / flexibleRange, 0, MAX_TEXT_SCALE_DELTA);
+        float titleHeight = mEventTitle.getHeight();
+        float scaleY = (titleHeight - i + flexibleRange) / titleHeight;
+        float scale = ScrollUtils.getFloat(scaleY, 0, 1);
         ViewHelper.setPivotX(mEventTitle, 0);
         ViewHelper.setPivotY(mEventTitle, 0);
-        ViewHelper.setScaleX(mEventTitle, scale);
+        //ViewHelper.setScaleX(mEventTitle, scale);
         ViewHelper.setScaleY(mEventTitle, scale);
+        mEventStartDate.setText(String.format("%.02f", scale) + " | " + i +  " | " + titleHeight +  " | " + String.format("%.02f", scaleY));
 
         // Translate title text
         int maxTitleTranslationY = (int) (mFlexibleSpaceImageHeight - mEventTitle.getHeight() * scale);
         int titleTranslationY = maxTitleTranslationY - i;
+
         //titleTranslationY = Math.max(0, titleTranslationY);
         ViewHelper.setTranslationY(mEventTitle, titleTranslationY);
 
