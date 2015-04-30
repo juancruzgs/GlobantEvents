@@ -406,10 +406,7 @@ public class BaseSubscriberFragment extends BaseFragment {
             }
             return true;
         }
-        if (id == android.R.id.home) {
-            getActivity().finish();
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
