@@ -2,11 +2,10 @@ package com.globant.eventscorelib.baseActivities;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.Menu;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
@@ -16,8 +15,9 @@ import java.util.List;
 
 abstract public class BasePagerActivity extends BaseActivity {
 
-    PageAdapter pageAdapter;
-    int mCurrentFragmentPosition = 0;
+    private PageAdapter pageAdapter;
+    private int mCurrentFragmentPosition = 0;
+    private List<Fragment> mFragments;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -35,8 +35,7 @@ abstract public class BasePagerActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_pager);
-        List<Fragment> fragments = getFragments();
-        prepareAdapter(fragments);
+        prepareAdapter();
         initialResumeFragment();
         prepareTitleStrip();
     }
@@ -54,8 +53,9 @@ abstract public class BasePagerActivity extends BaseActivity {
         }
     }
 
-    private void prepareAdapter(List<Fragment> fragments) {
-        pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
+    private void prepareAdapter() {
+        mFragments = getFragments();
+        pageAdapter = new PageAdapter(getSupportFragmentManager(), mFragments);
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
         pager.setPageTransformer(true, new ZoomOutSlideTransformer());
@@ -87,23 +87,23 @@ abstract public class BasePagerActivity extends BaseActivity {
     protected abstract List<Fragment> getFragments();
     protected abstract List<String> getTitlesList();
 
-    public class PageAdapter extends FragmentPagerAdapter {
+    public class PageAdapter extends FragmentStatePagerAdapter {
 
-        private List<Fragment> mFragments;
+        private List<Fragment> mAdapterFragments;
 
         public PageAdapter(FragmentManager mFragmentManager, List<Fragment> fragments) {
             super(mFragmentManager);
-            this.mFragments = fragments;
+            this.mAdapterFragments = fragments;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return this.mFragments.get(position);
+            return this.mAdapterFragments.get(position);
         }
 
         @Override
         public int getCount() {
-            return this.mFragments.size();
+            return this.mAdapterFragments.size();
         }
 
         @Override
