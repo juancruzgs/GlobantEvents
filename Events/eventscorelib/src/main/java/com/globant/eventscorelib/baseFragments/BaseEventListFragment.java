@@ -1,8 +1,10 @@
 package com.globant.eventscorelib.baseFragments;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -20,27 +21,47 @@ import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
+import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.baseListeners.GetEventInformation;
+import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.nineoldandroids.view.ViewHelper;
+
+import java.util.List;
 
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  */
-public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener {
+public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, GetEventInformation {
 
     private static final String TAG = "EventListFragment";
-
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
     private LayoutManagerType mCurrentLayoutManagerType;
-    protected abstract int getFragmentLayout();
-    protected abstract int getEventListRecyclerView();
     private ObservableRecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private List<Event> mEventList;
+
+    protected abstract int getFragmentLayout();
+    protected abstract boolean getIsGlober();
+    protected abstract BaseEventsListAdapter getAdapter();
+
+    protected int getEventListRecyclerView() {
+        return R.id.event_list_recycler_view;
+    }
+
+    public ObservableRecyclerView getRecyclerView() {
+        return mRecyclerView;
+    }
+
+    public List<Event> getEventList() {
+        return mEventList;
+    }
 
     public BaseEventListFragment(){
     }
@@ -54,31 +75,28 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(getFragmentLayout(), container, false);
         rootView.setTag(TAG);
+        prepareRecyclerView(rootView);
+        prepareSwipeRefreshLayout(rootView);
+        setRecyclerViewLayoutManager(savedInstanceState);
+        hideUtilsAndShowContentOverlay();
+        setHasOptionsMenu(true);
+        return rootView;
+    }
 
+    private void prepareRecyclerView(View rootView) {
         mRecyclerView = (ObservableRecyclerView) rootView.findViewById(getEventListRecyclerView());
         mRecyclerView.setScrollViewCallbacks(this);
+    }
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
-        if (savedInstanceState != null) {
-            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                    .getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
-        }
-        setRecyclerViewLayoutManager();
-        hideUtilsAndShowContentOverlay();
-
-        ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
+    private void prepareSwipeRefreshLayout(View rootView) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_swipe);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void run() {
-                mRecyclerView.smoothScrollToPosition(1);
-
+            public void onRefresh() {
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
+                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
-
-        setHasOptionsMenu(true);
-
-        return rootView;
     }
 
     @Override
@@ -86,18 +104,27 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         return getString(R.string.title_fragment_events_stream);
     }
 
-    public void setRecyclerViewLayoutManager() {
-        int scrollPosition = 0;
-
+    public void setRecyclerViewLayoutManager(Bundle savedInstanceState) {
+        int scrollPosition = CoreConstants.ZERO;
+        if (savedInstanceState != null) {
+            mCurrentLayoutManagerType = (LayoutManagerType)savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
+        }
         if (mRecyclerView.getLayoutManager() != null) {
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
         }
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
+
+        ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.smoothScrollToPosition(1);
+            }
+        });
     }
 
     @Override
@@ -115,6 +142,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             }
         }
     }
+
     @Override
     public void onScrollChanged(int i, boolean b, boolean b2) {
 
@@ -161,14 +189,10 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     @Override
-    public void onDownMotionEvent() {
-
-    }
+    public void onDownMotionEvent() {}
 
     @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-
-    }
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {}
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -188,7 +212,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         } else {
             if (id == R.id.action_checkin) {
                 Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                startActivityForResult(intentScan, 0);
+                startActivityForResult(intentScan, CoreConstants.ZERO);
                 handled = true;
             } else {
                 if (id == R.id.action_profile) {
@@ -203,5 +227,52 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             handled = super.onOptionsItemSelected(item);
         }
         return handled;
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {}
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        switch (theAction) {
+            case EVENT_LIST:
+                mEventList = (List<Event>) result;
+                if (mEventList != null) {
+                    setAdapterRecyclerView();
+                } else {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    showErrorOverlay();
+                }
+                break;
+        }
+        hideUtilsAndShowContentOverlay();
+    }
+
+    private void setAdapterRecyclerView() {
+        mRecyclerView.setAdapter(getAdapter());
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
+        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
+        showProgressOverlay();
+    }
+
+    @Override
+    public void getEvent(int position) {
+        Event event = mEventList.get(position);
+        BaseApplication.getInstance().setEvent(event);
+    }
+
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
     }
 }
