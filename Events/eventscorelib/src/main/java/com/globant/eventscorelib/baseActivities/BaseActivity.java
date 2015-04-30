@@ -152,7 +152,7 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     private void setFragmentTitle(BaseFragment fragment){
         String title = fragment.getTitle();
-        if (title != null && !title.isEmpty() && mFragmentTitle != null){
+        if (title != null && mFragmentTitle != null){
             mFragmentTitle.setText(title);
         }
     }

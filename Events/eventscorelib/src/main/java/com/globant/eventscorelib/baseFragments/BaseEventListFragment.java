@@ -101,7 +101,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     @Override
     public String getTitle() {
-        return getString(R.string.title_fragment_events_stream);
+//        return getString(R.string.title_fragment_events_stream);
+        return "";
     }
 
     public void setRecyclerViewLayoutManager(Bundle savedInstanceState) {
