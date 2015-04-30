@@ -1,6 +1,9 @@
 package com.globant.eventscorelib.baseAdapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,8 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseListeners.GetEventInformation;
 
-public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
+public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final View mViewGroup;
     private final ImageView mImageEvent;
     private final TextView mEventTitle;
@@ -18,7 +23,9 @@ public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final TextView mLocationEvent;
     private final TextView mShortDescriptionEvent;
 
-    public BaseEventsListViewHolder(final View itemView) {
+    protected abstract Class<? extends BasePagerActivity> getActivityClass();
+
+    public BaseEventsListViewHolder(final View itemView, final Context context, final Fragment fragment) {
         super(itemView);
         mViewGroup = itemView;
         mImageEvent = (ImageView) itemView.findViewById(R.id.event_image_view);
@@ -26,6 +33,15 @@ public class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         mEventDate = (TextView) itemView.findViewById(R.id.event_date_text_view);
         mLocationEvent = (TextView) itemView.findViewById(R.id.event_location_text_view);
         mShortDescriptionEvent = (TextView) itemView.findViewById(R.id.event_short_description_text_view);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GetEventInformation getEventInformation = (GetEventInformation) fragment;
+                getEventInformation.getEvent((Integer) itemView.getTag());
+                Intent intent = new Intent(context, getActivityClass());
+                context.startActivity(intent);
+            }
+        });
     }
 
     private void hideSpeakersLayout(View itemView) {

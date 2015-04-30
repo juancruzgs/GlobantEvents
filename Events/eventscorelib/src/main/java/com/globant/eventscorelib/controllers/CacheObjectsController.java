@@ -2,6 +2,7 @@ package com.globant.eventscorelib.controllers;
 
 
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Speaker;
 
 import java.util.List;
 
@@ -9,39 +10,49 @@ import twitter4j.Status;
 import twitter4j.User;
 
 public class CacheObjectsController {
-    private List<twitter4j.Status> tweetList;
-    private User user; // twitter
-    private Event event;
+
+    private List<twitter4j.Status> mTweetList;
+    private List<Speaker> mSpeakersList;
+    private User mUser; // twitter
+    private Event mEvent;
 
     public List<Status> getTweetList() {
-        return tweetList;
+        return mTweetList;
     }
 
     public void setTweetList(List<Status> tweetList) {
-        this.tweetList = tweetList;
+        this.mTweetList = tweetList;
     }
 
     public User getUser() {
-        return user;
+        return mUser;
     }
 
     public void setUser(User user) {
-        this.user = user;
+        this.mUser = user;
     }
 
     public Event getEvent() {
-        return event;
+        return mEvent;
     }
 
     public void setEvent(Event event) {
-        this.event = event;
+        this.mEvent = event;
     }
 
     public String getEventId () {
-        return event.getObjectID();
+        return mEvent.getObjectID();
     }
 
     public void setEventId (String id) {
-        this.event.setObjectID(id);
+        this.mEvent.setObjectID(id);
+    }
+
+    public List<Speaker> getSpeakersList() {
+        return mSpeakersList;
+    }
+
+    public void setSpeakersList(List<Speaker> speakersList) {
+        mSpeakersList = speakersList;
     }
 }

@@ -223,19 +223,14 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             case EVENT_LIST:
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
-                    setAdapterRecyclerView();
+                    mRecyclerView.setAdapter(getAdapter());
                 } else {
-                    mSwipeRefreshLayout.setRefreshing(false);
                     showErrorOverlay();
                 }
+                mSwipeRefreshLayout.setRefreshing(false);
                 break;
         }
         hideUtilsAndShowContentOverlay();
-    }
-
-    private void setAdapterRecyclerView() {
-        mRecyclerView.setAdapter(getAdapter());
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
