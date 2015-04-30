@@ -22,7 +22,7 @@ public class BaseSpeakerDetailFragment extends BaseFragment {
             "She became an aviation enthusiast early in life. She gained BA in mechanical engineering from the University of California, Berkeley, MA in aeronautical engineering from Princeton University, and Ph.D. in engineering from the Tokyo University of Science. Alejandra joined the Boeing company in 1965 as an aerodynamics engineer. Later, she became a lead engineer on the Boeing 747 high-speed configuration.  She advanced into management within a year and became manager of the Boeing 727 marketing. In 1996, She was elected president of Boeing, and a member of the board of directors. She remained in this position until resigning on 1 December 2003."
             ,null);
 
-    private TextView fullName, speakerTitle, speakerBiography;
+    private TextView mFullNameTextView, mSpeakerTitleTextView, mSpeakerBiographyTextView;
 
      public BaseSpeakerDetailFragment() {
         // Required empty public constructor
@@ -42,12 +42,12 @@ public class BaseSpeakerDetailFragment extends BaseFragment {
     }
 
     private void wireSpeakerView(View rootView) {
-        fullName = (TextView) rootView.findViewById(R.id.speaker_fullName);
-        speakerTitle = (TextView) rootView.findViewById(R.id.speaker_title);
-        speakerBiography = (TextView) rootView.findViewById(R.id.speaker_biography);
-        fullName.setText(speakerDemo.getName()+" "+speakerDemo.getLastName());
-        speakerTitle.setText(speakerDemo.getTitle());
-        speakerBiography.setText(speakerDemo.getBiography());
+        mFullNameTextView = (TextView) rootView.findViewById(R.id.speaker_fullName);
+        mSpeakerTitleTextView = (TextView) rootView.findViewById(R.id.speaker_title);
+        mSpeakerBiographyTextView = (TextView) rootView.findViewById(R.id.speaker_biography);
+        mFullNameTextView.setText(speakerDemo.getName() + " " + speakerDemo.getLastName());
+        mSpeakerTitleTextView.setText(speakerDemo.getTitle());
+        mSpeakerBiographyTextView.setText(speakerDemo.getBiography());
     }
 
     @Override

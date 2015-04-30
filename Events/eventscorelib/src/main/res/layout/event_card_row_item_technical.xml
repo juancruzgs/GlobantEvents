@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:pew="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:padding="@dimen/padding_framelayout">
@@ -21,13 +20,12 @@
                 android:elevation="@dimen/elevation_event_card_row"
                 android:gravity="bottom">
 
-                <com.fmsirvent.ParallaxEverywhere.PEWImageView
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/event_logo_card_row_height"
                     android:id="@+id/event_image_view"
                     android:src="@drawable/technical"
-                    android:scaleType="centerCrop"
-                    pew:interpolation="accelerate"/>
+                    android:scaleType="centerCrop"/>
 
                 <FrameLayout
                     android:orientation="vertical"
@@ -38,43 +36,37 @@
 
                 </FrameLayout>
 
-                <com.fmsirvent.ParallaxEverywhere.PEWTextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:id="@+id/event_title_text_view"
                     android:text="Curso de Java"
                     style="@style/condensed_normal_extra_large"
                     android:textColor="@color/white"
-                    pew:parallax_y="60dp"
-                    pew:reverse="reverseY"
                     android:paddingLeft="4dp"
                     android:layout_alignBottom="@+id/event_image_view"
                     android:gravity="center_vertical"/>
 
-                <com.fmsirvent.ParallaxEverywhere.PEWTextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="96dp"
                     android:text="20:00 PM 11/04/2015"
                     style="@style/condensed_normal_medium"
                     android:id="@+id/event_date_text_view"
                     android:textColor="@color/grey_card"
-                    pew:parallax_y="60dp"
-                    pew:reverse="reverseY"
                     android:paddingLeft="4dp"
                     android:gravity="center_vertical"
                     android:layout_alignParentEnd="false"
                     android:layout_alignParentStart="false"
                     android:layout_alignBottom="@+id/event_image_view"/>
 
-                <com.fmsirvent.ParallaxEverywhere.PEWTextView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="Mar del Plata, Argentina"
                     style="@style/condensed_light_small"
                     android:id="@+id/event_location_text_view"
                     android:textColor="@color/grey_card"
-                    pew:parallax_y="60dp"
-                    pew:reverse="reverseY"
                     android:paddingLeft="4dp"
                     android:gravity="center_vertical"
                     android:layout_alignBottom="@+id/event_image_view"/>

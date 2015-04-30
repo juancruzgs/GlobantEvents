@@ -5,11 +5,8 @@
                 android:layout_height="match_parent"
                 tools:context=".EventsStreamActivity">
 
-    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-        android:id="@+id/event_list_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+    <include
+        layout="@layout/swipe_refresh_layout" />
 
     <com.software.shell.fab.ActionButton
         android:id="@+id/action_button"

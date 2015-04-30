@@ -60,8 +60,8 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     }
 
     @Override
-    public Object getBindingKey() {
-        return null;
+    public String getBindingKey() {
+        return MapManagerActivity.class.getSimpleName();
     }
 
     @Override
@@ -145,7 +145,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                mService.executeAction(BaseService.ACTIONS.POSITION_COORDINATES, s);
+                mService.executeAction(BaseService.ACTIONS.POSITION_COORDINATES, s, getBindingKey());
                 return false;
             }
 
@@ -190,7 +190,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     private void finishActivityWithResult(boolean backButton) {
         if (mMarker != null) {
             LatLng latLng = mMarker.getPosition();
-            mService.executeAction(BaseService.ACTIONS.POSITION_ADDRESS, latLng);
+            mService.executeAction(BaseService.ACTIONS.POSITION_ADDRESS, latLng, getBindingKey());
         }
         else {
             finishActivityWithoutMarkerData(backButton);

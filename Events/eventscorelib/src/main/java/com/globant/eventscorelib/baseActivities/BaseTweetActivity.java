@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseTweetFragment;
 
 

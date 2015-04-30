@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:pew="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:padding="@dimen/padding_framelayout">
@@ -21,13 +20,12 @@
                 android:elevation="@dimen/elevation_event_card_row"
                 android:gravity="bottom">
 
-                <com.fmsirvent.ParallaxEverywhere.PEWImageView
+                <com.flaviofaria.kenburnsview.KenBurnsView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/event_logo_card_row_height"
                     android:id="@+id/event_image_view"
                     android:src="@drawable/party_image"
-                    android:scaleType="centerCrop"
-                    pew:interpolation="accelerate"/>
+                    android:scaleType="centerCrop"/>
 
                 <FrameLayout
                     android:orientation="vertical"
@@ -43,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/event_title_text_view"
                     android:text="La Fiesta del Chorizo"
-                    style="@style/condensed_normal_extra_large"
+                    style="@style/condensed_normal_large"
                     android:textColor="@color/white"
                     android:paddingLeft="4dp"
                     android:gravity="center_vertical"

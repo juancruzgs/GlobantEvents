@@ -1,6 +1,5 @@
 package com.globant.eventmanager.activities;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.globant.eventmanager.R;
@@ -15,11 +14,6 @@ import java.util.List;
 
 
 public class EventDetailManagerActivity extends BasePagerActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     protected List<Fragment> getFragments() {

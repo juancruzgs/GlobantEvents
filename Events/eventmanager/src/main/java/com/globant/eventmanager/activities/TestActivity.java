@@ -3,9 +3,9 @@ package com.globant.eventmanager.activities;
 import android.os.Bundle;
 
 import com.globant.eventmanager.R;
-import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
+import com.globant.eventscorelib.baseFragments.BaseSpeakerFragment;
 
 
 public class TestActivity extends BaseActivity {
@@ -14,7 +14,7 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        BaseFragment fragment = new EventParticipantsManagerFragment();
+        BaseFragment fragment = new BaseSpeakerFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)

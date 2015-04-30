@@ -6,20 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventmanager.R;
+import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
-import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
+
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
     private ActionButton mActionButton;
-    private String[] mDataset;
-    ObservableRecyclerView mRecyclerView;
-    private static final int DATASET_COUNT = 10;
 
     @Override
     protected int getFragmentLayout() {
@@ -27,44 +26,52 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     @Override
-    protected int getEventListRecyclerView() {
-        return R.id.event_list_recycler_view;
+    protected boolean getIsGlober() {
+        return true;
+    }
+
+    @Override
+    protected BaseEventsListAdapter getAdapter() {
+        return new EventListAdapterManager(getEventList(), getActivity(), this);
     }
 
     public EventListManagerFragment() {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initDataset();
+    public BaseService.ActionListener getActionListener() {
+        return this;
     }
 
     @Override
-    public BaseService.ActionListener getActionListener() {
-        return null;
+    public String getBindingKey() {
+        return CoreConstants.BINDING_KEY_FRAGMENT_MANAGER_EVENT_LIST;
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        super.onFinishAction(theAction, result);
+        ScrollUtils.addOnGlobalLayoutListener(getRecyclerView(), new Runnable() {
+            @Override
+            public void run() {
+                getRecyclerView().smoothScrollToPosition(1);
+            }
+        });
     }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        wireUpFloatingButton(rootView);
-        prepareRecyclerViewTouchListener(rootView);
+        prepareRecyclerView();
         wireUpFAB(rootView);
         return rootView;
     }
 
-    private void wireUpFloatingButton(View rootView) {
-        mActionButton = (ActionButton)rootView.findViewById(R.id.action_button);
-    }
-
-    private void prepareRecyclerViewTouchListener(View rootView) {
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.event_list_recycler_view);
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+    private void prepareRecyclerView() {
+        getRecyclerView().setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
                 if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)) {
                     mActionButton.hide();
                 } else {
@@ -74,15 +81,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
                 }
             }
         });
-        BaseEventsListAdapter adapter = new EventListAdapterManager(mDataset, getActivity());
-        recyclerView.setAdapter(adapter);
-    }
-
-    protected void initDataset() {
-        mDataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "Curso de Java";
-        }
     }
 
     private void wireUpFAB(View rootView) {
@@ -90,6 +88,4 @@ public class EventListManagerFragment extends BaseEventListFragment {
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
     }
-
 }
-

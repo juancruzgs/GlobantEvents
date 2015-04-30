@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CropCircleTransformation;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
@@ -34,8 +35,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     private TextView mUserFullName;
     private EditText mTweetText;
     private Button mTweetButton;
-   // private Button mLoginTwitterButton;
-    CropCircleTransformation mCircleTransformation;
+    private CropCircleTransformation mCircleTransformation;
 
     public BaseTweetFragment() {
         // Required empty public constructor
@@ -45,7 +45,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     public void onNewIntent(Intent intent) {
         Uri uri = intent.getData();
         if (uri != null) {
-            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri);
+            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri, getBindingKey());
         }
     }
 
@@ -58,16 +58,20 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         return rootView;
     }
 
-    @Override
-    public String getTitle() {
-        return getString(R.string.title_fragment_tweet);
-    }
+//    @Override
+//    public String getTitle() {
+//        return getString(R.string.title_fragment_tweet);
+//    }
+      @Override
+      public String getTitle() {
+          return "";
+}
 
     @Override
     public void onResume() {
         super.onResume();
         mTweetText.clearFocus();
-        User user = BaseApplication.getInstance().getCacheObjectsController().user;
+        User user = BaseApplication.getInstance().getTwitterUser();
         if (user != null) {
             setUserInformation(user);
         }
@@ -76,9 +80,9 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     @Override
     public void setService(BaseService service) {
         super.setService(service);
-        User user = BaseApplication.getInstance().getCacheObjectsController().user;
+        User user = BaseApplication.getInstance().getTwitterUser();
         if (user == null) {
-            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
+            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null, getBindingKey());
         }
     }
 
@@ -98,11 +102,11 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                     if (!tweet.equals("")) {
                         InputMethodManager imm = (InputMethodManager) getActivity()
                                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), 0);
-                        mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet);
+                        imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), CoreConstants.ZERO);
+                        mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
                     }
                 } else {
-                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, null);
+                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, null, getBindingKey());
                 }
             }
         });
@@ -129,11 +133,12 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         }
         mTweetText.setEnabled(true);
         mTweetButton.setText(getString(R.string.button_tweet));
+        mTweetButton.setTextColor(getResources().getColor(R.color.white));
     }
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return BaseTweetFragment.this;
+        return this;
     }
 
     @Override
@@ -142,8 +147,8 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     }
 
     @Override
-    public Object getBindingKey() {
-        return null;
+    public String getBindingKey() {
+        return CoreConstants.BINDING_KEY_FRAGMENT_TWEET;
     }
 
     @Override
@@ -157,12 +162,10 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
             case GET_TWITTER_USER:
                 User user = (User) result;
                 if (user != null) {
-                    BaseApplication.getInstance().getCacheObjectsController().user = user;
+                    BaseApplication.getInstance().setTwitterUser(user);
                     changeUserInformation(user);
                 }
                 hideUtilsAndShowContentOverlay();
-                break;
-            case TWITTER_LOADER:
                 break;
             case TWEET_POST:
                 if ((Boolean) result) {
@@ -176,7 +179,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                 break;
             case TWITTER_LOADER_RESPONSE:
                 if ((Boolean) result) {
-                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null);
+                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null, getBindingKey());
                 }
                 break;
         }

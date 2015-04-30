@@ -18,6 +18,7 @@ import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ import twitter4j.User;
 public class BaseService extends Service {
 
     public static boolean isRunning = false;
+    protected static List<String> cancelKeys = new ArrayList<>();
     // This is the object that receives interactions from clients.
     private final IBinder mBinder = new BaseBinder();
 
@@ -126,12 +128,12 @@ public class BaseService extends Service {
         return mTwitterController;
     }
 
-    private HashMap<ActionListener, ActionWrapper> currentSubscribers = new HashMap<>();
+    private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
     synchronized public void subscribeActor(ActionListener anActionListener){
-        if (!currentSubscribers.containsKey(anActionListener)) {
+        if (!currentSubscribers.containsKey(anActionListener.getBindingKey())) {
             ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
-            currentSubscribers.put(anActionListener, currentSubscriber);
+            currentSubscribers.put(anActionListener.getBindingKey(), currentSubscriber);
         }
 
         if (cachedElements.containsKey(anActionListener.getBindingKey())){
@@ -140,82 +142,102 @@ public class BaseService extends Service {
                 anActionListener.onFinishAction(key,cachedElement.remove(key));
             }
         }
+
+        if (cancelKeys.contains(anActionListener.getBindingKey()))
+            cancelKeys.remove(anActionListener.getBindingKey());
     }
     
     synchronized public void unSubscribeActor(ActionListener anActionListener){
-        if (currentSubscribers.containsKey(anActionListener)) {
-            currentSubscribers.remove(anActionListener);
+        if (anActionListener != null && currentSubscribers.containsKey(anActionListener.getBindingKey())) {
+            currentSubscribers.remove(anActionListener.getBindingKey());
         }
     }
 
-    synchronized public void executeAction(final ACTIONS theAction, final Object argument) {
+    synchronized public void executeAction(final ACTIONS theAction, final Object argument, final String bindingKey) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
                 HashSet<ActionWrapper> subscribers = new HashSet<>(currentSubscribers.values());
                 for (ActionWrapper currentSubscriber : subscribers) {
-                    try {
-                        currentSubscriber.startAction(theAction);
-                        switch (theAction) {
-                            case EVENT_SPEAKERS:
-                                List<Speaker> speakers = mCloudDataController.getEventSpeakers((String) argument);
-                                currentSubscriber.finishAction(theAction, speakers);
-                                break;
-                            case EVENT_CREATE:
-                                mCloudDataController.createEvent((Event) argument);
-                                currentSubscriber.finishAction(theAction, null);
-                                break;
-                            case EVENT_DELETE:
-                                break;
-                            case EVENT_LIST:
-                                List<Event> theEvents = mCloudDataController.getEvents((boolean)argument);
-                                currentSubscriber.finishAction(theAction, theEvents);
-                                break;
-                            case EVENT_DETAIL:
-                                Event event = mCloudDataController.getEvent((String) argument);
-                                currentSubscriber.finishAction(theAction, event);
-                                break;
-                            case POSITION_ADDRESS:
-                                Address address = mGeocoderController.getAddressFromCoordinates((LatLng) argument);
-                                currentSubscriber.finishAction(theAction, address);
-                                break;
-                            case POSITION_COORDINATES:
-                                LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String) argument);
-                                currentSubscriber.finishAction(theAction, latLng);
-                                break;
-                            case GET_TWITTER_USER:
-                                User user;
-                                try {
-                                    user = mTwitterController.getUser();
-                                } catch (Exception e) {
-                                    user = null;
-                                }
-                                currentSubscriber.finishAction(theAction, user);
-                                break;
-                            case TWEETS_LIST:
-                                List<Status> tweetList = mTwitterController.getTweetList(getBaseContext(), (String) argument);
-                                currentSubscriber.finishAction(theAction, tweetList);
-                                break;
-                            case TWITTER_LOADER:
-                                Boolean login = mTwitterController.loginToTwitter(getBaseContext());
-                                currentSubscriber.finishAction(theAction, login);
-                                break;
-                            case TWITTER_LOADER_RESPONSE:
-                                Boolean response = mTwitterController.getLoginResponse((Uri) argument);
-                                currentSubscriber.finishAction(theAction, response);
-                                break;
-                            case TWEET_POST:
-                                Boolean post = mTwitterController.publishPost((String) argument);
-                                currentSubscriber.finishAction(theAction, post);
-                                break;
-                            case SUBSCRIBER_CHECKIN:
-                                mCloudDataController.setCheckIn((String) argument, getBaseContext());
-                                currentSubscriber.finishAction(theAction, null);
-                                break;
+                    if (currentSubscriber.getBindingKey().equals(bindingKey)) {
+                        try {
+                            currentSubscriber.startAction(theAction);
+                            switch (theAction) {
+                                case EVENT_SPEAKERS:
+                                    List<Speaker> speakers = mCloudDataController.getEventSpeakers((String) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, speakers);
+                                    break;
+                                case EVENT_CREATE:
+                                    mCloudDataController.createEvent((Event) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, null);
+                                    break;
+                                case EVENT_DELETE:
+                                    break;
+                                case EVENT_LIST:
+                                    List<Event> theEvents = mCloudDataController.getEvents((boolean) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, theEvents);
+                                    break;
+                                case EVENT_DETAIL:
+                                    Event event = mCloudDataController.getEvent((String) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, event);
+                                    break;
+                                case POSITION_ADDRESS:
+                                    Address address = mGeocoderController.getAddressFromCoordinates((LatLng) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, address);
+                                    break;
+                                case POSITION_COORDINATES:
+                                    LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, latLng);
+                                    break;
+                                case GET_TWITTER_USER:
+                                    User user;
+                                    try {
+                                        user = mTwitterController.getUser();
+                                    } catch (Exception e) {
+                                        user = null;
+                                    }
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, user);
+                                    break;
+                                case TWEETS_LIST:
+                                    List<Status> tweetList = mTwitterController.getTweetList(getBaseContext(), (String) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, tweetList);
+                                    break;
+                                case TWITTER_LOADER:
+                                    Boolean login = mTwitterController.loginToTwitter(getBaseContext());
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, login);
+                                    break;
+                                case TWITTER_LOADER_RESPONSE:
+                                    Boolean response = mTwitterController.getLoginResponse((Uri) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, response);
+                                    break;
+                                case TWEET_POST:
+                                    Boolean post = mTwitterController.publishPost((String) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, post);
+                                    break;
+                                case SUBSCRIBER_CHECKIN:
+                                    mCloudDataController.setCheckIn((String) argument, getBaseContext());
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, argument);
+                                    break;
+                            }
+
+                            if (cancelKeys.contains(bindingKey))
+                                cancelKeys.remove(bindingKey);
+                        } catch (Exception e) {
+                            currentSubscriber.failAction(theAction, e);
+                            Logger.e("executeAction", e);
                         }
-                    } catch (Exception e) {
-                        currentSubscriber.failAction(theAction, e);
-                        Logger.e("executeAction", e);
                     }
                 }
             }
@@ -227,7 +249,7 @@ public class BaseService extends Service {
 
     public static interface ActionListener {
         public Activity getBindingActivity();
-        public Object getBindingKey();
+        public String getBindingKey();
         public void onStartAction(ACTIONS theAction);
         public void onFinishAction(ACTIONS theAction, Object result);
         public void onFailAction(ACTIONS theAction, Exception e);
@@ -239,6 +261,8 @@ public class BaseService extends Service {
         private Activity getActivity(){return anActivity;}
 
         ActionListener theListener;
+
+        public String getBindingKey() {return theListener.getBindingKey();}
 
         public ActionWrapper(ActionListener aListener) {
             this.anActivity = aListener.getBindingActivity();
@@ -288,5 +312,10 @@ public class BaseService extends Service {
 //                 cachedElements.put(getBindingKey(), cachedElement);
             }
         }
+    }
+
+    public void disengage(String key) {
+        cachedElements.remove(key);
+        cancelKeys.add(key);
     }
 }

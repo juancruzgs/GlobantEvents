@@ -1,11 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                xmlns:fab="http://schemas.android.com/apk/res-auto"
                 tools:context=".EventsStreamActivity"
     >
-
-    <!-- TODO: Update blank fragment layout -->
 
   <!--  <view
         android:layout_width="match_parent"
@@ -14,10 +11,7 @@
         android:id="@+id/event_list_recycler_view"
         android:layout_gravity="center" />
         -->
-    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-        android:id="@+id/event_list_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+    <include
+        layout="@layout/swipe_refresh_layout" />
 
 </RelativeLayout>
