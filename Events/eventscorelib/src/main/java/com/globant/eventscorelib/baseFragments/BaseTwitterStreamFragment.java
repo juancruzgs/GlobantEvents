@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
 import com.globant.eventscorelib.baseAdapters.BaseTweetListAdapter;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
@@ -57,7 +57,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         if (theAction == BaseService.ACTIONS.TWEETS_LIST){
             mTweetList = (List<Status>) result;
             if (mTweetList != null) {
-                BasePagerActivity.getInstance().setTweetList(mTweetList);
+                BaseEventDetailPagerActivity.getInstance().setTweetList(mTweetList);
                 setRecyclerViewAdapter();
             } else {
                 showErrorOverlay();
@@ -100,7 +100,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                BasePagerActivity.getInstance().setTweetList(null);
+                BaseEventDetailPagerActivity.getInstance().setTweetList(null);
                 mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "#GameOfThrones", getBindingKey()); // TODO: put the event hashtag
                 mSwipeRefreshLayout.setRefreshing(true);
             }
@@ -161,7 +161,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onResumeFragment() {
-        mTweetList = BasePagerActivity.getInstance().getTweetList();
+        mTweetList = BaseEventDetailPagerActivity.getInstance().getTweetList();
         if (mTweetList == null) {
             mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
             showProgressOverlay();

@@ -11,19 +11,14 @@ import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
-import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;
 
-import twitter4j.Status;
-
 abstract public class BasePagerActivity extends BaseActivity {
 
-    private static BasePagerActivity ourInstance;
     private PageAdapter pageAdapter;
     private int mCurrentFragmentPosition = 0;
-    private CacheObjectsController mCacheObjectsController;
     //private List<Fragment> mFragments;
 
     @Override
@@ -38,10 +33,6 @@ abstract public class BasePagerActivity extends BaseActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    public static BasePagerActivity getInstance(){
-        return ourInstance;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,16 +40,6 @@ abstract public class BasePagerActivity extends BaseActivity {
         prepareAdapter();
         initialResumeFragment();
         prepareTitleStrip();
-        ourInstance = this;
-        mCacheObjectsController = new CacheObjectsController();
-    }
-
-    public List<Status> getTweetList () {
-        return mCacheObjectsController.getTweetList();
-    }
-
-    public void setTweetList (List<Status> twitterList) {
-        mCacheObjectsController.setTweetList(twitterList);
     }
 
     private void prepareTitleStrip() {

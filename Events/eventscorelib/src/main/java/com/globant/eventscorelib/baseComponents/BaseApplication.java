@@ -13,8 +13,6 @@ import com.parse.Parse;
 
 import java.util.List;
 
-import twitter4j.Status;
-
 abstract public class BaseApplication extends Application {
     private static BaseApplication ourInstance;
 
