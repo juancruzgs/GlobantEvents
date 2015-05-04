@@ -22,6 +22,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -83,7 +84,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
         hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
         wireUpViews(rootView);
-        mEvent = BaseApplication.getInstance().getEvent();
+        mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
         if (mEvent != null) {
             loadEventDescription();
         }

@@ -39,10 +39,6 @@ abstract public class BaseApplication extends Application {
         return mSharedPreferencesController;
     }
 
-    public Event getEvent() {
-        return mCacheObjectsController.getEvent();
-    }
-
 //    public List<Status> getTweetList () {
 //        return mCacheObjectsController.getTweetList();
 //    }
