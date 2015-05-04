@@ -84,7 +84,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
         hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
         wireUpViews(rootView);
-        mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
+        mEvent = BaseApplication.getInstance().getEvent();
         if (mEvent != null) {
             loadEventDescription();
         }

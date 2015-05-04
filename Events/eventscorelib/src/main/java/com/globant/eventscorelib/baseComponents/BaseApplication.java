@@ -39,14 +39,6 @@ abstract public class BaseApplication extends Application {
         return mSharedPreferencesController;
     }
 
-//    public List<Status> getTweetList () {
-//        return mCacheObjectsController.getTweetList();
-//    }
-
-    public List<Speaker> getSpeakersList(){
-        return mCacheObjectsController.getSpeakersList();
-    }
-
     public User getTwitterUser () {
         return mCacheObjectsController.getUser();
     }
@@ -55,13 +47,9 @@ abstract public class BaseApplication extends Application {
         mCacheObjectsController.setEvent(event);
     }
 
-    public void setSpeakersList (List<Speaker> speakersList){
-        mCacheObjectsController.setSpeakersList(speakersList);
+    public Event getEvent() {
+        return mCacheObjectsController.getEvent();
     }
-
-//    public void setTweetList (List<Status> twitterList) {
-//        mCacheObjectsController.setTweetList(twitterList);
-//    }
 
     public void setTwitterUser (User user) {
         mCacheObjectsController.setUser(user);

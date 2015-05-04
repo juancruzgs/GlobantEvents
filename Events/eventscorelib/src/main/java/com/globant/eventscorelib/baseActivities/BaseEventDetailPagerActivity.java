@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Speaker;
 
 import java.util.List;
 
@@ -33,12 +34,16 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
         mCacheObjectsController.setTweetList(twitterList);
     }
 
-    public Event getEvent() {
-        return mCacheObjectsController.getEvent();
-    }
-
     public List<Status> getTweetList () {
         return mCacheObjectsController.getTweetList();
+    }
+
+    public void setSpeakersList (List<Speaker> speakersList){
+        mCacheObjectsController.setSpeakersList(speakersList);
+    }
+
+    public List<Speaker> getSpeakersList(){
+        return mCacheObjectsController.getSpeakersList();
     }
 
     @Override
