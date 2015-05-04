@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -198,6 +199,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
                 startActivity(intentSubscriber);
                 handled = true;
+            } else {
+                if (id == R.id.action_checkin){
+                    Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
+                    startActivityForResult(intentScan,0);
+                    handled = true;
+                }
             }
         }
 
@@ -221,14 +228,44 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                     showErrorOverlay();
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
+                hideUtilsAndShowContentOverlay();
+                break;
+            case SUBSCRIBER_CHECKIN:
+                postCheckinTweet((Event) result);
+                break;
+            case TWEET_POST:
+                showCheckinOverlay();
+                break;
+            default:
+                hideUtilsAndShowContentOverlay();
                 break;
         }
-        hideUtilsAndShowContentOverlay();
     }
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        showErrorOverlay();
+        switch (theAction) {
+            case SUBSCRIBER_CHECKIN:
+                hideUtilsAndShowContentOverlay();
+                Toast.makeText(getActivity(), getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                showErrorOverlay();
+                break;
+        }
+    }
+
+    private void postCheckinTweet(Event event) {
+        if (BaseApplication.getInstance().getSharedPreferencesController()
+                .isAlreadyTwitterLogged()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(getString(R.string.tweet_checkin)).append(" ")
+                    .append(event.getTitle()).append(" ").append(event.getHashtag());
+            String tweet = stringBuilder.toString();
+            mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
+        } else {
+            showCheckinOverlay();
+        }
     }
 
     @Override
@@ -236,6 +273,18 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         super.setService(service);
         mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
         showProgressOverlay();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if (resultCode == Activity.RESULT_OK) {
+                showProgressOverlay();
+                String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId, getBindingKey());
+            }
+        }
     }
 
     @Override
