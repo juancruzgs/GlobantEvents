@@ -118,7 +118,18 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                 for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
                     linearLayoutManager.findViewByPosition(i);
                     ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                    current.startAnimations();
+                    switch (v.getId()){
+                        case R.id.text_view_accept_all:
+                            if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE){
+                                current.acceptAnimation();
+                            }
+                            break;
+                        case R.id.text_view_decline_all:
+                            if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE){
+                                current.declineAnimation();
+                            }
+                    }
+
                 }
             }
         };

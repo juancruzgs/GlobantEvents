@@ -3,6 +3,7 @@ package com.globant.eventmanager.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +87,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         holder.getLinearLayoutMiddleLeft().setVisibility(View.INVISIBLE);
         holder.getFrameLayoutLeft().setVisibility(View.VISIBLE);
         holder.getFrameLayoutRight().setVisibility(View.INVISIBLE);
+        holder.getFrameLayoutHolder().setBackgroundColor(Color.WHITE);
     }
 
     private void setAcceptedVisibility(ParticipantsListViewHolderManager holder) {
@@ -93,6 +95,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         holder.getLinearLayoutMiddleLeft().setVisibility(View.VISIBLE);
         holder.getFrameLayoutLeft().setVisibility(View.INVISIBLE);
         holder.getFrameLayoutRight().setVisibility(View.VISIBLE);
+        holder.getFrameLayoutHolder().setBackgroundColor(Color.parseColor("#2D27D500"));
     }
 
     private void setViewHolderImage(ParticipantsListViewHolderManager holder, Subscriber subscriber) {
