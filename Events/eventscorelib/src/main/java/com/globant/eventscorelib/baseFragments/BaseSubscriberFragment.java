@@ -103,6 +103,7 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
     private float last_x,last_y,last_z;
     private static final int SHAKE_THRESHOLD = 2500;
     private static final String HANDSHAKE_MESSAGE = "Glober detected";
+    private int mShakes = 0;
 
     public BaseSubscriberFragment() {
         // Required empty public constructor
@@ -515,16 +516,27 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
         float z = event.values[2];
 
         long curTime  = System.currentTimeMillis();
-        if(curTime-lastUpdate > 100)
+        if(curTime-lastUpdate > 80)
         {
             long diffTime = (curTime - lastUpdate);
             lastUpdate = curTime;
             float speed = Math.abs(x + y + z - last_x - last_y - last_z)/ diffTime * 10000;
             if(speed > SHAKE_THRESHOLD)
             {
-                Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                v.vibrate(400);
-                Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
+                mShakes++;
+                // 5 shakes: 3 forward with 2 backward
+                if (mShakes >= 5) {
+                    // TODO: Use this to identify the owner as glober
+                    // NOTE: Here lies a pseudo bug: if you shake, exit, back and shake again, getActivity() returns null.
+/*
+                    Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(400);
+*/
+                    Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
+                }
+            }
+            else {
+                mShakes = 0;
             }
 
             last_x = x;
