@@ -47,7 +47,7 @@ public class CloudDataController {
         return query.getFirst();
     }
 
-    public void setCheckIn(String eventId, Context context) throws ParseException {
+    public Event setCheckIn(String eventId, Context context) throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject event = eventsQuery.get(eventId);
         String subscriberMail = SharedPreferencesController.getUserEmail(context);
@@ -58,6 +58,7 @@ public class CloudDataController {
         ParseObject subscription = eventToSubsQuery.getFirst();
         subscription.put(CoreConstants.FIELD_CHECK_IN, true);
         subscription.save();
+        return createDomainEventFromDatabase(event);
     }
 
     public List<Speaker> getEventSpeakers(String eventId) throws ParseException {
