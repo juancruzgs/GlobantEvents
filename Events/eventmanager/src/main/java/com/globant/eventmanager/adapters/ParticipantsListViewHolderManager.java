@@ -199,6 +199,8 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
                         linearLayoutMiddleLeft.setVisibility(View.INVISIBLE);
                         linearLayoutMiddle.setVisibility(View.VISIBLE);
                     }
+                } else {
+                    mAnimationCancelled = false;
                 }
             }
 
@@ -233,6 +235,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                mRunnableIsRunning = false;
                 if (mAnimationCancelled) {
                     animation.reset();
                     mTranslateAnimationText.cancel();
@@ -285,8 +288,8 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
 
     public void cancelAnimations() {
         mBooleanIsPressed = false;
-        mAnimationCancelled = true;
         if (mRunnableIsRunning) {
+            mAnimationCancelled = true;
             mTranslateAnimationPhoto.cancel();
         }
         mHandler.removeCallbacks(mRunnable);
