@@ -133,7 +133,6 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         }
         mTweetText.setEnabled(true);
         mTweetButton.setText(getString(R.string.button_tweet));
-        mTweetButton.setTextColor(getResources().getColor(R.color.white));
     }
 
     @Override
