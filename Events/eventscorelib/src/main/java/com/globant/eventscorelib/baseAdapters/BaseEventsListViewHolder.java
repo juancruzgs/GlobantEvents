@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
-import com.globant.eventscorelib.baseListeners.GetEventInformation;
 
 public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final View mViewGroup;
@@ -22,6 +21,10 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final TextView mEventDate;
     private final TextView mLocationEvent;
     private final TextView mShortDescriptionEvent;
+
+    public interface GetEventInformation {
+        void getEvent(int position);
+    }
 
     protected abstract Class<? extends BasePagerActivity> getActivityClass();
 
