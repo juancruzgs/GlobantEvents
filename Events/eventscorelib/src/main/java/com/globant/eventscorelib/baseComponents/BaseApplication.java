@@ -1,7 +1,6 @@
 package com.globant.eventscorelib.baseComponents;
 
 import android.app.Application;
-import android.support.v4.app.ListFragment;
 
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
@@ -46,9 +45,9 @@ abstract public class BaseApplication extends Application {
         return mCacheObjectsController.getEvent();
     }
 
-    public List<Status> getTweetList () {
-        return mCacheObjectsController.getTweetList();
-    }
+//    public List<Status> getTweetList () {
+//        return mCacheObjectsController.getTweetList();
+//    }
 
     public List<Speaker> getSpeakersList(){
         return mCacheObjectsController.getSpeakersList();
@@ -66,9 +65,9 @@ abstract public class BaseApplication extends Application {
         mCacheObjectsController.setSpeakersList(speakersList);
     }
 
-    public void setTweetList (List<Status> twitterList) {
-        mCacheObjectsController.setTweetList(twitterList);
-    }
+//    public void setTweetList (List<Status> twitterList) {
+//        mCacheObjectsController.setTweetList(twitterList);
+//    }
 
     public void setTwitterUser (User user) {
         mCacheObjectsController.setUser(user);
