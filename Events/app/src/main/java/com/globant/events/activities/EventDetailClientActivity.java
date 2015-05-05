@@ -31,7 +31,11 @@ public class EventDetailClientActivity extends BasePagerActivity{
             fragmentList.add(getSupportFragmentManager().getFragment(savedInstanceState, BaseSpeakersListFragment.class.getName()));
             fragmentList.add(getSupportFragmentManager().getFragment(savedInstanceState, StreamTwitterClientFragment.class.getName()));
         }
-        prepareAdapter();
+    }
+
+    @Override
+    protected void instantiateFragments() {
+
     }
 
     @Override
