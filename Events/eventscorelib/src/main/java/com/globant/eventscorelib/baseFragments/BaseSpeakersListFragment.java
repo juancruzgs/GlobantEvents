@@ -80,6 +80,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
         hideUtilsAndShowContentOverlay();
         prepareRecyclerView(rootView);
+        setRetainInstance(true);
         return rootView;
     }
 

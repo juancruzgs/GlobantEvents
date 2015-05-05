@@ -87,6 +87,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         wireUpFAB(rootView);
         mLayoutManager = new LinearLayoutManager(getActivity());
         setRecyclerViewLayoutManager();
+        setRetainInstance(true);
         return rootView;
     }
 

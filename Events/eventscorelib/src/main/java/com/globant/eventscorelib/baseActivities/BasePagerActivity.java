@@ -57,9 +57,9 @@ abstract public class BasePagerActivity extends BaseActivity {
     }
 
     protected void prepareAdapter() {
-        final List<Fragment> fragments = getFragments();
-        pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
-        ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
+//        final List<Fragment> fragments = getFragments();
+        pageAdapter = new PageAdapter(getSupportFragmentManager(), getFragments());
+        final ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
         pager.setPageTransformer(true, new ZoomOutSlideTransformer());
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -71,10 +71,10 @@ abstract public class BasePagerActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int newPosition) {
-                FragmentLifecycle fragmentToHide = (FragmentLifecycle)fragments.get(mCurrentFragmentPosition);
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle) pageAdapter.getItem(mCurrentFragmentPosition);
                 fragmentToHide.onPauseFragment();
 
-                FragmentLifecycle fragmentToShow = (FragmentLifecycle)fragments.get(newPosition);
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle)pageAdapter.getItem(newPosition);
                 fragmentToShow.onResumeFragment();
 
                 mCurrentFragmentPosition = newPosition;
@@ -127,8 +127,8 @@ abstract public class BasePagerActivity extends BaseActivity {
     }
 
     public interface FragmentLifecycle {
-        public void onPauseFragment();
-        public void onResumeFragment();
+        void onPauseFragment();
+        void onResumeFragment();
     }
 
     @Override
