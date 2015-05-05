@@ -36,6 +36,15 @@
 
                 </FrameLayout>
 
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:id="@+id/imageView_Event_Type_Logo"
+                    android:layout_alignRight="@+id/event_image_view"
+                    android:layout_alignTop="@+id/event_image_view"
+                    android:src="@mipmap/ic_social"
+                    android:background="@drawable/smooh_circle"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -74,15 +83,48 @@
 
             </RelativeLayout>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="En la fiesta del chorizo, nos vamos a comer tremendo choripan"
-                android:id="@+id/event_short_description_text_view"
-                style="@style/condensed_normal_small"
-                android:singleLine="false"
-                android:padding="@dimen/padding_text_view_card_row" />
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/speakers_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/speaker_image_view"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@mipmap/ic_speaker"/>
+
+                    <TextView
+                        android:id="@+id/event_speakers_text_view"
+                        style="@style/condensed_normal_medium"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:padding="@dimen/padding_text_view_card_row"
+                        android:singleLine="false"
+                        android:text="Tony Stark - Bruce Banner - Jarvis"
+                        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/event_short_description_text_view"
+                    style="@style/condensed_normal_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_text_view_card_row"
+                    android:singleLine="false"
+                    android:text="Curso avanzado sobre Java para estudiantes de Ingeniería y Licenciatura en Sistemas."
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

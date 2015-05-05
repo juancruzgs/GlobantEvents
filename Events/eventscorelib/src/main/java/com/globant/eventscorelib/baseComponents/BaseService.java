@@ -228,9 +228,9 @@ public class BaseService extends Service {
                                         currentSubscriber.finishAction(theAction, post);
                                     break;
                                 case SUBSCRIBER_CHECKIN:
-                                    mCloudDataController.setCheckIn((String) argument, getBaseContext());
+                                    Event eventCheckin = mCloudDataController.setCheckIn((String) argument, getBaseContext());
                                     if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, argument);
+                                        currentSubscriber.finishAction(theAction, eventCheckin);
                                     break;
                                 case PARTICIPANT_LIST:
                                     List<Subscriber> subscribersList = mCloudDataController.getEventSubscribers((String) argument);

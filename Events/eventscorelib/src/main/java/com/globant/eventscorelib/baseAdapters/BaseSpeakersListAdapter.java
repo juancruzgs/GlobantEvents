@@ -19,14 +19,12 @@ import java.util.List;
  */
 public class BaseSpeakersListAdapter extends RecyclerView.Adapter<BaseSpeakersListViewHolder>{
     private List<Speaker> mSpeakers;
-    private final Context mContext;
     private final CropCircleTransformation mTransformation;
 
 
     public BaseSpeakersListAdapter(Context context, List<Speaker> speakers) {
         mSpeakers = speakers;
-        mContext = context;
-        mTransformation = new CropCircleTransformation(mContext);
+        mTransformation = new CropCircleTransformation(context);
     }
 
     @Override
@@ -60,14 +58,17 @@ public class BaseSpeakersListAdapter extends RecyclerView.Adapter<BaseSpeakersLi
 
     @Override
     public int getItemCount() {
-        return mSpeakers.size();
+        if (mSpeakers != null){
+            return mSpeakers.size();
+        }
+        else {
+            return 0;
+        }
     }
 
     public void addSpeaker(Speaker speaker){
         mSpeakers.add(speaker);
     }
-
-
 }
 
 

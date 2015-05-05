@@ -2,6 +2,8 @@ package com.globant.eventscorelib.baseAdapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +23,12 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
     private Context mContext;
     private List<Event> mEventList;
     private List<Bitmap> mBitmapList;
+    private Drawable mDrawableToApply;
 
     public BaseEventsListAdapter(List<Event> eventList, Context context) {
         mContext = context;
         mBitmapList = new ArrayList<>();
-        for (int n = 0 ; n < eventList.size() ; n++){
+        for (int n = 0; n < eventList.size(); n++) {
             mBitmapList.add(ConvertImage.convertByteToBitmap(eventList.get(n).getEventLogo()));
         }
         eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
@@ -46,20 +49,57 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
         holder.itemView.setTag(position);
         byte[] eventLogo = mEventList.get(position).getEventLogo();
-           if (mEventList.get(position).getTitle().equals(CoreConstants.KEY_LAYOUT_PLACEHOLDER)){
+        if (mEventList.get(position).getTitle().equals(CoreConstants.KEY_LAYOUT_PLACEHOLDER)) {
             holder.getEventTitle().setText(mEventList.get(position).getTitle());
             holder.getViewGroup().setVisibility(View.INVISIBLE);
-        }
-        else {
-            if (holder.getViewGroup().getVisibility() == View.INVISIBLE){
+        } else {
+
+            if (holder.getViewGroup().getVisibility() == View.INVISIBLE) {
                 holder.getViewGroup().setVisibility(View.VISIBLE);
             }
+
             if (eventLogo == null) {
                 holder.getImageEvent().setImageResource(R.mipmap.placeholder);
 
             } else {
                 holder.getImageEvent().setImageBitmap(mBitmapList.get(position));
             }
+            if (mEventList.get(position).getCategory() != null) {
+                switch (mEventList.get(position).getCategory()) {
+                    case "social":
+                        holder.getCategoryLogo().setImageResource(R.mipmap.ic_social);
+                        mDrawableToApply = mContext.getResources().getDrawable(R.mipmap.ic_social);
+                        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+                        DrawableCompat.setTint(mDrawableToApply, mContext.getResources().getColor(R.color.pink_material));
+                        break;
+                    case "technical":
+                        holder.getCategoryLogo().setImageResource(R.mipmap.ic_technical);
+                        mDrawableToApply = mContext.getResources().getDrawable(R.mipmap.ic_technical);
+                        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+                        DrawableCompat.setTint(mDrawableToApply, mContext.getResources().getColor(R.color.yellow_material));
+                        break;
+                    case "informative":
+                        holder.getCategoryLogo().setImageResource(R.mipmap.ic_informative);
+                        mDrawableToApply = mContext.getResources().getDrawable(R.mipmap.ic_informative);
+                        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+                        DrawableCompat.setTint(mDrawableToApply, mContext.getResources().getColor(R.color.blue_light_material));
+                        break;
+                    default:
+                        holder.getCategoryLogo().setImageResource(R.mipmap.ic_launcher);
+                        mDrawableToApply = mContext.getResources().getDrawable(R.mipmap.ic_launcher);
+                        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+                        DrawableCompat.setTint(mDrawableToApply, mContext.getResources().getColor(R.color.globant_green_dark));
+                        break;
+                }
+            } else {
+                holder.getCategoryLogo().setImageResource(R.mipmap.ic_launcher);
+                mDrawableToApply = mContext.getResources().getDrawable(R.mipmap.ic_launcher);
+                mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+                DrawableCompat.setTint(mDrawableToApply, mContext.getResources().getColor(R.color.globant_green_dark));
+
+            }
+            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
+            holder.getCategoryLogo().setImageDrawable(mDrawableToApply);
             holder.getEventTitle().setText(mEventList.get(position).getTitle());
             holder.getEventDate().setText(CustomDateFormat.getDate(mEventList.get(position).getStartDate(), mContext));
             holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
