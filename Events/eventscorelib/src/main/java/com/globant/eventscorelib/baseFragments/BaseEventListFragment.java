@@ -38,16 +38,20 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+
     private LayoutManagerType mCurrentLayoutManagerType;
     private ObservableRecyclerView mRecyclerView;
     private List<Event> mEventList;
 
     protected abstract int getFragmentLayout();
+
     protected abstract boolean getIsGlober();
+
     protected abstract BaseEventsListAdapter getAdapter();
 
     protected int getEventListRecyclerView() {
@@ -62,7 +66,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         return mEventList;
     }
 
-    public BaseEventListFragment(){
+    public BaseEventListFragment() {
     }
 
     @Override
@@ -105,26 +109,14 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     public void setRecyclerViewLayoutManager(Bundle savedInstanceState) {
-        int scrollPosition = CoreConstants.ZERO;
+
         if (savedInstanceState != null) {
-            mCurrentLayoutManagerType = (LayoutManagerType)savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
-        }
-        if (mRecyclerView.getLayoutManager() != null) {
-            scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
-                    .findFirstCompletelyVisibleItemPosition();
+            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.scrollToPosition(scrollPosition);
-
-        ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.smoothScrollToPosition(1);
-            }
-        });
     }
 
     @Override
@@ -152,8 +144,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
                 // Set translation movement
                 cardY = cardView.getY();
-                movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height/childHeight))-1)), 10);
-                movementX = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height/childHeight))-1)), 0);
+                movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height / childHeight)) - 1)), 10);
+                movementX = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height / childHeight)) - 1)), 0);
 
                 // Translations
                 ViewHelper.setTranslationY(titleView, movementY);
@@ -163,7 +155,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 ViewHelper.setTranslationX(locationView, -(movementX * 3));
 
                 // Alphas
-                float alpha = ScrollUtils.getFloat((cardY - (childHeight*3)) * (z * 2), 0, 255) / 64;
+                float alpha = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (z * 2), 0, 255) / 64;
                 ViewHelper.setAlpha(dateView, 1 - (alpha));
                 ViewHelper.setAlpha(locationView, 1 - (alpha));
                 ViewHelper.setAlpha(TypeLogoView, 1 - (alpha));
@@ -174,10 +166,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     @Override
-    public void onDownMotionEvent() {}
+    public void onDownMotionEvent() {
+    }
 
     @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState) {}
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -200,9 +194,9 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 startActivity(intentSubscriber);
                 handled = true;
             } else {
-                if (id == R.id.action_checkin){
+                if (id == R.id.action_checkin) {
                     Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                    startActivityForResult(intentScan,0);
+                    startActivityForResult(intentScan, 0);
                     handled = true;
                 }
             }
@@ -215,7 +209,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     @Override
-    public void onStartAction(BaseService.ACTIONS theAction) {}
+    public void onStartAction(BaseService.ACTIONS theAction) {
+    }
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
