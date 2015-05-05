@@ -1,5 +1,6 @@
 package com.globant.eventmanager.activities;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.globant.eventmanager.R;
@@ -15,13 +16,38 @@ import java.util.List;
 
 public class EventDetailManagerActivity extends BasePagerActivity {
 
+    List<Fragment> fragmentList;
+    Bundle mSavedInstanceState;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        mSavedInstanceState = savedInstanceState;
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        for (Fragment fragment : fragmentList){
+            getSupportFragmentManager().putFragment(outState,fragment.getClass().getName(), fragment);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
     @Override
     protected List<Fragment> getFragments() {
-        List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(new EventDescriptionManagerFragment());
-        fragmentList.add(new EventParticipantsManagerFragment());
-        fragmentList.add(new BaseSpeakersListFragment());
-        fragmentList.add(new TwitterStreamManagerFragment());
+        fragmentList = new ArrayList<>();
+        if (mSavedInstanceState == null){
+            fragmentList.add(new EventDescriptionManagerFragment());
+            fragmentList.add(new EventParticipantsManagerFragment());
+            fragmentList.add(new BaseSpeakersListFragment());
+            fragmentList.add(new TwitterStreamManagerFragment());
+        }
+        else {
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventDescriptionManagerFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventParticipantsManagerFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, BaseSpeakersListFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, TwitterStreamManagerFragment.class.getName()));
+        }
         return fragmentList;
     }
 

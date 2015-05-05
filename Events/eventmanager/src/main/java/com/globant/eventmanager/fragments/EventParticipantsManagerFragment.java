@@ -60,6 +60,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_participants, container, false);
         rootView.setTag(TAG);
+        setRetainInstance(true);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_participants_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;

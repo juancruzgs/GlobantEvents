@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.globant.events.R;
 import com.globant.events.fragments.EventDescriptionClientFragment;
-import com.globant.events.fragments.StreamTwitterClientFragment;
+import com.globant.events.fragments.TwitterStreamClientFragment;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
 
@@ -16,38 +16,35 @@ import java.util.List;
 public class EventDetailClientActivity extends BasePagerActivity{
 
     List<Fragment> fragmentList;
+    Bundle mSavedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mSavedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
-        fragmentList = new ArrayList<>();
-        if (savedInstanceState == null){
-            fragmentList.add(new EventDescriptionClientFragment());
-            fragmentList.add(new BaseSpeakersListFragment());
-            fragmentList.add(new StreamTwitterClientFragment());
-        }
-        else {
-            fragmentList.add(getSupportFragmentManager().getFragment(savedInstanceState, EventDescriptionClientFragment.class.getName()));
-            fragmentList.add(getSupportFragmentManager().getFragment(savedInstanceState, BaseSpeakersListFragment.class.getName()));
-            fragmentList.add(getSupportFragmentManager().getFragment(savedInstanceState, StreamTwitterClientFragment.class.getName()));
-        }
-    }
-
-    @Override
-    protected void instantiateFragments() {
-
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        getSupportFragmentManager().putFragment(outState, EventDescriptionClientFragment.class.getName(), fragmentList.get(0));
-        getSupportFragmentManager().putFragment(outState, BaseSpeakersListFragment.class.getName(), fragmentList.get(1));
-        getSupportFragmentManager().putFragment(outState, StreamTwitterClientFragment.class.getName(), fragmentList.get(2));
+        for (Fragment fragment : fragmentList){
+            getSupportFragmentManager().putFragment(outState,fragment.getClass().getName(), fragment);
+        }
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected List<Fragment> getFragments() {
+        fragmentList = new ArrayList<>();
+        if (mSavedInstanceState == null){
+            fragmentList.add(new EventDescriptionClientFragment());
+            fragmentList.add(new BaseSpeakersListFragment());
+            fragmentList.add(new TwitterStreamClientFragment());
+        }
+        else {
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventDescriptionClientFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, BaseSpeakersListFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, TwitterStreamClientFragment.class.getName()));
+        }
         return fragmentList;
     }
 
