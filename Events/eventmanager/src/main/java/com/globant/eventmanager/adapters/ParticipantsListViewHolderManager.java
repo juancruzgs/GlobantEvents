@@ -195,9 +195,13 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
                     if (leftToRight){
                         linearLayoutMiddleLeft.setVisibility(View.VISIBLE);
                         linearLayoutMiddle.setVisibility(View.INVISIBLE);
+
                     } else{
                         linearLayoutMiddleLeft.setVisibility(View.INVISIBLE);
                         linearLayoutMiddle.setVisibility(View.VISIBLE);
+                    }
+                    if ((mFragment.isAddAll()) || (mFragment.isDeclineAll())){
+                        mFragment.notifyAdapter();
                     }
                 } else {
                     mAnimationCancelled = false;

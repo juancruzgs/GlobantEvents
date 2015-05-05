@@ -35,7 +35,9 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         return mCurrentParticipant;
     }
 
-   
+    public void setSubscribers(List<Subscriber> mSubscribers) {
+        this.mSubscribers = mSubscribers;
+    }
 
     @Override
     public void onTouchListenerItem(ParticipantsListViewHolderManager participantsListViewHolderManager) {
@@ -88,7 +90,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
 
     }
 
-    private void setNotAcceptedVisibility(ParticipantsListViewHolderManager holder) {
+    public void setNotAcceptedVisibility(ParticipantsListViewHolderManager holder) {
         holder.getLinearLayoutMiddle().setVisibility(View.VISIBLE);
         holder.getLinearLayoutMiddleLeft().setVisibility(View.INVISIBLE);
         holder.getFrameLayoutLeft().setVisibility(View.VISIBLE);
@@ -96,7 +98,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         holder.getFrameLayoutHolder().setBackgroundColor(Color.WHITE);
     }
 
-    private void setAcceptedVisibility(ParticipantsListViewHolderManager holder) {
+    public void setAcceptedVisibility(ParticipantsListViewHolderManager holder) {
         holder.getLinearLayoutMiddle().setVisibility(View.INVISIBLE);
         holder.getLinearLayoutMiddleLeft().setVisibility(View.VISIBLE);
         holder.getFrameLayoutLeft().setVisibility(View.INVISIBLE);
