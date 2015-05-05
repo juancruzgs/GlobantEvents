@@ -6,6 +6,7 @@ import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventDescriptionManagerFragment;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
 import com.globant.eventmanager.fragments.TwitterStreamManagerFragment;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EventDetailManagerActivity extends BasePagerActivity {
+public class EventDetailManagerActivity extends BaseEventDetailPagerActivity {
 
     @Override
     protected List<Fragment> getFragments() {

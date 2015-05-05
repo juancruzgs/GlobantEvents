@@ -32,8 +32,8 @@ public class CropCircleTransformation implements Transformation {
 		int aHeight = (int) (source_a.getHeight()*scale);
 		
 		Bitmap source = Bitmap.createScaledBitmap(source_a,aWidth, aHeight, false);
-		source_a.recycle();
-		
+//		source_a.recycle();
+
 		Bitmap output = Bitmap.createBitmap(px, px, Config.ARGB_8888);
 		Canvas canvas = new Canvas(output);
 
@@ -53,7 +53,8 @@ public class CropCircleTransformation implements Transformation {
 //		if (output != source) {
 //			source.recycle();
 //		}
-        source.recycle();
+		source_a.recycle();
+		source.recycle();
 
 		return output;
 	}

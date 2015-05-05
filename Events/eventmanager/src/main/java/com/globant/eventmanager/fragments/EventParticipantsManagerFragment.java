@@ -1,6 +1,7 @@
 package com.globant.eventmanager.fragments;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,19 +15,20 @@ import android.widget.TextView;
 
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.R;
+import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.domainObjects.Subscriber;
 
-public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle{
+import java.util.List;
+
+public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener{
 
     private static final String TAG = "EventParticipantsFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int DATASET_COUNT = 9;
-    private enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
-    }
+    private List<Subscriber> mSubscribers;
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected RecyclerView mRecyclerView;
     protected EventParticipantsListAdapterManager mAdapter;
@@ -36,6 +38,42 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private RelativeLayout mViewButtonsAddDeclineAll;
     private TextView mTextViewAcceptAll;
     private TextView mTextViewDeclineAll;
+
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
+    }
+
+    @Override
+    public String getBindingKey() {
+        return "EventParticipantsManagerFragment";
+    }
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay();
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        switch ( theAction ) {
+            case PARTICIPANT_LIST:
+                mSubscribers = (List<Subscriber>) result;
+                mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
+                mRecyclerView.setAdapter(mAdapter);
+                hideUtilsAndShowContentOverlay();
+        }
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
+    }
+
+    private enum LayoutManagerType {
+        GRID_LAYOUT_MANAGER,
+        LINEAR_LAYOUT_MANAGER
+    }
 
     public EventParticipantsManagerFragment() {
         // Required empty public constructor
@@ -48,12 +86,12 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initDataset();
+        //initDataset();
     }
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return null;
+        return this;
     }
 
     @Override
@@ -68,13 +106,35 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-        mAdapter = new EventParticipantsListAdapterManager(getActivity(), mDataset, this);
-        mRecyclerView.setAdapter(mAdapter);
-        hideUtilsAndShowContentOverlay();
         setOnScrollListener();
         mViewButtonsAddDeclineAll = (RelativeLayout) rootView.findViewById(R.id.relative_layout_buttons_add_and_decline);
         mTextViewAcceptAll = (TextView) rootView.findViewById(R.id.text_view_accept_all);
         mTextViewDeclineAll = (TextView) rootView.findViewById(R.id.text_view_decline_all);
+        View.OnClickListener addDeclineAllListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                int initPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
+                    linearLayoutManager.findViewByPosition(i);
+                    ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
+                    switch (v.getId()){
+                        case R.id.text_view_accept_all:
+                            if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE){
+                                current.acceptAnimation();
+                            }
+                            break;
+                        case R.id.text_view_decline_all:
+                            if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE){
+                                current.declineAnimation();
+                            }
+                    }
+
+                }
+            }
+        };
+        mTextViewAcceptAll.setOnClickListener(addDeclineAllListener);
+        mTextViewDeclineAll.setOnClickListener(addDeclineAllListener);
         return rootView;
     }
 
@@ -145,6 +205,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     }
 
     private void initDataset() {
+
         mDataset = new String[DATASET_COUNT];
         for (int i = 0; i < DATASET_COUNT; i++) {
             mDataset[i] = "Hermione Granger #" + i;
@@ -159,5 +220,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     }
 
     @Override
-    public void onResumeFragment(){}
+    public void onResumeFragment(){
+        mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, "5vs7DC2RnQ", getBindingKey());
+    }
 }

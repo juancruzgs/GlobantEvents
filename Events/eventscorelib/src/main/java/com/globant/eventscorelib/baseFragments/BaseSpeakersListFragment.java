@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseActivities.BaseSpeakerDetailActivity;
 import com.globant.eventscorelib.domainObjects.Speaker;
@@ -26,17 +28,15 @@ import java.util.List;
         */
 public class BaseSpeakersListFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
 
-    private List<Speaker> mSpeakers = new ArrayList();
-
-    private enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
-    }
-
-    protected LayoutManagerType mCurrentLayoutManagerType;
+    private List<Speaker> mSpeakers = new ArrayList<>();
     protected RecyclerView mRecyclerView;
     protected BaseSpeakersListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return this;
+    }
 
     @Override
     public Activity getBindingActivity() {
@@ -45,25 +45,29 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public String getBindingKey() {
-        // TODO: Return an appropriated key
-        return "BaseSpeakersListFragment";
+        return BaseSpeakersListFragment.class.getSimpleName();
     }
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-
+        showProgressOverlay();
     }
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
             mSpeakers = (List<Speaker>) result;
-            mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
-            if (mRecyclerView != null) {
-                mRecyclerView.setAdapter(mAdapter);
-            }
+            BaseEventDetailPagerActivity.getInstance().setSpeakersList(mSpeakers);
+            setRecyclerViewAdapter();
         }
         hideUtilsAndShowContentOverlay();
+    }
+
+    private void setRecyclerViewAdapter() {
+        mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
+        if (mRecyclerView != null) {
+            mRecyclerView.setAdapter(mAdapter);
+        }
     }
 
     @Override
@@ -75,36 +79,25 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     @Override
-    public BaseService.ActionListener getActionListener() {
-        return this;
+    protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
+        hideUtilsAndShowContentOverlay();
+        prepareRecyclerView(rootView);
+        return rootView;
     }
 
-    @Override
-    protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    private void prepareRecyclerView(View rootView) {
         int scrollPosition = 0;
-        View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
-
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.speaker_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
-        // If a layout manager has already been set, get current scroll position.
         if (mRecyclerView.getLayoutManager() != null) {
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
         }
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
-
-        mAdapter = new BaseSpeakersListAdapter(getActivity(),mSpeakers);
-        mRecyclerView.setAdapter(mAdapter);
-
+        setRecyclerViewAdapter();
         mRecyclerView.setHasFixedSize(true);
-        if (mAdapter.getItemCount() == 0){
-            showProgressOverlay();
-        } else {
-            hideUtilsAndShowContentOverlay();
-        }
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
@@ -114,8 +107,6 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
                     }
                 })
         );
-
-        return rootView;
     }
 
     @Override
@@ -124,15 +115,16 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     @Override
-    public void onPauseFragment() {
-        Logger.i("onPauseFragment()");
-    }
+    public void onPauseFragment() {}
 
     @Override
     public void onResumeFragment() {
-        if (mService != null){
+        mSpeakers = BaseEventDetailPagerActivity.getInstance().getSpeakersList();
+        if (mSpeakers == null) {
             mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
         }
+        else {
+            setRecyclerViewAdapter();
+        }
     }
-
 }

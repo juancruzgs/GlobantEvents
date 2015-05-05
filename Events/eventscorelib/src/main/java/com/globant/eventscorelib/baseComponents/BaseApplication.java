@@ -7,12 +7,11 @@ import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import twitter4j.User;
 
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.parse.Parse;
 
 import java.util.List;
-
-import twitter4j.Status;
 
 abstract public class BaseApplication extends Application {
     private static BaseApplication ourInstance;
@@ -40,14 +39,6 @@ abstract public class BaseApplication extends Application {
         return mSharedPreferencesController;
     }
 
-    public Event getEvent() {
-        return mCacheObjectsController.getEvent();
-    }
-
-    public List<Status> getTweetList () {
-        return mCacheObjectsController.getTweetList();
-    }
-
     public User getTwitterUser () {
         return mCacheObjectsController.getUser();
     }
@@ -56,9 +47,8 @@ abstract public class BaseApplication extends Application {
         mCacheObjectsController.setEvent(event);
     }
 
-
-    public void setTweetList (List<Status> twitterList) {
-        mCacheObjectsController.setTweetList(twitterList);
+    public Event getEvent() {
+        return mCacheObjectsController.getEvent();
     }
 
     public void setTwitterUser (User user) {

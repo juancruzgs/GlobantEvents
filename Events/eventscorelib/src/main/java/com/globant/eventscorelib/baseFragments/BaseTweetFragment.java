@@ -58,10 +58,14 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         return rootView;
     }
 
-    @Override
-    public String getTitle() {
-        return getString(R.string.title_fragment_tweet);
-    }
+//    @Override
+//    public String getTitle() {
+//        return getString(R.string.title_fragment_tweet);
+//    }
+      @Override
+      public String getTitle() {
+          return "";
+}
 
     @Override
     public void onResume() {

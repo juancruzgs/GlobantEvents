@@ -35,8 +35,6 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 
 public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
 
-    private static final float MAX_TEXT_SCALE_DELTA = 0.3f;
-
     boolean mStickyToolbar;
     private View mToolbar;
     private ImageView mEventImage;
@@ -109,9 +107,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
                 //TODO: Refactor with functionality, first subscribe, then check-in
 //                getActivity().getSupportFragmentManager().beginTransaction()
 //                        .replace(R.id.container, new SubscriberFragment())
-//                        .addToBackStack(null).commit();
-                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                startActivityForResult(intentScan,0);
             }
         });
 
@@ -126,17 +121,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
                 mScrollView.scrollTo(0, 0);
             }
         });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            if (resultCode == Activity.RESULT_OK) {
-                showProgressOverlay();
-                String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
-                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId, getBindingKey());
-            }
-        }
     }
 
     private void wireUpViews(View rootView) {
@@ -164,31 +148,30 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     @Override
     public void onScrollChanged(int i, boolean b, boolean b2) {
 
-        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
-        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
-        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
-        //PLEASE DON'T EXRACT METHODS YET !, I'LL DO IT WHEN ITS FINISHED. (FP)
-
         // Translate overlay and image
         float flexibleRange = mFlexibleSpaceImageHeight - mActionBarSize;
         int minOverlayTransitionY = mActionBarSize - mOverlayView.getHeight();
         ViewHelper.setTranslationY(mOverlayView, ScrollUtils.getFloat(-i, minOverlayTransitionY, 0));
         ViewHelper.setTranslationY(mEventImage, ScrollUtils.getFloat(-i / 2, minOverlayTransitionY, 0));
 
-        // Change alpha of overlay // getFloat(float value, float minValue, float maxValue)
+        // Change alpha of overlay
         ViewHelper.setAlpha(mOverlayView, ScrollUtils.getFloat((float) i / flexibleRange, 0, 1));
         mEventTitle.getBackground().setAlpha(Math.round(255 * (1 - ScrollUtils.getFloat((float) i / flexibleRange, 0, 1))));
 
         // Scale title text
-        float scale = 1 + ScrollUtils.getFloat((flexibleRange - i) / flexibleRange, 0, MAX_TEXT_SCALE_DELTA);
+        float titleHeight = mEventTitle.getHeight();
+        float scaleY = (titleHeight - i + flexibleRange) / titleHeight;
+        float scale = ScrollUtils.getFloat(scaleY, 0, 1);
         ViewHelper.setPivotX(mEventTitle, 0);
         ViewHelper.setPivotY(mEventTitle, 0);
-        ViewHelper.setScaleX(mEventTitle, scale);
+        //ViewHelper.setScaleX(mEventTitle, scale);
         ViewHelper.setScaleY(mEventTitle, scale);
+//        mEventStartDate.setText(String.format("%.02f", scale) + " | " + i +  " | " + titleHeight +  " | " + String.format("%.02f", scaleY));
 
         // Translate title text
         int maxTitleTranslationY = (int) (mFlexibleSpaceImageHeight - mEventTitle.getHeight() * scale);
         int titleTranslationY = maxTitleTranslationY - i;
+
         //titleTranslationY = Math.max(0, titleTranslationY);
         ViewHelper.setTranslationY(mEventTitle, titleTranslationY);
 
@@ -208,15 +191,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             }
         }
 
-//        if (i < mFlexibleSpaceImageHeight){
-//            mTitle = "";
-//            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
-//        }
-//        else {
-//            mTitle = "La Fiesta del Chori !";
-//            ((BaseActivity)getActivity()).changeFragmentTitle(mTitle);
-//        }
-
         if (i > mFlexibleSpaceImageHeight && !mTitleShown){
             mTitleShown = true;
             ((BaseActivity) getActivity()).changeFragmentTitle((String) mEventTitle.getText());
@@ -224,8 +198,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
         // Translate FAB
         int maxFabTranslationY = mFlexibleSpaceImageHeight - mFab.getHeight() / 2;
-        float fabTranslationY = ScrollUtils.getFloat( -50
-                -i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
+        float fabTranslationY = ScrollUtils.getFloat( -i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
                 mActionBarSize - mFab.getHeight() / 2,
                 maxFabTranslationY);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -240,7 +213,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             ViewHelper.setTranslationY(mFab, fabTranslationY);
         }
 
-        // Show/hide FAB
+        // Show-hide FAB
         if (fabTranslationY < mFlexibleSpaceShowFabOffset-mActionBarSize) {
             hideFab();
         } else {
@@ -280,19 +253,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         }
     }
 
-    private void postCheckinTweet() {
-        if (BaseApplication.getInstance().getSharedPreferencesController()
-                .isAlreadyTwitterLogged()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(getString(R.string.tweet_checkin)).append(" ")
-                    .append(mEvent.getTitle()).append(" ").append(mEvent.getHashtag());
-            String tweet = stringBuilder.toString();
-            mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
-        } else {
-            showCheckinOverlay();
-        }
-    }
-
     private void loadEventDescription() {
         mEventTitle.setText(mEvent.getTitle());
         mEventImage.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
@@ -314,29 +274,12 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        switch (theAction){
-            case SUBSCRIBER_CHECKIN:
-                postCheckinTweet();
-                break;
-            case TWEET_POST:
-                showCheckinOverlay();
-                break;
-            default:
-                break;
-        }
+        hideUtilsAndShowContentOverlay();
     }
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        switch (theAction) {
-            case SUBSCRIBER_CHECKIN:
-                hideUtilsAndShowContentOverlay();
-                Toast.makeText(getActivity(), getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                showErrorOverlay();
-                break;
-        }
+        showErrorOverlay();
     }
 
     @Override

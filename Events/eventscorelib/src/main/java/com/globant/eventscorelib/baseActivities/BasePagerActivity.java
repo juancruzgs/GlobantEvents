@@ -1,15 +1,15 @@
 package com.globant.eventscorelib.baseActivities;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.ViewGroup;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
 
@@ -19,7 +19,7 @@ abstract public class BasePagerActivity extends BaseActivity {
 
     private PageAdapter pageAdapter;
     private int mCurrentFragmentPosition = 0;
-    private List<Fragment> mFragments;
+    //private List<Fragment> mFragments;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -56,8 +56,8 @@ abstract public class BasePagerActivity extends BaseActivity {
     }
 
     private void prepareAdapter() {
-        mFragments = getFragments();
-        pageAdapter = new PageAdapter(getSupportFragmentManager(), mFragments);
+        final List<Fragment> fragments = getFragments();
+        pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
         pager.setPageTransformer(true, new ZoomOutSlideTransformer());
@@ -70,10 +70,10 @@ abstract public class BasePagerActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int newPosition) {
-                FragmentLifecycle fragmentToHide = (FragmentLifecycle)mFragments.get(mCurrentFragmentPosition);
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle)fragments.get(mCurrentFragmentPosition);
                 fragmentToHide.onPauseFragment();
 
-                FragmentLifecycle fragmentToShow = (FragmentLifecycle)mFragments.get(newPosition);
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle)fragments.get(newPosition);
                 fragmentToShow.onResumeFragment();
 
                 mCurrentFragmentPosition = newPosition;
@@ -126,5 +126,17 @@ abstract public class BasePagerActivity extends BaseActivity {
         public void onPauseFragment();
         public void onResumeFragment();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        for (BaseFragment fragment : mFragments) {
+            BaseService.ActionListener listener = fragment.getActionListener();
+            if (listener != null) {
+                getService().disengage(listener.getBindingKey());
+            }
+        }
     }
 }

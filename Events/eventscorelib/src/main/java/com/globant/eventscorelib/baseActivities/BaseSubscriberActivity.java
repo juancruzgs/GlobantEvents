@@ -2,15 +2,11 @@ package com.globant.eventscorelib.baseActivities;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseSubscriberFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
-import com.globant.eventscorelib.utils.CoreConstants;
 
 public class BaseSubscriberActivity extends BaseActivity {
 
@@ -33,8 +29,6 @@ public class BaseSubscriberActivity extends BaseActivity {
         if (SharedPreferencesController.getUserFirstName(this) != null) {
             getSupportActionBar().setTitle(SharedPreferencesController.getUserFirstName(this) + " " + SharedPreferencesController.getUserLastName(this));
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setIcon( new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 
 
 

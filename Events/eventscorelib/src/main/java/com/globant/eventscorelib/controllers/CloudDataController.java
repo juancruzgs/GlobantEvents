@@ -47,7 +47,7 @@ public class CloudDataController {
         return query.getFirst();
     }
 
-    public void setCheckIn(String eventId, Context context) throws ParseException {
+    public Event setCheckIn(String eventId, Context context) throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject event = eventsQuery.get(eventId);
         String subscriberMail = SharedPreferencesController.getUserEmail(context);
@@ -58,6 +58,7 @@ public class CloudDataController {
         ParseObject subscription = eventToSubsQuery.getFirst();
         subscription.put(CoreConstants.FIELD_CHECK_IN, true);
         subscription.save();
+        return createDomainEventFromDatabase(event);
     }
 
     public List<Speaker> getEventSpeakers(String eventId) throws ParseException {
@@ -83,9 +84,12 @@ public class CloudDataController {
         List<ParseObject> eventsToSubscribersList = eventsToSubscribersQuery.find();
         List<Subscriber> subscribersList = new ArrayList<>();
         for (ParseObject eventToSubscribersRow : eventsToSubscribersList) {
+            //eventToSubscriberRow get Accepted
             ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
+            Boolean accepted = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_ACCEPTED);
+            Boolean checkin = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_CHECK_IN);
             if (databaseSubscriber != null) {
-                Subscriber domainSubscriber = createDomainSubscriberFromDatabase(databaseSubscriber);
+                Subscriber domainSubscriber = createDomainSubscriberFromDatabase(databaseSubscriber, accepted, checkin);
                 subscribersList.add(domainSubscriber);
             }
         }
@@ -180,7 +184,7 @@ public class CloudDataController {
         return domainEvent;
     }
 
-    private Subscriber createDomainSubscriberFromDatabase(ParseObject databaseSubscriber) throws ParseException {
+    private Subscriber createDomainSubscriberFromDatabase(ParseObject databaseSubscriber, Boolean accepted, Boolean checkin) throws ParseException {
         Subscriber domainSubscriber = new Subscriber();
         domainSubscriber.setObjectID(databaseSubscriber.getObjectId());
         domainSubscriber.setName(databaseSubscriber.getString(CoreConstants.FIELD_NAME));
@@ -195,8 +199,8 @@ public class CloudDataController {
         domainSubscriber.setEnglish(databaseSubscriber.getBoolean(CoreConstants.FIELD_ENGLISH));
         domainSubscriber.setGlober(databaseSubscriber.getBoolean(CoreConstants.FIELD_GLOBER));
         domainSubscriber.setPublic(databaseSubscriber.getBoolean(CoreConstants.FIELD_PUBLIC));
-        domainSubscriber.setAccepted(databaseSubscriber.getBoolean(CoreConstants.FIELD_ACCEPTED));
-        domainSubscriber.setCheckIn(databaseSubscriber.getBoolean(CoreConstants.FIELD_CHECK_IN));
+        domainSubscriber.setAccepted(accepted);
+        domainSubscriber.setCheckIn(checkin);
         return domainSubscriber;
     }
 

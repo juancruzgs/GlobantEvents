@@ -68,12 +68,15 @@
         </activity>
         <activity
             android:name=".activities.EventDetailManagerActivity"
-            android:label="@string/title_activity_event_detail"
-         >
+            android:label="@string/title_activity_event_detail">
         </activity>
         <activity
             android:name="com.globant.eventscorelib.baseActivities.BaseCreditsActivity"
-            android:label="@string/title_activity_credits">
+            android:label="@string/title_activity_credits"
+            android:parentActivityName=".activities.EventsListManagerActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.EventsListManagerActivity" />
         </activity>
         <activity
             android:name="com.globant.eventscorelib.baseActivities.BaseSubscriberActivity"

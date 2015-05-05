@@ -86,7 +86,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_subscriber">Subscriber</string>
     <string name="email_required">*Email not valid</string>
-    <string name="title_base_activity_twitter">Twitter</string>
+    <string name="title_base_activity_twitter">Tweet event</string>
     <string name="title_fragment_tweet">Tweet</string>
     <string name="title_fragment_tweets_stream">Twitter</string>
     <string name="title_page_description">Description</string>

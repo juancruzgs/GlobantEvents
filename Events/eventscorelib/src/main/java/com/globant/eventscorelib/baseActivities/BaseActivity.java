@@ -133,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         mFragmentTitle = (TextView) toolbar.findViewById(R.id.toolbar_fragment_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
     }
 
     @Override
@@ -151,7 +151,7 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     private void setFragmentTitle(BaseFragment fragment){
         String title = fragment.getTitle();
-        if (title != null && !title.isEmpty() && mFragmentTitle != null){
+        if (title != null && mFragmentTitle != null){
             mFragmentTitle.setText(title);
         }
     }

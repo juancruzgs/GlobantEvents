@@ -120,6 +120,8 @@ public class CoreConstants {
     public static final String BINDING_KEY_FRAGMENT_MANAGER_EVENT_LIST = "EventListManagerFragment";
     public static final String BINDING_KEY_FRAGMENT_CLIENT_EVENT_LIST = "EventListClientFragment";
 
+    //Event Descripion
+    public static final float MAX_TEXT_SCALE_DELTA = 0.3f;
 
     //Pager
     public static final String CURRENT_FRAGMENT_INTENT = "currentFragmentPosition";
