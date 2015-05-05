@@ -8,7 +8,6 @@ import android.view.View;
 import com.globant.events.activities.EventDetailClientActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
-import com.globant.eventscorelib.baseListeners.GetEventInformation;
 
 public class EventsListViewHolderClient extends BaseEventsListViewHolder{
 

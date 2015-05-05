@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
@@ -56,7 +57,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
             mSpeakers = (List<Speaker>) result;
-            BaseApplication.getInstance().setSpeakersList(mSpeakers);
+            BaseEventDetailPagerActivity.getInstance().setSpeakersList(mSpeakers);
             setRecyclerViewAdapter();
         }
         hideUtilsAndShowContentOverlay();
@@ -116,7 +117,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onResumeFragment() {
-        mSpeakers = BaseApplication.getInstance().getSpeakersList();
+        mSpeakers = BaseEventDetailPagerActivity.getInstance().getSpeakersList();
         if (mSpeakers == null) {
             mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
         }

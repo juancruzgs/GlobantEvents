@@ -15,6 +15,7 @@ import com.globant.eventscorelib.controllers.GeocoderController;
 import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -122,7 +123,8 @@ public class BaseService extends Service {
     }
 
     public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
-    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS}
+    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
+    PARTICIPANT_LIST}
 
     public TwitterController getTwitterController() {
         return mTwitterController;
@@ -226,9 +228,13 @@ public class BaseService extends Service {
                                         currentSubscriber.finishAction(theAction, post);
                                     break;
                                 case SUBSCRIBER_CHECKIN:
-                                    mCloudDataController.setCheckIn((String) argument, getBaseContext());
+                                    Event eventCheckin = mCloudDataController.setCheckIn((String) argument, getBaseContext());
                                     if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, argument);
+                                        currentSubscriber.finishAction(theAction, eventCheckin);
+                                    break;
+                                case PARTICIPANT_LIST:
+                                    List<Subscriber> subscribersList = mCloudDataController.getEventSubscribers((String) argument);
+                                    currentSubscriber.finishAction(theAction, subscribersList);
                                     break;
                             }
 

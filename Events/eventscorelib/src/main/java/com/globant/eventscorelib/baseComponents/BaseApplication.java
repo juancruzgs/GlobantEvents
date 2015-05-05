@@ -1,7 +1,6 @@
 package com.globant.eventscorelib.baseComponents;
 
 import android.app.Application;
-import android.support.v4.app.ListFragment;
 
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
@@ -13,8 +12,6 @@ import com.globant.eventscorelib.utils.CoreConstants;
 import com.parse.Parse;
 
 import java.util.List;
-
-import twitter4j.Status;
 
 abstract public class BaseApplication extends Application {
     private static BaseApplication ourInstance;
@@ -42,18 +39,6 @@ abstract public class BaseApplication extends Application {
         return mSharedPreferencesController;
     }
 
-    public Event getEvent() {
-        return mCacheObjectsController.getEvent();
-    }
-
-    public List<Status> getTweetList () {
-        return mCacheObjectsController.getTweetList();
-    }
-
-    public List<Speaker> getSpeakersList(){
-        return mCacheObjectsController.getSpeakersList();
-    }
-
     public User getTwitterUser () {
         return mCacheObjectsController.getUser();
     }
@@ -62,12 +47,8 @@ abstract public class BaseApplication extends Application {
         mCacheObjectsController.setEvent(event);
     }
 
-    public void setSpeakersList (List<Speaker> speakersList){
-        mCacheObjectsController.setSpeakersList(speakersList);
-    }
-
-    public void setTweetList (List<Status> twitterList) {
-        mCacheObjectsController.setTweetList(twitterList);
+    public Event getEvent() {
+        return mCacheObjectsController.getEvent();
     }
 
     public void setTwitterUser (User user) {

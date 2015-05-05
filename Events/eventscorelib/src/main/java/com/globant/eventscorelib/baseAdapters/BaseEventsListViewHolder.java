@@ -13,15 +13,19 @@ import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
-import com.globant.eventscorelib.baseListeners.GetEventInformation;
 
 public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final View mViewGroup;
     private final ImageView mImageEvent;
+    private final ImageView mCategoryLogo;
     private final TextView mEventTitle;
     private final TextView mEventDate;
     private final TextView mLocationEvent;
     private final TextView mShortDescriptionEvent;
+
+    public interface GetEventInformation {
+        void getEvent(int position);
+    }
 
     protected abstract Class<? extends BasePagerActivity> getActivityClass();
 
@@ -29,6 +33,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         super(itemView);
         mViewGroup = itemView;
         mImageEvent = (ImageView) itemView.findViewById(R.id.event_image_view);
+        mCategoryLogo = (ImageView) itemView.findViewById(R.id.imageView_Event_Type_Logo);
         mEventTitle = (TextView) itemView.findViewById(R.id.event_title_text_view);
         mEventDate = (TextView) itemView.findViewById(R.id.event_date_text_view);
         mLocationEvent = (TextView) itemView.findViewById(R.id.event_location_text_view);
@@ -82,6 +87,10 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
 
     public ImageView getImageEvent() {
         return mImageEvent;
+    }
+
+    public ImageView getCategoryLogo() {
+        return mCategoryLogo;
     }
 
     public TextView getShortDescriptionEvent() {
