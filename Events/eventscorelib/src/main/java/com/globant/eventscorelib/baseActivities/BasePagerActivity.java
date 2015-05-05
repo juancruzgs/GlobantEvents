@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
@@ -37,8 +38,8 @@ abstract public class BasePagerActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_pager);
-        prepareAdapter();
-        initialResumeFragment();
+//        prepareAdapter();
+//        initialResumeFragment();
         prepareTitleStrip();
     }
 
@@ -47,7 +48,7 @@ abstract public class BasePagerActivity extends BaseActivity {
         titleStrip.setTextColor(getResources().getColor(R.color.white));
     }
 
-    private void initialResumeFragment() {
+    protected void initialResumeFragment() {
         //onResume first fragment
         if (mCurrentFragmentPosition == 0) {
             FragmentLifecycle fragmentToShow = (FragmentLifecycle) pageAdapter.getItem(0);
@@ -55,7 +56,7 @@ abstract public class BasePagerActivity extends BaseActivity {
         }
     }
 
-    private void prepareAdapter() {
+    protected void prepareAdapter() {
         final List<Fragment> fragments = getFragments();
         pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
@@ -100,12 +101,12 @@ abstract public class BasePagerActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return this.mAdapterFragments.get(position);
+            return mAdapterFragments.get(position);
         }
 
         @Override
         public int getCount() {
-            return this.mAdapterFragments.size();
+            return mAdapterFragments.size();
         }
 
         @Override
@@ -113,7 +114,11 @@ abstract public class BasePagerActivity extends BaseActivity {
             return getTitlesList().get(position).toUpperCase();
         }
 
-//        @Override
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+        }
+
+        //        @Override
 //        public Object instantiateItem(ViewGroup container, int position) {
 //            Fragment fragment = (Fragment) super.instantiateItem(container, position);
 //            mAdapterFragments.set(position, fragment);
@@ -122,10 +127,8 @@ abstract public class BasePagerActivity extends BaseActivity {
     }
 
     public interface FragmentLifecycle {
-
         public void onPauseFragment();
         public void onResumeFragment();
-
     }
 
     @Override

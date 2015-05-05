@@ -1,5 +1,6 @@
 package com.globant.events.activities;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.globant.events.R;
@@ -14,14 +15,35 @@ import java.util.List;
 
 public class EventDetailClientActivity extends BasePagerActivity{
 
+    List<Fragment> fragmentList;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fragmentList = new ArrayList<>();
+        if (savedInstanceState == null){
+            fragmentList.add(new EventDescriptionClientFragment());
+            fragmentList.add(new BaseSpeakersListFragment());
+            fragmentList.add(new StreamTwitterClientFragment());
+        }
+        else {
+            fragmentList.add(getSupportFragmentManager().getFragment(savedInstanceState, EventDescriptionClientFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(savedInstanceState, BaseSpeakersListFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(savedInstanceState, StreamTwitterClientFragment.class.getName()));
+        }
+        prepareAdapter();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        getSupportFragmentManager().putFragment(outState, EventDescriptionClientFragment.class.getName(), fragmentList.get(0));
+        getSupportFragmentManager().putFragment(outState, BaseSpeakersListFragment.class.getName(), fragmentList.get(1));
+        getSupportFragmentManager().putFragment(outState, StreamTwitterClientFragment.class.getName(), fragmentList.get(2));
+        super.onSaveInstanceState(outState);
+    }
+
     @Override
     protected List<Fragment> getFragments() {
-        List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(new EventDescriptionClientFragment());
-        //TODO: Add EventParticipantsFragment
-//        fragmentList.add(new EventParticipantsFragment());
-        fragmentList.add(new BaseSpeakersListFragment());
-        fragmentList.add(new StreamTwitterClientFragment());
         return fragmentList;
     }
 
