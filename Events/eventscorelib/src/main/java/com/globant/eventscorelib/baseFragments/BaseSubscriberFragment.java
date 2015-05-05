@@ -3,15 +3,21 @@ package com.globant.eventscorelib.baseFragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -46,7 +52,7 @@ import java.util.regex.Pattern;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BaseSubscriberFragment extends BaseFragment {
+public class BaseSubscriberFragment extends BaseFragment implements SensorEventListener {
 
 
     Bitmap mPhoto;
@@ -91,6 +97,16 @@ public class BaseSubscriberFragment extends BaseFragment {
     Boolean mDoneClicked;
     Boolean mPhotoTaken;
 
+    private SensorManager sensorManager;
+    private Sensor senAcelerometer;
+    private long lastUpdate = 0;
+    private float last_x,last_y,last_z;
+    private static final int N_SHAKES = 3;
+    private static final int SHAKE_THRESHOLD = 2500;
+    private static final int ONE_SHAKE_TIME_MILLIS = 80;
+    private static final String HANDSHAKE_MESSAGE = "Glober detected";
+    private int mShakes = 0;
+    private boolean globerDetected = false;
 
     public BaseSubscriberFragment() {
         // Required empty public constructor
@@ -374,6 +390,11 @@ public class BaseSubscriberFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        if (!globerDetected) {
+            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
@@ -479,5 +500,68 @@ public class BaseSubscriberFragment extends BaseFragment {
         return stream.toByteArray();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!globerDetected) {
+            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        Sensor mySensor = event.sensor;
+        if (mySensor.getType()==Sensor.TYPE_ACCELEROMETER)
+        {
+            checkHandShake(event);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    private void checkHandShake(SensorEvent event) {
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+
+        long curTime  = System.currentTimeMillis();
+        if(curTime-lastUpdate > ONE_SHAKE_TIME_MILLIS)
+        {
+            long diffTime = (curTime - lastUpdate);
+            lastUpdate = curTime;
+            float speed = Math.abs(x + y + z - last_x - last_y - last_z)/ diffTime * 10000;
+            if(speed > SHAKE_THRESHOLD)
+            {
+                mShakes++;
+                // 5 shakes: 3 forward with 2 backward
+                if (mShakes >= 2 * N_SHAKES - 1) {
+                    // TODO: Use this to identify the owner as glober
+                    // NOTE: Here lies a pseudo bug: if you shake, exit, back and shake again, getActivity() returns null.
+/*
+                    Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(400);
+*/
+                    globerDetected = true;
+                    Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
+                    sensorManager.unregisterListener(this);
+                }
+            }
+            else {
+                mShakes = 0;
+            }
+
+            last_x = x;
+            last_y=y;
+            last_z=z;
+        }
+    }
 }
