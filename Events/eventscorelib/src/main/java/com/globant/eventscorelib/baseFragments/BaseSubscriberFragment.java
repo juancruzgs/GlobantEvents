@@ -101,9 +101,12 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
     private Sensor senAcelerometer;
     private long lastUpdate = 0;
     private float last_x,last_y,last_z;
+    private static final int N_SHAKES = 3;
     private static final int SHAKE_THRESHOLD = 2500;
+    private static final int ONE_SHAKE_TIME_MILLIS = 80;
     private static final String HANDSHAKE_MESSAGE = "Glober detected";
     private int mShakes = 0;
+    private boolean globerDetected = false;
 
     public BaseSubscriberFragment() {
         // Required empty public constructor
@@ -387,9 +390,11 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-        senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+        if (!globerDetected) {
+            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
@@ -495,6 +500,19 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
         return stream.toByteArray();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!globerDetected) {
+            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -516,7 +534,7 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
         float z = event.values[2];
 
         long curTime  = System.currentTimeMillis();
-        if(curTime-lastUpdate > 80)
+        if(curTime-lastUpdate > ONE_SHAKE_TIME_MILLIS)
         {
             long diffTime = (curTime - lastUpdate);
             lastUpdate = curTime;
@@ -525,14 +543,16 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
             {
                 mShakes++;
                 // 5 shakes: 3 forward with 2 backward
-                if (mShakes >= 5) {
+                if (mShakes >= 2 * N_SHAKES - 1) {
                     // TODO: Use this to identify the owner as glober
                     // NOTE: Here lies a pseudo bug: if you shake, exit, back and shake again, getActivity() returns null.
 /*
                     Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                     v.vibrate(400);
 */
+                    globerDetected = true;
                     Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
+                    sensorManager.unregisterListener(this);
                 }
             }
             else {
