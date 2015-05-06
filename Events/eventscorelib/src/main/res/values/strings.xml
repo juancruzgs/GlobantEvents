@@ -104,7 +104,15 @@
     <string name="title_base_speaker_list_fragment">Speakers</string>
     <string name="simple_date_format">MM/dd/yyyy hh:mm aa z</string>
     <string name="missing_photo">Take a picture right now!</string>
+    <string name="button_send_notification">Send</string>
+    <string name="button_cancel_notification">Cancel</string>
     <string name="no_speakers">No acknowledged speakers</string>
 
+
+    <string-array name="spinner_options">
+        <item>Everyone</item>
+        <item>Subscribers</item>
+        <item>Paricipants</item>
+    </string-array>
 
 </resources>
