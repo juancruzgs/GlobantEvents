@@ -53,7 +53,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         super.onFinishAction(theAction, result);
         if (mRecyclerView.getAdapter().getItemCount() > 0) {
-            getRecyclerView().scrollVerticallyToPosition(1);
+            mRecyclerView.scrollToPosition(1);
             ScrollUtils.addOnGlobalLayoutListener(getRecyclerView(), new Runnable() {
                 @Override
                 public void run() {
