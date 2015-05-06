@@ -1,5 +1,7 @@
 package com.globant.eventmanager.adapters;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +49,9 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     private Boolean mRunnableIsRunning;
     private TouchListenerItem mAdapter;
     private final Handler mHandler = new Handler();
+    private int mSubPosition;
+    private TextView mTextViewPosition;
+    private ObjectAnimator mColorTransition;
 
 
 
@@ -114,6 +119,10 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         return mFrameLayoutHolder;
     }
 
+    public TextView getTextViewPosition() {
+        return mTextViewPosition;
+    }
+
     public ParticipantsListViewHolderManager(View itemView, EventParticipantsManagerFragment fragment, TouchListenerItem adapter) {
         super(itemView);
         mFrameLayoutHolder = (FrameLayout) itemView.findViewById(R.id.frame_layout_holder);
@@ -134,6 +143,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         mFragment = fragment;
         mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
         mAdapter = adapter;
+        mTextViewPosition = (TextView) itemView.findViewById(R.id.text_view_position);
         itemView.setOnTouchListener(this);
 
     }
@@ -159,11 +169,13 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     public void declineAnimation() {
         addTranslateAnimationPhoto(mFrameLayoutRight, mFrameLayoutLeft, mFrameLayoutHolder, false);
         addTranslateAnimationText(mLinearLayoutMiddle, mLinearLayoutMiddleLeft, mFrameLayoutHolder, false);
+        addBackgroundColorAnimation(mFrameLayoutHolder, mFragment.getActivity().getResources().getColor(R.color.globant_green_light), Color.WHITE);
     }
 
     public void acceptAnimation() {
         addTranslateAnimationPhoto(mFrameLayoutLeft, mFrameLayoutRight, mFrameLayoutHolder, true);
-        addTranslateAnimationText(mLinearLayoutMiddle, mLinearLayoutMiddleLeft, mFrameLayoutHolder,true);
+        addTranslateAnimationText(mLinearLayoutMiddle, mLinearLayoutMiddleLeft, mFrameLayoutHolder, true);
+        addBackgroundColorAnimation(mFrameLayoutHolder, Color.WHITE, mFragment.getActivity().getResources().getColor(R.color.globant_green_light));
     }
 
     public float getFrameLayoutWidth(){
@@ -192,12 +204,18 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
             @Override
             public void onAnimationEnd(Animation animation) {
                 if (!mAnimationCancelled){
-                    if (leftToRight){
+                    mSubPosition = Integer.parseInt(mTextViewPosition.getText().toString());
+                    if (leftToRight){ //accept
                         linearLayoutMiddleLeft.setVisibility(View.VISIBLE);
                         linearLayoutMiddle.setVisibility(View.INVISIBLE);
-                    } else{
+                        mFragment.acceptSubscriber(mSubPosition);
+                    } else{  //decline
                         linearLayoutMiddleLeft.setVisibility(View.INVISIBLE);
                         linearLayoutMiddle.setVisibility(View.VISIBLE);
+                        mFragment.declineSubscriber(mSubPosition);
+                    }
+                    if ((mFragment.isAddAll()) || (mFragment.isDeclineAll())){
+                        mFragment.notifyAdapter();
                     }
                 } else {
                     mAnimationCancelled = false;
@@ -240,13 +258,14 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
                     animation.reset();
                     mTranslateAnimationText.cancel();
                     mTranslateAnimationText.reset();
+                    mColorTransition.reverse();
                 } else {
                     frameLayoutFrom.setVisibility(View.INVISIBLE);
                     frameLayoutTo.setVisibility(View.VISIBLE);
                     if (leftToRight) {
-                        mFrameLayoutHolder.setBackgroundColor(Color.parseColor("#2D27D500"));
+                        //mFrameLayoutHolder.setBackgroundColor(Color.parseColor("#2D27D500"));
                     } else {
-                        mFrameLayoutHolder.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
+                        //mFrameLayoutHolder.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
                     }
                 }
 
@@ -260,6 +279,19 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         mTranslateAnimationPhoto = translateAnimation;
         frameLayoutFrom.startAnimation(translateAnimation);
     }
+
+    public void addBackgroundColorAnimation(View view, int colorFrom, int colorTo){
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(view,
+                "backgroundColor",
+                new ArgbEvaluator(),
+                colorFrom,
+                colorTo);
+        backgroundColorAnimator.setDuration(650);
+        mColorTransition = backgroundColorAnimator;
+        backgroundColorAnimator.start();
+    }
+
+
 
 
     @Override
