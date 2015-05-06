@@ -32,21 +32,27 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
+import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BaseSubscriberFragment extends BaseFragment {
+public class BaseSubscriberFragment extends BaseFragment implements BaseService.ActionListener {
 
 
     Bitmap mPhoto;
@@ -91,6 +97,8 @@ public class BaseSubscriberFragment extends BaseFragment {
     Boolean mDoneClicked;
     Boolean mPhotoTaken;
 
+    Subscriber mSubscriber;
+
 
     public BaseSubscriberFragment() {
         // Required empty public constructor
@@ -102,7 +110,7 @@ public class BaseSubscriberFragment extends BaseFragment {
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return null;
+        return this;
     }
 
     @Override
@@ -112,13 +120,15 @@ public class BaseSubscriberFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_subscriber, container, false);
         wireUpViews(rootView);
         prepareImageButton();
-        mPhotoTaken=false;
+        mPhotoTaken = false;
+        mSubscriber = new Subscriber();
         checkPreferences();
         setOnFocusListeners();
         hideUtilsAndShowContentOverlay();
         mDoneClicked = false;
         return rootView;
     }
+
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
@@ -127,9 +137,9 @@ public class BaseSubscriberFragment extends BaseFragment {
                 if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false")))
                     doneClick();
             }
-                Bitmap bitmapToSave=savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
-                mPhotoProfile.setImageBitmap(bitmapToSave);
-                mPhotoTaken=Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
+            Bitmap bitmapToSave = savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
+            mPhotoProfile.setImageBitmap(bitmapToSave);
+            mPhotoTaken = Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
         }
 
     }
@@ -141,7 +151,7 @@ public class BaseSubscriberFragment extends BaseFragment {
         outState.putString(CoreConstants.PHOTO_TAKEN, mPhotoTaken.toString());
         BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
         Bitmap bitmapToSave = drawable.getBitmap();
-        outState.putParcelable(CoreConstants.PHOTO_ROTATE,bitmapToSave);
+        outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
     }
 
     private void setOnFocusListeners() {
@@ -271,7 +281,7 @@ public class BaseSubscriberFragment extends BaseFragment {
         if (value != null) {
             byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
             mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
-            mPhotoTaken=true;
+            mPhotoTaken = true;
         }
 
     }
@@ -326,7 +336,7 @@ public class BaseSubscriberFragment extends BaseFragment {
                 // get the cropped bitmap
                 mPhoto = extras.getParcelable(CoreConstants.DATA);
                 mPhotoProfile.setImageBitmap(mPhoto);
-                mPhotoTaken=true;
+                mPhotoTaken = true;
 
             }
         }
@@ -393,11 +403,18 @@ public class BaseSubscriberFragment extends BaseFragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
             doneClick();
-            if ((mSavePreferences) && (mPhotoTaken)){
-                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved),Toast.LENGTH_SHORT).show();
-                saveSubscriberPreferences();
-                getActivity().finish();
-            } else if (!(mPhotoTaken)){
+            if ((mSavePreferences) && (mPhotoTaken)) {
+                saveSubscriberObject();
+                SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
+                if (getArguments().containsKey(CoreConstants.FIELD_CHECK_IN)) {
+                    if (getArguments().getBoolean(CoreConstants.FIELD_CHECK_IN)) {
+                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, mEditTextEmail.getText().toString(), getBindingKey());
+                    }
+                }
+                else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+                }
+            } else if (!(mPhotoTaken)) {
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo),
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -448,9 +465,7 @@ public class BaseSubscriberFragment extends BaseFragment {
                 mSavePreferences = false;
             }
         }
-
     }
-
 
     private void tintGrey() {
         mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
@@ -459,25 +474,64 @@ public class BaseSubscriberFragment extends BaseFragment {
         mIconToChange.setImageDrawable(mDrawableToApply);
     }
 
-    private void saveSubscriberPreferences() {
-        SharedPreferencesController.setUserFirstName(mEditTextFirstName.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserLastName(mEditTextLastName.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserPhone(mEditTextPhone.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserOccupation(mEditTextOccupation.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserEmail(mEditTextEmail.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserCountry(mEditTextCountry.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserCity(mEditTextCity.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserTwitter(mEditTextTwitter.getText().toString(), this.getActivity());
-        Bitmap photoToPreference = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
-        SharedPreferencesController.setUserImage(convertBitmapImageToByteArray(photoToPreference), this.getActivity());
-        SharedPreferencesController.setUserEnglishKnowledge(mCheckBoxEnglishKnowledge.isChecked(), this.getActivity());
+    private void saveSubscriberObject() {
+        mSubscriber.setName(mEditTextFirstName.getText().toString());
+        mSubscriber.setLastName(mEditTextLastName.getText().toString());
+        mSubscriber.setPhone(mEditTextPhone.getText().toString());
+        mSubscriber.setOccupation(mEditTextOccupation.getText().toString());
+        mSubscriber.setEmail(mEditTextEmail.getText().toString());
+        mSubscriber.setCountry(mEditTextCountry.getText().toString());
+        mSubscriber.setCity(mEditTextCity.getText().toString());
+        mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
+        mSubscriber.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
+        mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
+
     }
 
-    private byte[] convertBitmapImageToByteArray(Bitmap Photo) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
     }
 
+    @Override
+    public String getBindingKey() {
+        return "BaseSubscriberFragment";
+    }
 
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        switch (theAction) {
+            case SUBSCRIBER_EXISTS:
+                if (result.equals("")) {
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, mSubscriber, getBindingKey());
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CoreConstants.FIELD_EVENTS, BaseApplication.getInstance().getEvent().getObjectID());
+                    bundle.putString(CoreConstants.FIELD_SUBSCRIBERS, (String) result);
+                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, bundle, getBindingKey());
+                }
+                break;
+            case IS_SUBSCRIBED:
+                if ((Boolean)result)
+
+                break;
+            case SUBSCRIBER_CREATE:
+                break;
+            case EVENTS_TO_SUBSCRIBER_CREATE:
+
+                getActivity().finish();
+                break;
+        }
+
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
+    }
 }

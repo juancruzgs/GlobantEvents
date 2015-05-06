@@ -41,10 +41,46 @@ public class CloudDataController {
         return createDomainEventFromDatabase(databaseEvent);
     }
 
+    private ParseObject getEventParseObject(String eventId) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject databaseEvent = query.get(eventId);
+        return databaseEvent;
+    }
+
+    private ParseObject getSubscriberParseObject (String subsciberId) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        ParseObject databaseSubscriber = query.get(subsciberId);
+        return databaseSubscriber;
+    }
+
     public ParseObject getSubscriberByEmail(String subscriberEmail) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
         query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
         return query.getFirst();
+    }
+
+    public String getSubscriberIdByEmail(String subscriberEmail) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
+        String objectId;
+        try {
+            objectId = query.getFirst().getObjectId();
+        } catch (ParseException e) {
+            objectId = "";
+        }
+        return objectId;
+    }
+
+    public boolean isSubscribed(String subscriberId, String eventId) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        try {
+            query.whereEqualTo(CoreConstants.FIELD_EVENTS, getEventParseObject(eventId));
+            query.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, getSubscriberParseObject(subscriberId));
+            query.getFirst();
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
     }
 
     public void setCheckIn(String eventId, Context context) throws ParseException {
@@ -67,7 +103,7 @@ public class CloudDataController {
         ParseQuery<ParseObject> speakersQuery = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
         ParseRelation<ParseObject> relation = event.getRelation(CoreConstants.FIELD_SPEAKERS);
         List<ParseObject> speakersEvents = relation.getQuery().find();
-        for (ParseObject speakerParseObject: speakersEvents){
+        for (ParseObject speakerParseObject : speakersEvents) {
             speakers.add(createSpeakerFromDatabaseInformation(speakersQuery.get(speakerParseObject.getObjectId())));
         }
         return speakers;
@@ -101,7 +137,7 @@ public class CloudDataController {
         databaseEvent.save();
     }
 
-    public void  updateEvent(Event domainEvent) throws ParseException {
+    public void updateEvent(Event domainEvent) throws ParseException {
         ParseObject databaseEvent = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, domainEvent.getObjectID());
         setDatabaseEventInformation(domainEvent, databaseEvent);
         databaseEvent.save();
@@ -129,7 +165,7 @@ public class CloudDataController {
         event.save();
     }
 
-    public void createSpeaker (Speaker domainSpeaker) throws ParseException {
+    public void createSpeaker(Speaker domainSpeaker) throws ParseException {
         ParseObject databaseSpeaker = new ParseObject(CoreConstants.SPEAKERS_TABLE);
         setDatabaseSpeakerInformation(domainSpeaker, databaseSpeaker);
         databaseSpeaker.save();
@@ -144,20 +180,19 @@ public class CloudDataController {
         }
     }
 
-    private double getCoordinatesFromDatabaseObject(ParseObject databaseObject, boolean latitude){
+    private double getCoordinatesFromDatabaseObject(ParseObject databaseObject, boolean latitude) {
         ParseGeoPoint geoPoint = databaseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES);
-        if (geoPoint != null){
-            if (latitude){
+        if (geoPoint != null) {
+            if (latitude) {
                 return geoPoint.getLatitude();
-            }
-            else {
+            } else {
                 return geoPoint.getLongitude();
             }
-        }
-        else {
+        } else {
             return CoreConstants.ZERO;
         }
     }
+
 
     private Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
         Event domainEvent = new Event();
