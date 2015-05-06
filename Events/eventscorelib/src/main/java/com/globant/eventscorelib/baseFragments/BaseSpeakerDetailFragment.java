@@ -1,28 +1,27 @@
 package com.globant.eventscorelib.baseFragments;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 /**
  * Created by juan.ramirez on 16/04/2015.
  */
 public class BaseSpeakerDetailFragment extends BaseFragment {
 
-    //TODO delete this  dummy object
-    private Speaker speakerDemo  = new Speaker("Aerospace Engineer",
-            "Alejandra",
-            "Buitrago",
-            "She became an aviation enthusiast early in life. She gained BA in mechanical engineering from the University of California, Berkeley, MA in aeronautical engineering from Princeton University, and Ph.D. in engineering from the Tokyo University of Science. Alejandra joined the Boeing company in 1965 as an aerodynamics engineer. Later, she became a lead engineer on the Boeing 747 high-speed configuration.  She advanced into management within a year and became manager of the Boeing 727 marketing. In 1996, She was elected president of Boeing, and a member of the board of directors. She remained in this position until resigning on 1 December 2003."
-            ,null);
 
     private TextView mFullNameTextView, mSpeakerTitleTextView, mSpeakerBiographyTextView;
+    private Speaker mSpeaker;
+    private ImageView mSpeakerImage;
 
      public BaseSpeakerDetailFragment() {
         // Required empty public constructor
@@ -37,17 +36,20 @@ public class BaseSpeakerDetailFragment extends BaseFragment {
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_speaker_detail, container, false);
         hideUtilsAndShowContentOverlay();
+        mSpeaker = (Speaker) getActivity().getIntent().getExtras().getSerializable(CoreConstants.SPEAKER_SELECTED);
         wireSpeakerView(rootView);
         return rootView;
     }
 
     private void wireSpeakerView(View rootView) {
-        mFullNameTextView = (TextView) rootView.findViewById(R.id.speaker_fullName);
-        mSpeakerTitleTextView = (TextView) rootView.findViewById(R.id.speaker_title);
-        mSpeakerBiographyTextView = (TextView) rootView.findViewById(R.id.speaker_biography);
-        mFullNameTextView.setText(speakerDemo.getName() + " " + speakerDemo.getLastName());
-        mSpeakerTitleTextView.setText(speakerDemo.getTitle());
-        mSpeakerBiographyTextView.setText(speakerDemo.getBiography());
+            mFullNameTextView = (TextView) rootView.findViewById(R.id.speaker_fullName);
+            mSpeakerTitleTextView = (TextView) rootView.findViewById(R.id.speaker_title);
+            mSpeakerBiographyTextView = (TextView) rootView.findViewById(R.id.speaker_biography);
+            mSpeakerImage = (ImageView)rootView.findViewById(R.id.speaker_picture);
+            mFullNameTextView.setText(mSpeaker.getName() + " " + mSpeaker.getLastName());
+            mSpeakerTitleTextView.setText(mSpeaker.getTitle());
+            mSpeakerBiographyTextView.setText(mSpeaker.getBiography());
+            mSpeakerImage.setImageBitmap(BitmapFactory.decodeByteArray(mSpeaker.getPicture(), 0, mSpeaker.getPicture().length));
     }
 
     @Override

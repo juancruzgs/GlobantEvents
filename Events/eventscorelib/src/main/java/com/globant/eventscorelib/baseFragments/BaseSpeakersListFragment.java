@@ -19,6 +19,7 @@ import com.globant.eventscorelib.baseActivities.BaseSpeakerDetailActivity;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.baseAdapters.RecyclerItemClickListener;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
@@ -106,8 +107,9 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        //TODO juan.ramirez,  send speaker id or speaker object from backend.
+                        //TODO Transition
                         Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
+                        intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED,mSpeakers.get(position));
                         startActivity(intentSpeakerDetail);
                     }
                 })
