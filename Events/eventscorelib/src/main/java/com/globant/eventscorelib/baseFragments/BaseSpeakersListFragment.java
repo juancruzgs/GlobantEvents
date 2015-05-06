@@ -16,6 +16,7 @@ import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseActivities.BaseSpeakerDetailActivity;
+import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.baseAdapters.RecyclerItemClickListener;
 import com.globant.eventscorelib.utils.Logger;
@@ -28,10 +29,11 @@ import java.util.List;
         */
 public class BaseSpeakersListFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
 
-    private List<Speaker> mSpeakers = new ArrayList<>();
+    private List<Speaker> mSpeakers;
     protected RecyclerView mRecyclerView;
     protected BaseSpeakersListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
+    private Event mEvent;
 
     @Override
     public BaseService.ActionListener getActionListener() {
@@ -57,11 +59,16 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
             mSpeakers = (List<Speaker>) result;
-            BaseEventDetailPagerActivity.getInstance().setSpeakersList(mSpeakers);
+            if (mSpeakers!=null)
             setRecyclerViewAdapter();
+            hideUtilsAndShowContentOverlay();
+            }
+        else{
+
         }
-        hideUtilsAndShowContentOverlay();
-    }
+
+        }
+
 
     private void setRecyclerViewAdapter() {
         mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
@@ -95,7 +102,6 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         }
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
-        setRecyclerViewAdapter();
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
@@ -114,16 +120,22 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     @Override
-    public void onPauseFragment() {}
+    public void onPauseFragment() {
+
+    }
 
     @Override
     public void onResumeFragment() {
-        mSpeakers = BaseEventDetailPagerActivity.getInstance().getSpeakersList();
         if (mSpeakers == null) {
-            mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
+            mEvent=BaseApplication.getInstance().getEvent();
+            String eventId=mEvent.getObjectID();
+            mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, eventId, getBindingKey());
         }
         else {
             setRecyclerViewAdapter();
         }
+
     }
+
+
 }
