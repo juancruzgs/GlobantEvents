@@ -24,4 +24,5 @@
     <color name="transparent">#00000000</color>
     <color name="semi_ransparent_white">#80000000</color>
     <color name="violet_glober">#7C4DFF</color>
+    <color name="blue_glober">#536DFE</color>
 </resources>
