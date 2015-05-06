@@ -28,6 +28,7 @@ import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.nineoldandroids.view.ViewHelper;
@@ -202,7 +203,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             } else {
                 if (id == R.id.action_checkin){
                     Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                    startActivityForResult(intentScan,0);
+                    startActivityForResult(intentScan,CoreConstants.REQUEST_CODE_SCAN);
                     handled = true;
                 }
             }
@@ -278,11 +279,15 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
+        if (requestCode == CoreConstants.REQUEST_CODE_SCAN) {
             if (resultCode == Activity.RESULT_OK) {
                 showProgressOverlay();
+                Object[] parameters = new Object[2];
                 String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
-                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId, getBindingKey());
+                String subscriberMail = SharedPreferencesController.getUserEmail(getActivity());
+                parameters[0] = eventId;
+                parameters[1] = subscriberMail;
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, parameters, getBindingKey());
             }
         }
     }

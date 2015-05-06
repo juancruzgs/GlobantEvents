@@ -61,6 +61,7 @@ public class CoreConstants {
     //QR Scanner
     public static final String INTENT_SCAN = "com.google.zxing.client.android.SCAN";
     public static final String SCAN_RESULT = "SCAN_RESULT";
+    public static final int REQUEST_CODE_SCAN = 1;
 
     //Logger
     public static final String LOG_TAG = "GlobantEventsApp";
