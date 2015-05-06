@@ -11,15 +11,16 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private TextView mTextViewDeclineAll;
     private Boolean mAddAll = false;
     private Boolean mDeclineAll = false;
+    private Event mEvent;
 
     public Boolean isDeclineAll() {
         return mDeclineAll;
@@ -70,10 +72,14 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         switch ( theAction ) {
             case PARTICIPANT_LIST:
                 mSubscribers = (List<Subscriber>) result;
-                mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
-                mRecyclerView.setAdapter(mAdapter);
+                setRecyclerViewAdapter();
                 hideUtilsAndShowContentOverlay();
         }
+    }
+
+    private void setRecyclerViewAdapter() {
+        mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -255,7 +261,14 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void onResumeFragment(){
-        mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, "5vs7DC2RnQ", getBindingKey());
+        if (mSubscribers == null) {
+            mEvent= BaseApplication.getInstance().getEvent();
+            String eventId=mEvent.getObjectID();
+            mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, eventId, getBindingKey());
+        }
+        else {
+            setRecyclerViewAdapter();
+        }
     }
 
     public void acceptSubscriber(int position){
