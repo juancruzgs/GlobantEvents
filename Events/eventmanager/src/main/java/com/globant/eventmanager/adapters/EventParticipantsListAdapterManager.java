@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.nfc.Tag;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,6 @@ import java.util.List;
  */
 public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<ParticipantsListViewHolderManager> implements  ParticipantsListViewHolderManager.TouchListenerItem {
 
-    private CropCircleTransformation transformation;
     private List<Subscriber> mSubscribers;
     private final Context mContext;
     private EventParticipantsManagerFragment mFragment;
@@ -46,7 +46,6 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
 
     public EventParticipantsListAdapterManager(Context context, List<Subscriber> subscribers, EventParticipantsManagerFragment fragment) {
         mContext = context;
-        this.transformation = new CropCircleTransformation(context);
         mFragment = fragment;
         mSubscribers = subscribers;
         mTransformation = new CropCircleTransformation(mContext);
@@ -63,6 +62,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
     @Override
     public void onBindViewHolder(ParticipantsListViewHolderManager holder, int position) {
         Subscriber subscriber = mSubscribers.get(position);
+        holder.getTextViewPosition().setText(String.valueOf(position));
         String name = subscriber.getName()+" "+subscriber.getLastName();
         holder.getTextViewName().setText(name);
         holder.getTextViewNameLeft().setText(name);
@@ -103,7 +103,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         holder.getLinearLayoutMiddleLeft().setVisibility(View.VISIBLE);
         holder.getFrameLayoutLeft().setVisibility(View.INVISIBLE);
         holder.getFrameLayoutRight().setVisibility(View.VISIBLE);
-        holder.getFrameLayoutHolder().setBackgroundColor(Color.parseColor("#2D27D500"));
+        holder.getFrameLayoutHolder().setBackgroundColor(mFragment.getActivity().getResources().getColor(R.color.globant_green_light));
     }
 
     private void setViewHolderImage(ParticipantsListViewHolderManager holder, Subscriber subscriber) {

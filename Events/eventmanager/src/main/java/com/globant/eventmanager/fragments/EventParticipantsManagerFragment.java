@@ -129,6 +129,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
             public void onClick(View v) {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
                 int initPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                int cont = 0;
                 switch (v.getId()){
                     case R.id.text_view_accept_all:
                         for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
@@ -136,6 +137,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
                             if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE){
                                 current.acceptAnimation();
+                                cont += 1;
                             }
                         }
                         for (Subscriber sub : mSubscribers){
@@ -149,6 +151,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
                             if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE){
                                 current.declineAnimation();
+                                cont += 1;
                             }
                         }
                         for (Subscriber sub : mSubscribers){
@@ -156,6 +159,9 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                         }
                         mDeclineAll = true;
                         break;
+                }
+                if (cont == 0){
+                    notifyAdapter();
                 }
                 mAdapter.setSubscribers(mSubscribers);
             }
@@ -248,6 +254,14 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onResumeFragment(){
         mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, "5vs7DC2RnQ", getBindingKey());
+    }
+
+    public void acceptSubscriber(int position){
+        mSubscribers.get(position).setAccepted(true);
+    }
+
+    public void declineSubscriber(int position){
+        mSubscribers.get(position).setAccepted(false);
     }
 
     public void notifyAdapter(){
