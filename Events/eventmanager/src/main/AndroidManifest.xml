@@ -16,7 +16,10 @@
     <permission android:protectionLevel="signature"
                 android:name="com.globant.eventmanager.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.globant.eventmanager.permission.C2D_MESSAGE" />
-
+    <!--
+  TODO: Used as a notification after the "glober shake"
+  <uses-permission android:name="android.permission.VIBRATE"/>
+  -->
     <application
         android:name=".components.EventsManagerApplication"
         android:allowBackup="true"

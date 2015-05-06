@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
@@ -19,7 +20,6 @@ abstract public class BasePagerActivity extends BaseActivity {
 
     private PageAdapter pageAdapter;
     private int mCurrentFragmentPosition = 0;
-    //private List<Fragment> mFragments;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -38,42 +38,28 @@ abstract public class BasePagerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_pager);
         prepareAdapter();
-        initialResumeFragment();
         prepareTitleStrip();
     }
 
-    private void prepareTitleStrip() {
-        PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
-        titleStrip.setTextColor(getResources().getColor(R.color.white));
-    }
-
-    private void initialResumeFragment() {
-        //onResume first fragment
-        if (mCurrentFragmentPosition == 0) {
-            FragmentLifecycle fragmentToShow = (FragmentLifecycle) pageAdapter.getItem(0);
-            fragmentToShow.onResumeFragment();
-        }
-    }
-
     private void prepareAdapter() {
-        final List<Fragment> fragments = getFragments();
-        pageAdapter = new PageAdapter(getSupportFragmentManager(), fragments);
-        ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
+        List<Fragment> fragmentList = getFragments();
+        pageAdapter = new PageAdapter(getSupportFragmentManager(), fragmentList);
+        final ViewPager pager = (ViewPager) findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
         pager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        pager.setOffscreenPageLimit(fragmentList.size());
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
             public void onPageSelected(int newPosition) {
-                FragmentLifecycle fragmentToHide = (FragmentLifecycle)fragments.get(mCurrentFragmentPosition);
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle) pageAdapter.getItem(mCurrentFragmentPosition);
                 fragmentToHide.onPauseFragment();
 
-                FragmentLifecycle fragmentToShow = (FragmentLifecycle)fragments.get(newPosition);
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle) pageAdapter.getItem(newPosition);
                 fragmentToShow.onResumeFragment();
 
                 mCurrentFragmentPosition = newPosition;
@@ -86,7 +72,27 @@ abstract public class BasePagerActivity extends BaseActivity {
         });
     }
 
+    private void prepareTitleStrip() {
+        PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
+        titleStrip.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initialResumeFragment();
+    }
+
+    private void initialResumeFragment() {
+        //onResume first fragment
+        if (mCurrentFragmentPosition == 0) {
+            FragmentLifecycle fragmentToShow = (FragmentLifecycle) pageAdapter.getItem(mCurrentFragmentPosition);
+            fragmentToShow.onResumeFragment();
+        }
+    }
+
     protected abstract List<Fragment> getFragments();
+
     protected abstract List<String> getTitlesList();
 
     public class PageAdapter extends FragmentStatePagerAdapter {
@@ -100,12 +106,12 @@ abstract public class BasePagerActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return this.mAdapterFragments.get(position);
+            return mAdapterFragments.get(position);
         }
 
         @Override
         public int getCount() {
-            return this.mAdapterFragments.size();
+            return mAdapterFragments.size();
         }
 
         @Override
@@ -114,18 +120,14 @@ abstract public class BasePagerActivity extends BaseActivity {
         }
 
 //        @Override
-//        public Object instantiateItem(ViewGroup container, int position) {
-//            Fragment fragment = (Fragment) super.instantiateItem(container, position);
-//            mAdapterFragments.set(position, fragment);
-//            return fragment;
+//        public void destroyItem(ViewGroup container, int position, Object object) {
 //        }
     }
 
     public interface FragmentLifecycle {
+        void onPauseFragment();
 
-        public void onPauseFragment();
-        public void onResumeFragment();
-
+        void onResumeFragment();
     }
 
     @Override

@@ -89,6 +89,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         }
         initializeViewParameters();
         setHasOptionsMenu(true);
+        setRetainInstance(true);
         return rootView;
     }
 

@@ -42,7 +42,8 @@
                     android:id="@+id/imageView_Event_Type_Logo"
                     android:layout_alignRight="@+id/event_image_view"
                     android:layout_alignTop="@+id/event_image_view"
-                    android:src="@mipmap/ic_social"/>
+                    android:src="@mipmap/ic_social"
+                    android:background="@drawable/smooh_circle"/>
 
                 <TextView
                     android:layout_width="match_parent"
