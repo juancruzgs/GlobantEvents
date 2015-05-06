@@ -31,6 +31,7 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.nineoldandroids.view.ViewHelper;
 
 import java.util.List;
@@ -40,7 +41,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Object[] mCheckInParameters;
-
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
@@ -199,9 +199,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 handled = true;
             } else {
                 if (id == R.id.action_checkin){
-                    Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                    startActivityForResult(intentScan,CoreConstants.REQUEST_CODE_SCAN);
-                    handled = true;
+                    IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(this);
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                    intentIntegrator.initiateScan();
+//                    Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
+//                    startActivityForResult(intentScan,CoreConstants.REQUEST_CODE_SCAN);
+//                    handled = true;
                 }
             }
         }
