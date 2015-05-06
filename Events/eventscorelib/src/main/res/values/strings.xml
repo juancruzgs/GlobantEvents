@@ -107,6 +107,16 @@
     <string name="button_send_notification">Send</string>
     <string name="button_cancel_notification">Cancel</string>
     <string name="no_speakers">No acknowledged speakers</string>
+    <string name="edit_text_full_description_hint">Full Description</string>
+    <string name="edit_text_short_description_hint">Short Description</string>
+    <string name="edit_text_end_date_hint">End Date</string>
+    <string name="edit_text_start_date_hint">Start Date</string>
+    <string name="edit_text_start_time_hint">Start Time</string>
+    <string name="edit_text_end_time_hint">End Time</string>
+    <string name="edit_text_category_hint">Category</string>
+    <string name="text_view_hashtag">Hashtag</string>
+    <string name="edit_text_public_hint">Public/Private</string>
+    <string name="title_activity_create_events">Create Event</string>
 
 
     <string-array name="spinner_options">
