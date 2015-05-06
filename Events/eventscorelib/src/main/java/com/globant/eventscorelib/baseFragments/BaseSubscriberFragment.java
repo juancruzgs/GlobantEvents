@@ -410,8 +410,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                     if (getArguments().getBoolean(CoreConstants.FIELD_CHECK_IN)) {
                         mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, mEditTextEmail.getText().toString(), getBindingKey());
                     }
-                }
-                else {
+                } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
                 }
             } else if (!(mPhotoTaken)) {
@@ -501,6 +500,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay();
     }
 
     @Override
@@ -517,7 +517,12 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 }
                 break;
             case IS_SUBSCRIBED:
-                if ((Boolean)result)
+                if ((Boolean) result) {
+                    hideUtilsAndShowContentOverlay();
+                    Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
+                } else {
+
+                }
 
                 break;
             case SUBSCRIBER_CREATE:

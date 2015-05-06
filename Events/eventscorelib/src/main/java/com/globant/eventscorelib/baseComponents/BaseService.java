@@ -248,6 +248,12 @@ public class BaseService extends Service {
                                     boolean isSubscribed = mCloudDataController.isSubscribed(bundle.getString(CoreConstants.FIELD_SUBSCRIBERS), bundle.getString(CoreConstants.FIELD_EVENTS));
                                     currentSubscriber.finishAction(theAction, isSubscribed);
                                     break;
+                                case SUBSCRIBER_CREATE:
+                                    mCloudDataController.createSubscriber((Subscriber) argument);
+                                    currentSubscriber.finishAction(theAction, null);
+                                    break;
+                                case EVENTS_TO_SUBSCRIBER_CREATE:
+                                    break;
                             }
 
                             if (cancelKeys.contains(bindingKey))
