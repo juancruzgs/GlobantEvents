@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
@@ -35,6 +36,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     protected BaseSpeakersListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     private Event mEvent;
+    private TextView mTextViewNoSpeakers;
 
     @Override
     public BaseService.ActionListener getActionListener() {
@@ -60,15 +62,16 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
             mSpeakers = (List<Speaker>) result;
-            if (mSpeakers!=null)
+            if ((mSpeakers.size())>1){
             setRecyclerViewAdapter();
-            hideUtilsAndShowContentOverlay();
             }
         else{
-
+            mRecyclerView.setVisibility(View.GONE);
+            mTextViewNoSpeakers.setVisibility(View.VISIBLE);
         }
-
+        hideUtilsAndShowContentOverlay();
         }
+    }
 
 
     private void setRecyclerViewAdapter() {
@@ -88,6 +91,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
         hideUtilsAndShowContentOverlay();
+        mTextViewNoSpeakers=(TextView)rootView.findViewById(R.id.text_view_no_speakers);
         prepareRecyclerView(rootView);
         setRetainInstance(true);
         return rootView;
@@ -107,7 +111,6 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        //TODO Transition
                         Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
                         intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED,mSpeakers.get(position));
                         startActivity(intentSpeakerDetail);
