@@ -47,9 +47,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.EventsManagerActivity"
+            android:label="@string/title_activity_event_detail">
+        </activity>
+        <activity
             android:name=".activities.TestActivity"
             android:label="@string/title_activity_test">
-
         </activity>
         <activity
             android:name=".activities.MapManagerActivity"

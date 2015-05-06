@@ -6,13 +6,16 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -26,18 +29,26 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.MapManagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
 
 import java.io.ByteArrayOutputStream;
@@ -49,10 +60,23 @@ import java.util.Locale;
 /**
  * Created by david.burgos on 24/04/2015.
  */
-public class EventsFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle {
+public class EventsFragment extends BaseFragment  implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     private Boolean isEditing = false; // true = edit, false = create
     private Event mEvent;
+
+    boolean mStickyToolbar;
+    private View mToolbar;
+    private View mOverlayView;
+    private AppCompatTextView mEventTitle;
+    private ObservableScrollView mScrollView;
+    private int mActionBarSize;
+    private int mFlexibleSpaceImageHeight;
+    private int mToolbarColor;
+    private boolean mFabIsShown;
+    private int mFlexibleSpaceShowFabOffset;
+    private int mFabMargin;
+    private boolean mTitleShown = false;
 
     ImageView mPhotoEvent;
     ActionButton mFloatingActionButtonPhoto;
@@ -122,17 +146,13 @@ public class EventsFragment extends BaseFragment implements BasePagerActivity.Fr
     public EventsFragment() {
         // Required empty public constructor
         this.isEditing = false;
+        this.mEvent = new Event();
     }
 
     public EventsFragment Edit(Event event){
         this.isEditing = true;
         this.mEvent = event;
         return this;
-    }
-
-    @Override
-    public BaseService.ActionListener getActionListener() {
-        return null;
     }
 
     @Override
@@ -146,6 +166,9 @@ public class EventsFragment extends BaseFragment implements BasePagerActivity.Fr
         setDateTimeField();
         if(isEditing)populateInfo(mEvent);
         hideUtilsAndShowContentOverlay();
+
+        setHasOptionsMenu(true);
+        setRetainInstance(true);
         return rootView;
     }
 
@@ -303,6 +326,12 @@ public class EventsFragment extends BaseFragment implements BasePagerActivity.Fr
     }
 
     private void wireUpViews(View rootView) {
+
+        mToolbar = rootView.findViewById(R.id.events_toolbar);
+        mOverlayView = rootView.findViewById(R.id.evets_overlay);
+        mScrollView = (ObservableScrollView) rootView.findViewById(R.id.event_scroll);
+        mEventTitle = (AppCompatTextView) rootView.findViewById(R.id.title);
+
         mEditTextTitle =(AppCompatEditText)rootView.findViewById(R.id.edit_text_title);
         mEditTextFullDescription =(AppCompatEditText)rootView.findViewById(R.id.edit_text_full_description);
         mEditTextShortDescription =(AppCompatEditText)rootView.findViewById(R.id.edit_text_short_description);
@@ -365,7 +394,7 @@ public class EventsFragment extends BaseFragment implements BasePagerActivity.Fr
     private void setUpSpinners(){
 
         String[] categoryInfo = getResources().getStringArray(R.array.category_entries);
-        ArrayAdapter<String> category_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.simple_spinner_item, categoryInfo);
+        ArrayAdapter<String> category_adapter = new ArrayAdapter<>(getActivity(),  R.layout.simple_spinner_item, categoryInfo);
         category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerCategory.setAdapter(category_adapter);
         mSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -592,6 +621,26 @@ public class EventsFragment extends BaseFragment implements BasePagerActivity.Fr
                 startActivityForResult(intent, CoreConstants.MAP_MANAGER_REQUEST);
             }
         });
+
+        mActionBarSize = getActionBarSize();
+        mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
+        mToolbarColor = getResources().getColor(com.globant.eventscorelib.R.color.globant_green);
+        mStickyToolbar = false;
+        mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_image_height);
+        mToolbar.setBackgroundColor(Color.TRANSPARENT);
+        mScrollView.setScrollViewCallbacks(this);
+
+        mFabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
+        ViewHelper.setScaleX(mFloatingActionButtonPhoto, 0);
+        ViewHelper.setScaleY(mFloatingActionButtonPhoto, 0);
+
+        ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
+            @Override
+            public void run() {
+                mScrollView.scrollTo(0, 1);
+                mScrollView.scrollTo(0, 0);
+            }
+        });
     }
 
     @Override
@@ -614,8 +663,8 @@ public class EventsFragment extends BaseFragment implements BasePagerActivity.Fr
         int id = item.getItemId();
 
         if (id == R.id.events_action_done) {
-            Boolean savePreferences = true;
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextTitle);
+            Boolean savePreferences;
+            savePreferences  = tintRequiredIconsAndShowError(mEditTextTitle);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextFullDescription);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextShortDescription);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextHashtag);
@@ -629,9 +678,10 @@ public class EventsFragment extends BaseFragment implements BasePagerActivity.Fr
 
             if (savePreferences){
                 Toast.makeText(getActivity(),"Saved!",Toast.LENGTH_SHORT).show();
+                // mService.executeAction(BaseService.ACTIONS.EVENT_CREATE, mEvent, getBindingKey());
             }
             else {
-                Toast.makeText(getActivity(),"All fields need to be filled!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),getString(R.string.missing_fields),Toast.LENGTH_SHORT).show();
             }
 
             return true;
@@ -667,6 +717,7 @@ public class EventsFragment extends BaseFragment implements BasePagerActivity.Fr
         return stream.toByteArray();
     }
 
+    // BasePagerActivity.FragmentLifecycle implementation
     @Override
     public void onPauseFragment() {
 
@@ -674,6 +725,131 @@ public class EventsFragment extends BaseFragment implements BasePagerActivity.Fr
 
     @Override
     public void onResumeFragment() {
-       // mService.executeAction(BaseService.ACTIONS.EVENT_CREATE, "5vs7DC2RnQ", getBindingKey());
+
     }
+
+    //ObservableScrollViewCallbacks implementation
+    @Override
+    public void onScrollChanged(int i, boolean b, boolean b1){
+
+        // Translate overlay and image
+        float flexibleRange = mFlexibleSpaceImageHeight - mActionBarSize;
+        int minOverlayTransitionY = mActionBarSize - mOverlayView.getHeight();
+        ViewHelper.setTranslationY(mOverlayView, ScrollUtils.getFloat(-i, minOverlayTransitionY, 0));
+        ViewHelper.setTranslationY(mPhotoEvent, ScrollUtils.getFloat(-i / 2, minOverlayTransitionY, 0));
+
+        // Change alpha of overlay
+        ViewHelper.setAlpha(mOverlayView, ScrollUtils.getFloat((float) i / flexibleRange, 0, 1));
+        mEventTitle.getBackground().setAlpha(Math.round(255 * (1 - ScrollUtils.getFloat((float) i / flexibleRange, 0, 1))));
+
+        // Scale title text
+        float titleHeight = mEventTitle.getHeight();
+        float scaleY = (titleHeight - i + flexibleRange) / titleHeight;
+        float scale = ScrollUtils.getFloat(scaleY, 0, 1);
+        ViewHelper.setPivotX(mEventTitle, 0);
+        ViewHelper.setPivotY(mEventTitle, 0);
+        //ViewHelper.setScaleX(mEventTitle, scale);
+        ViewHelper.setScaleY(mEventTitle, scale);
+//        mEventStartDate.setText(String.format("%.02f", scale) + " | " + i +  " | " + titleHeight +  " | " + String.format("%.02f", scaleY));
+
+        // Translate title text
+        int maxTitleTranslationY = (int) (mFlexibleSpaceImageHeight - mEventTitle.getHeight() * scale);
+        int titleTranslationY = maxTitleTranslationY - i;
+
+        //titleTranslationY = Math.max(0, titleTranslationY);
+        ViewHelper.setTranslationY(mEventTitle, titleTranslationY);
+
+        if (mStickyToolbar) {
+            // Change alpha of toolbar background
+            if (-i + mFlexibleSpaceImageHeight <= mActionBarSize) {
+                mToolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(1, mToolbarColor));
+            } else {
+                mToolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, mToolbarColor));
+            }
+        } else {
+            // Translate Toolbar
+            if (i < mFlexibleSpaceImageHeight) {
+                ViewHelper.setTranslationY(mToolbar, 0);
+            } else {
+                ViewHelper.setTranslationY(mToolbar, -i);
+            }
+        }
+
+        if (i > mFlexibleSpaceImageHeight && !mTitleShown){
+            mTitleShown = true;
+            ((BaseActivity) getActivity()).changeFragmentTitle((String) mEventTitle.getText());
+        }
+
+        // Translate FAB
+        int maxFabTranslationY = mFlexibleSpaceImageHeight - mFloatingActionButtonPhoto.getHeight() / 2;
+        float fabTranslationY = ScrollUtils.getFloat( -i + mFlexibleSpaceImageHeight - mFloatingActionButtonPhoto.getHeight() / 2,
+                mActionBarSize - mFloatingActionButtonPhoto.getHeight() / 2,
+                maxFabTranslationY);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            // On pre-honeycomb, ViewHelper.setTranslationX/Y does not set margin,
+            // which causes FAB's OnClickListener not working.
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFloatingActionButtonPhoto.getLayoutParams();
+            lp.leftMargin = mOverlayView.getWidth() - mFabMargin - mFloatingActionButtonPhoto.getWidth();
+            lp.topMargin = (int) fabTranslationY;
+            mFloatingActionButtonPhoto.requestLayout();
+        } else {
+            ViewHelper.setTranslationX(mFloatingActionButtonPhoto, mOverlayView.getWidth() - mFabMargin - mFloatingActionButtonPhoto.getWidth());
+            ViewHelper.setTranslationY(mFloatingActionButtonPhoto, fabTranslationY);
+        }
+
+        // Show-hide FAB
+        if (fabTranslationY < mFlexibleSpaceShowFabOffset-mActionBarSize) {
+            hideFab();
+        } else {
+            showFab();
+        }
+    }
+
+    private void showFab() {
+        if (!mFabIsShown) {
+            ViewPropertyAnimator.animate(mFloatingActionButtonPhoto).cancel();
+            ViewPropertyAnimator.animate(mFloatingActionButtonPhoto).scaleX(1).scaleY(1).setDuration(200).start();
+            mFabIsShown = true;
+        }
+    }
+
+    private void hideFab() {
+        if (mFabIsShown) {
+            ViewPropertyAnimator.animate(mFloatingActionButtonPhoto).cancel();
+            ViewPropertyAnimator.animate(mFloatingActionButtonPhoto).scaleX(0).scaleY(0).setDuration(200).start();
+            mFabIsShown = false;
+        }
+    }
+
+    @Override
+    public void onDownMotionEvent() {
+
+    }
+
+    @Override
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+
+    }
+
+    // BaseService.ActionListener implementation
+
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return this;
+    }
+
+    @Override
+    public Activity getBindingActivity() {return getActivity();}
+
+    @Override
+    public String getBindingKey() {return CoreConstants.BINDING_KEY_FRAGMENT_EVENTS;}
+
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {showProgressOverlay();}
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {hideUtilsAndShowContentOverlay();}
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {showErrorOverlay();}
 }

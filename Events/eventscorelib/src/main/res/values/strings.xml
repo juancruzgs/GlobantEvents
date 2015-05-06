@@ -117,6 +117,7 @@
     <string name="text_view_hashtag">Hashtag</string>
     <string name="edit_text_public_hint">Public/Private</string>
     <string name="title_activity_create_events">Create Event</string>
+    <string name="title_event_photo">Add an Image</string>
 
 
     <string-array name="spinner_options">

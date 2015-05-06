@@ -9,10 +9,8 @@ import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
 import com.globant.eventmanager.fragments.EventsFragment;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
-import com.globant.eventscorelib.domainObjects.Event;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,15 +25,8 @@ public class EventsManagerActivity extends BasePagerActivity {
 
     @Override
     protected List<Fragment> getFragments() {
-        Event mEvent = new Event();
-        mEvent.setTitle("Salida con Kt");
-        mEvent.setFullDescription("Salida con Katherine Martinez a Santa Rosa de Cabal a termales.");
-        mEvent.setShortDescription("Salida con Katherine Martinez");
-        mEvent.setEndDate(new Date(2015, 04, 10, 12, 30));
-        mEvent.setStartDate(new Date(2015, 04, 11, 2, 0));
-
         List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(new EventsFragment().Edit(mEvent));
+        fragmentList.add(new EventsFragment());
         fragmentList.add(new BaseSpeakersListFragment());
         fragmentList.add(new EventParticipantsManagerFragment());
         fragmentList.add(new EventDescriptionManagerFragment());
