@@ -20,11 +20,13 @@ import java.util.List;
 public class BaseSpeakersListAdapter extends RecyclerView.Adapter<BaseSpeakersListViewHolder>{
     private List<Speaker> mSpeakers;
     private final CropCircleTransformation mTransformation;
+    private Context mContext;
 
 
     public BaseSpeakersListAdapter(Context context, List<Speaker> speakers) {
         mSpeakers = speakers;
         mTransformation = new CropCircleTransformation(context);
+        mContext=context;
     }
 
     @Override
@@ -52,7 +54,12 @@ public class BaseSpeakersListAdapter extends RecyclerView.Adapter<BaseSpeakersLi
         Bitmap speakerPicture;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;
-        speakerPicture = BitmapFactory.decodeByteArray(speaker.getPicture(), 0, speaker.getPicture().length, options);
+        if ((speaker.getPicture()!=null)){
+            speakerPicture = BitmapFactory.decodeByteArray(speaker.getPicture(), 0, speaker.getPicture().length, options);}
+        else{
+            speakerPicture= BitmapFactory.decodeResource(mContext.getResources(),(R.mipmap.ic_person));
+        }
+
         return speakerPicture;
     }
 

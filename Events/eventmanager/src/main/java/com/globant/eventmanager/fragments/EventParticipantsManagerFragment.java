@@ -38,6 +38,16 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private RelativeLayout mViewButtonsAddDeclineAll;
     private TextView mTextViewAcceptAll;
     private TextView mTextViewDeclineAll;
+    private Boolean mAddAll = false;
+    private Boolean mDeclineAll = false;
+
+    public Boolean isDeclineAll() {
+        return mDeclineAll;
+    }
+
+    public Boolean isAddAll() {
+        return mAddAll;
+    }
 
     @Override
     public Activity getBindingActivity() {
@@ -86,7 +96,6 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //initDataset();
     }
 
     @Override
@@ -111,32 +120,55 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         mViewButtonsAddDeclineAll = (RelativeLayout) rootView.findViewById(R.id.relative_layout_buttons_add_and_decline);
         mTextViewAcceptAll = (TextView) rootView.findViewById(R.id.text_view_accept_all);
         mTextViewDeclineAll = (TextView) rootView.findViewById(R.id.text_view_decline_all);
+        setAddDeclineAllListener();
+        return rootView;
+    }
+
+    private void setAddDeclineAllListener() {
         View.OnClickListener addDeclineAllListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
                 int initPosition = linearLayoutManager.findFirstVisibleItemPosition();
-                for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
-                    linearLayoutManager.findViewByPosition(i);
-                    ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                    switch (v.getId()){
-                        case R.id.text_view_accept_all:
+                int cont = 0;
+                switch (v.getId()){
+                    case R.id.text_view_accept_all:
+                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
+                            linearLayoutManager.findViewByPosition(i);
+                            ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
                             if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE){
                                 current.acceptAnimation();
+                                cont += 1;
                             }
-                            break;
-                        case R.id.text_view_decline_all:
+                        }
+                        for (Subscriber sub : mSubscribers){
+                            sub.setAccepted(true);
+                        }
+                        mAddAll = true;
+                        break;
+                    case R.id.text_view_decline_all:
+                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
+                            linearLayoutManager.findViewByPosition(i);
+                            ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
                             if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE){
                                 current.declineAnimation();
+                                cont += 1;
                             }
-                    }
-
+                        }
+                        for (Subscriber sub : mSubscribers){
+                            sub.setAccepted(false);
+                        }
+                        mDeclineAll = true;
+                        break;
                 }
+                if (cont == 0){
+                    notifyAdapter();
+                }
+                mAdapter.setSubscribers(mSubscribers);
             }
         };
         mTextViewAcceptAll.setOnClickListener(addDeclineAllListener);
         mTextViewDeclineAll.setOnClickListener(addDeclineAllListener);
-        return rootView;
     }
 
     private void setOnScrollListener() {
@@ -174,7 +206,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                     scrolledDistance = 0;
                 }
 
-                if((controlsVisible && dy>0) || (!controlsVisible && dy<0)) {
+                if ((controlsVisible && dy > 0) || (!controlsVisible && dy < 0)) {
                     scrolledDistance += dy;
                 }
             }
@@ -223,5 +255,19 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onResumeFragment(){
         mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, "5vs7DC2RnQ", getBindingKey());
+    }
+
+    public void acceptSubscriber(int position){
+        mSubscribers.get(position).setAccepted(true);
+    }
+
+    public void declineSubscriber(int position){
+        mSubscribers.get(position).setAccepted(false);
+    }
+
+    public void notifyAdapter(){
+        mAdapter.notifyDataSetChanged();
+        mAddAll = false;
+        mDeclineAll = false;
     }
 }

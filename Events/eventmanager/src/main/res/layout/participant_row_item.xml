@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/text_view_glober_left"
                     style="@style/condensed_normal_medium"
-                    android:textColor="@color/globant_green_dark"
+                    android:textColor="@color/violet_glober"
                     android:paddingLeft="10dp"
                     android:text="Glober" />
             </LinearLayout>
@@ -146,6 +146,13 @@
                 android:id="@+id/image_view_participant_right"
                 android:src="@drawable/profile_pic" />
         </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/text_view_position"
+            android:visibility="invisible" />
 
     </FrameLayout>
 
