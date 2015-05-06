@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,7 +36,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     protected RecyclerView.LayoutManager mLayoutManager;
     protected String[] mDataset;
     protected Boolean scrolling = false;
-    private RelativeLayout mViewButtonsAddDeclineAll;
+    private LinearLayout mViewButtonsAddDeclineAll;
     private TextView mTextViewAcceptAll;
     private TextView mTextViewDeclineAll;
     private Boolean mAddAll = false;
@@ -117,7 +118,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
         setOnScrollListener();
-        mViewButtonsAddDeclineAll = (RelativeLayout) rootView.findViewById(R.id.relative_layout_buttons_add_and_decline);
+        mViewButtonsAddDeclineAll = (LinearLayout) rootView.findViewById(R.id.linear_layout_buttons_add_and_decline);
         mTextViewAcceptAll = (TextView) rootView.findViewById(R.id.text_view_accept_all);
         mTextViewDeclineAll = (TextView) rootView.findViewById(R.id.text_view_decline_all);
         setAddDeclineAllListener();
