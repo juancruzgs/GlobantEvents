@@ -39,6 +39,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Object[] mCheckInParameters;
+
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
@@ -64,11 +66,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     public BaseEventListFragment(){
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -272,8 +269,11 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void setService(BaseService service) {
         super.setService(service);
-        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
         showProgressOverlay();
+        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
+        if (mCheckInParameters != null){
+            mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mCheckInParameters, getBindingKey());
+        }
     }
 
     @Override
@@ -282,12 +282,15 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         if (requestCode == CoreConstants.REQUEST_CODE_SCAN) {
             if (resultCode == Activity.RESULT_OK) {
                 showProgressOverlay();
-                Object[] parameters = new Object[2];
+                mCheckInParameters = new Object[2];
                 String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
                 String subscriberMail = SharedPreferencesController.getUserEmail(getActivity());
-                parameters[0] = eventId;
-                parameters[1] = subscriberMail;
-                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, parameters, getBindingKey());
+                mCheckInParameters[0] = eventId;
+                mCheckInParameters[1] = subscriberMail;
+                if (mService != null) {
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mCheckInParameters, getBindingKey());
+                }
+                //Else do the action when the service is available
             }
         }
     }
