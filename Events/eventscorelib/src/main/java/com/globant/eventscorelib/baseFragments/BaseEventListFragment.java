@@ -33,6 +33,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nineoldandroids.view.ViewHelper;
 
+import java.util.Date;
 import java.util.List;
 
 public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BaseEventsListViewHolder.GetEventInformation {
@@ -40,6 +41,9 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Object[] mCheckInParameters;
+
+    private String mBindingKey;
+
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
@@ -65,6 +69,13 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     public BaseEventListFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
@@ -290,5 +301,10 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public Activity getBindingActivity() {
         return getActivity();
+    }
+
+    @Override
+    public String getBindingKey() {
+        return mBindingKey;
     }
 }

@@ -32,6 +32,7 @@ import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
+import java.util.Date;
 
 public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
 
@@ -60,6 +61,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     private Event mEvent;
 
+    private String mBindingKey;
+
     public BaseEventDescriptionFragment() {
     }
 
@@ -75,7 +78,14 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public String getBindingKey() {
-        return BaseEventDescriptionFragment.class.getSimpleName();
+        return mBindingKey;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override

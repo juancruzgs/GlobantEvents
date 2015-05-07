@@ -25,6 +25,8 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.Logger;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
+
 import twitter4j.User;
 
 
@@ -37,6 +39,8 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     private Button mTweetButton;
     private CropCircleTransformation mCircleTransformation;
 
+    private String mBindingKey;
+
     public BaseTweetFragment() {
         // Required empty public constructor
     }
@@ -47,6 +51,13 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         if (uri != null) {
             mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri, getBindingKey());
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
@@ -147,7 +158,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
 
     @Override
     public String getBindingKey() {
-        return BaseTweetFragment.class.getSimpleName();
+        return mBindingKey;
     }
 
     @Override
