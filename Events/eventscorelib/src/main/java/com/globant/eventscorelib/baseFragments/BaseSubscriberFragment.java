@@ -98,7 +98,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     Boolean mPhotoTaken;
 
     Subscriber mSubscriber;
-
+    String mEventId;
+    Bundle mBundle;
 
     public BaseSubscriberFragment() {
         // Required empty public constructor
@@ -122,6 +123,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         prepareImageButton();
         mPhotoTaken = false;
         mSubscriber = new Subscriber();
+        mBundle = new Bundle();
         checkPreferences();
         setOnFocusListeners();
         hideUtilsAndShowContentOverlay();
@@ -408,6 +410,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
                 if (getArguments().containsKey(CoreConstants.FIELD_CHECK_IN)) {
                     if (getArguments().getBoolean(CoreConstants.FIELD_CHECK_IN)) {
+                        mEventId = BaseApplication.getInstance().getEvent().getObjectID();
                         mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, mEditTextEmail.getText().toString(), getBindingKey());
                     }
                 } else {
@@ -510,25 +513,29 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 if (result.equals("")) {
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, mSubscriber, getBindingKey());
                 } else {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(CoreConstants.FIELD_EVENTS, BaseApplication.getInstance().getEvent().getObjectID());
-                    bundle.putString(CoreConstants.FIELD_SUBSCRIBERS, (String) result);
-                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, bundle, getBindingKey());
+                    mSubscriber.setObjectID((String) result);
+                    Object[] objects = {(String) result, mEventId};
+                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, objects, getBindingKey());
                 }
                 break;
             case IS_SUBSCRIBED:
                 if ((Boolean) result) {
                     hideUtilsAndShowContentOverlay();
                     Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
                 } else {
-
+                    Object[] objects = {mSubscriber, mEventId}; // TODO change objects array
+                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, objects, getBindingKey());
                 }
-
                 break;
             case SUBSCRIBER_CREATE:
+                mSubscriber.setObjectID((String)result);
+                Object[] objects = {mSubscriber, mEventId};
+                mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, objects, getBindingKey());
                 break;
             case EVENTS_TO_SUBSCRIBER_CREATE:
-
+                hideUtilsAndShowContentOverlay();
+                Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
                 break;
         }

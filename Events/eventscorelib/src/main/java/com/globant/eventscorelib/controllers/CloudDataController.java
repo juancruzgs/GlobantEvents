@@ -38,18 +38,17 @@ public class CloudDataController {
     public Event getEvent(String eventId) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject databaseEvent = query.get(eventId);
-        return createDomainEventFromDatabase(databaseEvent);}
+        return createDomainEventFromDatabase(databaseEvent);
+    }
 
     private ParseObject getEventParseObject(String eventId) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-        ParseObject databaseEvent = query.get(eventId);
-        return databaseEvent;
+        return query.get(eventId);
     }
 
-    private ParseObject getSubscriberParseObject (String subsciberId) throws ParseException {
+    private ParseObject getSubscriberParseObject(String subscriberId) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
-        ParseObject databaseSubscriber = query.get(subsciberId);
-        return databaseSubscriber;
+        return query.get(subscriberId);
     }
 
     public ParseObject getSubscriberByEmail(String subscriberEmail) throws ParseException {
@@ -170,10 +169,19 @@ public class CloudDataController {
         databaseSpeaker.save();
     }
 
-    public void createSubscriber(Subscriber domainSubscriber) throws ParseException {
+    public String createSubscriber(Subscriber domainSubscriber) throws ParseException {
         ParseObject databaseSubscriber = new ParseObject(CoreConstants.SUBSCRIBERS_TABLE);
         setDatabaseSubscriberInformation(domainSubscriber, databaseSubscriber);
         databaseSubscriber.save();
+        return databaseSubscriber.getObjectId();
+    }
+
+    public void createEventToSubscriber(Subscriber domainSubscriber, String eventId) throws ParseException {
+        ParseObject databaseSubscriber = getSubscriberParseObject(domainSubscriber.getObjectID());
+        ParseObject databaseEvent = getEventParseObject(eventId);
+        ParseObject databaseEventToSubscriber = new ParseObject(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        setDatabaseEventToSubscriberInformation(domainSubscriber, databaseSubscriber, databaseEvent,  databaseEventToSubscriber);
+        databaseEventToSubscriber.save();
     }
 
     private byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
@@ -282,6 +290,14 @@ public class CloudDataController {
         databaseSpeaker.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
         databaseSpeaker.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
         databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
+    }
+
+    private void setDatabaseEventToSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSubscriber, ParseObject databaseEvent, ParseObject databaseEventToSubscriber) {
+        databaseEventToSubscriber.put(CoreConstants.FIELD_SUBSCRIBERS, databaseSubscriber);
+        databaseEventToSubscriber.put(CoreConstants.FIELD_EVENTS, databaseEvent);
+        databaseEventToSubscriber.put(CoreConstants.FIELD_PUBLIC, domainSubscriber.isPublic());
+        databaseEventToSubscriber.put(CoreConstants.FIELD_ACCEPTED, domainSubscriber.isAccepted());
+        databaseEventToSubscriber.put(CoreConstants.FIELD_CHECK_IN, domainSubscriber.checkedIn());
     }
 
     private Speaker createSpeakerFromDatabaseInformation(ParseObject databaseSpeaker) throws ParseException {
