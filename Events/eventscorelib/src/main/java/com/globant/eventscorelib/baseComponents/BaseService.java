@@ -250,8 +250,8 @@ public class BaseService extends Service {
                                     currentSubscriber.finishAction(theAction, subscriberId);
                                     break;
                                 case IS_SUBSCRIBED:
-                                    Object[] objects = (Object[])argument;
-                                    boolean isSubscribed = mCloudDataController.isSubscribed((String)objects[0], (String) objects[1]);
+                                    Object[] object = (Object[])argument;
+                                    boolean isSubscribed = mCloudDataController.isSubscribed((String)object[0], (String) object[1]);
                                     currentSubscriber.finishAction(theAction, isSubscribed);
                                     break;
                                 case SUBSCRIBER_CREATE:
@@ -259,8 +259,8 @@ public class BaseService extends Service {
                                     currentSubscriber.finishAction(theAction, subsId);
                                     break;
                                 case EVENTS_TO_SUBSCRIBER_CREATE:
-                                    Object[] object = (Object[])argument;
-                                    mCloudDataController.createEventToSubscriber((Subscriber)object[0], (String)object[1]);
+                                    Object[] obj = (Object[])argument;
+                                    mCloudDataController.createEventToSubscriber((Subscriber)obj[0], (String)obj[1]);
                                     currentSubscriber.finishAction(theAction, null);
                                     break;
                             }

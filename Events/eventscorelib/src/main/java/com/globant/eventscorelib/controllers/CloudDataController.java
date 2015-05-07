@@ -113,11 +113,6 @@ public class CloudDataController {
         return query.get(eventId);
     }
 
-    private ParseObject getSubscriberDatabase(String subscriberId) throws ParseException {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
-        return query.get(subscriberId);
-    }
-
     public List<Speaker> getEventSpeakers(String eventId) throws ParseException {
         List<Speaker> speakers = new ArrayList<>();
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
