@@ -4,18 +4,19 @@ import android.app.Application;
 
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
-import com.globant.eventscorelib.controllers.TwitterController;
+import twitter4j.User;
+
+import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.parse.Parse;
 
-/**
- * Created by ignaciopena on 4/1/15.
- */
+import java.util.List;
+
 abstract public class BaseApplication extends Application {
     private static BaseApplication ourInstance;
 
     private SharedPreferencesController mSharedPreferencesController;
-    private TwitterController mTwitterController;
     private CacheObjectsController mCacheObjectsController;
 
     abstract public Class<? extends BaseService> getServiceClass();
@@ -30,7 +31,6 @@ abstract public class BaseApplication extends Application {
         super.onCreate();
         ourInstance = this;
         Parse.initialize(this, CoreConstants.APPLICATION_ID, CoreConstants.CLIENT_KEY);
-        mTwitterController = new TwitterController();
         mSharedPreferencesController = new SharedPreferencesController(getApplicationContext());
         mCacheObjectsController = new CacheObjectsController();
     }
@@ -39,12 +39,20 @@ abstract public class BaseApplication extends Application {
         return mSharedPreferencesController;
     }
 
-    public CacheObjectsController getCacheObjectsController() {
-        return mCacheObjectsController;
+    public User getTwitterUser () {
+        return mCacheObjectsController.getUser();
     }
 
-    public TwitterController getTwitterController() {
-        return mTwitterController;
+    public void setEvent (Event event) {
+        mCacheObjectsController.setEvent(event);
+    }
+
+    public Event getEvent() {
+        return mCacheObjectsController.getEvent();
+    }
+
+    public void setTwitterUser (User user) {
+        mCacheObjectsController.setUser(user);
     }
 }
 

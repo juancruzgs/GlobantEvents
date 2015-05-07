@@ -30,6 +30,10 @@ public class Event  extends BaseObject{
     public Event() {
     }
 
+    public Event(String title) {
+        mTitle = title;
+    }
+
     public Event(String title, String shortDescription, String fullDescription, String additionalInfo, String address, Date startDate, Date endDate, boolean aPublic, byte[] icon, byte[] eventLogo, double latitude, double longitude, String qrCode, String city, String country, String category, String language, String hashtag, List<Speaker> speakers, List<Subscriber> subscribers) {
         mTitle = title;
         mShortDescription = shortDescription;

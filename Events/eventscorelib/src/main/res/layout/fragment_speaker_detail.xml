@@ -4,7 +4,6 @@
     android:background="@color/grey_lighter"
     tools:context="com.globant.eventscorelib.baseFragments.BaseSpeakerDetailFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <ScrollView
         android:id="@+id/scrollViewSpeakerDetail"
         android:layout_width="match_parent"
@@ -25,7 +24,6 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/speaker_picture"
             android:background="#82000000"
             android:padding="10dp">
             <TextView

@@ -1,8 +1,10 @@
 package com.globant.eventscorelib.baseFragments;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -19,105 +22,160 @@ import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
+import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
+import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
+import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
+import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.nineoldandroids.view.ViewHelper;
 
+import java.util.Date;
+import java.util.List;
 
-/**
- * A simple {@link android.support.v4.app.Fragment} subclass.
- */
-public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks {
+public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BaseEventsListViewHolder.GetEventInformation {
 
     private static final String TAG = "EventListFragment";
-    private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private static final int SPAN_COUNT = 2;
-//    private static final int DATASET_COUNT = 60;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Object[] mCheckInParameters;
+
+    private String mBindingKey;
+
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
     private LayoutManagerType mCurrentLayoutManagerType;
-    protected abstract int getFragmentLayout();
-    protected abstract int getEventListRecyclerView();
     private ObservableRecyclerView mRecyclerView;
-//    private EventsListAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-//    private String[] mDataset;
+    private List<Event> mEventList;
 
-    public BaseEventListFragment(){
+    protected abstract int getFragmentLayout();
+    protected abstract boolean getIsGlober();
+    protected abstract BaseEventsListAdapter getAdapter();
 
+    protected int getEventListRecyclerView() {
+        return R.id.event_list_recycler_view;
+    }
+
+    public ObservableRecyclerView getRecyclerView() {
+        return mRecyclerView;
+    }
+
+    public List<Event> getEventList() {
+        return mEventList;
+    }
+
+    public BaseEventListFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        initDataset();
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(getFragmentLayout(), container, false);
         rootView.setTag(TAG);
-
-        mRecyclerView = (ObservableRecyclerView) rootView.findViewById(getEventListRecyclerView());
-        mRecyclerView.setScrollViewCallbacks(this);
-
-        ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
-            @Override
-            public void run() {
-                ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0,1);
-                ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0,0);
-
-            }
-        });
-
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
-        if (savedInstanceState != null) {
-            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                    .getSerializable(KEY_LAYOUT_MANAGER);
-        }
-        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+        prepareRecyclerView(rootView);
+        prepareSwipeRefreshLayout(rootView);
+        setRecyclerViewLayoutManager(savedInstanceState);
         hideUtilsAndShowContentOverlay();
         setHasOptionsMenu(true);
-
         return rootView;
+    }
+
+    private void prepareRecyclerView(View rootView) {
+        mRecyclerView = (ObservableRecyclerView) rootView.findViewById(getEventListRecyclerView());
+        mRecyclerView.setScrollViewCallbacks(this);
+    }
+
+    private void prepareSwipeRefreshLayout(View rootView) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_swipe);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
     }
 
     @Override
     public String getTitle() {
-        return getString(R.string.title_fragment_events_stream);
+//        return getString(R.string.title_fragment_events_stream);
+        return "";
     }
 
-    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
-        int scrollPosition = 0;
+    public void setRecyclerViewLayoutManager(Bundle savedInstanceState) {
 
-        if (mRecyclerView.getLayoutManager() != null) {
-            scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
-                    .findFirstCompletelyVisibleItemPosition();
+        if (savedInstanceState != null) {
+            mCurrentLayoutManagerType = (LayoutManagerType)savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.scrollToPosition(scrollPosition);
-
-
+        mRecyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
+        savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
     }
 
-//    protected void initDataset() {
-//        mDataset = new String[DATASET_COUNT];
-//        for (int i = 0; i < DATASET_COUNT; i++) {
-//            mDataset[i] = "La Fiesta del Chorizo";
-//        }
-//    }
+    @Override
+    public void onScrollChanged(int i, boolean b, boolean b2) {
+
+        if (mRecyclerView.getChildCount() > 0) {
+            float height = mRecyclerView.getChildAt(0).getHeight();
+            float childHeight = mRecyclerView.getChildAt(0).findViewById(R.id.event_title_text_view).getHeight();
+            float z = childHeight / height;
+            float movementY, movementX, cardY;
+
+            for (int n = 0; n < mRecyclerView.getChildCount(); n++) {
+
+                View cardView = mRecyclerView.getChildAt(n);
+                View titleView = mRecyclerView.getChildAt(n).findViewById(R.id.event_title_text_view);
+                View dateView = mRecyclerView.getChildAt(n).findViewById(R.id.event_date_text_view);
+                View locationView = mRecyclerView.getChildAt(n).findViewById(R.id.event_location_text_view);
+                View TypeLogoView = mRecyclerView.getChildAt(n).findViewById(R.id.imageView_Event_Type_Logo);
+
+                // Set translation movement
+                cardY = cardView.getY();
+                movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height / childHeight)) - 1)), 10);
+                movementX = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height / childHeight)) - 1)), 0);
+
+                // Translations
+                ViewHelper.setTranslationY(titleView, movementY);
+                ViewHelper.setTranslationX(titleView, (-movementX) / 2.5f);
+                ViewHelper.setTranslationY(dateView, movementY / 2);
+                ViewHelper.setTranslationX(dateView, -(movementX * 1.5f));
+                ViewHelper.setTranslationX(locationView, -(movementX * 3));
+
+                // Alphas
+                float alpha = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (z * 2), 0, 255) / 64;
+                ViewHelper.setAlpha(dateView, 1 - (alpha));
+                ViewHelper.setAlpha(locationView, 1 - (alpha));
+                ViewHelper.setAlpha(TypeLogoView, 1 - (alpha));
+
+                //((TextView) titleView).setText(String.format("%.02f", movementY) + " | " + String.format("%.02f", cardY) + " | " + alpha);
+            }
+        }
+    }
+
+    @Override
+    public void onDownMotionEvent() {
+    }
+
+    @Override
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -135,14 +193,15 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             startActivity(intentCredits);
             handled = true;
         } else {
-            if (id == R.id.action_checkin) {
-                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                startActivityForResult(intentScan, 0);
+            if (id == R.id.action_profile) {
+                Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
+                startActivity(intentSubscriber);
                 handled = true;
             } else {
-                if (id == R.id.action_profile) {
-                    Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
-                    startActivity(intentSubscriber);
+                if (id == R.id.action_checkin) {
+                    IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(this);
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                    intentIntegrator.initiateScan();
                     handled = true;
                 }
             }
@@ -155,66 +214,97 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            if (resultCode == -1) {
-                String contents = data.getStringExtra(CoreConstants.SCAN_RESULT);
+    public void onStartAction(BaseService.ACTIONS theAction) {
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        switch (theAction) {
+            case EVENT_LIST:
+                mEventList = (List<Event>) result;
+                if (mEventList != null) {
+                    mRecyclerView.setAdapter(getAdapter());
+                } else {
+                    showErrorOverlay();
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
+                hideUtilsAndShowContentOverlay();
+                break;
+            case SUBSCRIBER_CHECKIN:
+                postCheckinTweet((Event) result);
+                break;
+            case TWEET_POST:
                 showCheckinOverlay();
+                break;
+            default:
+                hideUtilsAndShowContentOverlay();
+                break;
+        }
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        switch (theAction) {
+            case SUBSCRIBER_CHECKIN:
+                hideUtilsAndShowContentOverlay();
+                Toast.makeText(getActivity(), getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                showErrorOverlay();
+                break;
+        }
+    }
+
+    private void postCheckinTweet(Event event) {
+        if (BaseApplication.getInstance().getSharedPreferencesController().isAlreadyTwitterLogged()) {
+            String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
+            mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
+        } else {
+            showCheckinOverlay();
+        }
+    }
+
+    @Override
+    public void setService(BaseService service) {
+        super.setService(service);
+        showProgressOverlay();
+        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
+        if (mCheckInParameters != null) {
+            mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mCheckInParameters, getBindingKey());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null) {
+            showProgressOverlay();
+            mCheckInParameters = new Object[2];
+            String eventId = scanResult.getContents();
+            String subscriberMail = SharedPreferencesController.getUserEmail(getActivity());
+            mCheckInParameters[0] = eventId;
+            mCheckInParameters[1] = subscriberMail;
+            if (mService != null) {
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mCheckInParameters, getBindingKey());
             }
+            //Else do the action when the service is available }
         }
     }
+
     @Override
-    public void onScrollChanged(int i, boolean b, boolean b2) {
-
-        float height = mRecyclerView.getChildAt(0).getHeight();
-        float childHeight = mRecyclerView.getChildAt(0).findViewById(R.id.event_title_text_view).getHeight();
-
-        float z = (childHeight+30) / height;
-        float movementY , movementX;
-
-        for (int n = 0; n < mRecyclerView.getChildCount(); n++){
-
-            View cardView = mRecyclerView.getChildAt(n);
-            View titleView = mRecyclerView.getChildAt(n).findViewById(R.id.event_title_text_view);
-            View dateView = mRecyclerView.getChildAt(n).findViewById(R.id.event_date_text_view);
-            View locationView = mRecyclerView.getChildAt(n).findViewById(R.id.event_location_text_view);
-
-            // Set translation movement
-            float cardY = cardView.getY();
-            movementY = ScrollUtils.getFloat( (cardY - 230) * (-z*2) , -(childHeight * 2) , 30);
-            movementX = ScrollUtils.getFloat( (cardY - 200) * (-z*2) , -(childHeight * 2) , 0);
-
-            // Translate Title
-            ViewHelper.setTranslationY(titleView, movementY);
-            ViewHelper.setTranslationX(titleView, (-movementX)/2.5f );
-
-            //Translate Date
-            ViewHelper.setTranslationY(dateView, movementY/2);
-            ViewHelper.setTranslationX(dateView, -(movementX*1.5f));
-
-            // Alpha of Date
-            float alpha = ScrollUtils.getFloat( cardY * z, 0, 255);
-            ViewHelper.setAlpha(mRecyclerView.getChildAt(n).findViewById(R.id.event_date_text_view), 1 - (alpha / 128));
-
-            // Translate Location
-            ViewHelper.setTranslationX(locationView, -(movementX*3));
-
-            //Alpha of Location
-            ViewHelper.setAlpha(locationView, 1 - (alpha / 128));
-
-            //((TextView)mRecyclerView.getChildAt(n).findViewById(R.id.event_title_text_view)).setText(String.format("%.02f", movementY) + " | " + String.format("%.02f", cardY));
-
-        }
-
+    public void getEvent(int position) {
+        Event event = mEventList.get(position);
+        BaseApplication.getInstance().setEvent(event);
     }
 
     @Override
-    public void onDownMotionEvent() {
-
+    public Activity getBindingActivity() {
+        return getActivity();
     }
 
     @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-
+    public String getBindingKey() {
+        return mBindingKey;
     }
 }

@@ -24,7 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
                 card_view:cardCornerRadius="4dp"
-                class="android.support.v7.widget.CardView">
+                android:elevation="30dp"
+                android:layout_margin="@dimen/padding_text_view_card_row_5">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -75,7 +76,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
                 card_view:cardCornerRadius="4dp"
-                >
+                android:layout_margin="@dimen/padding_text_view_card_row_5"
+                android:elevation="30dp">
 
             <EditText
                 android:id="@+id/textView_tweet"
@@ -93,12 +95,14 @@
             <Button
                 android:id="@+id/button_tweet"
                 style="@style/condensed_normal_medium"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/button_login_twitter"
                 android:background="@color/globant_green"
-                android:layout_marginTop="5dp"/>
+                android:layout_margin="@dimen/padding_text_view_card_row_5"
+                />
         </LinearLayout>
     </ScrollView>
 

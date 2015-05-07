@@ -10,7 +10,7 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relative_layout_holder">
+        android:id="@+id/frame_layout_holder">
 
         <FrameLayout
                 android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -57,16 +57,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Glober"
                     android:id="@+id/text_view_glober_left"
                     style="@style/condensed_normal_medium"
-                    android:textColor="@color/globant_green_dark"
-                    android:paddingLeft="10dp" />
+                    android:textColor="@color/blue_glober"
+                    android:paddingLeft="10dp"
+                    android:text="Glober" />
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -86,7 +86,7 @@
                 android:gravity="center_vertical"
                 android:padding="10dp"
                 android:id="@+id/linear_layout_middle"
-                android:layout_marginLeft="80dp">
+                android:layout_marginLeft="88dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
 
                 <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <TextView
@@ -110,16 +110,16 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Glober"
                         android:id="@+id/text_view_glober"
                         style="@style/condensed_normal_medium"
                         android:textColor="@color/globant_green_dark"
-                        android:paddingLeft="10dp" />
+                        android:paddingLeft="10dp"
+                        android:text="Glober" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <TextView
@@ -146,6 +146,13 @@
                 android:id="@+id/image_view_participant_right"
                 android:src="@drawable/profile_pic" />
         </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/text_view_position"
+            android:visibility="invisible" />
 
     </FrameLayout>
 

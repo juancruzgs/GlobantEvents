@@ -15,61 +15,38 @@ import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 
 public abstract class BaseFragment extends Fragment{
 
     private LinearLayout mUtilsLayout;
+    private LinearLayout mLoadingLayout;
     private FrameLayout mContentLayout;
     private TextView mTextViewUtilsMessage;
+    private TextView mTextViewLoadingMessage;
     private ImageView mImageViewUtils;
     protected BaseService mService = null;
     private Boolean mIsCheckin;
 
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container,
-                         Bundle savedInstanceState){
-
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View rootView = inflater.inflate(R.layout.fragment_base, container, false);
         wireUpLayouts(rootView);
         wireUpViews(rootView);
         prepareCheckinTouch();
-        View content=this.onCreateEventView(inflater, null, savedInstanceState);
-        mContentLayout.addView(content);
+        prepareContentLayout(inflater, savedInstanceState);
         return rootView;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        mService.unSubscribeActor(getActionListener());
-    }
-
-    /// Return an ActionListener to manage the db actions... or just null
-    abstract public BaseService.ActionListener getActionListener();
-
-
-    abstract protected View onCreateEventView(LayoutInflater inflater, ViewGroup container,
-                                              Bundle savedInstanceState);
-
-
-    protected int getActionBarSize() {
-        TypedValue typedValue = new TypedValue();
-        int[] textSizeAttr = new int[]{R.attr.actionBarSize};
-        int indexOfAttrTextSize = 0;
-        TypedArray a = getActivity().obtainStyledAttributes(typedValue.data, textSizeAttr);
-        int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
-        a.recycle();
-        return actionBarSize;
     }
 
     private void wireUpLayouts(View rootView) {
         mUtilsLayout = (LinearLayout)rootView.findViewById(R.id.utilsPanel);
+        mLoadingLayout = (LinearLayout)rootView.findViewById(R.id.loading_panel);
         mContentLayout=(FrameLayout)rootView.findViewById(R.id.contentPanel);
     }
 
     private void wireUpViews(View rootView) {
         mTextViewUtilsMessage=(TextView)rootView.findViewById(R.id.textView_utils);
+        mTextViewLoadingMessage=(TextView)rootView.findViewById(R.id.text_view_loading);
         mImageViewUtils=(ImageView)rootView.findViewById(R.id.imageView_utils);
     }
 
@@ -86,18 +63,44 @@ public abstract class BaseFragment extends Fragment{
         });
     }
 
+    private void prepareContentLayout(LayoutInflater inflater, Bundle savedInstanceState) {
+        View content = this.onCreateEventView(inflater, null, savedInstanceState);
+        mContentLayout.addView(content);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mService.unSubscribeActor(getActionListener());
+    }
+
+    /// Return an ActionListener to manage the db actions... or just null
+    abstract public BaseService.ActionListener getActionListener();
+
+    abstract protected View onCreateEventView(LayoutInflater inflater, ViewGroup container,
+                                              Bundle savedInstanceState);
+
+    protected int getActionBarSize() {
+        TypedValue typedValue = new TypedValue();
+        int[] textSizeAttr = new int[]{R.attr.actionBarSize};
+        int indexOfAttrTextSize = CoreConstants.ZERO;
+        TypedArray a = getActivity().obtainStyledAttributes(typedValue.data, textSizeAttr);
+        int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
+        a.recycle();
+        return actionBarSize;
+    }
+
     public void showProgressOverlay(){
-        mTextViewUtilsMessage.setText(getResources().getString(R.string.loading));
-        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.loading));
+        mLoadingLayout.setVisibility(View.VISIBLE);
         mContentLayout.setVisibility(View.GONE);
-        mUtilsLayout.setVisibility(View.VISIBLE);
+        mUtilsLayout.setVisibility(View.GONE);
     }
 
     public void showProgressOverlay(String messageProgress){
-        mTextViewUtilsMessage.setText(messageProgress);
-        mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.loading));
+        mTextViewLoadingMessage.setText(messageProgress);
+        mLoadingLayout.setVisibility(View.VISIBLE);
         mContentLayout.setVisibility(View.GONE);
-        mUtilsLayout.setVisibility(View.VISIBLE);
+        mUtilsLayout.setVisibility(View.GONE);
     }
 
     public void showErrorOverlay(){
@@ -105,6 +108,7 @@ public abstract class BaseFragment extends Fragment{
         mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.error));
         mContentLayout.setVisibility(View.GONE);
         mUtilsLayout.setVisibility(View.VISIBLE);
+        mLoadingLayout.setVisibility(View.GONE);
     }
 
     public void showErrorOverlay(String messageError){
@@ -112,12 +116,14 @@ public abstract class BaseFragment extends Fragment{
         mImageViewUtils.setImageDrawable(getResources().getDrawable(R.drawable.error));
         mContentLayout.setVisibility(View.GONE);
         mUtilsLayout.setVisibility(View.VISIBLE);
+        mLoadingLayout.setVisibility(View.GONE);
     }
 
     public void showCheckinOverlay(){
         mTextViewUtilsMessage.setText(getResources().getString(R.string.checkin_successfully));
         mImageViewUtils.setImageDrawable(getResources().getDrawable(R.mipmap.ic_location));
         mContentLayout.setVisibility(View.GONE);
+        mLoadingLayout.setVisibility(View.GONE);
         mUtilsLayout.setVisibility(View.VISIBLE);
         mIsCheckin = true;
     }
@@ -125,6 +131,7 @@ public abstract class BaseFragment extends Fragment{
     public void hideUtilsAndShowContentOverlay(){
         mUtilsLayout.setVisibility(View.GONE);
         mContentLayout.setVisibility(View.VISIBLE);
+        mLoadingLayout.setVisibility(View.GONE);
     }
 
     public void setService(BaseService service) {
@@ -136,8 +143,4 @@ public abstract class BaseFragment extends Fragment{
     }
 
     public abstract String getTitle();
-
-    public interface TitleChangeable{
-        public void changeFragmentTitle(String title);
-    }
 }

@@ -7,6 +7,9 @@ public class CoreConstants {
 
     public static int ZERO = 0;
 
+    //Base Activity
+    public static final String INTENT_FILTER_CONNECTIVITY = "android.net.conn.CONNECTIVITY_CHANGE";
+
     //Parse
     public static final String APPLICATION_ID = "XFRKSroVgyKznK5gYTqpQoL8fnNZ1zhSwBVc9tJb";
     public static final String CLIENT_KEY = "D00WzyZtzJ3aeNRT93sSUYflBRAR3empdd6YgcLd";
@@ -58,6 +61,7 @@ public class CoreConstants {
     //QR Scanner
     public static final String INTENT_SCAN = "com.google.zxing.client.android.SCAN";
     public static final String SCAN_RESULT = "SCAN_RESULT";
+    public static final int REQUEST_CODE_SCAN = 1;
 
     //Logger
     public static final String LOG_TAG = "GlobantEventsApp";
@@ -85,4 +89,35 @@ public class CoreConstants {
 
     // RecyclerView
     public static final String KEY_LAYOUT_MANAGER = "layoutManager";
+    public static final String KEY_LAYOUT_PLACEHOLDER = "placeholder666";
+
+    //SubscriberProfile
+    public static final String SHARED_PREF_IMG = "img.jpg";
+    public static final String IMAGE_CAPTURE = "android.media.action.IMAGE_CAPTURE";
+    public static final String IMAGE_CROP = "com.android.camera.action.CROP";
+    public static final String URI_NAME = "image/*";
+    public static final String EXTRA_CROP = "crop";
+    public static final String EXTRA_TRUE = "true";
+    public static final String EXTRA_ASPECTX = "aspectX";
+    public static final String EXTRA_ASPECTY = "aspectY";
+    public static final String EXTRA_OUTPUTX = "outputX";
+    public static final String EXTRA_OUTPUTY= "outputY";
+    public static final String EXTRA_RETURN_DATA= "return-data";
+    public static final String DATA= "data";
+    public static final String SHARED_PREF_DIR = "/shared_prefs/";
+    public static final String SHARED_PREF_ROOT = "/data/data/";
+    public static final String SHARED_PREF_FILE = "_preferences.xml";
+    public static final String DONE_CLICKED="done_clicked";
+    public static final String PHOTO_ROTATE="photoRotate";
+    public static final String SPEAKER_SELECTED ="speaker";
+    public static final String PHOTO_TAKEN ="photo_taken";
+
+    //Base Activity
+    public static final String ACTIVITY_TITLE_INTENT = "ActivityTitle";
+
+    //Event Descripion
+    public static final float MAX_TEXT_SCALE_DELTA = 0.3f;
+
+    //Pager
+    public static final String CURRENT_FRAGMENT_INTENT = "currentFragmentPosition";
 }

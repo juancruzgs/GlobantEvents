@@ -8,20 +8,20 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
-import com.globant.eventscorelib.baseAdapters.BaseTweetListAdapter;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
-import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
+import com.globant.eventscorelib.baseAdapters.BaseTweetListAdapter;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
+import java.util.Date;
 import java.util.List;
 
 import twitter4j.Status;
@@ -29,11 +29,17 @@ import twitter4j.Status;
 
 public class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
-    private LayoutManagerType mCurrentLayoutManagerType;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private ActionButton mActionButton;
     private List<Status> mTweetList;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private String mBindingKey;
+
+    public BaseTwitterStreamFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public Activity getBindingActivity() {
@@ -42,30 +48,24 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public String getBindingKey() {
-        // TODO: Return an appropriated key
-        return "BaseTwitterStreamFragment";
+        return mBindingKey;
     }
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        showProgressOverlay();
     }
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        switch (theAction) {
-            case TWEETS_LIST:
-                mTweetList = (List<Status>) result;
-                if (mTweetList != null) {
-                    BaseApplication.getInstance().getCacheObjectsController().tweetList = mTweetList;
-                    if (getActivity() == null) return;
-                    setAdapterRecyclerView();
-
-                } else {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    showErrorOverlay();
-                }
-                break;
+        if (theAction == BaseService.ACTIONS.TWEETS_LIST){
+            mTweetList = (List<Status>) result;
+            if (mTweetList != null) {
+                BaseEventDetailPagerActivity.getInstance().setTweetList(mTweetList);
+                setRecyclerViewAdapter();
+            } else {
+                showErrorOverlay();
+            }
+            mSwipeRefreshLayout.setRefreshing(false);
         }
         hideUtilsAndShowContentOverlay();
     }
@@ -75,20 +75,16 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         showErrorOverlay();
     }
 
-    private enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
-    }
-
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    public BaseTwitterStreamFragment() {
-        // Required empty public constructor
+    @Override
+    public BaseService.ActionListener getActionListener() {
+        return this;
     }
 
     @Override
-    public BaseService.ActionListener getActionListener() {
-        return BaseTwitterStreamFragment.this;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
@@ -100,22 +96,14 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         prepareSwipeRefreshLayout(rootView);
         wireUpFAB(rootView);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        if (savedInstanceState != null) {
-            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                    .getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
-        }
         setRecyclerViewLayoutManager();
-
-        if (mTweetList != null) {
-            setAdapterRecyclerView();
-        }
+        setRetainInstance(true);
         return rootView;
     }
 
     @Override
     public String getTitle() {
-        return "Twitter";
-//        return getString(R.string.title_fragment_tweets_stream);
+        return getString(R.string.title_fragment_tweets_stream);
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
@@ -123,8 +111,9 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                BaseApplication.getInstance().getCacheObjectsController().tweetList = null;
+                BaseEventDetailPagerActivity.getInstance().setTweetList(null);
                 mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "#GameOfThrones", getBindingKey()); // TODO: put the event hashtag
+                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
@@ -163,54 +152,33 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     public void setRecyclerViewLayoutManager() {
         int scrollPosition = 0;
-
         if (mRecyclerView.getLayoutManager() != null) {
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
         }
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        mTweetList = BaseApplication.getInstance().getCacheObjectsManager().tweetList;
-//        if (mTweetList != null) {
-//            setAdapterRecyclerView();
-//        }
-    }
-
-    private void setAdapterRecyclerView() {
-        BaseTweetListAdapter mAdapter = new BaseTweetListAdapter(mTweetList, getActivity());
-        mRecyclerView.setAdapter(mAdapter);
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void setService(BaseService service) {
-        super.setService(service);
-        mTweetList = BaseApplication.getInstance().getCacheObjectsController().tweetList;
-        if (mTweetList == null) {
-            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
-        super.onSaveInstanceState(savedInstanceState);
+    private void setRecyclerViewAdapter() {
+        BaseTweetListAdapter adapter = new BaseTweetListAdapter(mTweetList, getActivity());
+        mRecyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onPauseFragment() {
-        Log.i("asd", "onPauseFragment()");
     }
 
     @Override
     public void onResumeFragment() {
-        Log.i("asd", "onResumeFragment()");
+        mTweetList = BaseEventDetailPagerActivity.getInstance().getTweetList();
+        if (mTweetList == null) {
+            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
+            showProgressOverlay();
+        }
+        else {
+            setRecyclerViewAdapter();
+        }
     }
 }

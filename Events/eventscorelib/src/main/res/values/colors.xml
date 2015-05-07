@@ -12,12 +12,17 @@
     <color name="grey_light">#B6B6B6</color>
     <color name="grey_lighter">#ffd8d8d8</color>
     <color name="ambar">#FFC107</color>
-    <color name="blue_light">#75ABDA</color>
+    <color name="blue_light_material">#03A9F4</color>
     <color name="red">#DA0010</color>
-    <color name="yellow">#FEE800</color>
+    <color name="pink_material">#E91E63</color>
+    <color name="yellow_material">#FFEB3B</color>
     <color name="blue">#00148D</color>
     <color name="grey_tr">#82000000</color>
     <color name="grey_card">#AFAFAF</color>
     <color name="grey_icon">#757575</color>
     <color name="red_error">#D32F2F</color>
+    <color name="transparent">#00000000</color>
+    <color name="semi_ransparent_white">#80000000</color>
+    <color name="violet_glober">#7C4DFF</color>
+    <color name="blue_glober">#536DFE</color>
 </resources>

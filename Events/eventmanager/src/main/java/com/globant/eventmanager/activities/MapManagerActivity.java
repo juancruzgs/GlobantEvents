@@ -24,6 +24,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.Date;
+
 
 public class MapManagerActivity extends BaseMapActivity implements BaseService.ActionListener{
 
@@ -34,6 +36,8 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     private BaseService mService = null;
     private SearchView mSearchView;
     private String mInitialQuery = "";
+
+    private String mBindingKey;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -61,8 +65,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
 
     @Override
     public String getBindingKey() {
-        // TODO: Return an appropriated key
-        return "MapManagerActivity";
+        return mBindingKey;
     }
 
     @Override
@@ -95,6 +98,9 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+
         doStartService();
         doBindService();
     }

@@ -3,7 +3,6 @@ package com.globant.eventmanager.activities;
 import android.os.Bundle;
 
 import com.globant.eventmanager.R;
-import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseFragments.BaseSpeakerFragment;
