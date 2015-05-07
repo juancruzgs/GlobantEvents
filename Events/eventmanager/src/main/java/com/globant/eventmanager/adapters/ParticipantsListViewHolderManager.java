@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
-import com.globant.eventscorelib.utils.Logger;
 
 /**
  * Created by paula.baudo on 4/17/2015.
@@ -151,7 +150,6 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     private final Runnable mRunnable = new Runnable() {
         public void run() {
             mRunnableIsRunning = true;
-            Logger.d("true");
             if ((!mScrolling) && (mBooleanIsPressed)){
                 startAnimations();
             }
@@ -308,7 +306,6 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
                 // Execute your Runnable after 5000 milliseconds = 5 seconds.
                 mAdapter.onTouchListenerItem(this);
                 mRunnableIsRunning = false;
-                Logger.d("false");
                 mHandler.postDelayed(mRunnable, 500);
                 mAnimationCancelled = false;
                 mBooleanIsPressed = true;

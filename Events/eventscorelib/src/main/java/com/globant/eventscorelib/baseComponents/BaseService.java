@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 
@@ -124,7 +125,7 @@ public class BaseService extends Service {
 
     public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
-    PARTICIPANT_LIST}
+    PARTICIPANT_LIST, SET_ACCEPTED}
 
     public TwitterController getTwitterController() {
         return mTwitterController;
@@ -235,6 +236,11 @@ public class BaseService extends Service {
                                 case PARTICIPANT_LIST:
                                     List<Subscriber> subscribersList = mCloudDataController.getEventSubscribers((String) argument);
                                     currentSubscriber.finishAction(theAction, subscribersList);
+                                    break;
+                                case SET_ACCEPTED:
+                                    Object[] objects = (Object[]) argument;
+                                    mCloudDataController.setAccepted((String)objects[0], (List<Subscriber>) objects[1]);
+                                    currentSubscriber.finishAction(theAction, null);
                                     break;
                             }
 

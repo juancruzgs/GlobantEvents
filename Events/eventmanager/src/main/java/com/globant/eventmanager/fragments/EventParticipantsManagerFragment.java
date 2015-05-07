@@ -13,13 +13,13 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.R;
+import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
-import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 
@@ -269,6 +269,16 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         else {
             setRecyclerViewAdapter();
         }
+    }
+
+    @Override
+    public void onStop() {
+        if (mSubscribers != null)
+        {
+            Object[] objects = {mEvent.getObjectID(), mSubscribers};
+            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, objects, getBindingKey() );
+        }
+        super.onStop();
     }
 
     public void acceptSubscriber(int position){
