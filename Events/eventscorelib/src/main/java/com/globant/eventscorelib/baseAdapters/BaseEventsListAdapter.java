@@ -2,6 +2,7 @@ package com.globant.eventscorelib.baseAdapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +30,11 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
         mContext = context;
         mBitmapList = new ArrayList<>();
         for (int n = 0; n < eventList.size(); n++) {
-            mBitmapList.add(ConvertImage.convertByteToBitmap(eventList.get(n).getEventLogo()));
+            if (eventList.get(n).getEventLogo() != null) {
+                mBitmapList.add(ConvertImage.convertByteToBitmap(eventList.get(n).getEventLogo()));
+            } else {
+                mBitmapList.add(BitmapFactory.decodeResource(context.getResources(), R.mipmap.placeholder));
+            }
         }
         eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
         mEventList = eventList;
