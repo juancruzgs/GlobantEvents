@@ -34,7 +34,7 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import java.util.Date;
 
-public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
+public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     boolean mStickyToolbar;
     private View mToolbar;
@@ -115,8 +115,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             prepareBaseSubscriberActivity();
-               }
+                prepareBaseSubscriberActivity();
+            }
         });
 
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
@@ -217,14 +217,14 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             }
         }
 
-        if (i > mFlexibleSpaceImageHeight && !mTitleShown){
+        if (i > mFlexibleSpaceImageHeight && !mTitleShown) {
             mTitleShown = true;
             ((BaseActivity) getActivity()).changeFragmentTitle((String) mEventTitle.getText());
         }
 
         // Translate FAB
         int maxFabTranslationY = mFlexibleSpaceImageHeight - mFab.getHeight() / 2;
-        float fabTranslationY = ScrollUtils.getFloat( -i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
+        float fabTranslationY = ScrollUtils.getFloat(-i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
                 mActionBarSize - mFab.getHeight() / 2,
                 maxFabTranslationY);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -240,7 +240,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         }
 
         // Show-hide FAB
-        if (fabTranslationY < mFlexibleSpaceShowFabOffset-mActionBarSize) {
+        if (fabTranslationY < mFlexibleSpaceShowFabOffset - mActionBarSize) {
             hideFab();
         } else {
             showFab();
@@ -255,12 +255,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
 
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_event_description_fragment, menu);
     }
 
     private void showFab() {
@@ -281,14 +275,22 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     private void loadEventDescription() {
         mEventTitle.setText(mEvent.getTitle());
-        mEventImage.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+        if (mEvent.getEventLogo() != null) {
+            mEventImage.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+        } else {
+            mEventImage.setImageResource(R.mipmap.placeholder);
+        }
         mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
         mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
         mEventAddress.setText(mEvent.getAddress());
         mEventCity.setText(mEvent.getCity());
         mEventCountry.setText(mEvent.getCountry());
         mEventLanguage.setText(mEvent.getLanguage());
-        mEventAdditionalInfo.setText(mEvent.getAdditionalInfo());
+        if (mEvent.getAdditionalInfo() != null) {
+            mEventAdditionalInfo.setText(mEvent.getAdditionalInfo());
+        } else {
+            mEventAdditionalInfo.setText("-");
+        }
         mEventFullDescription.setText(mEvent.getFullDescription());
     }
 
