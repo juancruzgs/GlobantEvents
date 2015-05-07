@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
@@ -98,6 +99,13 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
                 DrawableCompat.setTint(mDrawableToApply, mContext.getResources().getColor(R.color.globant_green_dark));
 
             }
+            if (mEventList.get(position).getSpeakers() == null){
+                holder.hideSpeakersLayout();
+            }
+            else {
+                holder.showSpeakersLayout();
+                holder.getEventSpeakers().setText(speakerToString(mEventList.get(position).getSpeakers()));
+            }
             mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
             holder.getCategoryLogo().setImageDrawable(mDrawableToApply);
             holder.getEventTitle().setText(mEventList.get(position).getTitle());
@@ -110,6 +118,15 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
     @Override
     public int getItemCount() {
         return mEventList.size();
+    }
+
+    private String speakerToString(List<Speaker> speakers){
+        String result = "";
+        for (Speaker speaker : speakers){
+            result += speaker.getName() + " " + speaker.getLastName() + ", ";
+        }
+        result = result.substring(0,result.length()-2) + ".";
+        return result;
     }
 
 }
