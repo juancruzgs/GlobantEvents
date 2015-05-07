@@ -59,7 +59,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public String getBindingKey() {
-        return "EventParticipantsManagerFragment";
+        return EventParticipantsManagerFragment.class.getSimpleName();
     }
 
     @Override

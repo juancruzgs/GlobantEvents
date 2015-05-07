@@ -41,10 +41,44 @@ public class CloudDataController {
         return createDomainEventFromDatabase(databaseEvent);
     }
 
+    private ParseObject getEventDatabase(String eventId) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        return query.get(eventId);
+    }
+
+    private ParseObject getSubscriberDatabase(String subscriberId) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        return query.get(subscriberId);
+    }
+
     public ParseObject getSubscriberByEmail(String subscriberEmail) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
         query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
         return query.getFirst();
+    }
+
+    public String getSubscriberIdByEmail(String subscriberEmail) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
+        String objectId;
+        try {
+            objectId = query.getFirst().getObjectId();
+        } catch (ParseException e) {
+            objectId = "";
+        }
+        return objectId;
+    }
+
+    public boolean isSubscribed(String subscriberId, String eventId) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        try {
+            query.whereEqualTo(CoreConstants.FIELD_EVENTS, getEventDatabase(eventId));
+            query.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, getSubscriberDatabase(subscriberId));
+            query.getFirst();
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
     }
 
     public Event setCheckIn(String eventId, Context context) throws ParseException {
@@ -136,6 +170,21 @@ public class CloudDataController {
         databaseSpeaker.save();
     }
 
+    public String createSubscriber(Subscriber domainSubscriber) throws ParseException {
+        ParseObject databaseSubscriber = new ParseObject(CoreConstants.SUBSCRIBERS_TABLE);
+        setDatabaseSubscriberInformation(domainSubscriber, databaseSubscriber);
+        databaseSubscriber.save();
+        return databaseSubscriber.getObjectId();
+    }
+
+    public void createEventToSubscriber(Subscriber domainSubscriber, String eventId) throws ParseException {
+        ParseObject databaseSubscriber = getSubscriberDatabase(domainSubscriber.getObjectID());
+        ParseObject databaseEvent = getEventDatabase(eventId);
+        ParseObject databaseEventToSubscriber = new ParseObject(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        setDatabaseEventToSubscriberInformation(domainSubscriber, databaseSubscriber, databaseEvent,  databaseEventToSubscriber);
+        databaseEventToSubscriber.save();
+    }
+
     private byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
         ParseFile file = databaseObject.getParseFile(field);
         if (file != null) {
@@ -212,8 +261,8 @@ public class CloudDataController {
         databaseEvent.put(CoreConstants.FIELD_START_DATE, domainEvent.getStartDate());
         databaseEvent.put(CoreConstants.FIELD_END_DATE, domainEvent.getEndDate());
         databaseEvent.put(CoreConstants.FIELD_PUBLIC, domainEvent.isPublic());
-        databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile(domainEvent.getIcon()));
-        databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile(domainEvent.getEventLogo()));
+        databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.png", domainEvent.getIcon()));
+        databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.png", domainEvent.getEventLogo()));
         databaseEvent.put(CoreConstants.FIELD_FULL_DESCRIPTION, domainEvent.getFullDescription());
         databaseEvent.put(CoreConstants.FIELD_ADDITIONAL_INFO, domainEvent.getAdditionalInfo());
         databaseEvent.put(CoreConstants.FIELD_ADDRESS, domainEvent.getAddress());
@@ -228,7 +277,29 @@ public class CloudDataController {
         databaseSpeaker.put(CoreConstants.FIELD_NAME, domainSpeaker.getName());
         databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSpeaker.getLastName());
         databaseSpeaker.put(CoreConstants.FIELD_BIOGRAPHY, domainSpeaker.getBiography());
-        databaseSpeaker.put(CoreConstants.FIELD_PICTURE, domainSpeaker.getPicture());
+        databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSpeaker.getPicture()));
+    }
+
+    private void setDatabaseSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSpeaker) {
+        databaseSpeaker.put(CoreConstants.FIELD_NAME, domainSubscriber.getName());
+        databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSubscriber.getLastName());
+        databaseSpeaker.put(CoreConstants.FIELD_EMAIL, domainSubscriber.getEmail());
+        databaseSpeaker.put(CoreConstants.FIELD_PHONE, domainSubscriber.getPhone());
+        databaseSpeaker.put(CoreConstants.FIELD_OCCUPATION, domainSubscriber.getOccupation());
+        databaseSpeaker.put(CoreConstants.FIELD_GLOBER, domainSubscriber.isGlober());
+        databaseSpeaker.put(CoreConstants.FIELD_TWITTER_USER, domainSubscriber.getTwitterUser());
+        databaseSpeaker.put(CoreConstants.FIELD_ENGLISH, domainSubscriber.speaksEnglish());
+        databaseSpeaker.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
+        databaseSpeaker.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
+        databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
+    }
+
+    private void setDatabaseEventToSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSubscriber, ParseObject databaseEvent, ParseObject databaseEventToSubscriber) {
+        databaseEventToSubscriber.put(CoreConstants.FIELD_SUBSCRIBERS, databaseSubscriber);
+        databaseEventToSubscriber.put(CoreConstants.FIELD_EVENTS, databaseEvent);
+        databaseEventToSubscriber.put(CoreConstants.FIELD_PUBLIC, domainSubscriber.isPublic());
+        databaseEventToSubscriber.put(CoreConstants.FIELD_ACCEPTED, domainSubscriber.isAccepted());
+        databaseEventToSubscriber.put(CoreConstants.FIELD_CHECK_IN, domainSubscriber.checkedIn());
     }
 
     private Speaker createSpeakerFromDatabaseInformation(ParseObject databaseSpeaker) throws ParseException {

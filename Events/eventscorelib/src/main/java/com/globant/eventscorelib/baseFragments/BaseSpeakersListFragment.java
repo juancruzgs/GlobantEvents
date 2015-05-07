@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
@@ -21,9 +20,7 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.baseAdapters.RecyclerItemClickListener;
 import com.globant.eventscorelib.utils.CoreConstants;
-import com.globant.eventscorelib.utils.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -125,9 +122,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     @Override
-    public void onPauseFragment() {
-
-    }
+    public void onPauseFragment() {}
 
     @Override
     public void onResumeFragment() {
@@ -139,8 +134,5 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         else {
             setRecyclerViewAdapter();
         }
-
     }
-
-
 }

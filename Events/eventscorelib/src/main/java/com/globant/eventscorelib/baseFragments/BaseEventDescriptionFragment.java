@@ -75,7 +75,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public String getBindingKey() {
-        return "BaseEventDescriptionFragment";
+        return BaseEventDescriptionFragment.class.getSimpleName();
     }
 
     @Override
@@ -105,10 +105,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Refactor with functionality, first subscribe, then check-in
-//                getActivity().getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.container, new SubscriberFragment())
-            }
+             prepareBaseSubscriberFragment();
+               }
         });
 
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
@@ -122,6 +120,27 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
                 mScrollView.scrollTo(0, 0);
             }
         });
+    }
+
+    private void prepareBaseSubscriberFragment() {
+        BaseSubscriberFragment subscriberFragment = new BaseSubscriberFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(CoreConstants.FIELD_CHECK_IN, true);
+        subscriberFragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, subscriberFragment)
+                .addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == 0) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                showProgressOverlay();
+//                String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
+//                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId, getBindingKey());
+//            }
+//        }
     }
 
     private void wireUpViews(View rootView) {

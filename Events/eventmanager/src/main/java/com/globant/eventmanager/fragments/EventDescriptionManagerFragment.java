@@ -6,9 +6,6 @@ import android.view.MenuItem;
 import com.globant.eventmanager.activities.MapManagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 
-/**
- * Created by juan.soler on 21/04/2015.
- */
 public class EventDescriptionManagerFragment extends BaseEventDescriptionFragment {
 
     @Override

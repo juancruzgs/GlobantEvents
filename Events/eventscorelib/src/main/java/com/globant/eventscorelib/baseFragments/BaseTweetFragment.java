@@ -147,7 +147,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
 
     @Override
     public String getBindingKey() {
-        return CoreConstants.BINDING_KEY_FRAGMENT_TWEET;
+        return BaseTweetFragment.class.getSimpleName();
     }
 
     @Override

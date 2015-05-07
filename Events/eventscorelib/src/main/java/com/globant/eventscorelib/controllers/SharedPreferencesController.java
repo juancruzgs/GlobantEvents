@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 public class SharedPreferencesController {
@@ -63,10 +64,8 @@ public class SharedPreferencesController {
 
     public static Boolean getUserEnglishKnowledge(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return Boolean.parseBoolean(sharedPreferences.getString(
-                context.getString(R.string.preference_user_english_knowledge), context.getResources().getStringArray(R.array.english_knowledge_values)[0]));
-
-
+        return sharedPreferences.getBoolean(
+                context.getString(R.string.preference_user_english_knowledge), false);
     }
 
     public static String getUserTwitter(Context context) {
@@ -75,6 +74,25 @@ public class SharedPreferencesController {
                 context.getString(R.string.preference_user_twitter), null);
     }
 
+    public static void setSubscriberInformation(Subscriber subscriber, Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(context.getString(R.string.preference_user_first_name), subscriber.getName());
+        editor.putString(context.getString(R.string.preference_user_last_name), subscriber.getLastName());
+        editor.putString(context.getString(R.string.preference_user_email), subscriber.getEmail());
+        editor.putString(context.getString(R.string.preference_user_occupation_name), subscriber.getOccupation());
+        editor.putString(context.getString(R.string.preference_user_phone), subscriber.getPhone());
+        editor.putBoolean(context.getString(R.string.preference_user_english_knowledge), subscriber.speaksEnglish());
+        editor.putString(context.getString(R.string.preference_user_twitter), subscriber.getTwitterUser());
+        editor.putString(context.getString(R.string.preference_user_country), subscriber.getCountry());
+        editor.putString(context.getString(R.string.preference_user_city), subscriber.getCity());
+        String encoded = Base64.encodeToString(subscriber.getPicture(), Base64.DEFAULT);
+        editor.putString(context.getString(R.string.preference_user_picture), encoded);
+        editor.putBoolean(context.getString(R.string.preference_user_is_glober), subscriber.isGlober());
+        //TODO add field is public
+
+        editor.commit();
+    }
 
     public static void setUserTwitter(String value, Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -121,7 +139,7 @@ public class SharedPreferencesController {
     public static void setUserEnglishKnowledge(Boolean value, Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(context.getString(R.string.preference_user_english_knowledge), value.toString());
+        editor.putBoolean(context.getString(R.string.preference_user_english_knowledge), value);
         editor.commit();
     }
 
