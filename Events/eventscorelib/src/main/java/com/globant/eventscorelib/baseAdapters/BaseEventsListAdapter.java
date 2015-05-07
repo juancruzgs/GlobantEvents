@@ -1,35 +1,44 @@
 package com.globant.eventscorelib.baseAdapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListViewHolder> {
+public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEventsListViewHolder>  {
 
     private Context mContext;
     private List<Event> mEventList;
     private List<Bitmap> mBitmapList;
     private Drawable mDrawableToApply;
 
+
     public BaseEventsListAdapter(List<Event> eventList, Context context) {
         mContext = context;
+        TextView mTextViewSpeakers;
         mBitmapList = new ArrayList<>();
         for (int n = 0; n < eventList.size(); n++) {
             mBitmapList.add(ConvertImage.convertByteToBitmap(eventList.get(n).getEventLogo()));
+            String eventId=eventList.get(n).getObjectID();
         }
         eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
         mEventList = eventList;
@@ -104,8 +113,12 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
             holder.getEventDate().setText(CustomDateFormat.getDate(mEventList.get(position).getStartDate(), mContext));
             holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
             holder.getShortDescriptionEvent().setText(mEventList.get(position).getShortDescription());
+
+
+
         }
     }
+
 
     @Override
     public int getItemCount() {

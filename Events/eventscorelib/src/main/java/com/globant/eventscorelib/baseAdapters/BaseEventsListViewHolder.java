@@ -22,6 +22,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final TextView mEventDate;
     private final TextView mLocationEvent;
     private final TextView mShortDescriptionEvent;
+    private final TextView mEventSpeakers;
 
     public interface GetEventInformation {
         void getEvent(int position);
@@ -38,6 +39,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         mEventDate = (TextView) itemView.findViewById(R.id.event_date_text_view);
         mLocationEvent = (TextView) itemView.findViewById(R.id.event_location_text_view);
         mShortDescriptionEvent = (TextView) itemView.findViewById(R.id.event_short_description_text_view);
+        mEventSpeakers = (TextView) itemView.findViewById(R.id.event_speakers_text_view);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,4 +98,6 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     public TextView getShortDescriptionEvent() {
         return mShortDescriptionEvent;
     }
+
+    public TextView getEventSpeakers() { return mEventSpeakers; }
 }
