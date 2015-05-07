@@ -51,5 +51,14 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_view_no_participants"
+        style="@style/condensed_normal_large"
+        android:id="@+id/text_view_no_participants"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
 
 </FrameLayout>
