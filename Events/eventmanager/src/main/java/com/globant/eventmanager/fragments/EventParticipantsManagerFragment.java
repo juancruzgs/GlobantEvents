@@ -23,6 +23,7 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 
+import java.util.Date;
 import java.util.List;
 
 public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener{
@@ -44,6 +45,8 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private Boolean mDeclineAll = false;
     private Event mEvent;
 
+    private String mBindingKey;
+
     public Boolean isDeclineAll() {
         return mDeclineAll;
     }
@@ -59,7 +62,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public String getBindingKey() {
-        return "EventParticipantsManagerFragment";
+        return mBindingKey;
     }
 
     @Override
@@ -103,6 +106,8 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override

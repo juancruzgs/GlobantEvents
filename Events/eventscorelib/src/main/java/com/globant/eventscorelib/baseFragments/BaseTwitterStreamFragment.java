@@ -21,6 +21,7 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
+import java.util.Date;
 import java.util.List;
 
 import twitter4j.Status;
@@ -34,6 +35,8 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     private List<Status> mTweetList;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private String mBindingKey;
+
     public BaseTwitterStreamFragment() {
         // Required empty public constructor
     }
@@ -45,7 +48,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public String getBindingKey() {
-        return CoreConstants.BINDING_KEY_FRAGMENT_TWITTER_STREAM;
+        return mBindingKey;
     }
 
     @Override
@@ -75,6 +78,13 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     @Override
     public BaseService.ActionListener getActionListener() {
         return this;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override

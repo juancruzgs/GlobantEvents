@@ -32,12 +32,15 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.nineoldandroids.view.ViewHelper;
 
+import java.util.Date;
 import java.util.List;
 
 public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BaseEventsListViewHolder.GetEventInformation {
 
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private String mBindingKey;
 
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -72,6 +75,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
@@ -291,5 +296,10 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public Activity getBindingActivity() {
         return getActivity();
+    }
+
+    @Override
+    public String getBindingKey() {
+        return mBindingKey;
     }
 }

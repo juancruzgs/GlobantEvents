@@ -24,6 +24,7 @@ import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +39,8 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     private Event mEvent;
     private TextView mTextViewNoSpeakers;
 
+    private String mBindingKey;
+
     @Override
     public BaseService.ActionListener getActionListener() {
         return this;
@@ -50,7 +53,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public String getBindingKey() {
-        return BaseSpeakersListFragment.class.getSimpleName();
+        return mBindingKey;
     }
 
     @Override
@@ -85,6 +88,13 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     public BaseSpeakersListFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
