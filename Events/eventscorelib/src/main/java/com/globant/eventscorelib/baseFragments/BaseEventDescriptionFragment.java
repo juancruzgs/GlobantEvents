@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -23,6 +22,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
@@ -115,7 +115,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             prepareBaseSubscriberFragment();
+             prepareBaseSubscriberActivity();
                }
         });
 
@@ -132,14 +132,10 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         });
     }
 
-    private void prepareBaseSubscriberFragment() {
-        BaseSubscriberFragment subscriberFragment = new BaseSubscriberFragment();
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(CoreConstants.FIELD_CHECK_IN, true);
-        subscriberFragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, subscriberFragment)
-                .addToBackStack(null).commit();
+    private void prepareBaseSubscriberActivity() {
+        Intent intent = new Intent(getActivity(), BaseSubscriberActivity.class);
+        intent.putExtra(CoreConstants.FIELD_CHECK_IN, true);
+        startActivity(intent);
     }
 
     @Override

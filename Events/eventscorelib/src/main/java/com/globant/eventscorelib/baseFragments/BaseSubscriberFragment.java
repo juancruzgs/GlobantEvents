@@ -423,11 +423,9 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             if ((mSavePreferences) && (mPhotoTaken)) {
                 saveSubscriberObject();
                 SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
-                if (getArguments().containsKey(CoreConstants.FIELD_CHECK_IN)) {
-                    if (getArguments().getBoolean(CoreConstants.FIELD_CHECK_IN)) {
+                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
                         mEventId = BaseApplication.getInstance().getEvent().getObjectID();
                         mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, mEditTextEmail.getText().toString(), getBindingKey());
-                    }
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
                 }
