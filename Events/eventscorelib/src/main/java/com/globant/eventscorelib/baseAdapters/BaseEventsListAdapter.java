@@ -104,7 +104,7 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
                 DrawableCompat.setTint(mDrawableToApply, mContext.getResources().getColor(R.color.globant_green_dark));
 
             }
-            if (mEventList.get(position).getSpeakers() == null){
+            if (mEventList.get(position).getSpeakers().size() == 0){
                 holder.hideSpeakersLayout();
             }
             else {
