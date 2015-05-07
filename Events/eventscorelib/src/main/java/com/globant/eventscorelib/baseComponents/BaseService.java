@@ -231,7 +231,8 @@ public class BaseService extends Service {
                                         currentSubscriber.finishAction(theAction, post);
                                     break;
                                 case SUBSCRIBER_CHECKIN:
-                                    Event eventCheckin = mCloudDataController.setCheckIn((String) argument, getBaseContext());
+                                    Object[] arguments  = (Object[]) argument;
+                                    Event eventCheckin = mCloudDataController.setCheckIn((String)arguments[0], (String)arguments[1]);
                                     if (!cancelKeys.contains(bindingKey))
                                         currentSubscriber.finishAction(theAction, eventCheckin);
                                     break;
@@ -274,12 +275,12 @@ public class BaseService extends Service {
 
     private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
 
-    public static interface ActionListener {
-        public Activity getBindingActivity();
-        public String getBindingKey();
-        public void onStartAction(ACTIONS theAction);
-        public void onFinishAction(ACTIONS theAction, Object result);
-        public void onFailAction(ACTIONS theAction, Exception e);
+    public interface ActionListener {
+        Activity getBindingActivity();
+        String getBindingKey();
+        void onStartAction(ACTIONS theAction);
+        void onFinishAction(ACTIONS theAction, Object result);
+        void onFailAction(ACTIONS theAction, Exception e);
     }
 
     public class ActionWrapper {

@@ -80,11 +80,10 @@ public class CloudDataController {
             return false;
         }
     }
-
-    public Event setCheckIn(String eventId, Context context) throws ParseException {
+    
+    public Event setCheckIn(String eventId, String subscriberMail) throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject event = eventsQuery.get(eventId);
-        String subscriberMail = SharedPreferencesController.getUserEmail(context);
         ParseObject subscriber = getSubscriberByEmail(subscriberMail);
         ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);

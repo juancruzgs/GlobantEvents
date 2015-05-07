@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
@@ -22,14 +21,16 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
-import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.nineoldandroids.view.ViewHelper;
 
 import java.util.List;
@@ -38,20 +39,17 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
+    private Object[] mCheckInParameters;
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
-
     private LayoutManagerType mCurrentLayoutManagerType;
     private ObservableRecyclerView mRecyclerView;
     private List<Event> mEventList;
 
     protected abstract int getFragmentLayout();
-
     protected abstract boolean getIsGlober();
-
     protected abstract BaseEventsListAdapter getAdapter();
 
     protected int getEventListRecyclerView() {
@@ -67,11 +65,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     public BaseEventListFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -111,7 +104,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void setRecyclerViewLayoutManager(Bundle savedInstanceState) {
 
         if (savedInstanceState != null) {
-            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
+            mCurrentLayoutManagerType = (LayoutManagerType)savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -195,8 +188,9 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 handled = true;
             } else {
                 if (id == R.id.action_checkin) {
-                    Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                    startActivityForResult(intentScan, 0);
+                    IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(this);
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                    intentIntegrator.initiateScan();
                     handled = true;
                 }
             }
@@ -251,12 +245,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     private void postCheckinTweet(Event event) {
-        if (BaseApplication.getInstance().getSharedPreferencesController()
-                .isAlreadyTwitterLogged()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(getString(R.string.tweet_checkin)).append(" ")
-                    .append(event.getTitle()).append(" ").append(event.getHashtag());
-            String tweet = stringBuilder.toString();
+        if (BaseApplication.getInstance().getSharedPreferencesController().isAlreadyTwitterLogged()) {
+            String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
             mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
         } else {
             showCheckinOverlay();
@@ -266,19 +256,28 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void setService(BaseService service) {
         super.setService(service);
-        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
         showProgressOverlay();
+        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
+        if (mCheckInParameters != null) {
+            mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mCheckInParameters, getBindingKey());
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
-            if (resultCode == Activity.RESULT_OK) {
-                showProgressOverlay();
-                String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
-                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId, getBindingKey());
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null) {
+            showProgressOverlay();
+            mCheckInParameters = new Object[2];
+            String eventId = scanResult.getContents();
+            String subscriberMail = SharedPreferencesController.getUserEmail(getActivity());
+            mCheckInParameters[0] = eventId;
+            mCheckInParameters[1] = subscriberMail;
+            if (mService != null) {
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mCheckInParameters, getBindingKey());
             }
+            //Else do the action when the service is available }
         }
     }
 
