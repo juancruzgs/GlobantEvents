@@ -114,12 +114,6 @@ public class CoreConstants {
     //Base Activity
     public static final String ACTIVITY_TITLE_INTENT = "ActivityTitle";
 
-    //Binding Keys
-    public static final String BINDING_KEY_FRAGMENT_TWITTER_STREAM = "BaseTwitterStreamFragment";
-    public static final String BINDING_KEY_FRAGMENT_TWEET = "BaseTweetFragment";
-    public static final String BINDING_KEY_FRAGMENT_MANAGER_EVENT_LIST = "EventListManagerFragment";
-    public static final String BINDING_KEY_FRAGMENT_CLIENT_EVENT_LIST = "EventListClientFragment";
-
     //Event Descripion
     public static final float MAX_TEXT_SCALE_DELTA = 0.3f;
 

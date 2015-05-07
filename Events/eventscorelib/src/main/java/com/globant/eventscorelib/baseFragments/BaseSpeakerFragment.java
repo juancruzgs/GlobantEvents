@@ -60,9 +60,9 @@ public class BaseSpeakerFragment extends BaseFragment {
     public static final String EXTRA_ASPECTX = "aspectX";
     public static final String EXTRA_ASPECTY = "aspectY";
     public static final String EXTRA_OUTPUTX = "outputX";
-    public static final String EXTRA_OUTPUTY= "outputY";
-    public static final String EXTRA_RETURN_DATA= "return-data";
-    public static final String DATA= "data";
+    public static final String EXTRA_OUTPUTY = "outputY";
+    public static final String EXTRA_RETURN_DATA = "return-data";
+    public static final String DATA = "data";
     public static final String IMAGE_CROP = "com.android.camera.action.CROP";
     public static final String URI_NAME = "image/*";
 
@@ -80,7 +80,7 @@ public class BaseSpeakerFragment extends BaseFragment {
     public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                   Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView= inflater.inflate(R.layout.fragment_base_speaker, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_base_speaker, container, false);
         wireUpViews(rootView);
         prepareImageButton();
         setOnFocusListeners();
@@ -108,13 +108,13 @@ public class BaseSpeakerFragment extends BaseFragment {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
-            Boolean savePreferences=true;
-            tintRequiredIconsAndShowError(mEditTextFirstName,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextLastName,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextTitle,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextBiography,  savePreferences);
+            Boolean savePreferences = true;
+            tintRequiredIconsAndShowError(mEditTextFirstName, savePreferences);
+            tintRequiredIconsAndShowError(mEditTextLastName, savePreferences);
+            tintRequiredIconsAndShowError(mEditTextTitle, savePreferences);
+            tintRequiredIconsAndShowError(mEditTextBiography, savePreferences);
 
-            if (savePreferences=false){
+            if (savePreferences = false) {
                 Toast.makeText(getActivity(), "Required fields missing!",
                         Toast.LENGTH_LONG).show();
             }
@@ -153,16 +153,16 @@ public class BaseSpeakerFragment extends BaseFragment {
         mEditTextBiography.setOnFocusChangeListener(editTextFocus);
     }
 
-    private View.OnFocusChangeListener editTextFocus =  new View.OnFocusChangeListener() {
+    private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
         public void onFocusChange(View view, boolean gainFocus) {
 
             getIconToTint(view);
-            mEditTextToChangeHint=(AppCompatEditText) view;
+            mEditTextToChangeHint = (AppCompatEditText) view;
             //onFocus
             if (gainFocus) {
-                mDrawableToApply= DrawableCompat.wrap(mDrawableToApply);
-                DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.ambar));
-                mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
+                mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+                DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.ambar));
+                mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
                 mIconToChange.setImageDrawable(mDrawableToApply);
                 mErrorLabelLayout.clearError();
                 mEditTextToChangeHint.setHint("");
@@ -178,53 +178,51 @@ public class BaseSpeakerFragment extends BaseFragment {
         int id = view.getId();
         //noinspection SimplifiableIfStatement
 
-        if (id== (R.id.edit_text_first_name)) {
-            mIconToChange=mIconFirstName;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_first_name);
-            mErrorLabelLayout=mErrorLabelLayoutFirstName;
-            mHintToReturn=getResources().getString(R.string.edit_text_first_name_hint);
+        if (id == (R.id.edit_text_first_name)) {
+            mIconToChange = mIconFirstName;
+            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
+            mErrorLabelLayout = mErrorLabelLayoutFirstName;
+            mHintToReturn = getResources().getString(R.string.edit_text_first_name_hint);
 
-        } else if (id== (R.id.edit_text_last_name)){
-            mIconToChange=mIconLastName;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_last_name);
-            mErrorLabelLayout=mErrorLabelLayoutLastName;
-            mHintToReturn=getResources().getString(R.string.edit_text_last_name_hint);
+        } else if (id == (R.id.edit_text_last_name)) {
+            mIconToChange = mIconLastName;
+            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_last_name);
+            mErrorLabelLayout = mErrorLabelLayoutLastName;
+            mHintToReturn = getResources().getString(R.string.edit_text_last_name_hint);
 
 
-        }   else if (id== (R.id.edit_text_title)){
-            mIconToChange=mIconTitle;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_diploma);
-            mErrorLabelLayout=mErrorLabelLayoutTitle;
-            mHintToReturn=getResources().getString(R.string.edit_text_title_hint);
-        }
-
-        else if (id== (R.id.edit_text_biography)){
-            mIconToChange=mIconBiography;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_biography);
-            mErrorLabelLayout=mErrorLabelLayoutBiography;
-            mHintToReturn=getResources().getString(R.string.edit_text_biography_hint);
+        } else if (id == (R.id.edit_text_title)) {
+            mIconToChange = mIconTitle;
+            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_diploma);
+            mErrorLabelLayout = mErrorLabelLayoutTitle;
+            mHintToReturn = getResources().getString(R.string.edit_text_title_hint);
+        } else if (id == (R.id.edit_text_biography)) {
+            mIconToChange = mIconBiography;
+            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_biography);
+            mErrorLabelLayout = mErrorLabelLayoutBiography;
+            mHintToReturn = getResources().getString(R.string.edit_text_biography_hint);
         }
 
     }
 
     private void tintGrey() {
-        mDrawableToApply= DrawableCompat.wrap(mDrawableToApply);
-        DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.grey_icon));
-        mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
+        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+        DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.grey_icon));
+        mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
         mIconToChange.setImageDrawable(mDrawableToApply);
     }
 
     private void wireUpViews(View rootView) {
-        mEditTextFirstName=(AppCompatEditText)rootView.findViewById(R.id.edit_text_first_name);
-        mEditTextLastName=(AppCompatEditText)rootView.findViewById(R.id.edit_text_last_name);
-        mEditTextTitle=(AppCompatEditText)rootView.findViewById(R.id.edit_text_title);
-        mEditTextBiography=(AppCompatEditText)rootView.findViewById(R.id.edit_text_biography);
-        mFloatingActionButtonPhoto=(ActionButton)rootView.findViewById(R.id.fab);
-        mPhotoProfile=(ImageView)rootView.findViewById(R.id.header);
-        mIconFirstName=(ImageView)rootView.findViewById(R.id.icon_first_name);
-        mIconLastName=(ImageView)rootView.findViewById(R.id.icon_last_name);
-        mIconTitle=(ImageView)rootView.findViewById(R.id.icon_title);
-        mIconBiography=(ImageView)rootView.findViewById(R.id.icon_biography);
+        mEditTextFirstName = (AppCompatEditText) rootView.findViewById(R.id.edit_text_first_name);
+        mEditTextLastName = (AppCompatEditText) rootView.findViewById(R.id.edit_text_last_name);
+        mEditTextTitle = (AppCompatEditText) rootView.findViewById(R.id.edit_text_title);
+        mEditTextBiography = (AppCompatEditText) rootView.findViewById(R.id.edit_text_biography);
+        mFloatingActionButtonPhoto = (ActionButton) rootView.findViewById(R.id.fab);
+        mPhotoProfile = (ImageView) rootView.findViewById(R.id.header);
+        mIconFirstName = (ImageView) rootView.findViewById(R.id.icon_first_name);
+        mIconLastName = (ImageView) rootView.findViewById(R.id.icon_last_name);
+        mIconTitle = (ImageView) rootView.findViewById(R.id.icon_title);
+        mIconBiography = (ImageView) rootView.findViewById(R.id.icon_biography);
         mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
         mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutLastName);
         mErrorLabelLayoutTitle = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutTitle);
@@ -256,7 +254,7 @@ public class BaseSpeakerFragment extends BaseFragment {
             cropIntent.putExtra(EXTRA_CROP, EXTRA_TRUE);
             // indicate aspect of desired crop
             cropIntent.putExtra(EXTRA_ASPECTX, mPhotoProfile.getWidth());
-            cropIntent.putExtra(EXTRA_ASPECTY,  mPhotoProfile.getHeight());
+            cropIntent.putExtra(EXTRA_ASPECTY, mPhotoProfile.getHeight());
             // indicate output X and Y
             cropIntent.putExtra(EXTRA_OUTPUTX, mPhotoProfile.getWidth());
             cropIntent.putExtra(EXTRA_OUTPUTY, mPhotoProfile.getHeight());
@@ -264,25 +262,22 @@ public class BaseSpeakerFragment extends BaseFragment {
             cropIntent.putExtra(EXTRA_RETURN_DATA, true);
             // start the activity - we handle returning in onActivityResult
             startActivityForResult(cropIntent, CROP_PIC);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Toast.makeText(getActivity().getBaseContext(), "fds", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private void tintRequiredIconsAndShowError(EditText requiredField,  Boolean savePreferences){
+    private void tintRequiredIconsAndShowError(EditText requiredField, Boolean savePreferences) {
         getIconToTint(requiredField);
 
         if (requiredField.getText().toString().trim().length() == 0) {
             mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
-            mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.red_error));
-            mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
+            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
+            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
             mIconToChange.setImageDrawable(mDrawableToApply);
-        }
-        else{
+        } else {
             tintGrey();
         }
     }

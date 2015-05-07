@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-        * Created by agustin.gugliotta on 15/04/2015.
-        */
-public class BaseSpeakersListFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
+ * Created by agustin.gugliotta on 15/04/2015.
+ */
+public class BaseSpeakersListFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     private List<Speaker> mSpeakers = new ArrayList<>();
     protected RecyclerView mRecyclerView;
@@ -97,7 +97,8 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
+                    @Override
+                    public void onItemClick(View view, int position) {
                         //TODO juan.ramirez,  send speaker id or speaker object from backend.
                         Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
                         startActivity(intentSpeakerDetail);
@@ -112,15 +113,15 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     @Override
-    public void onPauseFragment() {}
+    public void onPauseFragment() {
+    }
 
     @Override
     public void onResumeFragment() {
         mSpeakers = BaseApplication.getInstance().getSpeakersList();
         if (mSpeakers == null) {
             mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
-        }
-        else {
+        } else {
             setRecyclerViewAdapter();
         }
     }

@@ -45,7 +45,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public String getBindingKey() {
-        return CoreConstants.BINDING_KEY_FRAGMENT_TWITTER_STREAM;
+        return BaseTwitterStreamFragment.class.getSimpleName();
     }
 
     @Override

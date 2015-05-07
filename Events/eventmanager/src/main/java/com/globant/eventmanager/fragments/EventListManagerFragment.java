@@ -45,7 +45,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public String getBindingKey() {
-        return CoreConstants.BINDING_KEY_FRAGMENT_MANAGER_EVENT_LIST;
+        return EventListManagerFragment.class.getSimpleName();
     }
 
     @Override

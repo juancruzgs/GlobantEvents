@@ -498,7 +498,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
     @Override
     public String getBindingKey() {
-        return "BaseSubscriberFragment";
+        return BaseSubscriberFragment.class.getSimpleName();
     }
 
     @Override

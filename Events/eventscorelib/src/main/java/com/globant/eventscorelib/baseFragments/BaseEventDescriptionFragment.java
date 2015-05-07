@@ -75,7 +75,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public String getBindingKey() {
-        return "BaseEventDescriptionFragment";
+        return BaseEventDescriptionFragment.class.getSimpleName();
     }
 
     @Override
