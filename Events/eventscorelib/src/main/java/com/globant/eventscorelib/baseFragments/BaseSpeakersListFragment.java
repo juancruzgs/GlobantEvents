@@ -1,13 +1,16 @@
 package com.globant.eventscorelib.baseFragments;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
@@ -119,9 +122,21 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
-                        intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED,mSpeakers.get(position));
-                        startActivity(intentSpeakerDetail);
+
+                        if(Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                            ImageView cardImage = (ImageView) view.findViewById(R.id.image_view_profile_speaker);
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),view, "cardImage");
+                            Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
+                            intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED,mSpeakers.get(position));
+                            getActivity().startActivity(intentSpeakerDetail, options.toBundle());
+                        }
+                        else {
+                            Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
+                            intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED, mSpeakers.get(position));
+                            startActivity(intentSpeakerDetail);
+                        }
+
+
                     }
                 })
         );

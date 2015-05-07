@@ -56,7 +56,8 @@ public class BaseSpeakerDetailFragment extends BaseFragment {
         fullName.setText(speaker.getName()+" "+speaker.getLastName());
         speakerTitle.setText(speaker.getTitle());
         speakerBiography.setText(speaker.getBiography());
-        speakerImage.setImageBitmap(BitmapFactory.decodeByteArray(speaker.getPicture(),0, speaker.getPicture().length));
+        if (speaker.getPicture()!= null)
+            speakerImage.setImageBitmap(BitmapFactory.decodeByteArray(speaker.getPicture(),0, speaker.getPicture().length));
     }
 
     @Override
