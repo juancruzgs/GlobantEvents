@@ -166,8 +166,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 ViewHelper.setAlpha(locationView, 1 - (alpha));
                 ViewHelper.setAlpha(TypeLogoView, 1 - (alpha));
 
-                int asd = mRecyclerView.getAdapter().getItemCount();
-                ((TextView) dateView).setText(String.format("%.02f", movementY) + " | " + String.format("%.02f", cardY) + " | " + n + " | " + asd);
             }
         }
     }
