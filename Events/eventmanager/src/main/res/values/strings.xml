@@ -10,4 +10,6 @@
     <string name="edit_text_last_name_hint">Last name</string>
     <string name="text_view_add_all_participants">ACCEPT ALL</string>
     <string name="text_view_decline_all_participants">DECLINE ALL</string>
+    <string name="title_activity_push_notification">Push Notification</string>
+    <string name="action_settings">Settings</string>
 </resources>

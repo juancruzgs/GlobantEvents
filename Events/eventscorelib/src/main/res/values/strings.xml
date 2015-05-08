@@ -106,6 +106,7 @@
     <string name="missing_photo">Take a picture right now!</string>
     <string name="button_send_notification">Send</string>
     <string name="button_cancel_notification">Cancel</string>
+    <string name="Notifications">Notifications</string>
 
 
     <string-array name="spinner_options">

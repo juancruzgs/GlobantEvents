@@ -3,4 +3,6 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_map" android:title="@string/action_map"
           android:icon="@android:drawable/ic_dialog_map" app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_notifications" android:title="@string/Notifications"
+          android:icon="@mipmap/ic_notifications" app:showAsAction="ifRoom" />
 </menu>
