@@ -21,6 +21,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
@@ -296,9 +297,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     @Override
-    public void getEvent(int position) {
-        Event event = mEventList.get(position);
-        BaseApplication.getInstance().setEvent(event);
+    public Event getEvent(int position) {
+        return mEventList.get(position);
     }
 
     @Override

@@ -40,14 +40,6 @@ public class CacheObjectsController {
         this.mEvent = event;
     }
 
-    public String getEventId () {
-        return mEvent.getObjectID();
-    }
-
-    public void setEventId (String id) {
-        this.mEvent.setObjectID(id);
-    }
-
     public List<Speaker> getSpeakersList() {
         return mSpeakersList;
     }

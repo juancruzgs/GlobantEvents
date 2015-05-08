@@ -37,6 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
@@ -423,8 +424,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 saveSubscriberObject();
                 SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
                 if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
-                        mEventId = BaseApplication.getInstance().getEvent().getObjectID();
-                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
+                        mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
                 }
@@ -589,7 +590,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
                 } else {
                     mSubscriber.setObjectID((String) result);
-                    //Object[] objects = {(String) result, mEventId};
                     mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
                 }
                 break;
@@ -599,15 +599,13 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                     Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 } else {
-                    //Object[] objects = {mSubscriber, mEventId}; // TODO change objects array
                     mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
                             mSubscriber, mEventId);
                 }
                 break;
             case SUBSCRIBER_CREATE:
                 mSubscriber.setObjectID((String)result);
-                //Object[] objects = {mSubscriber, mEventId};
-                mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
+                 mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
                         mSubscriber, mEventId);
                 break;
             case EVENTS_TO_SUBSCRIBER_CREATE:

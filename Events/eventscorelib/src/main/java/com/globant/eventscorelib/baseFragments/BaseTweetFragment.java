@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CropCircleTransformation;
@@ -82,7 +83,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     public void onResume() {
         super.onResume();
         mTweetText.clearFocus();
-        User user = BaseApplication.getInstance().getTwitterUser();
+        User user = BaseEventDetailPagerActivity.getInstance().getTwitterUser();
         if (user != null) {
             setUserInformation(user);
         }
@@ -91,7 +92,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     @Override
     public void setService(BaseService service) {
         super.setService(service);
-        User user = BaseApplication.getInstance().getTwitterUser();
+        User user = BaseEventDetailPagerActivity.getInstance().getTwitterUser();
         if (user == null) {
             mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey(), null);
         }
@@ -172,7 +173,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
             case GET_TWITTER_USER:
                 User user = (User) result;
                 if (user != null) {
-                    BaseApplication.getInstance().setTwitterUser(user);
+                    BaseEventDetailPagerActivity.getInstance().setTwitterUser(user);
                     changeUserInformation(user);
                 }
                 hideUtilsAndShowContentOverlay();

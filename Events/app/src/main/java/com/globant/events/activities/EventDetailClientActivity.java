@@ -9,6 +9,8 @@ import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.events.fragments.TwitterStreamClientFragment;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
+import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,8 @@ public class EventDetailClientActivity extends BaseEventDetailPagerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         mSavedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
+        Event event = getIntent().getExtras().getParcelable(CoreConstants.FIELD_EVENTS);
+        BaseEventDetailPagerActivity.getInstance().setEvent(event);
     }
 
     @Override

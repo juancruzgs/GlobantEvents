@@ -43,7 +43,7 @@ public class BaseSpeakerDetailFragment extends BaseFragment {
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_speaker_detail, container, false);
         hideUtilsAndShowContentOverlay();
-        speaker = (Speaker) getActivity().getIntent().getExtras().getSerializable("speaker");
+        speaker = getActivity().getIntent().getExtras().getParcelable("speaker");
         wireSpeakerView(rootView);
         return rootView;
     }

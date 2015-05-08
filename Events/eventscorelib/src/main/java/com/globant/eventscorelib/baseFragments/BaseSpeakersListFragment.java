@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
@@ -65,14 +66,14 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
             mSpeakers = (List<Speaker>) result;
-            if ((mSpeakers.size())>1){
-            setRecyclerViewAdapter();
+            if ((mSpeakers.size()) > 1) {
+                BaseEventDetailPagerActivity.getInstance().setSpeakersList(mSpeakers);
+                setRecyclerViewAdapter();
+            } else {
+                mRecyclerView.setVisibility(View.GONE);
+                mTextViewNoSpeakers.setVisibility(View.VISIBLE);
             }
-        else{
-            mRecyclerView.setVisibility(View.GONE);
-            mTextViewNoSpeakers.setVisibility(View.VISIBLE);
-        }
-        hideUtilsAndShowContentOverlay();
+            hideUtilsAndShowContentOverlay();
         }
     }
 
@@ -120,16 +121,16 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
+                    @Override
+                    public void onItemClick(View view, int position) {
 
-                        if(Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
                             ImageView cardImage = (ImageView) view.findViewById(R.id.image_view_profile_speaker);
-                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),view, "cardImage");
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "cardImage");
                             Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
-                            intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED,mSpeakers.get(position));
+                            intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED, mSpeakers.get(position));
                             getActivity().startActivity(intentSpeakerDetail, options.toBundle());
-                        }
-                        else {
+                        } else {
                             Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
                             intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED, mSpeakers.get(position));
                             startActivity(intentSpeakerDetail);
@@ -147,16 +148,17 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     @Override
-    public void onPauseFragment() {}
+    public void onPauseFragment() {
+    }
 
     @Override
     public void onResumeFragment() {
+        mSpeakers = BaseEventDetailPagerActivity.getInstance().getSpeakersList();
         if (mSpeakers == null) {
-            mEvent=BaseApplication.getInstance().getEvent();
-            String eventId=mEvent.getObjectID();
-            mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), eventId);
-        }
-        else {
+            mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
+            String eventId = mEvent.getObjectID();
+            mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, eventId, getBindingKey());
+        } else {
             setRecyclerViewAdapter();
         }
     }

@@ -10,6 +10,7 @@ import com.globant.eventscorelib.domainObjects.Speaker;
 import java.util.List;
 
 import twitter4j.Status;
+import twitter4j.User;
 
 /**
  * Created by paula.baudo on 5/4/2015.
@@ -40,6 +41,22 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
 
     public void setSpeakersList (List<Speaker> speakersList){
         mCacheObjectsController.setSpeakersList(speakersList);
+    }
+
+    public User getTwitterUser () {
+        return mCacheObjectsController.getUser();
+    }
+
+    public void setEvent (Event event) {
+        mCacheObjectsController.setEvent(event);
+    }
+
+    public Event getEvent() {
+        return mCacheObjectsController.getEvent();
+    }
+
+    public void setTwitterUser (User user) {
+        mCacheObjectsController.setUser(user);
     }
 
     public List<Speaker> getSpeakersList(){

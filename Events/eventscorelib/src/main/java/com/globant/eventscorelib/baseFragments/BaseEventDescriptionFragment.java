@@ -21,6 +21,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
@@ -91,9 +92,9 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
-        hideUtilsAndShowContentOverlay();
+        hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
         wireUpViews(rootView);
-        mEvent = BaseApplication.getInstance().getEvent();
+        mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
         if (mEvent != null) {
             loadEventDescription();
         }
@@ -122,7 +123,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 }
         );
     }
-
+    
     private void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
         mActionBarSize = getActionBarSize();

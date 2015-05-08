@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -279,7 +280,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onResumeFragment(){
         if (mSubscribers == null) {
-            mEvent= BaseApplication.getInstance().getEvent();
+            mEvent= BaseEventDetailPagerActivity.getInstance().getEvent();
             String eventId=mEvent.getObjectID();
             mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
         }
