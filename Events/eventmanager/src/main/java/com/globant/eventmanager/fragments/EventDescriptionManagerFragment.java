@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.view.MenuItem;
 
 import com.globant.eventmanager.activities.MapManagerActivity;
+import com.globant.eventmanager.activities.PushNotificationActivity;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 
 /**
@@ -18,6 +20,14 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
             Intent intent = new Intent(getActivity(), MapManagerActivity.class);
             startActivity(intent);
             return true;
+        } else {
+            if (id == com.globant.eventscorelib.R.id.action_notifications){
+                Intent intentNotifications = new Intent(getActivity(), PushNotificationActivity.class);
+                intentNotifications.putExtra(PushNotificationFragment.SOURCE_TAG,
+                                            BaseApplication.getInstance().getEvent().getObjectID());
+                startActivity(intentNotifications);
+                return  true;
+            }
         }
         return false;
     }
