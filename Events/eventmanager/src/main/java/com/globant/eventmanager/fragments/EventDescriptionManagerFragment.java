@@ -8,7 +8,7 @@ import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 
 public class EventDescriptionManagerFragment extends BaseEventDescriptionFragment {
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == com.globant.eventscorelib.R.id.action_map) {
@@ -17,5 +17,5 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
             return true;
         }
         return false;
-    }
+    }*/
 }
