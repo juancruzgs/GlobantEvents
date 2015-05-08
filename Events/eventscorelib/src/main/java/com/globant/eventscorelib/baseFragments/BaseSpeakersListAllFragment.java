@@ -6,7 +6,6 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,8 +17,6 @@ import android.widget.ImageView;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSpeakerActivity;
-import com.globant.eventscorelib.baseActivities.BaseSpeakerDetailActivity;
-import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
 import com.globant.eventscorelib.baseAdapters.RecyclerItemClickListener;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -86,7 +83,7 @@ public class BaseSpeakersListAllFragment extends BaseFragment implements BaseSer
     public void setService(BaseService service) {
         super.setService(service);
         //TODO  juan.ramirez make a getallspeakers request
-        mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, "5vs7DC2RnQ", getBindingKey());
+        mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), "5vs7DC2RnQ");
     }
 
     @Override

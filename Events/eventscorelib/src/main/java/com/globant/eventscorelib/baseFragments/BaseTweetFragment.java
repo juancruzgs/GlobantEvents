@@ -49,7 +49,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     public void onNewIntent(Intent intent) {
         Uri uri = intent.getData();
         if (uri != null) {
-            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, getBindingKey(), uri);
         }
     }
 
@@ -93,7 +93,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         super.setService(service);
         User user = BaseApplication.getInstance().getTwitterUser();
         if (user == null) {
-            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey(), null);
         }
     }
 
@@ -114,10 +114,10 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                         InputMethodManager imm = (InputMethodManager) getActivity()
                                 .getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), CoreConstants.ZERO);
-                        mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
+                        mService.executeAction(BaseService.ACTIONS.TWEET_POST, getBindingKey(), tweet);
                     }
                 } else {
-                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, null, getBindingKey());
+                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, getBindingKey(), null);
                 }
             }
         });
@@ -189,7 +189,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                 break;
             case TWITTER_LOADER_RESPONSE:
                 if ((Boolean) result) {
-                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null, getBindingKey());
+                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey(), null);
                 }
                 break;
         }

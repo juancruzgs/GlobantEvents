@@ -24,7 +24,6 @@ import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.baseAdapters.RecyclerItemClickListener;
 import com.globant.eventscorelib.utils.CoreConstants;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -155,7 +154,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         if (mSpeakers == null) {
             mEvent=BaseApplication.getInstance().getEvent();
             String eventId=mEvent.getObjectID();
-            mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, eventId, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), eventId);
         }
         else {
             setRecyclerViewAdapter();
