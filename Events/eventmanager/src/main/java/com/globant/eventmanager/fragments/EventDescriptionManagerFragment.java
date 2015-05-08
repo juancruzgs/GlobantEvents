@@ -11,11 +11,11 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == com.globant.eventscorelib.R.id.action_map) {
+        /*if (id == com.globant.eventscorelib.R.id.action_map) {
             Intent intent = new Intent(getActivity(), MapManagerActivity.class);
             startActivity(intent);
             return true;
-        }
+        }*/
         return false;
     }
 }

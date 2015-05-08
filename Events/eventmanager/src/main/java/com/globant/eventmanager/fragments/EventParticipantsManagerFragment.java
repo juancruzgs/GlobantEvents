@@ -26,7 +26,7 @@ import com.globant.eventscorelib.domainObjects.Subscriber;
 import java.util.Date;
 import java.util.List;
 
-public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener{
+public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener, BasePagerActivity.OnPageScrollStateChangedCancelAnimation{
 
     private static final String TAG = "EventParticipantsFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
@@ -93,6 +93,13 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         showErrorOverlay();
+    }
+
+    @Override
+    public void cancelAnimations() {
+        if (mAdapter.getCurrentParticipant() != null){
+            mAdapter.getCurrentParticipant().cancelAnimations();
+        }
     }
 
     private enum LayoutManagerType {
