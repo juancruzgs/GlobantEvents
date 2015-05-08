@@ -9,6 +9,7 @@ import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 
 public class EventDescriptionManagerFragment extends BaseEventDescriptionFragment {
 
+
     @Override
     protected void prepareMapIconButton() {
         mMapIcon.setOnClickListener(new View.OnClickListener() {

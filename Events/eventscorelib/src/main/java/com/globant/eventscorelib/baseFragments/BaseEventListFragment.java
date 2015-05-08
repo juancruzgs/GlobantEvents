@@ -162,7 +162,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
                 // Alphas
                 float alpha = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (z * 2), 0, 255) / 64;
-                //ViewHelper.setAlpha(dateView, 1 - (alpha));
+                ViewHelper.setAlpha(dateView, 1 - (alpha));
                 ViewHelper.setAlpha(locationView, 1 - (alpha));
                 ViewHelper.setAlpha(TypeLogoView, 1 - (alpha));
 
