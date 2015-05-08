@@ -1,5 +1,7 @@
 package com.globant.eventscorelib.domainObjects;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +24,8 @@ public class Event  extends BaseObject{
     private boolean mPublic;
     private byte[] mIcon;
     private byte[] mEventLogo;
-    private double mLatitude;
-    private double mLongitude;
+
+    private LatLng mCoordinates;
     private List<Speaker> mSpeakers;
     private List<Subscriber> mSubscribers;
 
@@ -34,27 +36,12 @@ public class Event  extends BaseObject{
         mTitle = title;
     }
 
-    public Event(String title, String shortDescription, String fullDescription, String additionalInfo, String address, Date startDate, Date endDate, boolean aPublic, byte[] icon, byte[] eventLogo, double latitude, double longitude, String qrCode, String city, String country, String category, String language, String hashtag, List<Speaker> speakers, List<Subscriber> subscribers) {
-        mTitle = title;
-        mShortDescription = shortDescription;
-        mFullDescription = fullDescription;
-        mAdditionalInfo = additionalInfo;
-        mAddress = address;
-        mStartDate = startDate;
-        mEndDate = endDate;
-        mPublic = aPublic;
-        mIcon = icon;
-        mEventLogo = eventLogo;
-        mLatitude = latitude;
-        mLongitude = longitude;
-        mQrCode = qrCode;
-        mCity = city;
-        mCountry = country;
-        mCategory = category;
-        mLanguage = language;
-        mHashtag = hashtag;
-        mSpeakers = speakers;
-        mSubscribers = subscribers;
+    public LatLng getCoordinates() {
+        return mCoordinates;
+    }
+
+    public void setCoordinates(LatLng coordinates) {
+        mCoordinates = coordinates;
     }
 
     public String getObjectID() {
@@ -167,22 +154,6 @@ public class Event  extends BaseObject{
 
     public void setEventLogo(byte[] eventLogo) {
         mEventLogo = eventLogo;
-    }
-
-    public double getLatitude() {
-        return mLatitude;
-    }
-
-    public void setLatitude(double latitude) {
-        mLatitude = latitude;
-    }
-
-    public double getLongitude() {
-        return mLongitude;
-    }
-
-    public void setLongitude(double longitude) {
-        mLongitude = longitude;
     }
 
     public String getQrCode() {
