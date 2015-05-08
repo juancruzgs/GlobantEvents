@@ -9,8 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -32,7 +30,6 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
-import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -125,7 +122,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 }
         );
     }
-
 
     private void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
