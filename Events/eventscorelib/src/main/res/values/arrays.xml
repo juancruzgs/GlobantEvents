@@ -10,5 +10,9 @@
         <item>true</item>
     </string-array>
 
-
+    <string-array name="spinner_options">
+        <item>Everyone</item>
+        <item>Subscribers</item>
+        <item>Paricipants</item>
+    </string-array>
 </resources>

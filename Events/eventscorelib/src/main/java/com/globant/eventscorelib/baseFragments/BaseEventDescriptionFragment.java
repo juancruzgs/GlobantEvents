@@ -106,7 +106,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PushNotifications.suscribeToChannel("SUS-"+mEvent.getObjectID());
+                PushNotifications.suscribeToChannel("SUB-"+mEvent.getObjectID());
                 //TODO: Refactor with functionality, first subscribe, then check-in
 //                getActivity().getSupportFragmentManager().beginTransaction()
 //                        .replace(R.id.container, new SubscriberFragment())

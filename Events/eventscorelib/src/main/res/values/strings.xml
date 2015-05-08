@@ -107,12 +107,4 @@
     <string name="button_send_notification">Send</string>
     <string name="button_cancel_notification">Cancel</string>
     <string name="Notifications">Notifications</string>
-
-
-    <string-array name="spinner_options">
-        <item>Everyone</item>
-        <item>Subscribers</item>
-        <item>Paricipants</item>
-    </string-array>
-
 </resources>
