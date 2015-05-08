@@ -1,7 +1,5 @@
 package com.globant.eventscorelib.controllers;
 
-import android.content.Context;
-
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -14,6 +12,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -21,7 +20,8 @@ public class CloudDataController {
 
     public List<Event> getEvents(boolean isGlober) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-        query.orderByDescending(CoreConstants.FIELD_START_DATE);
+        query.whereGreaterThan(CoreConstants.FIELD_START_DATE, new Date());
+        query.orderByAscending(CoreConstants.FIELD_START_DATE);
         if (!isGlober) {
             query.whereEqualTo(CoreConstants.FIELD_PUBLIC, true);
         }
