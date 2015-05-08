@@ -62,11 +62,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
     private boolean mTitleShown = false;
-
-    private Drawable mDrawableToApply;
-
     protected Event mEvent;
-
     private String mBindingKey;
 
     public BaseEventDescriptionFragment() {
@@ -110,10 +106,10 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     }
 
     private void changeIconColor() {
-        mDrawableToApply = mMapIcon.getDrawable();
-        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-        DrawableCompat.setTint(mDrawableToApply, getActivity().getResources().getColor(R.color.grey));
-        mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
+        Drawable drawableToApply = mMapIcon.getDrawable();
+        drawableToApply = DrawableCompat.wrap(drawableToApply);
+        DrawableCompat.setTint(drawableToApply, getActivity().getResources().getColor(R.color.grey));
+        drawableToApply = DrawableCompat.unwrap(drawableToApply);
     }
 
     protected abstract void prepareMapIconButton();
@@ -309,10 +305,9 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             mEventAdditionalInfo.setText("-");
         }
         mEventFullDescription.setText(mEvent.getFullDescription());
-        if (mEvent.getLatitude() != 0.0) {
+        if (mEvent.getCoordinates() != null) {
             prepareMapIconButton();
-        }
-        else {
+        } else {
             mMapIcon.setVisibility(View.GONE);
         }
     }

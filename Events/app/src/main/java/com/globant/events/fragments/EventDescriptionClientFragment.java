@@ -12,14 +12,14 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by juan.soler on 21/04/2015.
  */
 public class EventDescriptionClientFragment extends BaseEventDescriptionFragment {
+
     @Override
     protected void prepareMapIconButton() {
         mMapIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MapClientActivity.class);
-                LatLng latLng = new LatLng(mEvent.getLatitude(), mEvent.getLongitude());
-                intent.putExtra(CoreConstants.MAP_MARKER_POSITION_INTENT, latLng);
+                intent.putExtra(CoreConstants.MAP_MARKER_POSITION_INTENT, mEvent.getCoordinates());
                 startActivity(intent);
             }
         });
