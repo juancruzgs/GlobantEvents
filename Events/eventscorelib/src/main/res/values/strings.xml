@@ -118,6 +118,9 @@
     <string name="edit_text_public_hint">Public/Private</string>
     <string name="title_activity_create_events">Create Event</string>
     <string name="title_event_photo">Add an Image</string>
+    <string name="button_delete">Add an Image</string>
+    <string name="alert_message_delete_event">Do you really want to delete this event?</string>
+    <string name="alert_message_delete_event_title">Delete Event</string>
 
 
     <string-array name="spinner_options">

@@ -1,37 +1,75 @@
-package com.globant.eventmanager.fragments;
+package com.globant.eventscorelib.baseFragments;
 
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.InputType;
+import android.text.format.DateFormat;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
-import com.globant.eventmanager.activities.MapManagerActivity;
-import com.globant.eventscorelib.baseFragments.BaseEventsFragment;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
+import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.ConvertImage;
+import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.ErrorLabelLayout;
+import com.google.android.gms.maps.model.LatLng;
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
+import com.software.shell.fab.ActionButton;
+
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by david.burgos
  */
-
-
-public class EventsFragment extends BaseEventsFragment {
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == com.globant.eventscorelib.R.id.action_map) {
-            Intent intent = new Intent(getActivity(), MapManagerActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return false;
-    }
-}
-
-/*
-public class EventsFragment extends BaseFragment  implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
-
-    public final static String BUNDLE_PARAM_EVENT_ID = "param_event_id";
+public class BaseEventsFragment extends BaseFragment  implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     private Event mEvent;
     LatLng mLatLng;
+
+    public enum ActionType {EDIT_EVENT, CREATE_EVENT}
+    public static ActionType mEventAction;
 
     boolean mStickyToolbar;
     private View mToolbar;
@@ -111,7 +149,7 @@ public class EventsFragment extends BaseFragment  implements ObservableScrollVie
     ErrorLabelLayout mErrorLabelLayoutCountry;
     ErrorLabelLayout mErrorLabelLayout;
 
-    public EventsFragment() {
+    public BaseEventsFragment() {
         // Required empty public constructor
     }
 
@@ -125,7 +163,7 @@ public class EventsFragment extends BaseFragment  implements ObservableScrollVie
         setOnFocusListeners();
         setDateTimeField();
 
-       switch (com.globant.eventscorelib.baseFragments.BaseEventsFragment.mEventAction){
+       switch (mEventAction){
             case CREATE_EVENT:
                 mEvent = new Event();
                 mLatLng = new LatLng(0,0);
@@ -621,8 +659,8 @@ public class EventsFragment extends BaseFragment  implements ObservableScrollVie
         mEditTextMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MapManagerActivity.class);
-                startActivityForResult(intent, CoreConstants.MAP_MANAGER_REQUEST);
+             //   Intent intent = new Intent(getActivity(), com.globant.eventscorelib.baseActivities.MapManagerActivity.class);
+               // startActivityForResult(intent, CoreConstants.MAP_MANAGER_REQUEST);
             }
         });
 
@@ -660,7 +698,7 @@ public class EventsFragment extends BaseFragment  implements ObservableScrollVie
 
         MenuItem item = menu.findItem(R.id.events_action_delete);
 
-        if (com.globant.eventscorelib.baseFragments.BaseEventsFragment.mEventAction==com.globant.eventscorelib.baseFragments.BaseEventsFragment.ActionType.EDIT_EVENT) {
+        if (mEventAction == ActionType.EDIT_EVENT) {
             item.setVisible(true);
         } else {
             item.setVisible(false);
@@ -692,7 +730,7 @@ public class EventsFragment extends BaseFragment  implements ObservableScrollVie
 
                 retrieveInfo();
 
-                switch (com.globant.eventscorelib.baseFragments.BaseEventsFragment.mEventAction){
+                switch (mEventAction){
                     case CREATE_EVENT:
                         mService.executeAction(BaseService.ACTIONS.EVENT_CREATE, mEvent, getBindingKey());
                         break;
@@ -893,4 +931,3 @@ public class EventsFragment extends BaseFragment  implements ObservableScrollVie
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         showErrorOverlay();}
 }
-*/

@@ -122,7 +122,7 @@ public class BaseService extends Service {
         return mCloudDataController;
     }
 
-    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
+    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
     PARTICIPANT_LIST}
 
@@ -175,7 +175,15 @@ public class BaseService extends Service {
                                     if (!cancelKeys.contains(bindingKey))
                                         currentSubscriber.finishAction(theAction, null);
                                     break;
+                                case EVENT_UPDATE:
+                                    mCloudDataController.updateEvent((Event) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, null);
+                                    break;
                                 case EVENT_DELETE:
+                                    mCloudDataController.deleteEvent((Event) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, null);
                                     break;
                                 case EVENT_LIST:
                                     List<Event> theEvents = mCloudDataController.getEvents((boolean) argument);

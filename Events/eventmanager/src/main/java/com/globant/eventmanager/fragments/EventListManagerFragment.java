@@ -98,6 +98,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventsManagerActivity.class);
+                com.globant.eventscorelib.baseFragments.BaseEventsFragment.mEventAction = com.globant.eventscorelib.baseFragments.BaseEventsFragment.ActionType.EDIT_EVENT;
                 startActivity(intent);
             }
         });

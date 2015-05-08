@@ -14,22 +14,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by david.burgos on 04/05/2015.
+ * Created by david.burgos
  */
 public class EventsManagerActivity extends BasePagerActivity {
 
+    List<Fragment> fragmentList;
+    Bundle mSavedInstanceState;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mSavedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        for (Fragment fragment : fragmentList){
+            getSupportFragmentManager().putFragment(outState,fragment.getClass().getName(), fragment);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected List<Fragment> getFragments() {
-        List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(new EventsFragment());
-        fragmentList.add(new BaseSpeakersListFragment());
-        fragmentList.add(new EventParticipantsManagerFragment());
-        fragmentList.add(new EventDescriptionManagerFragment());
+        fragmentList = new ArrayList<>();
+        if (mSavedInstanceState == null){
+            fragmentList.add(new EventsFragment());
+            fragmentList.add(new BaseSpeakersListFragment());
+            fragmentList.add(new EventParticipantsManagerFragment());
+            fragmentList.add(new EventDescriptionManagerFragment());
+        }
+        else {
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventsFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, BaseSpeakersListFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventParticipantsManagerFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventDescriptionManagerFragment.class.getName()));
+        }
         return fragmentList;
     }
 
