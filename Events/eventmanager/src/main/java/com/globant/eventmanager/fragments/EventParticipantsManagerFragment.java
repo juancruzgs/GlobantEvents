@@ -12,6 +12,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
@@ -20,6 +21,7 @@ import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 
@@ -87,6 +89,10 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         } else {
             mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
             mRecyclerView.setAdapter(mAdapter);
+            if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
+                Toast.makeText(this.getActivity(),"Hold participant to accept or decline", Toast.LENGTH_LONG).show();
+                SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
+            }
         }
     }
 

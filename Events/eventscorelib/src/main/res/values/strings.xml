@@ -109,6 +109,7 @@
     <string name="no_speakers">No acknowledged speakers</string>
     <string name="already_subscribed">You\'re already subscribed to this event.</string>
     <string name="have_been_subscribed">You\'ve been subscribed to this event</string>
+    <string name="preference_participant_hint_showed">preference_participant_hint_showed</string>
 
 
     <string-array name="spinner_options">
