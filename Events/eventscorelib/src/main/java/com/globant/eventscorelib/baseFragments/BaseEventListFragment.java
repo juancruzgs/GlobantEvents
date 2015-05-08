@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
@@ -133,12 +134,13 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void onScrollChanged(int i, boolean b, boolean b2) {
 
         if (mRecyclerView.getChildCount() > 0) {
-            float height = mRecyclerView.getChildAt(0).getHeight();
-            float childHeight = mRecyclerView.getChildAt(0).findViewById(R.id.event_title_text_view).getHeight();
-            float z = childHeight / height;
-            float movementY, movementX, cardY;
 
             for (int n = 0; n < mRecyclerView.getChildCount(); n++) {
+
+                float height = mRecyclerView.getChildAt(n).getHeight();
+                float childHeight = mRecyclerView.getChildAt(n).findViewById(R.id.event_title_text_view).getHeight();
+                float z = childHeight / height;
+                float movementY, movementX, cardY;
 
                 View cardView = mRecyclerView.getChildAt(n);
                 View titleView = mRecyclerView.getChildAt(n).findViewById(R.id.event_title_text_view);
@@ -160,11 +162,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
                 // Alphas
                 float alpha = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (z * 2), 0, 255) / 64;
-                ViewHelper.setAlpha(dateView, 1 - (alpha));
+                //ViewHelper.setAlpha(dateView, 1 - (alpha));
                 ViewHelper.setAlpha(locationView, 1 - (alpha));
                 ViewHelper.setAlpha(TypeLogoView, 1 - (alpha));
 
-                //((TextView) titleView).setText(String.format("%.02f", movementY) + " | " + String.format("%.02f", cardY) + " | " + alpha);
+                int asd = mRecyclerView.getAdapter().getItemCount();
+                ((TextView) dateView).setText(String.format("%.02f", movementY) + " | " + String.format("%.02f", cardY) + " | " + n + " | " + asd);
             }
         }
     }
