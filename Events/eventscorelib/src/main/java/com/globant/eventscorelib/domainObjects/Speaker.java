@@ -1,7 +1,11 @@
 package com.globant.eventscorelib.domainObjects;
 
 
-public class Speaker extends BaseObject{
+import android.os.Parcel;
+import android.os.Parcelable;
+
+
+public class Speaker extends BaseObject implements Parcelable {
 
     private String mObjectID;
     private String mTitle;
@@ -67,5 +71,51 @@ public class Speaker extends BaseObject{
 
     public void setPicture(byte[] picture) {
         this.mPicture = picture;
+    }
+
+    private Speaker(Parcel in) {
+        mObjectID = in.readString();
+        mTitle = in.readString();
+        mName = in.readString();
+        mLastName = in.readString();
+        mBiography = in.readString();
+        int sizePicture= in.readInt();
+        if (sizePicture != 0) {
+            mPicture = new byte[sizePicture];
+            in.readByteArray(mPicture);
+        }
+    }
+
+    static final Parcelable.Creator<Speaker> CREATOR = new Parcelable.Creator<Speaker>() {
+        @Override
+        public Speaker createFromParcel(Parcel source) {
+           return new Speaker(source);
+        }
+
+        @Override
+        public Speaker[] newArray(int size) {
+            return new Speaker[size];
+        }
+    };
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mObjectID);
+        dest.writeString(mTitle);
+        dest.writeString(mName);
+        dest.writeString(mLastName);
+        dest.writeString(mBiography);
+        if (mPicture != null) {
+            dest.writeInt(mPicture.length);
+            dest.writeByteArray(mPicture);
+        } else {
+            dest.writeInt(0);
+        }
     }
 }

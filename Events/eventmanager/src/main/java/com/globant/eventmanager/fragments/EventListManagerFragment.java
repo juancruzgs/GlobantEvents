@@ -19,6 +19,7 @@ import com.software.shell.fab.ActionButton;
 public class EventListManagerFragment extends BaseEventListFragment {
 
     private ActionButton mActionButton;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected int getFragmentLayout() {
@@ -45,30 +46,34 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public String getBindingKey() {
-        return CoreConstants.BINDING_KEY_FRAGMENT_MANAGER_EVENT_LIST;
+        return EventListManagerFragment.class.getSimpleName();
     }
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         super.onFinishAction(theAction, result);
-        ScrollUtils.addOnGlobalLayoutListener(getRecyclerView(), new Runnable() {
-            @Override
-            public void run() {
-                getRecyclerView().smoothScrollToPosition(1);
-            }
-        });
+        if (mRecyclerView.getAdapter().getItemCount() > 0) {
+            mRecyclerView.scrollToPosition(1);
+            ScrollUtils.addOnGlobalLayoutListener(getRecyclerView(), new Runnable() {
+                @Override
+                public void run() {
+                    mRecyclerView.smoothScrollToPosition(0);
+                }
+            });
+        }
     }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
+        mRecyclerView = getRecyclerView();
         prepareRecyclerView();
         wireUpFAB(rootView);
         return rootView;
     }
 
     private void prepareRecyclerView() {
-        getRecyclerView().setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);

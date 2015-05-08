@@ -4,17 +4,16 @@ package com.globant.eventscorelib.baseFragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -22,7 +21,10 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
@@ -32,8 +34,9 @@ import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
+import java.util.Date;
 
-public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle{
+public abstract class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     boolean mStickyToolbar;
     private View mToolbar;
@@ -47,6 +50,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private TextView mEventLanguage;
     private TextView mEventAdditionalInfo;
     private TextView mEventFullDescription;
+    protected ImageView mMapIcon;
     private View mOverlayView;
     private ObservableScrollView mScrollView;
     private int mActionBarSize;
@@ -57,8 +61,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
     private boolean mTitleShown = false;
-
-    private Event mEvent;
+    protected Event mEvent;
+    private String mBindingKey;
 
     public BaseEventDescriptionFragment() {
     }
@@ -75,7 +79,14 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public String getBindingKey() {
-        return "BaseEventDescriptionFragment";
+        return mBindingKey;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
@@ -83,15 +94,36 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
         hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
         wireUpViews(rootView);
-        mEvent = BaseApplication.getInstance().getEvent();
+        mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
         if (mEvent != null) {
             loadEventDescription();
         }
         initializeViewParameters();
         setHasOptionsMenu(true);
+        setRetainInstance(true);
         return rootView;
     }
 
+    private void changeIconColor() {
+        Drawable drawableToApply = mMapIcon.getDrawable();
+        drawableToApply = DrawableCompat.wrap(drawableToApply);
+        DrawableCompat.setTint(drawableToApply, getActivity().getResources().getColor(R.color.grey));
+        drawableToApply = DrawableCompat.unwrap(drawableToApply);
+    }
+
+    private void prepareMapIconButton() {
+        mMapIcon.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), BaseMapEventDescriptionActivity.class);
+                        intent.putExtra(CoreConstants.MAP_MARKER_POSITION_INTENT, mEvent.getCoordinates());
+                        startActivity(intent);
+                    }
+                }
+        );
+    }
+    
     private void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
         mActionBarSize = getActionBarSize();
@@ -104,12 +136,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Refactor with functionality, first subscribe, then check-in
-//                getActivity().getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.container, new SubscriberFragment())
-//                        .addToBackStack(null).commit();
-                Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                startActivityForResult(intentScan,0);
+                prepareBaseSubscriberActivity();
             }
         });
 
@@ -126,15 +153,21 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         });
     }
 
+    private void prepareBaseSubscriberActivity() {
+        Intent intent = new Intent(getActivity(), BaseSubscriberActivity.class);
+        intent.putExtra(CoreConstants.FIELD_CHECK_IN, true);
+        startActivity(intent);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            if (resultCode == Activity.RESULT_OK) {
-                showProgressOverlay();
-                String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
-                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId, getBindingKey());
-            }
-        }
+//        if (requestCode == 0) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                showProgressOverlay();
+//                String eventId = data.getStringExtra(CoreConstants.SCAN_RESULT);
+//                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, eventId, getBindingKey());
+//            }
+//        }
     }
 
     private void wireUpViews(View rootView) {
@@ -152,6 +185,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mOverlayView = rootView.findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
         mFab = rootView.findViewById(R.id.fab);
+        mMapIcon = (ImageView) rootView.findViewById(R.id.image_view_map_icon);
+        changeIconColor();
     }
 
     @Override
@@ -205,14 +240,14 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             }
         }
 
-        if (i > mFlexibleSpaceImageHeight && !mTitleShown){
+        if (i > mFlexibleSpaceImageHeight && !mTitleShown) {
             mTitleShown = true;
             ((BaseActivity) getActivity()).changeFragmentTitle((String) mEventTitle.getText());
         }
 
         // Translate FAB
         int maxFabTranslationY = mFlexibleSpaceImageHeight - mFab.getHeight() / 2;
-        float fabTranslationY = ScrollUtils.getFloat( -i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
+        float fabTranslationY = ScrollUtils.getFloat(-i + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
                 mActionBarSize - mFab.getHeight() / 2,
                 maxFabTranslationY);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -228,7 +263,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         }
 
         // Show-hide FAB
-        if (fabTranslationY < mFlexibleSpaceShowFabOffset-mActionBarSize) {
+        if (fabTranslationY < mFlexibleSpaceShowFabOffset - mActionBarSize) {
             hideFab();
         } else {
             showFab();
@@ -243,12 +278,6 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
 
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_event_description_fragment, menu);
     }
 
     private void showFab() {
@@ -267,30 +296,30 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         }
     }
 
-    private void postCheckinTweet() {
-        if (BaseApplication.getInstance().getSharedPreferencesController()
-                .isAlreadyTwitterLogged()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(getString(R.string.tweet_checkin)).append(" ")
-                    .append(mEvent.getTitle()).append(" ").append(mEvent.getHashtag());
-            String tweet = stringBuilder.toString();
-            mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
-        } else {
-            showCheckinOverlay();
-        }
-    }
-
     private void loadEventDescription() {
         mEventTitle.setText(mEvent.getTitle());
-        mEventImage.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+        if (mEvent.getEventLogo() != null) {
+            mEventImage.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+        } else {
+            mEventImage.setImageResource(R.mipmap.placeholder);
+        }
         mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
         mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
         mEventAddress.setText(mEvent.getAddress());
         mEventCity.setText(mEvent.getCity());
         mEventCountry.setText(mEvent.getCountry());
         mEventLanguage.setText(mEvent.getLanguage());
-        mEventAdditionalInfo.setText(mEvent.getAdditionalInfo());
+        if (mEvent.getAdditionalInfo() != null) {
+            mEventAdditionalInfo.setText(mEvent.getAdditionalInfo());
+        } else {
+            mEventAdditionalInfo.setText("-");
+        }
         mEventFullDescription.setText(mEvent.getFullDescription());
+        if (mEvent.getCoordinates() != null) {
+            prepareMapIconButton();
+        } else {
+            mMapIcon.setVisibility(View.GONE);
+        }
     }
 
 
@@ -301,29 +330,12 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        switch (theAction){
-            case SUBSCRIBER_CHECKIN:
-                postCheckinTweet();
-                break;
-            case TWEET_POST:
-                showCheckinOverlay();
-                break;
-            default:
-                break;
-        }
+        hideUtilsAndShowContentOverlay();
     }
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        switch (theAction) {
-            case SUBSCRIBER_CHECKIN:
-                hideUtilsAndShowContentOverlay();
-                Toast.makeText(getActivity(), getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                showErrorOverlay();
-                break;
-        }
+        showErrorOverlay();
     }
 
     @Override

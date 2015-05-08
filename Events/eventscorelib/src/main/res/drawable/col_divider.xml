@@ -3,5 +3,5 @@
         android:angle="0"
         android:centerColor="@color/blue"
         android:endColor="@color/red"
-        android:startColor="@color/yellow" />
+        android:startColor="@color/yellow_material" />
 </shape>

@@ -1,6 +1,9 @@
 package com.globant.eventscorelib.domainObjects;
 
-public class Subscriber extends BaseObject{
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Subscriber extends BaseObject implements Parcelable {
 
     private String mObjectID;
     private String mName;
@@ -156,6 +159,69 @@ public class Subscriber extends BaseObject{
 
     public void setAccepted(boolean accepted) {
         mAccepted = accepted;
+    }
+
+    private Subscriber(Parcel in) {
+        mObjectID = in.readString();
+        mName = in.readString();
+        mLastName = in.readString();
+        mEmail = in.readString();
+        mPhone = in.readString();
+        mOccupation = in.readString();
+        mTwitterUser = in.readString();
+        mCity = in.readString();
+        mCountry = in.readString();
+        int sizePicture= in.readInt();
+        if (sizePicture != 0) {
+            mPicture = new byte[sizePicture];
+            in.readByteArray(mPicture);
+        }
+        mEnglish = (in.readInt() == 1);
+        mGlober = (in.readInt() == 1);
+        mPublic = (in.readInt() == 1);
+        mAccepted = (in.readInt() == 1);
+        mCheckIn = (in.readInt() == 1);
+    }
+
+    static final Parcelable.Creator<Subscriber> CREATOR = new Parcelable.Creator<Subscriber>() {
+        @Override
+        public Subscriber createFromParcel(Parcel source) {
+            return new Subscriber(source);
+        }
+
+        @Override
+        public Subscriber[] newArray(int size) {
+            return new Subscriber[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mObjectID);
+        dest.writeString(mName);
+        dest.writeString(mLastName);
+        dest.writeString(mEmail);
+        dest.writeString(mPhone);
+        dest.writeString(mOccupation);
+        dest.writeString(mTwitterUser);
+        dest.writeString(mCity);
+        dest.writeString(mCountry);
+        if (mPicture != null) {
+            dest.writeInt(mPicture.length);
+            dest.writeByteArray(mPicture);
+        } else {
+            dest.writeInt(0);
+        }
+        dest.writeInt(mEnglish ? 1 : 0);
+        dest.writeInt(mGlober ? 1 : 0);
+        dest.writeInt(mPublic ? 1 : 0);
+        dest.writeInt(mAccepted ? 1 : 0);
+        dest.writeInt(mCheckIn ? 1 : 0);
     }
 }
 

@@ -15,4 +15,10 @@ public class ConvertImage {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         return bitmap;
     }
+
+    public static byte[] convertBitmapImageToByteArray(Bitmap Photo) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
 }

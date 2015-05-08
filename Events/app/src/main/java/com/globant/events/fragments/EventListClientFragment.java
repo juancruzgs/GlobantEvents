@@ -36,6 +36,6 @@ public class EventListClientFragment extends BaseEventListFragment {
 
     @Override
     public String getBindingKey() {
-        return CoreConstants.BINDING_KEY_FRAGMENT_CLIENT_EVENT_LIST;
+        return EventListClientFragment.class.getSimpleName();
     }
 }

@@ -3,12 +3,17 @@ package com.globant.eventscorelib.baseFragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,13 +37,16 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
+import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.regex.Pattern;
 
@@ -46,7 +54,7 @@ import java.util.regex.Pattern;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BaseSubscriberFragment extends BaseFragment {
+public class BaseSubscriberFragment extends BaseFragment implements BaseService.ActionListener, SensorEventListener {
 
 
     Bitmap mPhoto;
@@ -91,6 +99,19 @@ public class BaseSubscriberFragment extends BaseFragment {
     Boolean mDoneClicked;
     Boolean mPhotoTaken;
 
+    Subscriber mSubscriber;
+    String mEventId;
+    
+    private SensorManager sensorManager;
+    private Sensor senAcelerometer;
+    private long lastUpdate = 0;
+    private float last_x,last_y,last_z;
+    private static final int N_SHAKES = 3;
+    private static final int SHAKE_THRESHOLD = 2500;
+    private static final int ONE_SHAKE_TIME_MILLIS = 80;
+    private static final String HANDSHAKE_MESSAGE = "Glober detected";
+    private int mShakes = 0;
+    private boolean globerDetected = false;
 
     public BaseSubscriberFragment() {
         // Required empty public constructor
@@ -102,7 +123,7 @@ public class BaseSubscriberFragment extends BaseFragment {
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return null;
+        return this;
     }
 
     @Override
@@ -112,7 +133,8 @@ public class BaseSubscriberFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_subscriber, container, false);
         wireUpViews(rootView);
         prepareImageButton();
-        mPhotoTaken=false;
+        mPhotoTaken = false;
+        mSubscriber = new Subscriber();
         checkPreferences();
         setOnFocusListeners();
         hideUtilsAndShowContentOverlay();
@@ -374,6 +396,11 @@ public class BaseSubscriberFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        if (!globerDetected) {
+            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
@@ -393,11 +420,16 @@ public class BaseSubscriberFragment extends BaseFragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
             doneClick();
-            if ((mSavePreferences) && (mPhotoTaken)){
-                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved),Toast.LENGTH_SHORT).show();
-                saveSubscriberPreferences();
-                getActivity().finish();
-            } else if (!(mPhotoTaken)){
+            if ((mSavePreferences) && (mPhotoTaken)) {
+                saveSubscriberObject();
+                SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
+                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                        mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+                }
+            } else if (!(mPhotoTaken)) {
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo),
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -448,9 +480,7 @@ public class BaseSubscriberFragment extends BaseFragment {
                 mSavePreferences = false;
             }
         }
-
     }
-
 
     private void tintGrey() {
         mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
@@ -459,25 +489,136 @@ public class BaseSubscriberFragment extends BaseFragment {
         mIconToChange.setImageDrawable(mDrawableToApply);
     }
 
-    private void saveSubscriberPreferences() {
-        SharedPreferencesController.setUserFirstName(mEditTextFirstName.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserLastName(mEditTextLastName.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserPhone(mEditTextPhone.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserOccupation(mEditTextOccupation.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserEmail(mEditTextEmail.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserCountry(mEditTextCountry.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserCity(mEditTextCity.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserTwitter(mEditTextTwitter.getText().toString(), this.getActivity());
-        Bitmap photoToPreference = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
-        SharedPreferencesController.setUserImage(convertBitmapImageToByteArray(photoToPreference), this.getActivity());
-        SharedPreferencesController.setUserEnglishKnowledge(mCheckBoxEnglishKnowledge.isChecked(), this.getActivity());
+    private void saveSubscriberObject() {
+        mSubscriber.setName(mEditTextFirstName.getText().toString());
+        mSubscriber.setLastName(mEditTextLastName.getText().toString());
+        mSubscriber.setPhone(mEditTextPhone.getText().toString());
+        mSubscriber.setOccupation(mEditTextOccupation.getText().toString());
+        mSubscriber.setEmail(mEditTextEmail.getText().toString());
+        mSubscriber.setCountry(mEditTextCountry.getText().toString());
+        mSubscriber.setCity(mEditTextCity.getText().toString());
+        mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
+        mSubscriber.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
+        mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
+
     }
 
-    private byte[] convertBitmapImageToByteArray(Bitmap Photo) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+    @Override
+    public String getBindingKey() {
+        return BaseSubscriberFragment.class.getSimpleName();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!globerDetected) {
+            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        Sensor mySensor = event.sensor;
+        if (mySensor.getType()==Sensor.TYPE_ACCELEROMETER)
+        {
+            checkHandShake(event);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    private void checkHandShake(SensorEvent event) {
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+
+        long curTime  = System.currentTimeMillis();
+        if(curTime-lastUpdate > ONE_SHAKE_TIME_MILLIS)
+        {
+            long diffTime = (curTime - lastUpdate);
+            lastUpdate = curTime;
+            float speed = Math.abs(x + y + z - last_x - last_y - last_z)/ diffTime * 10000;
+            if(speed > SHAKE_THRESHOLD)
+            {
+                mShakes++;
+                // 5 shakes: 3 forward with 2 backward
+                if (mShakes >= 2 * N_SHAKES - 1) {
+                    // TODO: Use this to identify the owner as glober
+                    // NOTE: Here lies a pseudo bug: if you shake, exit, back and shake again, getActivity() returns null.
+/*
+                    Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(400);
+*/
+                    globerDetected = true;
+                    Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
+                    sensorManager.unregisterListener(this);
+                }
+            }
+            else {
+                mShakes = 0;
+            }
+
+            last_x = x;
+            last_y=y;
+            last_z=z;
+        }
+    }
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay();
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        switch (theAction) {
+            case SUBSCRIBER_EXISTS:
+                if (result.equals("")) {
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
+                } else {
+                    mSubscriber.setObjectID((String) result);
+                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
+                }
+                break;
+            case IS_SUBSCRIBED:
+                if ((Boolean) result) {
+                    hideUtilsAndShowContentOverlay();
+                    Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                } else {
+                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
+                            mSubscriber, mEventId);
+                }
+                break;
+            case SUBSCRIBER_CREATE:
+                mSubscriber.setObjectID((String)result);
+                 mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
+                        mSubscriber, mEventId);
+                break;
+            case EVENTS_TO_SUBSCRIBER_CREATE:
+                hideUtilsAndShowContentOverlay();
+                Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+                break;
+        }
+
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
+    }
 }

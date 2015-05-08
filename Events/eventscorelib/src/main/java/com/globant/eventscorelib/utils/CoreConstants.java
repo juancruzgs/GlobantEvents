@@ -61,6 +61,7 @@ public class CoreConstants {
     //QR Scanner
     public static final String INTENT_SCAN = "com.google.zxing.client.android.SCAN";
     public static final String SCAN_RESULT = "SCAN_RESULT";
+    public static final int REQUEST_CODE_SCAN = 1;
 
     //Logger
     public static final String LOG_TAG = "GlobantEventsApp";
@@ -108,17 +109,11 @@ public class CoreConstants {
     public static final String SHARED_PREF_FILE = "_preferences.xml";
     public static final String DONE_CLICKED="done_clicked";
     public static final String PHOTO_ROTATE="photoRotate";
-
+    public static final String SPEAKER_SELECTED ="speaker";
     public static final String PHOTO_TAKEN ="photo_taken";
 
     //Base Activity
     public static final String ACTIVITY_TITLE_INTENT = "ActivityTitle";
-
-    //Binding Keys
-    public static final String BINDING_KEY_FRAGMENT_TWITTER_STREAM = "BaseTwitterStreamFragment";
-    public static final String BINDING_KEY_FRAGMENT_TWEET = "BaseTweetFragment";
-    public static final String BINDING_KEY_FRAGMENT_MANAGER_EVENT_LIST = "EventListManagerFragment";
-    public static final String BINDING_KEY_FRAGMENT_CLIENT_EVENT_LIST = "EventListClientFragment";
 
     //Event Descripion
     public static final float MAX_TEXT_SCALE_DELTA = 0.3f;
