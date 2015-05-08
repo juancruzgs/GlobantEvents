@@ -52,7 +52,7 @@
 
         </activity>
         <activity
-            android:name=".activities.MapManagerActivity"
+            android:name=".activities.EventCreationMapActivity"
             android:label="@string/title_activity_map"
             android:parentActivityName=".activities.EventsListManagerActivity" >
             <meta-data

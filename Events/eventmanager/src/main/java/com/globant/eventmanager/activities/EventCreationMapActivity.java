@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.Date;
 
 
-public class MapManagerActivity extends BaseMapActivity implements BaseService.ActionListener{
+public class EventCreationMapActivity extends BaseMapActivity implements BaseService.ActionListener{
 
     private Marker mMarker;
     private long mBackPressedTime;
@@ -42,7 +42,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mService = ((BaseService.BaseBinder)service).getService();
-            mService.subscribeActor(MapManagerActivity.this);
+            mService.subscribeActor(EventCreationMapActivity.this);
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -79,7 +79,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
                 setMapActivityResult(address);
             }
             else {
-                setResult(MapManagerActivity.RESULT_CANCELED);
+                setResult(EventCreationMapActivity.RESULT_CANCELED);
             }
             finish();
         }
@@ -207,12 +207,12 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     private void setMapActivityResult(Address address) {
         Intent intent = new Intent();
         intent.putExtra(CoreConstants.MAP_ADDRESS_INTENT, address);
-        setResult(MapManagerActivity.RESULT_OK, intent);
+        setResult(EventCreationMapActivity.RESULT_OK, intent);
     }
 
     private void finishActivityWithoutMarkerData(boolean backButton) {
         if (isDoubleTapToExitDone(backButton)) {
-            setResult(MapManagerActivity.RESULT_CANCELED);
+            setResult(EventCreationMapActivity.RESULT_CANCELED);
             finish();
         }
     }

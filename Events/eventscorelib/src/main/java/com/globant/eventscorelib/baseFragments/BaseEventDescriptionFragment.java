@@ -23,6 +23,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
@@ -93,7 +94,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
-        hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
+        hideUtilsAndShowContentOverlay();
         wireUpViews(rootView);
         mEvent = BaseApplication.getInstance().getEvent();
         if (mEvent != null) {
@@ -112,7 +113,19 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         drawableToApply = DrawableCompat.unwrap(drawableToApply);
     }
 
-    protected abstract void prepareMapIconButton();
+    private void prepareMapIconButton() {
+        mMapIcon.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), BaseMapEventDescriptionActivity.class);
+                        intent.putExtra(CoreConstants.MAP_MARKER_POSITION_INTENT, mEvent.getCoordinates());
+                        startActivity(intent);
+                    }
+                }
+        );
+    }
+
 
     private void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
