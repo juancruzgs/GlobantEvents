@@ -23,6 +23,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final TextView mLocationEvent;
     private final TextView mShortDescriptionEvent;
     private final TextView mEventSpeakers;
+    private final LinearLayout mLinearLayoutSpeakers;
 
     public interface GetEventInformation {
         void getEvent(int position);
@@ -40,6 +41,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         mLocationEvent = (TextView) itemView.findViewById(R.id.event_location_text_view);
         mShortDescriptionEvent = (TextView) itemView.findViewById(R.id.event_short_description_text_view);
         mEventSpeakers = (TextView) itemView.findViewById(R.id.event_speakers_text_view);
+        mLinearLayoutSpeakers = (LinearLayout) itemView.findViewById(R.id.speakers_layout);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,15 +53,13 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         });
     }
 
-    private void hideSpeakersLayout(View itemView) {
-        LinearLayout linearLayoutSpeakers = (LinearLayout) itemView.findViewById(R.id.speakers_layout);
-        linearLayoutSpeakers.setVisibility(View.GONE);
+    public void hideSpeakersLayout() {
+        mLinearLayoutSpeakers.setVisibility(View.GONE);
     }
 
 
-    private void showSpeakersLayout(View itemView) {
-        LinearLayout linearLayoutSpeakers = (LinearLayout) itemView.findViewById(R.id.speakers_layout);
-        linearLayoutSpeakers.setVisibility(View.VISIBLE);
+    public void showSpeakersLayout() {
+        mLinearLayoutSpeakers.setVisibility(View.VISIBLE);
     }
 
     private void getGreenSpeakerIcon(View itemView) {
@@ -83,6 +83,10 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         return mEventDate;
     }
 
+    public TextView getEventSpeakers() {
+        return mEventSpeakers;
+    }
+
     public TextView getEventTitle() {
         return mEventTitle;
     }
@@ -98,6 +102,4 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     public TextView getShortDescriptionEvent() {
         return mShortDescriptionEvent;
     }
-
-    public TextView getEventSpeakers() { return mEventSpeakers; }
 }

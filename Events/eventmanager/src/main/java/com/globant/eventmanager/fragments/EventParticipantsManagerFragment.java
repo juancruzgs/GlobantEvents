@@ -44,6 +44,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private Boolean mAddAll = false;
     private Boolean mDeclineAll = false;
     private Event mEvent;
+    private TextView mTextViewNoSubscribers;
 
     private String mBindingKey;
 
@@ -81,8 +82,12 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     }
 
     private void setRecyclerViewAdapter() {
-        mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
-        mRecyclerView.setAdapter(mAdapter);
+        if (mSubscribers.size() == 0){
+            mTextViewNoSubscribers.setVisibility(View.VISIBLE);
+        } else {
+            mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
+            mRecyclerView.setAdapter(mAdapter);
+        }
     }
 
     @Override
@@ -130,6 +135,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
         setOnScrollListener();
+        mTextViewNoSubscribers = (TextView) rootView.findViewById(R.id.text_view_no_participants);
         mViewButtonsAddDeclineAll = (LinearLayout) rootView.findViewById(R.id.linear_layout_buttons_add_and_decline);
         mTextViewAcceptAll = (TextView) rootView.findViewById(R.id.text_view_accept_all);
         mTextViewDeclineAll = (TextView) rootView.findViewById(R.id.text_view_decline_all);
@@ -250,14 +256,6 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
-    private void initDataset() {
-
-        mDataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "Hermione Granger #" + i;
-        }
-    }
-
     @Override
     public void onPauseFragment() {
         if (mAdapter != null && mAdapter.getCurrentParticipant() != null) {
@@ -282,7 +280,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         if (mSubscribers != null)
         {
             Object[] objects = {mEvent.getObjectID(), mSubscribers};
-            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, objects, getBindingKey() );
+            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, objects, getBindingKey());
         }
         super.onStop();
     }

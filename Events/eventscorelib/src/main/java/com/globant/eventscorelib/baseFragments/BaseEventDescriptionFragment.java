@@ -4,8 +4,10 @@ package com.globant.eventscorelib.baseFragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,12 +31,13 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
+import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import java.util.Date;
 
-public class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
+public abstract class BaseEventDescriptionFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     boolean mStickyToolbar;
     private View mToolbar;
@@ -48,6 +51,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private TextView mEventLanguage;
     private TextView mEventAdditionalInfo;
     private TextView mEventFullDescription;
+    protected ImageView mMapIcon;
     private View mOverlayView;
     private ObservableScrollView mScrollView;
     private int mActionBarSize;
@@ -59,7 +63,9 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private int mFabMargin;
     private boolean mTitleShown = false;
 
-    private Event mEvent;
+    private Drawable mDrawableToApply;
+
+    protected Event mEvent;
 
     private String mBindingKey;
 
@@ -102,6 +108,15 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         setRetainInstance(true);
         return rootView;
     }
+
+    private void changeIconColor() {
+        mDrawableToApply = mMapIcon.getDrawable();
+        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+        DrawableCompat.setTint(mDrawableToApply, getActivity().getResources().getColor(R.color.grey));
+        mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
+    }
+
+    protected abstract void prepareMapIconButton();
 
     private void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
@@ -164,6 +179,8 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mOverlayView = rootView.findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
         mFab = rootView.findViewById(R.id.fab);
+        mMapIcon = (ImageView) rootView.findViewById(R.id.image_view_map_icon);
+        changeIconColor();
     }
 
     @Override
@@ -292,6 +309,12 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
             mEventAdditionalInfo.setText("-");
         }
         mEventFullDescription.setText(mEvent.getFullDescription());
+        if (mEvent.getLatitude() != 0.0) {
+            prepareMapIconButton();
+        }
+        else {
+            mMapIcon.setVisibility(View.GONE);
+        }
     }
 
 
