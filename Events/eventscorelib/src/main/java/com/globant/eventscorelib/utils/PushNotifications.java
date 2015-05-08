@@ -1,5 +1,6 @@
 package com.globant.eventscorelib.utils;
 
+import com.globant.eventscorelib.R;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -20,7 +21,7 @@ public class PushNotifications {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Logger.d("Successfully subscribed to the "+channel+" channel.");
+                    Logger.d("Successfully subscribed to the " + channel + " channel.");
                 } else {
                     Logger.e("Failed to subscribe for push", e);
                 }
@@ -45,10 +46,10 @@ public class PushNotifications {
         return ParseInstallation.getCurrentInstallation().getList("channels");
     }
 
-    public static void sendNotification(String message, ParseQuery query){
+    public static void sendNotification(String message){
         ParsePush parsePush = new ParsePush();
         parsePush.setMessage(message);
-        parsePush.setQuery(query);
+        parsePush.setQuery(ParseInstallation.getQuery());
         parsePush.sendInBackground(new SendCallback() {
             @Override
             public void done(ParseException e) {
@@ -57,8 +58,24 @@ public class PushNotifications {
         });
     }
 
-    // ??????????
-    public static ParseQuery createQuery(){
-        return ParseInstallation.getQuery();
+    public static void sendNotification(String message,String channel,String eventId){
+        ParsePush parsePush = new ParsePush();
+        parsePush.setMessage(message);
+        //TODO change hardcoded string
+        if (!(channel.equals("Everyone"))){
+            if (channel.equals("Subscribers")){
+                channel = "SUB-"+eventId;
+            } else {
+                channel = "PAR-"+eventId;
+            }
+            parsePush.setChannel(channel);
+        }
+        parsePush.setQuery(ParseInstallation.getQuery());
+        parsePush.sendInBackground(new SendCallback() {
+            @Override
+            public void done(ParseException e) {
+                Logger.d("Notification sended");
+            }
+        });
     }
 }
