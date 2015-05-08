@@ -97,7 +97,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void cancelAnimations() {
-        if (mAdapter.getCurrentParticipant() != null){
+        if (mAdapter != null && mAdapter.getCurrentParticipant() != null){
             mAdapter.getCurrentParticipant().cancelAnimations();
         }
     }
@@ -275,7 +275,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         if (mSubscribers == null) {
             mEvent= BaseApplication.getInstance().getEvent();
             String eventId=mEvent.getObjectID();
-            mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, eventId, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
         }
         else {
             setRecyclerViewAdapter();
@@ -286,8 +286,9 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     public void onStop() {
         if (mSubscribers != null)
         {
-            Object[] objects = {mEvent.getObjectID(), mSubscribers};
-            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, objects, getBindingKey());
+            //Object[] objects = {mEvent.getObjectID(), mSubscribers};
+            //mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), objects);
+            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
         }
         super.onStop();
     }

@@ -158,7 +158,7 @@ public class BaseService extends Service {
         }
     }
 
-    synchronized public void executeAction(final ACTIONS theAction, final Object argument, final String bindingKey) {
+    synchronized public void executeAction(final ACTIONS theAction, final String bindingKey, final Object ... arguments) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -167,38 +167,32 @@ public class BaseService extends Service {
                     if (currentSubscriber.getBindingKey().equals(bindingKey)) {
                         try {
                             currentSubscriber.startAction(theAction);
+                            Object result = null;
                             switch (theAction) {
                                 case EVENT_SPEAKERS:
-                                    List<Speaker> speakers = mCloudDataController.getEventSpeakers((String) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, speakers);
+                                    List<Speaker> speakers = mCloudDataController.getEventSpeakers((String) arguments[0]);
+                                    result = speakers;
                                     break;
                                 case EVENT_CREATE:
-                                    mCloudDataController.createEvent((Event) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, null);
+                                    mCloudDataController.createEvent((Event) arguments[0]);
                                     break;
                                 case EVENT_DELETE:
                                     break;
                                 case EVENT_LIST:
-                                    List<Event> theEvents = mCloudDataController.getEvents((boolean) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, theEvents);
+                                    List<Event> theEvents = mCloudDataController.getEvents((boolean) arguments[0]);
+                                    result = theEvents;
                                     break;
                                 case EVENT_DETAIL:
-                                    Event event = mCloudDataController.getEvent((String) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, event);
+                                    Event event = mCloudDataController.getEvent((String) arguments[0]);
+                                    result = event;
                                     break;
                                 case POSITION_ADDRESS:
-                                    Address address = mGeocoderController.getAddressFromCoordinates((LatLng) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, address);
+                                    Address address = mGeocoderController.getAddressFromCoordinates((LatLng) arguments[0]);
+                                    result = address;
                                     break;
                                 case POSITION_COORDINATES:
-                                    LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, latLng);
+                                    LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String) arguments[0]);
+                                    result = latLng;
                                     break;
                                 case GET_TWITTER_USER:
                                     User user;
@@ -207,66 +201,62 @@ public class BaseService extends Service {
                                     } catch (Exception e) {
                                         user = null;
                                     }
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, user);
+                                    result = user;
                                     break;
                                 case TWEETS_LIST:
-                                    List<Status> tweetList = mTwitterController.getTweetList(getBaseContext(), (String) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, tweetList);
+                                    List<Status> tweetList = mTwitterController.getTweetList(getBaseContext(), (String) arguments[0]);
+                                    result = tweetList;
                                     break;
                                 case TWITTER_LOADER:
                                     Boolean login = mTwitterController.loginToTwitter(getBaseContext());
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, login);
+                                    result = login;
                                     break;
                                 case TWITTER_LOADER_RESPONSE:
-                                    boolean response = mTwitterController.getLoginResponse((Uri) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, response);
+                                    boolean response = mTwitterController.getLoginResponse((Uri) arguments[0]);
+                                    result = response;
                                     break;
                                 case TWEET_POST:
-                                    boolean post = mTwitterController.publishPost((String) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, post);
+                                    boolean post = mTwitterController.publishPost((String) arguments[0]);
+                                    result = post;
                                     break;
                                 case SUBSCRIBER_CHECKIN:
-                                    Object[] arguments  = (Object[]) argument;
+                                    //Object[] arguments  = (Object[]) arguments;
                                     Event eventCheckin = mCloudDataController.setCheckIn((String)arguments[0], (String)arguments[1]);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, eventCheckin);
+                                    result = eventCheckin;
                                     break;
                                 case PARTICIPANT_LIST:
-                                    List<Subscriber> subscribersList = mCloudDataController.getEventSubscribers((String) argument);
-                                    currentSubscriber.finishAction(theAction, subscribersList);
+                                    List<Subscriber> subscribersList = mCloudDataController.getEventSubscribers((String) arguments[0]);
+                                    result = subscribersList;
                                     break;
                                 case SET_ACCEPTED:
-                                    Object[] objects = (Object[]) argument;
-                                    mCloudDataController.setAccepted((String)objects[0], (List<Subscriber>) objects[1]);
-                                    currentSubscriber.finishAction(theAction, null);
+                                    //Object[] objects = (Object[]) arguments;
+                                    mCloudDataController.setAccepted((String)arguments[0], (List<Subscriber>) arguments[1]);
                                     break;
                                 case SUBSCRIBER_EXISTS:
-                                    String subscriberId = mCloudDataController.getSubscriberIdByEmail((String) argument);
-                                    currentSubscriber.finishAction(theAction, subscriberId);
+                                    String subscriberId = mCloudDataController.getSubscriberIdByEmail((String) arguments[0]);
+                                    result = subscriberId;
                                     break;
                                 case IS_SUBSCRIBED:
-                                    Object[] object = (Object[])argument;
-                                    boolean isSubscribed = mCloudDataController.isSubscribed((String)object[0], (String) object[1]);
-                                    currentSubscriber.finishAction(theAction, isSubscribed);
+                                    //Object[] object = (Object[])arguments;
+                                    boolean isSubscribed = mCloudDataController.isSubscribed((String)arguments[0], (String) arguments[1]);
+                                    result = isSubscribed;
                                     break;
                                 case SUBSCRIBER_CREATE:
-                                    String subsId = mCloudDataController.createSubscriber((Subscriber) argument);
-                                    currentSubscriber.finishAction(theAction, subsId);
+                                    String subsId = mCloudDataController.createSubscriber((Subscriber) arguments[0]);
+                                    result = subsId;
                                     break;
                                 case EVENTS_TO_SUBSCRIBER_CREATE:
-                                    Object[] obj = (Object[])argument;
-                                    mCloudDataController.createEventToSubscriber((Subscriber)obj[0], (String)obj[1]);
-                                    currentSubscriber.finishAction(theAction, null);
+                                    //Object[] obj = (Object[])arguments;
+                                    mCloudDataController.createEventToSubscriber((Subscriber) arguments[0], (String) arguments[1]);
                                     break;
                             }
 
-                            if (cancelKeys.contains(bindingKey))
+                            if (cancelKeys.contains(bindingKey)) {
                                 cancelKeys.remove(bindingKey);
+                            }
+                            else {
+                                currentSubscriber.finishAction(theAction, result);
+                            }
                         } catch (Exception e) {
                             currentSubscriber.failAction(theAction, e);
                             Logger.e("executeAction", e);

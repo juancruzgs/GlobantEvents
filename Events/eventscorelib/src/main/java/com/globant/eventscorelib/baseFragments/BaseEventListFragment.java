@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
@@ -101,7 +100,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
@@ -259,7 +258,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     private void postCheckinTweet(Event event) {
         if (BaseApplication.getInstance().getSharedPreferencesController().isAlreadyTwitterLogged()) {
             String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
-            mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.TWEET_POST, getBindingKey(), tweet);
         } else {
             showCheckinOverlay();
         }
@@ -269,9 +268,11 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void setService(BaseService service) {
         super.setService(service);
         showProgressOverlay();
-        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getIsGlober(), getBindingKey());
+        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
+        // TODO: See how the mCheckInParameters[] can be better used
         if (mCheckInParameters != null) {
-            mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mCheckInParameters, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),
+                    mCheckInParameters[0], mCheckInParameters[1]);
         }
     }
 
@@ -287,7 +288,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             mCheckInParameters[0] = eventId;
             mCheckInParameters[1] = subscriberMail;
             if (mService != null) {
-                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mCheckInParameters, getBindingKey());
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),
+                        mCheckInParameters[0], mCheckInParameters[1]);
             }
             //Else do the action when the service is available }
         }
