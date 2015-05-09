@@ -2,7 +2,6 @@ package com.globant.eventscorelib.baseFragments;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -27,7 +25,6 @@ import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
-import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -52,7 +49,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
-    private View mFab;
+    protected View mFab;
     private boolean mFabIsShown;
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
@@ -102,14 +99,14 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         mToolbar.setBackgroundColor(Color.TRANSPARENT);
         mScrollView.setScrollViewCallbacks(this);
-        mFab.setOnClickListener(new View.OnClickListener() {
+/*        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO: Refactor with functionality, first subscribe, then check-in
 //                getActivity().getSupportFragmentManager().beginTransaction()
 //                        .replace(R.id.container, new SubscriberFragment())
             }
-        });
+        });*/
 
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
         ViewHelper.setScaleX(mFab, 0);
@@ -124,7 +121,7 @@ public class BaseEventDescriptionFragment extends BaseFragment implements Observ
         });
     }
 
-    private void wireUpViews(View rootView) {
+    protected void wireUpViews(View rootView) {
         mToolbar = rootView.findViewById(R.id.toolbar);
         mEventImage = (ImageView) rootView.findViewById(R.id.image);
         mEventTitle = (TextView) rootView.findViewById(R.id.title);

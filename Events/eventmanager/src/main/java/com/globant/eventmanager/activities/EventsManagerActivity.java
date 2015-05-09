@@ -21,7 +21,6 @@ public class EventsManagerActivity extends BasePagerActivity {
     List<Fragment> fragmentList;
     Bundle mSavedInstanceState;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mSavedInstanceState = savedInstanceState;

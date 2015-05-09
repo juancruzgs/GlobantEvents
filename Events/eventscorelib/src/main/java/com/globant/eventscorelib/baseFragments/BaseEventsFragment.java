@@ -18,7 +18,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -66,7 +68,7 @@ import java.util.Locale;
 public class BaseEventsFragment extends BaseFragment  implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     private Event mEvent;
-    LatLng mLatLng;
+    protected LatLng mLatLng;
 
     public enum ActionType {EDIT_EVENT, CREATE_EVENT}
     public static ActionType mEventAction;
@@ -84,43 +86,43 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
     private int mFabMargin;
     private boolean mTitleShown = false;
 
-    ImageView mPhotoEvent;
-    ActionButton mFloatingActionButtonPhoto;
-    AppCompatEditText mEditTextTitle;
-    AppCompatEditText mEditTextFullDescription;
-    AppCompatEditText mEditTextShortDescription;
-    AppCompatEditText mEditTextAdditionalInfo;
-    AppCompatSpinner mSpinnerCategory;
-    AppCompatSpinner mSpinnerPublic;
-    AppCompatEditText mEditTextHashtag;
-    AppCompatEditText mEditTextLanguage;
-    AppCompatEditText mEditTextStartDate;
-    AppCompatEditText mEditTextStartTime;
-    AppCompatEditText mEditTextEndDate;
-    AppCompatEditText mEditTextEndTime;
-    AppCompatEditText mEditTextMap;
-    AppCompatEditText mEditTextAddress;
-    AppCompatEditText mEditTextCountry;
-    AppCompatEditText mEditTextCity;
+    private ImageView mPhotoEvent;
+    private ActionButton mFloatingActionButtonPhoto;
+    private AppCompatEditText mEditTextTitle;
+    private AppCompatEditText mEditTextFullDescription;
+    private AppCompatEditText mEditTextShortDescription;
+    private AppCompatEditText mEditTextAdditionalInfo;
+    private AppCompatSpinner mSpinnerCategory;
+    private AppCompatSpinner mSpinnerPublic;
+    private AppCompatEditText mEditTextHashtag;
+    private AppCompatEditText mEditTextLanguage;
+    private AppCompatEditText mEditTextStartDate;
+    private AppCompatEditText mEditTextStartTime;
+    private AppCompatEditText mEditTextEndDate;
+    private AppCompatEditText mEditTextEndTime;
+    protected AppCompatEditText mEditTextMap;
+    private AppCompatEditText mEditTextAddress;
+    private AppCompatEditText mEditTextCountry;
+    private AppCompatEditText mEditTextCity;
 
-    ImageView mIconTitle;
-    ImageView mIconFullDescription;
-    ImageView mIconShortDescription;
-    ImageView mIconAdditionalInfo;
-    ImageView mIconCategory;
-    ImageView mIconPublic;
-    ImageView mIconHashtag;
-    ImageView mIconLanguage;
-    ImageView mIconStartDate;
-    ImageView mIconEndDate;
-    ImageView mIconStartTime;
-    ImageView mIconEndTime;
-    ImageView mIconMap;
-    ImageView mIconAddress;
-    ImageView mIconCountry;
-    ImageView mIconCity;
-    ImageView mIconToChange;
-    Drawable mDrawableToApply;
+    private ImageView mIconTitle;
+    private ImageView mIconFullDescription;
+    private ImageView mIconShortDescription;
+    private ImageView mIconAdditionalInfo;
+    private ImageView mIconCategory;
+    private ImageView mIconPublic;
+    private ImageView mIconHashtag;
+    private ImageView mIconLanguage;
+    private ImageView mIconStartDate;
+    private ImageView mIconEndDate;
+    private ImageView mIconStartTime;
+    private ImageView mIconEndTime;
+    private ImageView mIconMap;
+    private ImageView mIconAddress;
+    private ImageView mIconCountry;
+    private ImageView mIconCity;
+    private ImageView mIconToChange;
+    private Drawable mDrawableToApply;
 
     private TimePickerDialog mStartTimePicker;
     private TimePickerDialog mEndTimePicker;
@@ -185,6 +187,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
 
     private void populateInfo(Event event){
         if (event != null){
+            mEventTitle.setText(event.getTitle());
             mEditTextTitle.setText(event.getTitle());
             mEditTextFullDescription.setText(event.getFullDescription());
             mEditTextShortDescription.setText(event.getShortDescription());
@@ -206,10 +209,10 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
             mEditTextCity.setText(event.getCity());
             mLatLng = new LatLng(event.getLatitude(), event.getLongitude());
 
-            Bitmap eventLogo = ConvertImage.convertByteToBitmap(event.getEventLogo());
-            if (eventLogo!=null){
+           // Bitmap eventLogo = ConvertImage.convertByteToBitmap(event.getEventLogo());
+            if (event.getEventLogo().length>0){
                 mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                mPhotoEvent.setImageBitmap(eventLogo);
+                mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
             }else {
                 mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
                 mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
@@ -606,7 +609,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
 
     @Override
     public String getTitle() {
-        return getResources().getString(R.string.credits_fragment_title);
+        return getResources().getString(R.string.title_activity_event_detail);
     }
 
     @Override
@@ -646,7 +649,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
         }
     }
 
-    private void prepareImageButton() {
+    protected void prepareImageButton() {
 
         mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -656,14 +659,22 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
             }
         });
 
-        mEditTextMap.setOnClickListener(new View.OnClickListener() {
+        mEditTextTitle.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-             //   Intent intent = new Intent(getActivity(), com.globant.eventscorelib.baseActivities.MapManagerActivity.class);
-               // startActivityForResult(intent, CoreConstants.MAP_MANAGER_REQUEST);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mEventTitle.setText(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
-
         mActionBarSize = getActionBarSize();
         mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
         mToolbarColor = getResources().getColor(com.globant.eventscorelib.R.color.globant_green);
@@ -815,9 +826,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
         ViewHelper.setPivotY(mEventTitle, 0);
         //ViewHelper.setScaleX(mEventTitle, scale);
         ViewHelper.setScaleY(mEventTitle, scale);
-//        mEventStartDate.setText(String.format("%.02f", scale) + " | " + i +  " | " + titleHeight +  " | " + String.format("%.02f", scaleY));
 
-        // Translate title text
         int maxTitleTranslationY = (int) (mFlexibleSpaceImageHeight - mEventTitle.getHeight() * scale);
         int titleTranslationY = maxTitleTranslationY - i;
 
@@ -842,7 +851,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
 
         if (i > mFlexibleSpaceImageHeight && !mTitleShown){
             mTitleShown = true;
-            ((BaseActivity) getActivity()).changeFragmentTitle((String) mEventTitle.getText());
+            ((BaseActivity) getActivity()).changeFragmentTitle((String) mEventTitle.getText().toString());
         }
 
         // Translate FAB

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
+import com.globant.eventscorelib.baseFragments.BaseEventsFragment;
 import com.globant.eventmanager.activities.EventsManagerActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
@@ -98,7 +99,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventsManagerActivity.class);
-                com.globant.eventscorelib.baseFragments.BaseEventsFragment.mEventAction = com.globant.eventscorelib.baseFragments.BaseEventsFragment.ActionType.EDIT_EVENT;
+                BaseEventsFragment.mEventAction = BaseEventsFragment.ActionType.CREATE_EVENT;
                 startActivity(intent);
             }
         });

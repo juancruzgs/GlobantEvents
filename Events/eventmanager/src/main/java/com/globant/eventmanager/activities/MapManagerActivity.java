@@ -118,8 +118,12 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
+
+        mInitialMarkerPosition = getIntent().getParcelableExtra(CoreConstants.MAP_MARKER_POSITION_INTENT);
+
         if (mInitialMarkerPosition != null) {
             mMarker = addMarkerToMap(mInitialMarkerPosition);
+            changeCameraPosition(mInitialMarkerPosition);
         }
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
