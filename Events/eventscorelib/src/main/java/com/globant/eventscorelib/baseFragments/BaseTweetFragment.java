@@ -87,6 +87,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         if (user != null) {
             setUserInformation(user);
         }
+        hideUtilsAndShowContentOverlay();
     }
 
     @Override
@@ -111,7 +112,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
             public void onClick(View v) {
                 if (mTweetText.getText().toString().equals(getString(R.string.button_tweet))) {
                     String tweet = mTweetText.getText().toString();
-                    if (!tweet.equals("")) {
+                    if (!tweet.isEmpty()) {
                         InputMethodManager imm = (InputMethodManager) getActivity()
                                 .getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), CoreConstants.ZERO);
