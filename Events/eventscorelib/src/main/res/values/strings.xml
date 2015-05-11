@@ -111,12 +111,4 @@
     <string name="have_been_subscribed">You\'ve been subscribed to this event</string>
     <string name="preference_participant_hint_showed">preference_participant_hint_showed</string>
     <string name="Notifications">Notifications</string>
-
-
-    <string-array name="spinner_options">
-        <item>Everyone</item>
-        <item>Subscribers</item>
-        <item>Paricipants</item>
-    </string-array>
-
 </resources>

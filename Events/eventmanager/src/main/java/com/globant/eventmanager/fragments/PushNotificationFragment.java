@@ -59,7 +59,7 @@ public class PushNotificationFragment extends BaseFragment {
                 if(mPushText.getText() != null){
                     if (isBroadcast()){
                         PushNotifications
-                                .sendNotification(mPushText.getText().toString());
+                                .sendBroadcastNotification(mPushText.getText().toString());
                     } else {
                         PushNotifications
                                 .sendNotification(mPushText.getText().toString(),

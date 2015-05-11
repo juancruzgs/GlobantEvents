@@ -46,7 +46,7 @@ public class PushNotifications {
         return ParseInstallation.getCurrentInstallation().getList("channels");
     }
 
-    public static void sendNotification(String message){
+    public static void sendBroadcastNotification(String message){
         ParsePush parsePush = new ParsePush();
         parsePush.setMessage(message);
         parsePush.setQuery(ParseInstallation.getQuery());
