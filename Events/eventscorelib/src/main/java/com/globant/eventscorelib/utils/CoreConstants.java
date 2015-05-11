@@ -81,7 +81,8 @@ public class CoreConstants {
     public static final String TWITTER_CONSUMER_SECRET = "lLBZ0E6wBF5vf9GasZnqqqOCmPzwZ58ruei14yU579RFhtED6P";
     public static final String TWITTER_ACCESS_TOKEN = "152693997-IEoWMmAkYDX3f1hO5pxWBKhbgqNh0V09wOFPkG8V";
     public static final String TWITTER_ACCESS_TOKEN_SECRET = "r2C4SZl8MCeF5vXYyFF9VumUvYYJ1kkk2FzM6QVW3Cxjb";
-    public static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
+    public static final String TWITTER_CALLBACK_URL_CLIENT = "oauth://globantevents";
+    public static final String TWITTER_CALLBACK_URL_MANAGER = "oauth://eventsmanager";
     public static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
     public static final String TWITTER_IS_LOGGED_IN = "is_logged_in";
     public static final String TWITTER_PREF_KEY_OAUTH_TOKEN = "oauth_token";

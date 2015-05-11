@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.location.Address;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 
@@ -17,7 +16,6 @@ import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
-import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -25,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 
 import twitter4j.Status;
 import twitter4j.User;
@@ -33,7 +30,7 @@ import twitter4j.User;
 /**
  * Created by ariel.cattaneo on 09/04/2015.
  */
-public class BaseService extends Service {
+public abstract class BaseService extends Service {
 
     public static boolean isRunning = false;
     protected static List<String> cancelKeys = new ArrayList<>();
@@ -64,7 +61,7 @@ public class BaseService extends Service {
     public void onCreate() {
         mCloudDataController = new CloudDataController();
         mGeocoderController = new GeocoderController(getBaseContext());
-        mTwitterController = new TwitterController();
+        mTwitterController = new TwitterController(getTwitterCallbackURL());
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -73,6 +70,8 @@ public class BaseService extends Service {
             }
         };
     }
+
+    protected abstract String getTwitterCallbackURL();
 
     private void startCountdown() {
         mHandler.postDelayed(mRunnable, 60000 * TIMEOUT_MINUTES);
@@ -233,7 +232,7 @@ public class BaseService extends Service {
                                     mCloudDataController.setAccepted((String)arguments[0], (List<Subscriber>) arguments[1]);
                                     break;
                                 case SUBSCRIBER_EXISTS:
-                                    String subscriberId = mCloudDataController.getSubscriberIdByEmail((String) arguments[0]);
+                                    String subscriberId = mCloudDataController.getSubscriberId((String) arguments[0]);
                                     result = subscriberId;
                                     break;
                                 case IS_SUBSCRIBED:

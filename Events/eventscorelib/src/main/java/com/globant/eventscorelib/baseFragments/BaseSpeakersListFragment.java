@@ -159,7 +159,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         if (mSpeakers == null) {
             mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
             String eventId = mEvent.getObjectID();
-            mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, eventId, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), eventId);
         } else {
             setRecyclerViewAdapter();
         }
