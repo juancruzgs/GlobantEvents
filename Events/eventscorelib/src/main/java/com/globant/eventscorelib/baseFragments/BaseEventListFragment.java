@@ -290,7 +290,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             mCheckInParameters[1] = subscriberMail;
             if (mService != null) {
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),
-                        mCheckInParameters[0], mCheckInParameters[1]);
+                        eventId, subscriberMail);
             }
             //Else do the action when the service is available }
         }
