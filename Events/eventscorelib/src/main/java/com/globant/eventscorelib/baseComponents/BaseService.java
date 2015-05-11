@@ -33,7 +33,7 @@ import twitter4j.User;
 /**
  * Created by ariel.cattaneo on 09/04/2015.
  */
-public class BaseService extends Service {
+public abstract class BaseService extends Service {
 
     public static boolean isRunning = false;
     protected static List<String> cancelKeys = new ArrayList<>();
@@ -64,7 +64,7 @@ public class BaseService extends Service {
     public void onCreate() {
         mCloudDataController = new CloudDataController();
         mGeocoderController = new GeocoderController(getBaseContext());
-        mTwitterController = new TwitterController();
+        mTwitterController = new TwitterController(getTwitterCallbackURL());
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -73,6 +73,8 @@ public class BaseService extends Service {
             }
         };
     }
+
+    protected abstract String getTwitterCallbackURL();
 
     private void startCountdown() {
         mHandler.postDelayed(mRunnable, 60000 * TIMEOUT_MINUTES);
