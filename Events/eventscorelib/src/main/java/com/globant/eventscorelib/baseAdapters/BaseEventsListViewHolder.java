@@ -21,6 +21,7 @@ import java.io.Serializable;
 
 public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final View mViewGroup;
+    private final View mSeparator;
     private final ImageView mImageEvent;
     private final ImageView mCategoryLogo;
     private final TextView mEventTitle;
@@ -39,6 +40,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     public BaseEventsListViewHolder(final View itemView, final Context context, final Fragment fragment) {
         super(itemView);
         mViewGroup = itemView;
+        mSeparator = itemView.findViewById(R.id.separator_view);
         mImageEvent = (ImageView) itemView.findViewById(R.id.event_image_view);
         mCategoryLogo = (ImageView) itemView.findViewById(R.id.imageView_Event_Type_Logo);
         mEventTitle = (TextView) itemView.findViewById(R.id.event_title_text_view);
@@ -61,11 +63,13 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
 
     public void hideSpeakersLayout() {
         mLinearLayoutSpeakers.setVisibility(View.GONE);
+        mSeparator.setVisibility(View.GONE);
     }
 
 
     public void showSpeakersLayout() {
         mLinearLayoutSpeakers.setVisibility(View.VISIBLE);
+        mSeparator.setVisibility(View.VISIBLE);
     }
 
     private void getGreenSpeakerIcon(View itemView) {
