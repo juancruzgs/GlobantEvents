@@ -124,7 +124,7 @@ public abstract class BaseService extends Service {
         return mCloudDataController;
     }
 
-    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
+    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
     PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SET_ACCEPTED}
 
@@ -175,7 +175,15 @@ public abstract class BaseService extends Service {
                                 case EVENT_CREATE:
                                     mCloudDataController.createEvent((Event) arguments[0]);
                                     break;
+                                case EVENT_UPDATE:
+                                    mCloudDataController.updateEvent((Event) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, null);
+                                    break;
                                 case EVENT_DELETE:
+                                    mCloudDataController.deleteEvent((Event) argument);
+                                    if (!cancelKeys.contains(bindingKey))
+                                        currentSubscriber.finishAction(theAction, null);
                                     break;
                                 case EVENT_LIST:
                                     List<Event> theEvents = mCloudDataController.getEvents((boolean) arguments[0]);
