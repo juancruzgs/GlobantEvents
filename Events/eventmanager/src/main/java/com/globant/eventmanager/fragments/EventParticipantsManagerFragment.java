@@ -26,6 +26,7 @@ import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private static final String TAG = "EventParticipantsFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private List<Subscriber> mSubscribers;
+    private List<Subscriber> mAcceptedSubscribers;
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected RecyclerView mRecyclerView;
     protected EventParticipantsListAdapterManager mAdapter;
@@ -42,19 +44,13 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private LinearLayout mViewButtonsAddDeclineAll;
     private TextView mTextViewAcceptAll;
     private TextView mTextViewDeclineAll;
-    private Boolean mAddAll = false;
-    private Boolean mDeclineAll = false;
     private Event mEvent;
     private TextView mTextViewNoSubscribers;
-
+    private Boolean mLastVisibleItem = false;
     private String mBindingKey;
 
-    public Boolean isDeclineAll() {
-        return mDeclineAll;
-    }
-
-    public Boolean isAddAll() {
-        return mAddAll;
+    public Boolean isLastVisibleItem() {
+        return mLastVisibleItem;
     }
 
     @Override
@@ -79,6 +75,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                 mSubscribers = (List<Subscriber>) result;
                 setRecyclerViewAdapter();
                 hideUtilsAndShowContentOverlay();
+                mAcceptedSubscribers = new ArrayList<>();
         }
     }
 
@@ -171,11 +168,18 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                                 current.acceptAnimation();
                                 cont += 1;
                             }
+                            if (i == linearLayoutManager.findLastVisibleItemPosition()){
+                                mLastVisibleItem = true;
+                            }
                         }
                         for (Subscriber sub : mSubscribers){
-                            sub.setAccepted(true);
+                            if (!sub.isAccepted()){
+                                sub.setAccepted(true);
+                                if (!mAcceptedSubscribers.contains(sub)){
+                                    mAcceptedSubscribers.add(sub);
+                                }
+                            }
                         }
-                        mAddAll = true;
                         break;
                     case R.id.text_view_decline_all:
                         for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
@@ -185,11 +189,16 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                                 current.declineAnimation();
                                 cont += 1;
                             }
+                            if (i == linearLayoutManager.findLastVisibleItemPosition()){
+                                mLastVisibleItem = true;
+                            }
                         }
                         for (Subscriber sub : mSubscribers){
                             sub.setAccepted(false);
+                            if (mAcceptedSubscribers.contains(sub)){
+                                mAcceptedSubscribers.remove(sub);
+                            }
                         }
-                        mDeclineAll = true;
                         break;
                 }
                 if (cont == 0){
@@ -299,16 +308,23 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     }
 
     public void acceptSubscriber(int position){
-        mSubscribers.get(position).setAccepted(true);
+        Subscriber subscriber = mSubscribers.get(position);
+        subscriber.setAccepted(true);
+        if (!mAcceptedSubscribers.contains(subscriber)){
+            mAcceptedSubscribers.add(subscriber);
+        }
     }
 
     public void declineSubscriber(int position){
-        mSubscribers.get(position).setAccepted(false);
+        Subscriber subscriber = mSubscribers.get(position);
+        subscriber.setAccepted(false);
+        if (mAcceptedSubscribers.contains(subscriber)){
+            mAcceptedSubscribers.remove(subscriber);
+        }
     }
 
     public void notifyAdapter(){
         mAdapter.notifyDataSetChanged();
-        mAddAll = false;
-        mDeclineAll = false;
+        mLastVisibleItem = false;
     }
 }

@@ -212,7 +212,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
                         linearLayoutMiddle.setVisibility(View.VISIBLE);
                         mFragment.declineSubscriber(mSubPosition);
                     }
-                    if ((mFragment.isAddAll()) || (mFragment.isDeclineAll())){
+                    if (mFragment.isLastVisibleItem()){
                         mFragment.notifyAdapter();
                     }
                 } else {
