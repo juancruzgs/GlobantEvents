@@ -21,6 +21,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventListActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
@@ -49,6 +50,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+
     private LayoutManagerType mCurrentLayoutManagerType;
     private ObservableRecyclerView mRecyclerView;
     private List<Event> mEventList;
@@ -75,7 +77,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
@@ -224,6 +225,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             case EVENT_LIST:
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
+                    ((BaseEventListActivity)getActivity()).setEventList(mEventList);
                     mRecyclerView.setAdapter(getAdapter());
                 } else {
                     showErrorOverlay();
@@ -269,7 +271,13 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void setService(BaseService service) {
         super.setService(service);
         showProgressOverlay();
-        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
+        mEventList = ((BaseEventListActivity)getActivity()).getEventList();
+        if (mEventList == null) {
+            mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
+        } else {
+            mRecyclerView.setAdapter(getAdapter());
+            hideUtilsAndShowContentOverlay();
+        }
         // TODO: See how the mCheckInParameters[] can be better used
         if (mEventId != null) {
             mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),

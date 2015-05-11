@@ -83,16 +83,17 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     public void onResume() {
         super.onResume();
         mTweetText.clearFocus();
-        User user = BaseEventDetailPagerActivity.getInstance().getTwitterUser();
+        User user = ((BaseEventDetailPagerActivity) getActivity()).getTwitterUser();
         if (user != null) {
             setUserInformation(user);
         }
+        hideUtilsAndShowContentOverlay();
     }
 
     @Override
     public void setService(BaseService service) {
         super.setService(service);
-        User user = BaseEventDetailPagerActivity.getInstance().getTwitterUser();
+        User user = ((BaseEventDetailPagerActivity) getActivity()).getTwitterUser();
         if (user == null) {
             mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey());
         }
@@ -111,7 +112,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
             public void onClick(View v) {
                 if (mTweetText.getText().toString().equals(getString(R.string.button_tweet))) {
                     String tweet = mTweetText.getText().toString();
-                    if (!tweet.equals("")) {
+                    if (!tweet.isEmpty()) {
                         InputMethodManager imm = (InputMethodManager) getActivity()
                                 .getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), CoreConstants.ZERO);
@@ -173,7 +174,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
             case GET_TWITTER_USER:
                 User user = (User) result;
                 if (user != null) {
-                    BaseEventDetailPagerActivity.getInstance().setTwitterUser(user);
+                    ((BaseEventDetailPagerActivity) getActivity()).setTwitterUser(user);
                     changeUserInformation(user);
                 }
                 hideUtilsAndShowContentOverlay();

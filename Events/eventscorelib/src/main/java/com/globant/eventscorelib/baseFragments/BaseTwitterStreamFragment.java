@@ -59,7 +59,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         if (theAction == BaseService.ACTIONS.TWEETS_LIST){
             mTweetList = (List<Status>) result;
             if (mTweetList != null) {
-                BaseEventDetailPagerActivity.getInstance().setTweetList(mTweetList);
+                ((BaseEventDetailPagerActivity) getActivity()).setTweetList(mTweetList);
                 setRecyclerViewAdapter();
             } else {
                 showErrorOverlay();
@@ -110,7 +110,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                BaseEventDetailPagerActivity.getInstance().setTweetList(null);
+                ((BaseEventDetailPagerActivity) getActivity()).setTweetList(null);
                 mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "#GameOfThrones"); // TODO: put the event hashtag
                 mSwipeRefreshLayout.setRefreshing(true);
             }
@@ -171,7 +171,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onResumeFragment() {
-        mTweetList = BaseEventDetailPagerActivity.getInstance().getTweetList();
+        mTweetList = ((BaseEventDetailPagerActivity) getActivity()).getTweetList();
         if (mTweetList == null) {
             mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "GameOfThrones"); // TODO: put the event hashtag
             showProgressOverlay();

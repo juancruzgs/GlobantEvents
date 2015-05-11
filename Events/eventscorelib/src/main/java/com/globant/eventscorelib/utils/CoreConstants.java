@@ -121,4 +121,7 @@ public class CoreConstants {
 
     //Pager
     public static final String CURRENT_FRAGMENT_INTENT = "currentFragmentPosition";
+
+    //Save Instance Cache
+    public static final String SAVE_INSTANCE_CACHE_OBJECTS = "cacheObjects";
 }
