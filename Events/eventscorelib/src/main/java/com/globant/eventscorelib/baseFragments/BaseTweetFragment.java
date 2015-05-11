@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CropCircleTransformation;
@@ -49,7 +50,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     public void onNewIntent(Intent intent) {
         Uri uri = intent.getData();
         if (uri != null) {
-            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, uri, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER_RESPONSE, getBindingKey(), uri);
         }
     }
 
@@ -82,7 +83,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     public void onResume() {
         super.onResume();
         mTweetText.clearFocus();
-        User user = BaseApplication.getInstance().getTwitterUser();
+        User user = BaseEventDetailPagerActivity.getInstance().getTwitterUser();
         if (user != null) {
             setUserInformation(user);
         }
@@ -91,9 +92,9 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     @Override
     public void setService(BaseService service) {
         super.setService(service);
-        User user = BaseApplication.getInstance().getTwitterUser();
+        User user = BaseEventDetailPagerActivity.getInstance().getTwitterUser();
         if (user == null) {
-            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey(), null);
         }
     }
 
@@ -114,10 +115,10 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                         InputMethodManager imm = (InputMethodManager) getActivity()
                                 .getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), CoreConstants.ZERO);
-                        mService.executeAction(BaseService.ACTIONS.TWEET_POST, tweet, getBindingKey());
+                        mService.executeAction(BaseService.ACTIONS.TWEET_POST, getBindingKey(), tweet);
                     }
                 } else {
-                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, null, getBindingKey());
+                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, getBindingKey(), null);
                 }
             }
         });
@@ -172,7 +173,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
             case GET_TWITTER_USER:
                 User user = (User) result;
                 if (user != null) {
-                    BaseApplication.getInstance().setTwitterUser(user);
+                    BaseEventDetailPagerActivity.getInstance().setTwitterUser(user);
                     changeUserInformation(user);
                 }
                 hideUtilsAndShowContentOverlay();
@@ -189,7 +190,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                 break;
             case TWITTER_LOADER_RESPONSE:
                 if ((Boolean) result) {
-                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, null, getBindingKey());
+                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey(), null);
                 }
                 break;
         }

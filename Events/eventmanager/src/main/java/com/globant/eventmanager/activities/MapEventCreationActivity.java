@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.Date;
 
 
-public class MapManagerActivity extends BaseMapActivity implements BaseService.ActionListener{
+public class MapEventCreationActivity extends BaseMapActivity implements BaseService.ActionListener{
 
     private Marker mMarker;
     private long mBackPressedTime;
@@ -42,7 +42,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mService = ((BaseService.BaseBinder)service).getService();
-            mService.subscribeActor(MapManagerActivity.this);
+            mService.subscribeActor(MapEventCreationActivity.this);
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -79,7 +79,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
                 setMapActivityResult(address);
             }
             else {
-                setResult(MapManagerActivity.RESULT_CANCELED);
+                setResult(MapEventCreationActivity.RESULT_CANCELED);
             }
             finish();
         }
@@ -152,7 +152,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                mService.executeAction(BaseService.ACTIONS.POSITION_COORDINATES, s, getBindingKey());
+                mService.executeAction(BaseService.ACTIONS.POSITION_COORDINATES, getBindingKey(), s);
                 return false;
             }
 
@@ -197,7 +197,7 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     private void finishActivityWithResult(boolean backButton) {
         if (mMarker != null) {
             LatLng latLng = mMarker.getPosition();
-            mService.executeAction(BaseService.ACTIONS.POSITION_ADDRESS, latLng, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.POSITION_ADDRESS, getBindingKey(), latLng);
         }
         else {
             finishActivityWithoutMarkerData(backButton);
@@ -207,12 +207,12 @@ public class MapManagerActivity extends BaseMapActivity implements BaseService.A
     private void setMapActivityResult(Address address) {
         Intent intent = new Intent();
         intent.putExtra(CoreConstants.MAP_ADDRESS_INTENT, address);
-        setResult(MapManagerActivity.RESULT_OK, intent);
+        setResult(MapEventCreationActivity.RESULT_OK, intent);
     }
 
     private void finishActivityWithoutMarkerData(boolean backButton) {
         if (isDoubleTapToExitDone(backButton)) {
-            setResult(MapManagerActivity.RESULT_CANCELED);
+            setResult(MapEventCreationActivity.RESULT_CANCELED);
             finish();
         }
     }

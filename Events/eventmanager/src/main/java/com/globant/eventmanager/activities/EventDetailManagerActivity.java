@@ -2,17 +2,16 @@ package com.globant.eventmanager.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
+
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventDescriptionManagerFragment;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
 import com.globant.eventmanager.fragments.TwitterStreamManagerFragment;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
-import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.parse.ParseObject;
+import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,8 @@ public class EventDetailManagerActivity extends BaseEventDetailPagerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         mSavedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
+        Event event = getIntent().getExtras().getParcelable(CoreConstants.FIELD_EVENTS);
+        BaseEventDetailPagerActivity.getInstance().setEvent(event);
     }
 
     @Override

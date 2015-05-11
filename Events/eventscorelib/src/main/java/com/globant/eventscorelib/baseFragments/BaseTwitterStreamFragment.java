@@ -18,7 +18,6 @@ import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
 import com.globant.eventscorelib.baseAdapters.BaseTweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
 import java.util.Date;
@@ -112,7 +111,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
             @Override
             public void onRefresh() {
                 BaseEventDetailPagerActivity.getInstance().setTweetList(null);
-                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "#GameOfThrones", getBindingKey()); // TODO: put the event hashtag
+                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "#GameOfThrones"); // TODO: put the event hashtag
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
@@ -174,7 +173,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     public void onResumeFragment() {
         mTweetList = BaseEventDetailPagerActivity.getInstance().getTweetList();
         if (mTweetList == null) {
-            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
+            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "GameOfThrones"); // TODO: put the event hashtag
             showProgressOverlay();
         }
         else {

@@ -4,6 +4,7 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -213,24 +214,12 @@ public class CloudDataController {
 
     private byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
         ParseFile file = databaseObject.getParseFile(field);
-        if (file != null) {
-            return file.getData();
-        } else {
-            return null;
-        }
+        return file != null ? file.getData() : null;
     }
 
-    private double getCoordinatesFromDatabaseObject(ParseObject databaseObject, boolean latitude) {
+    private LatLng getCoordinatesFromDatabaseObject(ParseObject databaseObject) {
         ParseGeoPoint geoPoint = databaseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES);
-        if (geoPoint != null) {
-            if (latitude) {
-                return geoPoint.getLatitude();
-            } else {
-                return geoPoint.getLongitude();
-            }
-        } else {
-            return CoreConstants.ZERO;
-        }
+        return geoPoint != null ? new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()) : null;
     }
 
     private Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
@@ -252,8 +241,7 @@ public class CloudDataController {
         domainEvent.setQrCode(databaseEvent.getString(CoreConstants.FIELD_QR_CODE));
         domainEvent.setLanguage(databaseEvent.getString(CoreConstants.FIELD_LANGUAGE));
         domainEvent.setHashtag(databaseEvent.getString(CoreConstants.FIELD_HASHTAG));
-        domainEvent.setLatitude(getCoordinatesFromDatabaseObject(databaseEvent, true));
-        domainEvent.setLongitude(getCoordinatesFromDatabaseObject(databaseEvent, false));
+        domainEvent.setCoordinates(getCoordinatesFromDatabaseObject(databaseEvent));
         return domainEvent;
     }
 
@@ -293,7 +281,8 @@ public class CloudDataController {
         databaseEvent.put(CoreConstants.FIELD_QR_CODE, domainEvent.getQrCode());
         databaseEvent.put(CoreConstants.FIELD_LANGUAGE, domainEvent.getLanguage());
         databaseEvent.put(CoreConstants.FIELD_HASHTAG, domainEvent.getHashtag());
-        databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(domainEvent.getLatitude(), domainEvent.getLongitude()));
+        LatLng coordinates = domainEvent.getCoordinates();
+        databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(coordinates.latitude, coordinates.longitude));
     }
 
     private void setDatabaseSpeakerInformation(Speaker domainSpeaker, ParseObject databaseSpeaker) {

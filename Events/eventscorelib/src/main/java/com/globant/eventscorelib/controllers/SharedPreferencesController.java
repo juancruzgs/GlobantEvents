@@ -200,6 +200,19 @@ public class SharedPreferencesController {
         editor.commit();
     }
 
+    public static void setHintParticipantsShowed(boolean showed, Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(context.getString(R.string.preference_participant_hint_showed), showed);
+        editor.commit();
+    }
+
+    public static boolean isHintParticipantsShowed(Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean(
+                context.getString(R.string.preference_participant_hint_showed),false);
+    }
+
     public String getAccessToken() {
         return mSharedPreferences.getString(CoreConstants.TWITTER_PREF_KEY_OAUTH_TOKEN, null);
     }

@@ -12,14 +12,17 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 
@@ -87,6 +90,10 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         } else {
             mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
             mRecyclerView.setAdapter(mAdapter);
+            if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
+                Toast.makeText(this.getActivity(),"Hold participant to accept or decline", Toast.LENGTH_LONG).show();
+                SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
+            }
         }
     }
 
@@ -97,7 +104,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void cancelAnimations() {
-        if (mAdapter.getCurrentParticipant() != null){
+        if (mAdapter != null && mAdapter.getCurrentParticipant() != null){
             mAdapter.getCurrentParticipant().cancelAnimations();
         }
     }
@@ -273,9 +280,9 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onResumeFragment(){
         if (mSubscribers == null) {
-            mEvent= BaseApplication.getInstance().getEvent();
+            mEvent= BaseEventDetailPagerActivity.getInstance().getEvent();
             String eventId=mEvent.getObjectID();
-            mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, eventId, getBindingKey());
+            mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
         }
         else {
             setRecyclerViewAdapter();
@@ -286,8 +293,9 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     public void onStop() {
         if (mSubscribers != null)
         {
-            Object[] objects = {mEvent.getObjectID(), mSubscribers};
-            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, objects, getBindingKey());
+            //Object[] objects = {mEvent.getObjectID(), mSubscribers};
+            //mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), objects);
+            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
         }
         super.onStop();
     }

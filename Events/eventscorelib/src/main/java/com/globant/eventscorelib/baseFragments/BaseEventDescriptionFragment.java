@@ -9,8 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -23,6 +21,8 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
@@ -31,7 +31,6 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
-import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -62,11 +61,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
     private boolean mTitleShown = false;
-
-    private Drawable mDrawableToApply;
-
     protected Event mEvent;
-
     private String mBindingKey;
 
     public BaseEventDescriptionFragment() {
@@ -99,7 +94,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
         hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
         wireUpViews(rootView);
-        mEvent = BaseApplication.getInstance().getEvent();
+        mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
         if (mEvent != null) {
             loadEventDescription();
         }
@@ -110,14 +105,25 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     }
 
     private void changeIconColor() {
-        mDrawableToApply = mMapIcon.getDrawable();
-        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-        DrawableCompat.setTint(mDrawableToApply, getActivity().getResources().getColor(R.color.grey));
-        mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
+        Drawable drawableToApply = mMapIcon.getDrawable();
+        drawableToApply = DrawableCompat.wrap(drawableToApply);
+        DrawableCompat.setTint(drawableToApply, getActivity().getResources().getColor(R.color.grey));
+        drawableToApply = DrawableCompat.unwrap(drawableToApply);
     }
 
-    protected abstract void prepareMapIconButton();
-
+    private void prepareMapIconButton() {
+        mMapIcon.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), BaseMapEventDescriptionActivity.class);
+                        intent.putExtra(CoreConstants.MAP_MARKER_POSITION_INTENT, mEvent.getCoordinates());
+                        startActivity(intent);
+                    }
+                }
+        );
+    }
+    
     private void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
         mActionBarSize = getActionBarSize();
@@ -309,10 +315,9 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             mEventAdditionalInfo.setText("-");
         }
         mEventFullDescription.setText(mEvent.getFullDescription());
-        if (mEvent.getLatitude() != 0.0) {
+        if (mEvent.getCoordinates() != null) {
             prepareMapIconButton();
-        }
-        else {
+        } else {
             mMapIcon.setVisibility(View.GONE);
         }
     }
