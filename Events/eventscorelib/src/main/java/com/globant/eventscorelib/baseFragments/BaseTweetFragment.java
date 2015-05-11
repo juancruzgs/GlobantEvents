@@ -94,7 +94,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         super.setService(service);
         User user = ((BaseEventDetailPagerActivity) getActivity()).getTwitterUser();
         if (user == null) {
-            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey(), null);
+            mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey());
         }
     }
 
@@ -118,7 +118,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                         mService.executeAction(BaseService.ACTIONS.TWEET_POST, getBindingKey(), tweet);
                     }
                 } else {
-                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, getBindingKey(), null);
+                    mService.executeAction(BaseService.ACTIONS.TWITTER_LOADER, getBindingKey());
                 }
             }
         });
@@ -190,7 +190,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                 break;
             case TWITTER_LOADER_RESPONSE:
                 if ((Boolean) result) {
-                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey(), null);
+                    mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey());
                 }
                 break;
         }
