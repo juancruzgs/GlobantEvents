@@ -17,7 +17,6 @@ abstract public class BaseApplication extends Application {
     private static BaseApplication ourInstance;
 
     private SharedPreferencesController mSharedPreferencesController;
-    private CacheObjectsController mCacheObjectsController;
 
     abstract public Class<? extends BaseService> getServiceClass();
 
@@ -32,28 +31,12 @@ abstract public class BaseApplication extends Application {
         ourInstance = this;
         Parse.initialize(this, CoreConstants.APPLICATION_ID, CoreConstants.CLIENT_KEY);
         mSharedPreferencesController = new SharedPreferencesController(getApplicationContext());
-        mCacheObjectsController = new CacheObjectsController();
     }
 
     public SharedPreferencesController getSharedPreferencesController() {
         return mSharedPreferencesController;
     }
 
-    public User getTwitterUser () {
-        return mCacheObjectsController.getUser();
-    }
-
-    public void setEvent (Event event) {
-        mCacheObjectsController.setEvent(event);
-    }
-
-    public Event getEvent() {
-        return mCacheObjectsController.getEvent();
-    }
-
-    public void setTwitterUser (User user) {
-        mCacheObjectsController.setUser(user);
-    }
 }
 
 

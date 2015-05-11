@@ -18,6 +18,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
             android:layout_weight="0.3"
+            android:transitionName="cardImage"
             android:src="@mipmap/ic_person"/>
 
         <RelativeLayout

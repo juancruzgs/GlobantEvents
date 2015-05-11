@@ -194,24 +194,43 @@
                                     android:layout_height="match_parent"
                                     android:layout_weight="0.9"
                                     android:gravity="center_vertical"
-                                    android:orientation="vertical">
+                                    android:orientation="horizontal">
 
-                                    <TextView
-                                        android:id="@+id/textView_Event_Address_Title"
-                                        style="@style/condensed_light_small"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:paddingLeft="6dp"
-                                        android:text="@string/textView_Event_Address_Title"
-                                        android:textColor="@color/grey_light"/>
+                                    <LinearLayout
+                                        android:orientation="vertical"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
 
-                                    <TextView
-                                        android:id="@+id/textView_Event_Address"
-                                        style="@style/condensed_normal_medium"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:paddingLeft="6dp"
-                                        android:text="Av. Colon 1100 - PB."/>
+                                        <TextView
+                                            android:id="@+id/textView_Event_Address_Title"
+                                            style="@style/condensed_light_small"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:paddingLeft="6dp"
+                                            android:text="@string/textView_Event_Address_Title"
+                                            android:textColor="@color/grey_light"/>
+
+                                        <TextView
+                                            android:id="@+id/textView_Event_Address"
+                                            style="@style/condensed_normal_medium"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:paddingLeft="6dp"
+                                            android:text="Av. Colon 1100 - PB."/>
+                                    </LinearLayout>
+
+                                    <FrameLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="0.2">
+
+                                        <ImageView
+                                            android:layout_width="40dp"
+                                            android:layout_height="40dp"
+                                            android:id="@+id/image_view_map_icon"
+                                            android:src="@android:drawable/ic_dialog_map"/>
+                                    </FrameLayout>
 
                                 </LinearLayout>
 

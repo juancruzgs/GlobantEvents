@@ -4,6 +4,7 @@ package com.globant.eventscorelib.baseFragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
@@ -66,6 +68,14 @@ public class BaseSpeakerFragment extends BaseFragment {
     public static final String IMAGE_CROP = "com.android.camera.action.CROP";
     public static final String URI_NAME = "image/*";
 
+    public final String EDIT_MODE= "EDIT_MODE";
+    public final String CREATE_MODE= "CREATE_MODE";
+
+    public Speaker speakerEdit;
+    public String fragmentMode;
+    public String eventId;
+
+
 
     public BaseSpeakerFragment() {
         // Required empty public constructor
@@ -85,6 +95,19 @@ public class BaseSpeakerFragment extends BaseFragment {
         prepareImageButton();
         setOnFocusListeners();
         hideUtilsAndShowContentOverlay();
+
+        if (getActivity().getIntent().getExtras().getSerializable("speaker")!= null) {
+            speakerEdit = (Speaker) getActivity().getIntent().getExtras().getSerializable("speaker");
+            mEditTextFirstName.setText(speakerEdit.getName());
+            mEditTextLastName.setText(speakerEdit.getLastName());
+            mEditTextTitle.setText(speakerEdit.getTitle());
+            mEditTextBiography.setText(speakerEdit.getBiography());
+            mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(speakerEdit.getPicture(), 0, speakerEdit.getPicture().length));
+            fragmentMode= EDIT_MODE;
+        }
+        if(getActivity().getIntent().getExtras().getSerializable("eventId")!= null)
+           eventId= getActivity().getIntent().getExtras().getString("eventId");
+
         return rootView;
     }
 
@@ -115,6 +138,14 @@ public class BaseSpeakerFragment extends BaseFragment {
             tintRequiredIconsAndShowError(mEditTextBiography,  savePreferences);
 
             if (savePreferences=false){
+               switch (fragmentMode)
+               {
+                   case EDIT_MODE  :
+                       break;
+                   case CREATE_MODE:
+                       break;
+               }
+
                 Toast.makeText(getActivity(), "Required fields missing!",
                         Toast.LENGTH_LONG).show();
             }
@@ -171,7 +202,7 @@ public class BaseSpeakerFragment extends BaseFragment {
             else {
                 tintGrey();
             }
-        }
+        };
     };
 
     private void getIconToTint(View view) {

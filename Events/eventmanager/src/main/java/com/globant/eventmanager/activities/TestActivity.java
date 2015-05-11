@@ -6,6 +6,7 @@ import com.globant.eventmanager.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseFragments.BaseSpeakerFragment;
+import com.globant.eventscorelib.baseFragments.BaseSpeakersListAllFragment;
 
 
 public class TestActivity extends BaseActivity {
@@ -14,7 +15,7 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        BaseFragment fragment = new BaseSpeakerFragment();
+        BaseFragment fragment = new BaseSpeakersListAllFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)

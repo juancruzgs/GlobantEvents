@@ -18,9 +18,9 @@ import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
 import com.globant.eventscorelib.baseAdapters.BaseTweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
+import java.util.Date;
 import java.util.List;
 
 import twitter4j.Status;
@@ -34,6 +34,8 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     private List<Status> mTweetList;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private String mBindingKey;
+
     public BaseTwitterStreamFragment() {
         // Required empty public constructor
     }
@@ -45,7 +47,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public String getBindingKey() {
-        return CoreConstants.BINDING_KEY_FRAGMENT_TWITTER_STREAM;
+        return mBindingKey;
     }
 
     @Override
@@ -78,6 +80,13 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+    }
+
+    @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(com.globant.eventscorelib.R.layout.fragment_twitter_stream, container,
                 false);
@@ -102,7 +111,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
             @Override
             public void onRefresh() {
                 BaseEventDetailPagerActivity.getInstance().setTweetList(null);
-                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "#GameOfThrones", getBindingKey()); // TODO: put the event hashtag
+                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "#GameOfThrones"); // TODO: put the event hashtag
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
@@ -164,7 +173,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     public void onResumeFragment() {
         mTweetList = BaseEventDetailPagerActivity.getInstance().getTweetList();
         if (mTweetList == null) {
-            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, "GameOfThrones", getBindingKey()); // TODO: put the event hashtag
+            mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "GameOfThrones"); // TODO: put the event hashtag
             showProgressOverlay();
         }
         else {

@@ -1,9 +1,16 @@
 package com.globant.eventscorelib.domainObjects;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Event  extends BaseObject{
+public class Event extends BaseObject implements Parcelable {
 
     private String mObjectID;
     private String mTitle;
@@ -22,8 +29,8 @@ public class Event  extends BaseObject{
     private boolean mPublic;
     private byte[] mIcon;
     private byte[] mEventLogo;
-    private double mLatitude;
-    private double mLongitude;
+
+    private LatLng mCoordinates;
     private List<Speaker> mSpeakers;
     private List<Subscriber> mSubscribers;
 
@@ -34,27 +41,12 @@ public class Event  extends BaseObject{
         mTitle = title;
     }
 
-    public Event(String title, String shortDescription, String fullDescription, String additionalInfo, String address, Date startDate, Date endDate, boolean aPublic, byte[] icon, byte[] eventLogo, double latitude, double longitude, String qrCode, String city, String country, String category, String language, String hashtag, List<Speaker> speakers, List<Subscriber> subscribers) {
-        mTitle = title;
-        mShortDescription = shortDescription;
-        mFullDescription = fullDescription;
-        mAdditionalInfo = additionalInfo;
-        mAddress = address;
-        mStartDate = startDate;
-        mEndDate = endDate;
-        mPublic = aPublic;
-        mIcon = icon;
-        mEventLogo = eventLogo;
-        mLatitude = latitude;
-        mLongitude = longitude;
-        mQrCode = qrCode;
-        mCity = city;
-        mCountry = country;
-        mCategory = category;
-        mLanguage = language;
-        mHashtag = hashtag;
-        mSpeakers = speakers;
-        mSubscribers = subscribers;
+    public LatLng getCoordinates() {
+        return mCoordinates;
+    }
+
+    public void setCoordinates(LatLng coordinates) {
+        mCoordinates = coordinates;
     }
 
     public String getObjectID() {
@@ -169,22 +161,6 @@ public class Event  extends BaseObject{
         mEventLogo = eventLogo;
     }
 
-    public double getLatitude() {
-        return mLatitude;
-    }
-
-    public void setLatitude(double latitude) {
-        mLatitude = latitude;
-    }
-
-    public double getLongitude() {
-        return mLongitude;
-    }
-
-    public void setLongitude(double longitude) {
-        mLongitude = longitude;
-    }
-
     public String getQrCode() {
         return mQrCode;
     }
@@ -223,5 +199,89 @@ public class Event  extends BaseObject{
 
     public void setSubscribers(List<Subscriber> subscribers) {
         mSubscribers = subscribers;
+    }
+
+    public static final Parcelable.Creator<Event> CREATOR = new Parcelable.Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel source) {
+            return new Event(source);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    private Event(Parcel in) {
+        mObjectID = in.readString();
+        mTitle = in.readString();
+        mShortDescription = in.readString();
+        mFullDescription = in.readString();
+        mAdditionalInfo = in.readString();
+        mCoordinates = in.readParcelable(LatLng.class.getClassLoader());
+        mAddress = in.readString();
+        mCity = in.readString();
+        mCountry = in.readString();
+        mCategory = in.readString();
+        mLanguage = in.readString();
+        mHashtag = in.readString();
+        mQrCode = in.readString();
+        int sizeEventLogo = in.readInt();
+        if (sizeEventLogo != 0) {
+            mEventLogo = new byte[sizeEventLogo];
+            in.readByteArray(mEventLogo);
+        }
+        int sizeIcon = in.readInt();
+        if (sizeIcon != 0) {
+            mIcon = new byte[sizeIcon];
+            in.readByteArray(mIcon);
+        }
+        mPublic = (in.readInt() == 1);
+        mStartDate = (Date) in.readSerializable();
+        mEndDate = (Date) in.readSerializable();
+        mSpeakers = new ArrayList<>();
+        in.readTypedList(mSpeakers, Speaker.CREATOR);
+        mSubscribers = new ArrayList<>();
+        in.readTypedList(mSubscribers, Subscriber.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mObjectID);
+        dest.writeString(mTitle);
+        dest.writeString(mShortDescription);
+        dest.writeString(mFullDescription);
+        dest.writeString(mAdditionalInfo);
+        dest.writeParcelable(mCoordinates, 1);
+        dest.writeString(mAddress);
+        dest.writeString(mCity);
+        dest.writeString(mCountry);
+        dest.writeString(mCategory);
+        dest.writeString(mLanguage);
+        dest.writeString(mHashtag);
+        dest.writeString(mQrCode);
+        if (mEventLogo != null) {
+            dest.writeInt(mEventLogo.length);
+            dest.writeByteArray(mEventLogo);
+        } else {
+            dest.writeInt(0);
+        }
+        if (mIcon != null) {
+            dest.writeInt(mIcon.length);
+            dest.writeByteArray(mIcon);
+        } else {
+            dest.writeInt(0);
+        }
+        dest.writeInt(mPublic ? 1 : 0);
+        dest.writeSerializable(mStartDate);
+        dest.writeSerializable(mEndDate);
+        dest.writeTypedList(mSpeakers);
+        dest.writeTypedList(mSubscribers);
     }
 }

@@ -1,13 +1,17 @@
 package com.globant.eventscorelib.baseFragments;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
@@ -20,9 +24,8 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.baseAdapters.RecyclerItemClickListener;
 import com.globant.eventscorelib.utils.CoreConstants;
-import com.globant.eventscorelib.utils.Logger;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +38,9 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     protected BaseSpeakersListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     private Event mEvent;
+    private TextView mTextViewNoSpeakers;
+
+    private String mBindingKey;
 
     @Override
     public BaseService.ActionListener getActionListener() {
@@ -48,7 +54,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public String getBindingKey() {
-        return BaseSpeakersListFragment.class.getSimpleName();
+        return mBindingKey;
     }
 
     @Override
@@ -60,15 +66,16 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
             mSpeakers = (List<Speaker>) result;
-            if (mSpeakers!=null)
-            setRecyclerViewAdapter();
-            hideUtilsAndShowContentOverlay();
+            if ((mSpeakers.size()) > 1) {
+                BaseEventDetailPagerActivity.getInstance().setSpeakersList(mSpeakers);
+                setRecyclerViewAdapter();
+            } else {
+                mRecyclerView.setVisibility(View.GONE);
+                mTextViewNoSpeakers.setVisibility(View.VISIBLE);
             }
-        else{
-
+            hideUtilsAndShowContentOverlay();
         }
-
-        }
+    }
 
 
     private void setRecyclerViewAdapter() {
@@ -87,9 +94,17 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+    }
+
+    @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
         hideUtilsAndShowContentOverlay();
+        mTextViewNoSpeakers=(TextView)rootView.findViewById(R.id.text_view_no_speakers);
         prepareRecyclerView(rootView);
         setRetainInstance(true);
         return rootView;
@@ -108,11 +123,22 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        //TODO Transition
-                        Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
-                        intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED,mSpeakers.get(position));
-                        startActivity(intentSpeakerDetail);
+                    @Override
+                    public void onItemClick(View view, int position) {
+
+                        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                            ImageView cardImage = (ImageView) view.findViewById(R.id.image_view_profile_speaker);
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "cardImage");
+                            Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
+                            intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED, mSpeakers.get(position));
+                            getActivity().startActivity(intentSpeakerDetail, options.toBundle());
+                        } else {
+                            Intent intentSpeakerDetail = new Intent(getActivity(), BaseSpeakerDetailActivity.class);
+                            intentSpeakerDetail.putExtra(CoreConstants.SPEAKER_SELECTED, mSpeakers.get(position));
+                            startActivity(intentSpeakerDetail);
+                        }
+
+
                     }
                 })
         );
@@ -125,21 +151,17 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onPauseFragment() {
-
     }
 
     @Override
     public void onResumeFragment() {
+        mSpeakers = BaseEventDetailPagerActivity.getInstance().getSpeakersList();
         if (mSpeakers == null) {
-            mEvent=BaseApplication.getInstance().getEvent();
-            String eventId=mEvent.getObjectID();
+            mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
+            String eventId = mEvent.getObjectID();
             mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, eventId, getBindingKey());
-        }
-        else {
+        } else {
             setRecyclerViewAdapter();
         }
-
     }
-
-
 }

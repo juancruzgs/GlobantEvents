@@ -17,7 +17,6 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -38,13 +37,16 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
+import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.regex.Pattern;
 
@@ -52,7 +54,7 @@ import java.util.regex.Pattern;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BaseSubscriberFragment extends BaseFragment implements SensorEventListener {
+public class BaseSubscriberFragment extends BaseFragment implements BaseService.ActionListener, SensorEventListener {
 
 
     Bitmap mPhoto;
@@ -97,6 +99,9 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
     Boolean mDoneClicked;
     Boolean mPhotoTaken;
 
+    Subscriber mSubscriber;
+    String mEventId;
+    
     private SensorManager sensorManager;
     private Sensor senAcelerometer;
     private long lastUpdate = 0;
@@ -118,7 +123,7 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return null;
+        return this;
     }
 
     @Override
@@ -128,7 +133,8 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
         View rootView = inflater.inflate(R.layout.fragment_subscriber, container, false);
         wireUpViews(rootView);
         prepareImageButton();
-        mPhotoTaken=false;
+        mPhotoTaken = false;
+        mSubscriber = new Subscriber();
         checkPreferences();
         setOnFocusListeners();
         hideUtilsAndShowContentOverlay();
@@ -414,11 +420,16 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
             doneClick();
-            if ((mSavePreferences) && (mPhotoTaken)){
-                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved),Toast.LENGTH_SHORT).show();
-                saveSubscriberPreferences();
-                getActivity().finish();
-            } else if (!(mPhotoTaken)){
+            if ((mSavePreferences) && (mPhotoTaken)) {
+                saveSubscriberObject();
+                SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
+                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                        mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+                }
+            } else if (!(mPhotoTaken)) {
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo),
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -469,9 +480,7 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
                 mSavePreferences = false;
             }
         }
-
     }
-
 
     private void tintGrey() {
         mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
@@ -480,30 +489,34 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
         mIconToChange.setImageDrawable(mDrawableToApply);
     }
 
-    private void saveSubscriberPreferences() {
-        SharedPreferencesController.setUserFirstName(mEditTextFirstName.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserLastName(mEditTextLastName.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserPhone(mEditTextPhone.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserOccupation(mEditTextOccupation.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserEmail(mEditTextEmail.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserCountry(mEditTextCountry.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserCity(mEditTextCity.getText().toString(), this.getActivity());
-        SharedPreferencesController.setUserTwitter(mEditTextTwitter.getText().toString(), this.getActivity());
-        Bitmap photoToPreference = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
-        SharedPreferencesController.setUserImage(convertBitmapImageToByteArray(photoToPreference), this.getActivity());
-        SharedPreferencesController.setUserEnglishKnowledge(mCheckBoxEnglishKnowledge.isChecked(), this.getActivity());
+    private void saveSubscriberObject() {
+        mSubscriber.setName(mEditTextFirstName.getText().toString());
+        mSubscriber.setLastName(mEditTextLastName.getText().toString());
+        mSubscriber.setPhone(mEditTextPhone.getText().toString());
+        mSubscriber.setOccupation(mEditTextOccupation.getText().toString());
+        mSubscriber.setEmail(mEditTextEmail.getText().toString());
+        mSubscriber.setCountry(mEditTextCountry.getText().toString());
+        mSubscriber.setCity(mEditTextCity.getText().toString());
+        mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
+        mSubscriber.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
+        mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
+
     }
 
-    private byte[] convertBitmapImageToByteArray(Bitmap Photo) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
+    @Override
+    public Activity getBindingActivity() {
+        return getActivity();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+    }
+    @Override
+    public String getBindingKey() {
+        return BaseSubscriberFragment.class.getSimpleName();
     }
 
     @Override
@@ -563,5 +576,49 @@ public class BaseSubscriberFragment extends BaseFragment implements SensorEventL
             last_y=y;
             last_z=z;
         }
+    }
+    @Override
+    public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay();
+    }
+
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        switch (theAction) {
+            case SUBSCRIBER_EXISTS:
+                if (result.equals("")) {
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
+                } else {
+                    mSubscriber.setObjectID((String) result);
+                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
+                }
+                break;
+            case IS_SUBSCRIBED:
+                if ((Boolean) result) {
+                    hideUtilsAndShowContentOverlay();
+                    Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                } else {
+                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
+                            mSubscriber, mEventId);
+                }
+                break;
+            case SUBSCRIBER_CREATE:
+                mSubscriber.setObjectID((String)result);
+                 mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
+                        mSubscriber, mEventId);
+                break;
+            case EVENTS_TO_SUBSCRIBER_CREATE:
+                hideUtilsAndShowContentOverlay();
+                Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+                break;
+        }
+
+    }
+
+    @Override
+    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
+        showErrorOverlay();
     }
 }

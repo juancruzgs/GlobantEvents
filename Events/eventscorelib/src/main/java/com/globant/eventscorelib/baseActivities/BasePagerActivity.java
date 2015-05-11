@@ -67,9 +67,18 @@ abstract public class BasePagerActivity extends BaseActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    if (pageAdapter.getItem(mCurrentFragmentPosition) instanceof OnPageScrollStateChangedCancelAnimation) {
+                        OnPageScrollStateChangedCancelAnimation fragmentToCancel = (OnPageScrollStateChangedCancelAnimation) pageAdapter.getItem(mCurrentFragmentPosition);
+                        fragmentToCancel.cancelAnimations();
+                    }
+                }
             }
         });
+    }
+
+    public interface OnPageScrollStateChangedCancelAnimation{
+        void cancelAnimations();
     }
 
     private void prepareTitleStrip() {
