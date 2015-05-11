@@ -33,13 +33,11 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     private static final String TAG = "EventParticipantsFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private static final int DATASET_COUNT = 9;
     private List<Subscriber> mSubscribers;
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected RecyclerView mRecyclerView;
     protected EventParticipantsListAdapterManager mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected String[] mDataset;
     protected Boolean scrolling = false;
     private LinearLayout mViewButtonsAddDeclineAll;
     private TextView mTextViewAcceptAll;
@@ -91,7 +89,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
             mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
             mRecyclerView.setAdapter(mAdapter);
             if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
-                Toast.makeText(this.getActivity(),"Hold participant to accept or decline", Toast.LENGTH_LONG).show();
+                Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_LONG).show();
                 SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
             }
         }
