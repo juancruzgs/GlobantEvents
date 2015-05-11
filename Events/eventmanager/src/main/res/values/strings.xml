@@ -11,4 +11,5 @@
     <string name="text_view_add_all_participants">ACCEPT ALL</string>
     <string name="text_view_decline_all_participants">DECLINE ALL</string>
     <string name="text_view_no_participants">No subscribers registered yet.</string>
+    <string name="toast_hint_participants_list">Hold participant to accept or decline!</string>
 </resources>

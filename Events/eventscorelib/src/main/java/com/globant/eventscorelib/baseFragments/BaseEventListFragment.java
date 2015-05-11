@@ -21,7 +21,6 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
-import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
@@ -41,7 +40,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private Object[] mCheckInParameters;
+    private String mEventId;
+    private String mSubscriberMail;
 
     private String mBindingKey;
 
@@ -271,9 +271,9 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         showProgressOverlay();
         mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
         // TODO: See how the mCheckInParameters[] can be better used
-        if (mCheckInParameters != null) {
+        if (mEventId != null) {
             mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),
-                    mCheckInParameters[0], mCheckInParameters[1]);
+                    mEventId, mSubscriberMail);
         }
     }
 
@@ -283,14 +283,11 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanResult != null) {
             showProgressOverlay();
-            mCheckInParameters = new Object[2];
-            String eventId = scanResult.getContents();
-            String subscriberMail = SharedPreferencesController.getUserEmail(getActivity());
-            mCheckInParameters[0] = eventId;
-            mCheckInParameters[1] = subscriberMail;
+            mEventId = scanResult.getContents();
+            mSubscriberMail = SharedPreferencesController.getUserEmail(getActivity());
             if (mService != null) {
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),
-                        mCheckInParameters[0], mCheckInParameters[1]);
+                        mEventId, mSubscriberMail);
             }
             //Else do the action when the service is available }
         }

@@ -59,6 +59,22 @@
             android:name=".activities.EventDetailClientActivity"
             android:label="@string/title_activity_event_detail" >
         </activity>
+        <activity
+            android:name="com.globant.eventscorelib.baseActivities.BaseTweetActivity"
+            android:label="@string/title_base_activity_twitter"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="globantevents"
+                    android:scheme="oauth" />
+            </intent-filter>
+        </activity>
         <service android:name=".components.DataServiceClient"
                  android:exported="false"/>
 
