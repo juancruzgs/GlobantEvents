@@ -22,11 +22,13 @@ import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventListActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
@@ -49,12 +51,15 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+
     private LayoutManagerType mCurrentLayoutManagerType;
     private ObservableRecyclerView mRecyclerView;
     private List<Event> mEventList;
 
     protected abstract int getFragmentLayout();
+
     protected abstract boolean getIsGlober();
+
     protected abstract BaseEventsListAdapter getAdapter();
 
     protected int getEventListRecyclerView() {
@@ -75,7 +80,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
@@ -116,7 +120,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void setRecyclerViewLayoutManager(Bundle savedInstanceState) {
 
         if (savedInstanceState != null) {
-            mCurrentLayoutManagerType = (LayoutManagerType)savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
+            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -224,6 +228,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             case EVENT_LIST:
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
+                    ((BaseEventListActivity)getActivity()).setEventList(mEventList);
                     mRecyclerView.setAdapter(getAdapter());
                 } else {
                     showErrorOverlay();
@@ -269,7 +274,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void setService(BaseService service) {
         super.setService(service);
         showProgressOverlay();
-        mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
+        mEventList = ((BaseEventListActivity)getActivity()).getEventList();
+        if (mEventList == null) {
+            mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
+        } else {
+            mRecyclerView.setAdapter(getAdapter());
+        }
         // TODO: See how the mCheckInParameters[] can be better used
         if (mCheckInParameters != null) {
             mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),
