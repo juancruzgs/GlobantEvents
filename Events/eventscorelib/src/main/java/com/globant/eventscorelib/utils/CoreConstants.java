@@ -121,4 +121,12 @@ public class CoreConstants {
 
     //Pager
     public static final String CURRENT_FRAGMENT_INTENT = "currentFragmentPosition";
+
+    //Save Instance Cache
+    public static final String SAVE_INSTANCE_CACHE_OBJECTS = "cacheObjects";
+
+    // Intents request
+    public static final int MAP_MANAGER_REQUEST = 1000;
+    public static final int PICTURE_SELECTION_REQUEST = 1001;
+
 }

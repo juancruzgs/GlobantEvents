@@ -37,7 +37,6 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     protected RecyclerView mRecyclerView;
     protected BaseSpeakersListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    private Event mEvent;
     private TextView mTextViewNoSpeakers;
 
     private String mBindingKey;
@@ -66,8 +65,8 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
             mSpeakers = (List<Speaker>) result;
-            if ((mSpeakers.size()) > 1) {
-                BaseEventDetailPagerActivity.getInstance().setSpeakersList(mSpeakers);
+            if ((mSpeakers.size()) >= 1) {
+                ((BaseEventDetailPagerActivity) getActivity()).setSpeakersList(mSpeakers);
                 setRecyclerViewAdapter();
             } else {
                 mRecyclerView.setVisibility(View.GONE);
@@ -81,6 +80,10 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     private void setRecyclerViewAdapter() {
         mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
         mRecyclerView.setAdapter(mAdapter);
+        if (mSpeakers.size() <1){
+            mRecyclerView.setVisibility(View.GONE);
+            mTextViewNoSpeakers.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -94,7 +97,6 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
@@ -153,10 +155,10 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onResumeFragment() {
-        mSpeakers = BaseEventDetailPagerActivity.getInstance().getSpeakersList();
+        mSpeakers = ((BaseEventDetailPagerActivity) getActivity()).getEvent().getSpeakers();
         if (mSpeakers == null) {
-            mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
-            String eventId = mEvent.getObjectID();
+            Event event = ((BaseEventDetailPagerActivity) getActivity()).getEvent();
+            String eventId = event.getObjectID();
             mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), eventId);
         } else {
             setRecyclerViewAdapter();

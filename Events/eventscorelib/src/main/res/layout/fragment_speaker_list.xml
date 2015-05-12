@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/text_view_no_speakers"
         android:layout_gravity="center"
+        style="@style/condensed_normal_large"
         android:text="@string/no_speakers"
         android:visibility="gone"
         />
@@ -19,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        android:background="#ffffffff"/>
 
 </LinearLayout>
