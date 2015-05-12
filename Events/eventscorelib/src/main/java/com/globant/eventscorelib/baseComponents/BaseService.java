@@ -176,14 +176,10 @@ public abstract class BaseService extends Service {
                                     mCloudDataController.createEvent((Event) arguments[0]);
                                     break;
                                 case EVENT_UPDATE:
-                                    mCloudDataController.updateEvent((Event) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, null);
+                                    mCloudDataController.updateEvent((Event) arguments[0]);
                                     break;
                                 case EVENT_DELETE:
-                                    mCloudDataController.deleteEvent((Event) argument);
-                                    if (!cancelKeys.contains(bindingKey))
-                                        currentSubscriber.finishAction(theAction, null);
+                                    mCloudDataController.deleteEvent((Event) arguments[0]);
                                     break;
                                 case EVENT_LIST:
                                     List<Event> theEvents = mCloudDataController.getEvents((boolean) arguments[0]);

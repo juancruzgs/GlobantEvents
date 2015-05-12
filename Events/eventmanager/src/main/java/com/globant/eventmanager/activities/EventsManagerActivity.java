@@ -7,16 +7,16 @@ import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventDescriptionManagerFragment;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
 import com.globant.eventmanager.fragments.EventsFragment;
-import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventsManagerPagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by david.burgos
+ * Created by David.Burgos
  */
-public class EventsManagerActivity extends BasePagerActivity {
+public class EventsManagerActivity extends BaseEventsManagerPagerActivity {
 
     List<Fragment> fragmentList;
     Bundle mSavedInstanceState;

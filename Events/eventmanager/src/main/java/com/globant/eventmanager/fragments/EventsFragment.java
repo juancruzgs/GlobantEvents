@@ -3,7 +3,7 @@ package com.globant.eventmanager.fragments;
 import android.content.Intent;
 import android.view.View;
 
-import com.globant.eventmanager.activities.MapManagerActivity;
+import com.globant.eventmanager.activities.MapEventCreationActivity;
 import com.globant.eventscorelib.baseFragments.BaseEventsFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
 
@@ -20,7 +20,7 @@ public class EventsFragment extends BaseEventsFragment {
         mEditTextMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MapManagerActivity.class);
+                Intent intent = new Intent(getActivity(), MapEventCreationActivity.class);
                 intent.putExtra(CoreConstants.MAP_MARKER_POSITION_INTENT, mLatLng);
                 startActivityForResult(intent, CoreConstants.MAP_MANAGER_REQUEST);
             }

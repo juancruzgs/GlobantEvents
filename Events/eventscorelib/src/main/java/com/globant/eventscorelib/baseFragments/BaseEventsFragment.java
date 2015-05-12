@@ -44,8 +44,8 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventsManagerPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
@@ -69,6 +69,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
 
     private Event mEvent;
     protected LatLng mLatLng;
+    private String mBindingKey;
 
     public enum ActionType {EDIT_EVENT, CREATE_EVENT}
     public static ActionType mEventAction;
@@ -165,13 +166,17 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
         setOnFocusListeners();
         setDateTimeField();
 
-       switch (mEventAction){
+    if(mEventAction==null)
+        BaseEventsFragment.mEventAction = BaseEventsFragment.ActionType.CREATE_EVENT;
+
+        switch (mEventAction){
             case CREATE_EVENT:
                 mEvent = new Event();
+                BaseEventsManagerPagerActivity.getInstance().setEvent(mEvent);
                 mLatLng = new LatLng(0,0);
                 break;
-            case EDIT_EVENT:
-                mEvent = BaseApplication.getInstance().getEvent();
+           case EDIT_EVENT:
+                mEvent = BaseEventsManagerPagerActivity.getInstance().getEvent();
                 if (mEvent != null) {
                     populateInfo(mEvent);
                 }
@@ -207,7 +212,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
             mEditTextAddress.setText(event.getAddress());
             mEditTextCountry.setText(event.getCountry());
             mEditTextCity.setText(event.getCity());
-            mLatLng = new LatLng(event.getLatitude(), event.getLongitude());
+            mLatLng = event.getCoordinates();
 
            // Bitmap eventLogo = ConvertImage.convertByteToBitmap(event.getEventLogo());
             if (event.getEventLogo().length>0){
@@ -238,8 +243,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
             mEvent.setEventLogo(ConvertImage.convertDrawableToByteArray(mPhotoEvent.getDrawable()));
             mEvent.setQrCode("");
             mEvent.setIcon(new byte[0]);
-            mEvent.setLatitude(mLatLng.latitude);
-            mEvent.setLongitude(mLatLng.longitude);
+            mEvent.setCoordinates(new LatLng(mLatLng.latitude, mLatLng.longitude));
         }
     }
 
@@ -699,6 +703,8 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mBindingKey = this.getClass().getSimpleName();// + new Date().toString();
         setHasOptionsMenu(true);
     }
 
@@ -743,10 +749,10 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
 
                 switch (mEventAction){
                     case CREATE_EVENT:
-                        mService.executeAction(BaseService.ACTIONS.EVENT_CREATE, mEvent, getBindingKey());
+                        mService.executeAction(BaseService.ACTIONS.EVENT_CREATE, getBindingKey(),mEvent);
                         break;
                     case EDIT_EVENT:
-                        mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, mEvent, getBindingKey());
+                        mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, getBindingKey(),mEvent);
                         break;
                 }
             }
@@ -764,7 +770,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, mEvent, getBindingKey());
+                                mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, getBindingKey(), mEvent);
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
             }
@@ -851,7 +857,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
 
         if (i > mFlexibleSpaceImageHeight && !mTitleShown){
             mTitleShown = true;
-            ((BaseActivity) getActivity()).changeFragmentTitle((String) mEventTitle.getText().toString());
+            ((BaseActivity) getActivity()).changeFragmentTitle(mEventTitle.getText().toString());
         }
 
         // Translate FAB
@@ -915,7 +921,7 @@ public class BaseEventsFragment extends BaseFragment  implements ObservableScrol
     public Activity getBindingActivity() {return getActivity();}
 
     @Override
-    public String getBindingKey() {return CoreConstants.BINDING_KEY_FRAGMENT_EVENTS;}
+    public String getBindingKey() {return mBindingKey;}
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {showProgressOverlay();}
