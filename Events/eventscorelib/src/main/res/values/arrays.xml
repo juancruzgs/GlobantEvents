@@ -10,6 +10,16 @@
         <item>true</item>
     </string-array>
 
+    <string-array name="category_entries">
+        <item>Social</item>
+        <item>Informative</item>
+        <item>Technical</item>
+    </string-array>
+
+    <string-array name="public_entries">
+        <item>Public</item>
+        <item>Private</item>
+    </string-array>
     <string-array name="spinner_options">
         <item>Everyone</item>
         <item>Subscribers</item>

@@ -71,7 +71,7 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
                 holder.getImageEvent().setImageBitmap(mBitmapList.get(position));
             }
             if (mEventList.get(position).getCategory() != null) {
-                switch (mEventList.get(position).getCategory()) {
+                switch (mEventList.get(position).getCategory().toLowerCase()) {
                     case "social":
                         holder.getCategoryLogo().setImageResource(R.mipmap.ic_social);
                         mDrawableToApply = mContext.getResources().getDrawable(R.mipmap.ic_social);

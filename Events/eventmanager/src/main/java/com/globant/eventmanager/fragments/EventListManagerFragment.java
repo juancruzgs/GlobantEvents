@@ -16,10 +16,12 @@ import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventmanager.R;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
+import com.globant.eventscorelib.baseFragments.BaseEventsFragment;
+import com.globant.eventscorelib.baseActivities.BaseEventsManagerPagerActivity;
+import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
-import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
 
@@ -99,6 +101,14 @@ public class EventListManagerFragment extends BaseEventListFragment {
         mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+        mActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BaseEventsManagerPagerActivity.class);
+                BaseEventsFragment.mEventAction = BaseEventsFragment.ActionType.CREATE_EVENT;
+             //   startActivity(intent);
+            }
+        });
     }
 
     @Override

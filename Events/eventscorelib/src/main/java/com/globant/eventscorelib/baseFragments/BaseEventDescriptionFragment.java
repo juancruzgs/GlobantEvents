@@ -57,7 +57,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
-    private View mFab;
+    protected View mFab;
     private boolean mFabIsShown;
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;

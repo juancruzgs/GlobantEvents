@@ -16,6 +16,10 @@
             android:name=".baseActivities.BaseSpeakerActivity"
             android:label="@string/title_activity_base_speaker" >
         </activity>
+        <activity
+            android:name=".baseActivities.BaseEventListActivity"
+            android:launchMode="singleTop">
+        </activity>
     </application>
 
 </manifest>
