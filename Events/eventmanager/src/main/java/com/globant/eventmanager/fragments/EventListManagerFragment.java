@@ -21,7 +21,6 @@ import com.software.shell.fab.ActionButton;
 public class EventListManagerFragment extends BaseEventListFragment {
 
     private ActionButton mActionButton;
-    private RecyclerView mRecyclerView;
 
     @Override
     protected int getFragmentLayout() {
@@ -56,7 +55,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
         super.onFinishAction(theAction, result);
         if (mRecyclerView.getAdapter().getItemCount() > 0) {
             mRecyclerView.scrollToPosition(1);
-            ScrollUtils.addOnGlobalLayoutListener(getRecyclerView(), new Runnable() {
+            ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
                 @Override
                 public void run() {
                     mRecyclerView.smoothScrollToPosition(0);
@@ -68,7 +67,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        mRecyclerView = getRecyclerView();
         prepareRecyclerView();
         wireUpFAB(rootView);
         return rootView;
