@@ -70,33 +70,26 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         return rootView;
     }
 
-//    @Override
+    //    @Override
 //    public String getTitle() {
 //        return getString(R.string.title_fragment_tweet);
 //    }
-      @Override
-      public String getTitle() {
-          return "";
-}
-
     @Override
-    public void onResume() {
-        super.onResume();
-        mTweetText.clearFocus();
-        User user = ((BaseTweetActivity) getActivity()).getTwitterUser();
-        if (user != null) {
-            setUserInformation(user);
-        }
-        hideUtilsAndShowContentOverlay();
+    public String getTitle() {
+        return "";
     }
 
     @Override
     public void setService(BaseService service) {
         super.setService(service);
+        mTweetText.clearFocus();
         User user = ((BaseTweetActivity) getActivity()).getTwitterUser();
         if (user == null) {
             mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey());
+        } else {
+            setUserInformation(user);
         }
+        hideUtilsAndShowContentOverlay();
     }
 
     private void wireUpViews(View rootView) {
@@ -110,12 +103,10 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
         mTweetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mTweetText.getText().toString().equals(getString(R.string.button_tweet))) {
+                if (((Button)v).getText().equals(getString(R.string.button_tweet))) {
                     String tweet = mTweetText.getText().toString();
                     if (!tweet.isEmpty()) {
-                        InputMethodManager imm = (InputMethodManager) getActivity()
-                                .getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), CoreConstants.ZERO);
+                        hideKeyboard();
                         mService.executeAction(BaseService.ACTIONS.TWEET_POST, getBindingKey(), tweet);
                     }
                 } else {
@@ -123,6 +114,12 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
                 }
             }
         });
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mTweetText.getWindowToken(), CoreConstants.ZERO);
     }
 
     public void changeUserInformation(User user) {
@@ -174,7 +171,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
             case GET_TWITTER_USER:
                 User user = (User) result;
                 if (user != null) {
-                    ((BaseTweetActivity)getActivity()).setTwitterUser(user);
+                    ((BaseTweetActivity) getActivity()).setTwitterUser(user);
                     changeUserInformation(user);
                 }
                 hideUtilsAndShowContentOverlay();
