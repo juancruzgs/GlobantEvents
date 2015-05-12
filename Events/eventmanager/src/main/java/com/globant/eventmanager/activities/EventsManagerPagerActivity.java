@@ -4,27 +4,34 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.globant.eventmanager.R;
-import com.globant.eventmanager.fragments.EventDescriptionManagerFragment;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
 import com.globant.eventmanager.fragments.EventsFragment;
-import com.globant.eventscorelib.baseActivities.BaseEventsManagerPagerActivity;
+import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
+import com.globant.eventscorelib.controllers.CacheObjectsController;
+import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Speaker;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by David.Burgos
+ * Created by david.burgos
  */
-public class EventsManagerActivity extends BaseEventsManagerPagerActivity {
+public class EventsManagerPagerActivity extends BasePagerActivity {
+
+    private static EventsManagerPagerActivity ourInstance;
+    private CacheObjectsController mCacheObjectsController;
 
     List<Fragment> fragmentList;
     Bundle mSavedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mSavedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
+        mSavedInstanceState = savedInstanceState;
+        ourInstance = this;
+        mCacheObjectsController = new CacheObjectsController();
     }
 
     @Override
@@ -35,6 +42,19 @@ public class EventsManagerActivity extends BaseEventsManagerPagerActivity {
         super.onSaveInstanceState(outState);
     }
 
+    public static EventsManagerPagerActivity getInstance(){return ourInstance;}
+
+    public void setSpeakersList (List<Speaker> speakersList){
+        mCacheObjectsController.setSpeakersList(speakersList);
+    }
+
+    public List<Speaker> getSpeakersList(){return mCacheObjectsController.getSpeakersList();}
+
+    public void setEvent (Event event) {mCacheObjectsController.setEvent(event);}
+
+    public Event getEvent() {return mCacheObjectsController.getEvent();}
+
+
     @Override
     protected List<Fragment> getFragments() {
         fragmentList = new ArrayList<>();
@@ -42,13 +62,11 @@ public class EventsManagerActivity extends BaseEventsManagerPagerActivity {
             fragmentList.add(new EventsFragment());
             fragmentList.add(new BaseSpeakersListFragment());
             fragmentList.add(new EventParticipantsManagerFragment());
-            fragmentList.add(new EventDescriptionManagerFragment());
         }
         else {
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventsFragment.class.getName()));
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, BaseSpeakersListFragment.class.getName()));
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventParticipantsManagerFragment.class.getName()));
-            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventDescriptionManagerFragment.class.getName()));
         }
         return fragmentList;
     }
@@ -59,7 +77,6 @@ public class EventsManagerActivity extends BaseEventsManagerPagerActivity {
         titles.add(getString(R.string.title_activity_event_detail));
         titles.add(getString(R.string.title_page_speakers));
         titles.add(getString(R.string.title_page_participants));
-        titles.add(getString(R.string.title_activity_event_detail));
         return titles;
     }
 }
