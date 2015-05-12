@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;
 
@@ -27,40 +28,40 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
         mCacheObjectsController = new CacheObjectsController();
     }
 
-    public static BaseEventDetailPagerActivity getInstance(){
+    public static BaseEventDetailPagerActivity getInstance() {
         return ourInstance;
     }
 
-    public void setTweetList (List<Status> twitterList) {
-        mCacheObjectsController.setTweetList(twitterList);
+    public void setTweetList(List<Status> twitterList) {
+        ourInstance.mCacheObjectsController.setTweetList(twitterList);
     }
 
-    public List<Status> getTweetList () {
+    public List<Status> getTweetList() {
         return mCacheObjectsController.getTweetList();
     }
 
-    public void setSpeakersList (List<Speaker> speakersList){
-        mCacheObjectsController.setSpeakersList(speakersList);
+    public void setSpeakersList(List<Speaker> speakersList) {
+        ourInstance.mCacheObjectsController.setSpeakersList(speakersList);
     }
 
-    public User getTwitterUser () {
-        return mCacheObjectsController.getUser();
+    public User getTwitterUser() {
+        return ourInstance.mCacheObjectsController.getUser();
     }
 
-    public void setEvent (Event event) {
-        mCacheObjectsController.setEvent(event);
+    public void setEvent(Event event) {
+        ourInstance.mCacheObjectsController.setEvent(event);
     }
 
     public Event getEvent() {
-        return mCacheObjectsController.getEvent();
+        return ourInstance.mCacheObjectsController.getEvent();
     }
 
-    public void setTwitterUser (User user) {
-        mCacheObjectsController.setUser(user);
+    public void setTwitterUser(User user) {
+        ourInstance.mCacheObjectsController.setUser(user);
     }
 
-    public List<Speaker> getSpeakersList(){
-        return mCacheObjectsController.getSpeakersList();
+    public List<Speaker> getSpeakersList() {
+        return ourInstance.mCacheObjectsController.getSpeakersList();
     }
 
     @Override
@@ -71,5 +72,20 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
     @Override
     protected List<String> getTitlesList() {
         return null;
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            mCacheObjectsController = savedInstanceState.getParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, mCacheObjectsController);
     }
 }

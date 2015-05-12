@@ -3,7 +3,6 @@ package com.globant.eventscorelib.baseComponents;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
-import android.location.Address;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
@@ -14,7 +13,6 @@ import com.globant.eventscorelib.controllers.DatabaseController;
 import com.globant.eventscorelib.controllers.GeocoderController;
 import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
-import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
@@ -24,10 +22,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import twitter4j.Status;
 import twitter4j.User;
 
 /**
+ * Base service class
+ *
  * Created by ariel.cattaneo on 09/04/2015.
  */
 public abstract class BaseService extends Service {
@@ -169,8 +168,7 @@ public abstract class BaseService extends Service {
                             Object result = null;
                             switch (theAction) {
                                 case EVENT_SPEAKERS:
-                                    List<Speaker> speakers = mCloudDataController.getEventSpeakers((String) arguments[0]);
-                                    result = speakers;
+                                    result = mCloudDataController.getEventSpeakers((String) arguments[0]);
                                     break;
                                 case EVENT_CREATE:
                                     mCloudDataController.createEvent((Event) arguments[0]);
@@ -182,20 +180,16 @@ public abstract class BaseService extends Service {
                                     mCloudDataController.deleteEvent((Event) arguments[0]);
                                     break;
                                 case EVENT_LIST:
-                                    List<Event> theEvents = mCloudDataController.getEvents((boolean) arguments[0]);
-                                    result = theEvents;
+                                    result = mCloudDataController.getEvents((boolean) arguments[0]);
                                     break;
                                 case EVENT_DETAIL:
-                                    Event event = mCloudDataController.getEvent((String) arguments[0]);
-                                    result = event;
+                                    result = mCloudDataController.getEvent((String) arguments[0]);
                                     break;
                                 case POSITION_ADDRESS:
-                                    Address address = mGeocoderController.getAddressFromCoordinates((LatLng) arguments[0]);
-                                    result = address;
+                                    result = mGeocoderController.getAddressFromCoordinates((LatLng) arguments[0]);
                                     break;
                                 case POSITION_COORDINATES:
-                                    LatLng latLng = mGeocoderController.getCoordinatesFromAddress((String) arguments[0]);
-                                    result = latLng;
+                                    result = mGeocoderController.getCoordinatesFromAddress((String) arguments[0]);
                                     break;
                                 case GET_TWITTER_USER:
                                     User user;
@@ -207,46 +201,37 @@ public abstract class BaseService extends Service {
                                     result = user;
                                     break;
                                 case TWEETS_LIST:
-                                    List<Status> tweetList = mTwitterController.getTweetList(getBaseContext(), (String) arguments[0]);
-                                    result = tweetList;
+                                    result = mTwitterController.getTweetList(getBaseContext(), (String) arguments[0]);
                                     break;
                                 case TWITTER_LOADER:
-                                    Boolean login = mTwitterController.loginToTwitter(getBaseContext());
-                                    result = login;
+                                    result = mTwitterController.loginToTwitter(getBaseContext());
                                     break;
                                 case TWITTER_LOADER_RESPONSE:
-                                    boolean response = mTwitterController.getLoginResponse((Uri) arguments[0]);
-                                    result = response;
+                                    result = mTwitterController.getLoginResponse((Uri) arguments[0]);
                                     break;
                                 case TWEET_POST:
-                                    boolean post = mTwitterController.publishPost((String) arguments[0]);
-                                    result = post;
+                                    result = mTwitterController.publishPost((String) arguments[0]);
                                     break;
                                 case SUBSCRIBER_CHECKIN:
                                     //Object[] arguments  = (Object[]) arguments;
-                                    Event eventCheckin = mCloudDataController.setCheckIn((String)arguments[0], (String)arguments[1]);
-                                    result = eventCheckin;
+                                    result = mCloudDataController.setCheckIn((String)arguments[0], (String)arguments[1]);
                                     break;
                                 case PARTICIPANT_LIST:
-                                    List<Subscriber> subscribersList = mCloudDataController.getEventSubscribers((String) arguments[0]);
-                                    result = subscribersList;
+                                    result = mCloudDataController.getEventSubscribers((String) arguments[0]);
                                     break;
                                 case SET_ACCEPTED:
                                     //Object[] objects = (Object[]) arguments;
                                     mCloudDataController.setAccepted((String)arguments[0], (List<Subscriber>) arguments[1]);
                                     break;
                                 case SUBSCRIBER_EXISTS:
-                                    String subscriberId = mCloudDataController.getSubscriberId((String) arguments[0]);
-                                    result = subscriberId;
+                                    result = mCloudDataController.getSubscriberId((String) arguments[0]);
                                     break;
                                 case IS_SUBSCRIBED:
                                     //Object[] object = (Object[])arguments;
-                                    boolean isSubscribed = mCloudDataController.isSubscribed((String)arguments[0], (String) arguments[1]);
-                                    result = isSubscribed;
+                                    result = mCloudDataController.isSubscribed((String)arguments[0], (String) arguments[1]);
                                     break;
                                 case SUBSCRIBER_CREATE:
-                                    String subsId = mCloudDataController.createSubscriber((Subscriber) arguments[0]);
-                                    result = subsId;
+                                    result = mCloudDataController.createSubscriber((Subscriber) arguments[0]);
                                     break;
                                 case EVENTS_TO_SUBSCRIBER_CREATE:
                                     //Object[] obj = (Object[])arguments;
@@ -271,7 +256,7 @@ public abstract class BaseService extends Service {
         new Thread(r).start();
     }
 
-    private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap();
+    private HashMap<Object,HashMap<ACTIONS,Object>> cachedElements = new HashMap<>();
 
     public interface ActionListener {
         Activity getBindingActivity();
@@ -317,7 +302,7 @@ public abstract class BaseService extends Service {
                     }
                 });
             }else{
-                HashMap<ACTIONS,Object> cachedElement = new HashMap();
+                HashMap<ACTIONS,Object> cachedElement = new HashMap<>();
                 cachedElement.put(theAction,result);
                 cachedElements.put(theListener.getBindingKey(),cachedElement);
             }
