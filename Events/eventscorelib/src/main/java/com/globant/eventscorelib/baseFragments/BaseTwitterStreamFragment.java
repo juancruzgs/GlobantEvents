@@ -12,12 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
 import com.globant.eventscorelib.baseAdapters.BaseTweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
 import java.util.Date;
@@ -28,7 +30,7 @@ import twitter4j.Status;
 
 public class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
-    private RecyclerView mRecyclerView;
+    private ObservableRecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private ActionButton mActionButton;
     private List<Status> mTweetList;
@@ -106,7 +108,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -118,7 +120,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     }
 
     private void prepareRecyclerView(View rootView) {
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.tweet_list_recycler_view);
+        mRecyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.list_recycler_view);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {

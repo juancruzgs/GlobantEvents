@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;
@@ -25,7 +26,11 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ourInstance = this;
-        mCacheObjectsController = new CacheObjectsController();
+        if (savedInstanceState != null) {
+            mCacheObjectsController = savedInstanceState.getParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS);
+        } else {
+            mCacheObjectsController = new CacheObjectsController();
+        }
     }
 
     public static BaseEventDetailPagerActivity getInstance() {
@@ -37,7 +42,7 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
     }
 
     public List<Status> getTweetList() {
-        return mCacheObjectsController.getTweetList();
+        return ourInstance.mCacheObjectsController.getTweetList();
     }
 
     public void setSpeakersList(List<Speaker> speakersList) {
@@ -64,6 +69,14 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
         return ourInstance.mCacheObjectsController.getSpeakersList();
     }
 
+    public List<Subscriber> getSubscriberList() {
+        return ourInstance.mCacheObjectsController.getSubscriberList();
+    }
+
+    public void setSubscriberList(List<Subscriber> subscriberList) {
+        ourInstance.mCacheObjectsController.setSubscriberList(subscriberList);
+    }
+
     @Override
     protected List<Fragment> getFragments() {
         return null;
@@ -72,15 +85,6 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
     @Override
     protected List<String> getTitlesList() {
         return null;
-    }
-
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState != null) {
-            mCacheObjectsController = savedInstanceState.getParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS);
-        }
     }
 
     @Override

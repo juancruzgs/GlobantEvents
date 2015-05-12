@@ -28,6 +28,6 @@ public class BaseTweetActivity extends BaseActivity {
     }
 
     public interface NewFragmentIntent {
-        public void onNewIntent(Intent intent);
+        void onNewIntent(Intent intent);
     }
 }
