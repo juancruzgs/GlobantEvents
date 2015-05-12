@@ -197,10 +197,10 @@
                                     android:orientation="horizontal">
 
                                     <LinearLayout
-                                        android:orientation="vertical"
                                         android:layout_width="0dp"
                                         android:layout_height="match_parent"
-                                        android:layout_weight="1">
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
 
                                         <TextView
                                             android:id="@+id/textView_Event_Address_Title"
@@ -226,9 +226,9 @@
                                         android:layout_weight="0.2">
 
                                         <ImageView
+                                            android:id="@+id/image_view_map_icon"
                                             android:layout_width="40dp"
                                             android:layout_height="40dp"
-                                            android:id="@+id/image_view_map_icon"
                                             android:src="@android:drawable/ic_dialog_map"/>
                                     </FrameLayout>
 
@@ -450,48 +450,48 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center">
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:paddingBottom="6dp"
+                            android:paddingLeft="6dp"
+                            android:paddingTop="6dp">
+
+                            <ImageView
+                                android:id="@+id/imageView"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.1"
+                                android:src="@mipmap/ic_assignment"/>
+
                             <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal"
-                                android:paddingLeft="6dp"
-                                android:paddingTop="6dp"
-                                android:paddingBottom="6dp">
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.9"
+                                android:gravity="center_vertical"
+                                android:orientation="vertical">
 
-                                <ImageView
-                                    android:id="@+id/imageView"
-                                    android:layout_width="0dp"
+                                <TextView
+                                    android:id="@+id/textView_Event_Desc_Title"
+                                    style="@style/condensed_light_small"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_assignment"/>
+                                    android:paddingLeft="6dp"
+                                    android:text="@string/textView_Event_Desc_Title"
+                                    android:textColor="@color/grey_light"/>
 
-                                <LinearLayout
-                                    android:layout_width="0dp"
+                                <TextView
+                                    android:id="@+id/textView_Event_Full_Description"
+                                    style="@style/condensed_normal_medium"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:id="@+id/textView_Event_Desc_Title"
-                                        style="@style/condensed_light_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:paddingLeft="6dp"
-                                        android:text="@string/textView_Event_Desc_Title"
-                                        android:textColor="@color/grey_light"/>
-
-                                    <TextView
-                                        android:id="@+id/textView_Event_Full_Description"
-                                        style="@style/condensed_normal_medium"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:paddingLeft="6dp"
-                                        android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."/>
-
-                                </LinearLayout>
+                                    android:paddingLeft="6dp"
+                                    android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."/>
 
                             </LinearLayout>
+
+                        </LinearLayout>
 
                     </android.support.v7.widget.CardView>
 
