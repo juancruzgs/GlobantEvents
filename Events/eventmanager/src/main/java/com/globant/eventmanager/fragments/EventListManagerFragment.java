@@ -99,7 +99,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), BaseEventsManagerPagerActivity.class);
                 BaseEventsFragment.mEventAction = BaseEventsFragment.ActionType.CREATE_EVENT;
-             //   startActivity(intent);
+                startActivity(intent);
             }
         });
     }
