@@ -118,9 +118,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         // Required empty public constructor
     }
 
-//    public Boolean getDoneClicked() {
-//        return mDoneClicked;
-//    }
 
     @Override
     public BaseService.ActionListener getActionListener() {

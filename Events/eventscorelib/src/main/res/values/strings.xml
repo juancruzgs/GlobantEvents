@@ -106,7 +106,7 @@
     <string name="missing_photo">Take a picture right now!</string>
     <string name="button_send_notification">Send</string>
     <string name="button_cancel_notification">Cancel</string>
-    <string name="no_speakers">No acknowledged speakers</string>
+    <string name="no_speakers">No acknowledged speakers.</string>
     <string name="edit_text_full_description_hint">Full Description</string>
     <string name="edit_text_short_description_hint">Short Description</string>
     <string name="edit_text_end_date_hint">End Date</string>
@@ -124,6 +124,7 @@
     <string name="already_subscribed">You\'re already subscribed to this event.</string>
     <string name="have_been_subscribed">You\'ve been subscribed to this event</string>
     <string name="preference_participant_hint_showed">preference_participant_hint_showed</string>
+    <string name="no_tweet_steam">No tweets yet, be the first!</string>
 
 
     <string-array name="spinner_options">
