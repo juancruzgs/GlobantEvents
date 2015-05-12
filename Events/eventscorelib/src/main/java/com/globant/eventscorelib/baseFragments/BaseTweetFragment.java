@@ -83,7 +83,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     public void onResume() {
         super.onResume();
         mTweetText.clearFocus();
-        User user = ((BaseEventDetailPagerActivity) getActivity()).getTwitterUser();
+        User user = ((BaseTweetActivity) getActivity()).getTwitterUser();
         if (user != null) {
             setUserInformation(user);
         }
@@ -92,7 +92,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     @Override
     public void setService(BaseService service) {
         super.setService(service);
-        User user = ((BaseEventDetailPagerActivity) getActivity()).getTwitterUser();
+        User user = ((BaseTweetActivity) getActivity()).getTwitterUser();
         if (user == null) {
             mService.executeAction(BaseService.ACTIONS.GET_TWITTER_USER, getBindingKey());
         }
@@ -173,7 +173,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
             case GET_TWITTER_USER:
                 User user = (User) result;
                 if (user != null) {
-                    ((BaseEventDetailPagerActivity) getActivity()).setTwitterUser(user);
+                    ((BaseTweetActivity)getActivity()).setTwitterUser(user);
                     changeUserInformation(user);
                 }
                 hideUtilsAndShowContentOverlay();

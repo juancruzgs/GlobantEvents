@@ -12,7 +12,6 @@ import com.globant.eventscorelib.utils.CoreConstants;
 import java.util.List;
 
 import twitter4j.Status;
-import twitter4j.User;
 
 /**
  * Created by paula.baudo on 5/4/2015.
@@ -49,9 +48,6 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
         ourInstance.mCacheObjectsController.setSpeakersList(speakersList);
     }
 
-    public User getTwitterUser() {
-        return ourInstance.mCacheObjectsController.getUser();
-    }
 
     public void setEvent(Event event) {
         ourInstance.mCacheObjectsController.setEvent(event);
@@ -61,9 +57,6 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
         return ourInstance.mCacheObjectsController.getEvent();
     }
 
-    public void setTwitterUser(User user) {
-        ourInstance.mCacheObjectsController.setUser(user);
-    }
 
     public List<Speaker> getSpeakersList() {
         return ourInstance.mCacheObjectsController.getSpeakersList();
