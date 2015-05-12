@@ -31,8 +31,7 @@
                 android:layout_height="180dp"
                 android:id="@+id/header"
                 android:src="@mipmap/placeholder"
-                android:background="#ffd5d5d5"
-            />
+                android:background="#ffd5d5d5"/>
 
         <com.software.shell.fab.ActionButton
         android:id="@+id/fab"

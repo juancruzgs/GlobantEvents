@@ -151,7 +151,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 mPhotoProfile.setImageBitmap(bitmapToSave);
                 mPhotoTaken=Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
             if (mPhotoTaken){
-                mPhotoProfile.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
             }
 
         }
@@ -298,7 +298,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
             mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
             mPhotoTaken=true;
-            mPhotoProfile.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
         }
 
     }
@@ -354,7 +354,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 mPhoto = extras.getParcelable(CoreConstants.DATA);
                 mPhotoProfile.setImageBitmap(mPhoto);
                 mPhotoTaken=true;
-                mPhotoProfile.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
             }
         }
     }
