@@ -315,4 +315,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public String getBindingKey() {
         return mBindingKey;
     }
+
+
 }

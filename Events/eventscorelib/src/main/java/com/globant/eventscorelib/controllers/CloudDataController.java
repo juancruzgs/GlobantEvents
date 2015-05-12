@@ -180,6 +180,20 @@ public class CloudDataController {
         event.save();
     }
 
+    public void deleteEvent(Event domainEvent) throws ParseException {
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        ParseObject event = eventsQuery.get(domainEvent.getObjectID());
+
+        List<Speaker> speakers = domainEvent.getSpeakers();
+        List<String>IdList = new ArrayList<>();
+        if (speakers != null && !speakers.isEmpty()){
+            for (Speaker speaker: speakers)
+              IdList.add(speaker.getObjectID());
+            deleteEventSpeakers(domainEvent.getObjectID(),IdList);
+        }
+        event.delete();
+    }
+
     public void createSpeaker(Speaker domainSpeaker) throws ParseException {
         ParseObject databaseSpeaker = new ParseObject(CoreConstants.SPEAKERS_TABLE);
         setDatabaseSpeakerInformation(domainSpeaker, databaseSpeaker);
@@ -266,7 +280,8 @@ public class CloudDataController {
 
     private void setDatabaseEventInformation(Event domainEvent, ParseObject databaseEvent) {
         databaseEvent.put(CoreConstants.FIELD_TITLE, domainEvent.getTitle());
-        databaseEvent.put(CoreConstants.FIELD_CITY, domainEvent.getShortDescription());
+        databaseEvent.put(CoreConstants.FIELD_SHORT_DESCRIPTION, domainEvent.getShortDescription());
+        databaseEvent.put(CoreConstants.FIELD_CITY, domainEvent.getCity());
         databaseEvent.put(CoreConstants.FIELD_COUNTRY, domainEvent.getCountry());
         databaseEvent.put(CoreConstants.FIELD_CATEGORY, domainEvent.getCategory());
         databaseEvent.put(CoreConstants.FIELD_START_DATE, domainEvent.getStartDate());

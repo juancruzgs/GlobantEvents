@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventscorelib.R;
@@ -35,7 +36,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     private ActionButton mActionButton;
     private List<Status> mTweetList;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
+    private TextView mTextViewNoTweets;
     private String mBindingKey;
 
     public BaseTwitterStreamFragment() {
@@ -97,6 +98,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         prepareSwipeRefreshLayout(rootView);
         wireUpFAB(rootView);
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mTextViewNoTweets = (TextView)rootView.findViewById(R.id.text_view_no_tweets);
         setRecyclerViewLayoutManager();
         setRetainInstance(true);
         return rootView;
@@ -165,6 +167,10 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     private void setRecyclerViewAdapter() {
         BaseTweetListAdapter adapter = new BaseTweetListAdapter(mTweetList, getActivity());
         mRecyclerView.setAdapter(adapter);
+        if (mTweetList.size()<1){
+            mTextViewNoTweets.setVisibility(View.VISIBLE);
+            mSwipeRefreshLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override

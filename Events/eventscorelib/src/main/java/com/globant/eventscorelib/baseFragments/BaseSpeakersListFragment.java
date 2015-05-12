@@ -65,7 +65,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
             mSpeakers = (List<Speaker>) result;
-            if ((mSpeakers.size()) > 1) {
+            if ((mSpeakers.size()) >= 1) {
                 ((BaseEventDetailPagerActivity) getActivity()).setSpeakersList(mSpeakers);
                 setRecyclerViewAdapter();
             } else {
@@ -80,6 +80,10 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     private void setRecyclerViewAdapter() {
         mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
         mRecyclerView.setAdapter(mAdapter);
+        if (mSpeakers.size() <1){
+            mRecyclerView.setVisibility(View.GONE);
+            mTextViewNoSpeakers.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -151,7 +155,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onResumeFragment() {
-        mSpeakers = ((BaseEventDetailPagerActivity) getActivity()).getSpeakersList();
+        mSpeakers = ((BaseEventDetailPagerActivity) getActivity()).getEvent().getSpeakers();
         if (mSpeakers == null) {
             Event event = ((BaseEventDetailPagerActivity) getActivity()).getEvent();
             String eventId = event.getObjectID();

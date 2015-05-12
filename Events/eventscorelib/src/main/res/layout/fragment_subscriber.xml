@@ -28,7 +28,7 @@
 
         <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="180dp"
                 android:id="@+id/header"
                 android:src="@mipmap/placeholder"
                 android:background="#ffd5d5d5"
