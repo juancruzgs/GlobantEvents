@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Events.iml" filepath="$PROJECT_DIR$/Events.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Events.iml" filepath="$PROJECT_DIR$/Events.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/eventmanager/eventmanager.iml" filepath="$PROJECT_DIR$/eventmanager/eventmanager.iml" />
       <module fileurl="file://$PROJECT_DIR$/eventscorelib/eventscorelib.iml" filepath="$PROJECT_DIR$/eventscorelib/eventscorelib.iml" />
