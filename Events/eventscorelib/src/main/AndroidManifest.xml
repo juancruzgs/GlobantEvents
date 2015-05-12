@@ -19,6 +19,7 @@
             android:name=".baseActivities.BaseEventListActivity"
             android:launchMode="singleTop">
         </activity>
+
     </application>
 
 </manifest>

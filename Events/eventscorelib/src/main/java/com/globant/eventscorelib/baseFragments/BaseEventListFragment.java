@@ -60,7 +60,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     protected abstract BaseEventsListAdapter getAdapter();
 
     protected int getEventListRecyclerView() {
-        return R.id.event_list_recycler_view;
+        return R.id.list_recycler_view;
     }
 
 //    public ObservableRecyclerView getRecyclerView() {
@@ -98,7 +98,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.events_swipe);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -225,13 +225,13 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             case EVENT_LIST:
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
-                    ((BaseEventListActivity)getActivity()).setEventList(mEventList);
                     mRecyclerView.setAdapter(getAdapter());
                 } else {
                     showErrorOverlay();
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
                 hideUtilsAndShowContentOverlay();
+                ((BaseEventListActivity)getActivity()).setEventList(mEventList);
                 break;
             case SUBSCRIBER_CHECKIN:
                 postCheckinTweet((Event) result);

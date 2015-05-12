@@ -183,7 +183,7 @@ public class Subscriber extends BaseObject implements Parcelable {
         mCheckIn = (in.readInt() == 1);
     }
 
-    static final Parcelable.Creator<Subscriber> CREATOR = new Parcelable.Creator<Subscriber>() {
+   public static final Parcelable.Creator<Subscriber> CREATOR = new Parcelable.Creator<Subscriber>() {
         @Override
         public Subscriber createFromParcel(Parcel source) {
             return new Subscriber(source);

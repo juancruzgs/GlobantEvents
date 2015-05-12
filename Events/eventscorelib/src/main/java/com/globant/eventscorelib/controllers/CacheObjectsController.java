@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.domainObjects.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class CacheObjectsController implements Parcelable{
     private List<twitter4j.Status> mTweetList;
     private List<Speaker> mSpeakersList;
     private List<Event> mEventList;
+    private List<Subscriber> mSubscriberList;
     private User mUser; // twitter
     private Event mEvent;
 
@@ -61,14 +63,20 @@ public class CacheObjectsController implements Parcelable{
 
     public void setEventList (List<Event> eventList) { mEventList = eventList; }
 
+    public List<Subscriber> getSubscriberList () { return mSubscriberList; }
+
+    public void setSubscriberList (List<Subscriber> subscriberList) { mSubscriberList = subscriberList; }
+
     private CacheObjectsController(Parcel in) {
         mEventList = new ArrayList<>();
         in.readTypedList(mEventList, Event.CREATOR);
-        mEvent = in.readParcelable(Event.class.getClassLoader());
         mSpeakersList= new ArrayList<>();
         in.readTypedList(mSpeakersList, Speaker.CREATOR);
+        mSubscriberList= new ArrayList<>();
+        in.readTypedList(mSubscriberList, Subscriber.CREATOR);
         mTweetList = new ArrayList<>();
         in.readList(mTweetList, Twitter.class.getClassLoader());
+        mEvent = in.readParcelable(Event.class.getClassLoader());
         mUser = (User) in.readSerializable();
     }
 
@@ -84,7 +92,6 @@ public class CacheObjectsController implements Parcelable{
         }
     };
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -93,10 +100,10 @@ public class CacheObjectsController implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(mEventList);
-        dest.writeParcelable(mEvent, 1);
         dest.writeTypedList(mSpeakersList);
+        dest.writeTypedList(mSubscriberList);
         dest.writeList(mTweetList);
+        dest.writeParcelable(mEvent, 1);
         dest.writeSerializable(mUser);
-
     }
 }

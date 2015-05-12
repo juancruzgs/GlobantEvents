@@ -3,6 +3,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/white">
+
+    <include
+        layout="@layout/swipe_refresh_layout" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,21 +18,6 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/action_button"
         android:layout_toStartOf="@+id/action_button"/>
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
-        android:orientation="vertical"
-        android:paddingBottom="4dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible">
-
-        <view
-            android:id="@+id/tweet_list_recycler_view"
-            class="android.support.v7.widget.RecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.software.shell.fab.ActionButton
         android:id="@+id/action_button"
