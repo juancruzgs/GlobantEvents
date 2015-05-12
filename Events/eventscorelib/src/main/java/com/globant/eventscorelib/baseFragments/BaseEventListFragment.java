@@ -52,7 +52,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     private LayoutManagerType mCurrentLayoutManagerType;
-    private ObservableRecyclerView mRecyclerView;
+    protected ObservableRecyclerView mRecyclerView;
     private List<Event> mEventList;
 
     protected abstract int getFragmentLayout();
@@ -63,9 +63,9 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         return R.id.event_list_recycler_view;
     }
 
-    public ObservableRecyclerView getRecyclerView() {
-        return mRecyclerView;
-    }
+//    public ObservableRecyclerView getRecyclerView() {
+//        return mRecyclerView;
+//    }
 
     public List<Event> getEventList() {
         return mEventList;
