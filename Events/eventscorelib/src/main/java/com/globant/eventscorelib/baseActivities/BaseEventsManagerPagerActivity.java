@@ -7,7 +7,6 @@ import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,11 +38,11 @@ public class BaseEventsManagerPagerActivity extends BasePagerActivity {
 
     @Override
     protected List<Fragment> getFragments() {
-        return new ArrayList<>();
+        return null;
     }
 
     @Override
     protected List<String> getTitlesList() {
-        return new ArrayList<>();
+        return null;
     }
 }

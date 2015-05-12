@@ -103,16 +103,24 @@
 
                     <TextView
                         android:id="@+id/event_speakers_text_view"
-                        style="@style/condensed_normal_medium"
+                        style="@style/condensed_normal_small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="5"
                         android:padding="@dimen/padding_text_view_card_row"
                         android:singleLine="false"
-                        android:text="Tony Stark - Bruce Banner - Jarvis"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
+                        android:text="Tony Stark, Bruce Banner, Jarvis."/>
 
                 </LinearLayout>
+
+                <View
+                    android:id="@+id/separator_view"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.25dp"
+                    android:background="@color/grey"/>
 
                 <TextView
                     android:id="@+id/event_short_description_text_view"

@@ -86,7 +86,7 @@ public class Speaker extends BaseObject implements Parcelable {
         }
     }
 
-    static final Parcelable.Creator<Speaker> CREATOR = new Parcelable.Creator<Speaker>() {
+   public static final Parcelable.Creator<Speaker> CREATOR = new Parcelable.Creator<Speaker>() {
         @Override
         public Speaker createFromParcel(Parcel source) {
            return new Speaker(source);
