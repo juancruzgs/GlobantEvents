@@ -89,6 +89,7 @@ public class CloudDataController {
         ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, subscriber);
+        eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_ACCEPTED, true);
         ParseObject subscription = eventToSubsQuery.getFirst();
         subscription.put(CoreConstants.FIELD_CHECK_IN, true);
         subscription.save();
