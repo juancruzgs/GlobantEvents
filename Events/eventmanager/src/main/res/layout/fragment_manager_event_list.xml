@@ -6,7 +6,7 @@
                 tools:context=".EventsStreamActivity">
 
     <include
-        layout="@layout/swipe_refresh_layout" />
+        layout="@layout/swipe_refresh_layout"/>
 
     <com.software.shell.fab.ActionButton
         android:id="@+id/action_button"

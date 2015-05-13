@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,12 +33,13 @@ import java.util.ArrayList;
 public abstract class BaseActivity extends AppCompatActivity{
 
     private BroadcastReceiver mReceiver;
-    private TextView mConnectionRibbon;
-    private TextView mFragmentTitle;
+    private AppCompatTextView mConnectionRibbon;
+    private AppCompatTextView mFragmentTitle;
     protected ArrayList<BaseFragment> mFragments = new ArrayList<>();
     private BaseService mService = null;
     protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
+    boolean mIsOnline;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -98,7 +100,8 @@ public abstract class BaseActivity extends AppCompatActivity{
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (isOnline(context)){
+                mIsOnline = isOnline(context);
+                if (mIsOnline){
                     mConnectionRibbon.setVisibility(View.GONE);
                 }else {
                     mConnectionRibbon.setVisibility(View.VISIBLE);
@@ -113,6 +116,10 @@ public abstract class BaseActivity extends AppCompatActivity{
         };
     }
 
+    public boolean isOnline() {
+        return mIsOnline;
+    }
+
     private Class<? extends BaseService> getServiceClass() {
         return ((BaseApplication)getApplication()).getServiceClass();
     }
@@ -123,14 +130,14 @@ public abstract class BaseActivity extends AppCompatActivity{
         FrameLayout frameLayout = (FrameLayout) mainContainer.findViewById(R.id.container);
         ViewGroup content = (ViewGroup) getLayoutInflater().inflate(layoutResID, frameLayout, false);
         frameLayout.addView(content);
-        mConnectionRibbon = (TextView) mainContainer.findViewById(R.id.connection_ribbon);
+        mConnectionRibbon = (AppCompatTextView) mainContainer.findViewById(R.id.connection_ribbon);
         setToolbar(mainContainer);
         super.setContentView(mainContainer);
     }
 
     private void setToolbar(ViewGroup mainContainer) {
         Toolbar toolbar = (Toolbar) mainContainer.findViewById(R.id.toolbar);
-        mFragmentTitle = (TextView) toolbar.findViewById(R.id.toolbar_fragment_title);
+        mFragmentTitle = (AppCompatTextView) toolbar.findViewById(R.id.toolbar_fragment_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));

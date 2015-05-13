@@ -1,5 +1,6 @@
 package com.globant.eventscorelib.baseAdapters;
 
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,22 +12,22 @@ import com.globant.eventscorelib.R;
 * Created by juan.soler on 24/04/2015.
 */
 public class BaseTweetListViewHolder extends RecyclerView.ViewHolder {
-    private TextView mTweetText;
-    private TextView mUserName;
+    private AppCompatTextView mTweetText;
+    private AppCompatTextView mUserName;
     private ImageView mUserPicture;
 
     public BaseTweetListViewHolder(View v) {
         super(v);
-        mTweetText = (TextView) v.findViewById(R.id.textView_tweet);
-        mUserName =  (TextView) v.findViewById(R.id.textView_user_name);
+        mTweetText = (AppCompatTextView) v.findViewById(R.id.textView_tweet);
+        mUserName =  (AppCompatTextView) v.findViewById(R.id.textView_user_name);
         mUserPicture = (ImageView) v.findViewById(R.id.imageView_user_picture);
     }
 
-    public TextView getTweetText() {
+    public AppCompatTextView getTweetText() {
         return mTweetText;
     }
 
-    public TextView getUserName() {
+    public AppCompatTextView getUserName() {
         return mUserName;
     }
 

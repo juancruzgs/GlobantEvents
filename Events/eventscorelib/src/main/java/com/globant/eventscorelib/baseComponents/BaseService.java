@@ -8,9 +8,9 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 
-import com.globant.eventscorelib.controllers.CloudDataController;
-import com.globant.eventscorelib.controllers.DatabaseController;
+import com.globant.eventscorelib.controllers.CloudDatabaseController;
 import com.globant.eventscorelib.controllers.GeocoderController;
+import com.globant.eventscorelib.controllers.LocalDatabaseController;
 import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -40,8 +40,8 @@ public abstract class BaseService extends Service {
     Handler mHandler = new Handler();
     Runnable mRunnable;
 
-    protected DatabaseController mDatabaseController = null;
-    protected CloudDataController mCloudDataController = null;
+    protected LocalDatabaseController mLocalDatabaseController = null;
+    protected CloudDatabaseController mCloudDatabaseController = null;
     protected GeocoderController mGeocoderController = null;
     protected TwitterController mTwitterController = null;
 
@@ -58,7 +58,8 @@ public abstract class BaseService extends Service {
 
     @Override
     public void onCreate() {
-        mCloudDataController = new CloudDataController();
+        mLocalDatabaseController = new LocalDatabaseController();
+        mCloudDatabaseController = new CloudDatabaseController();
         mGeocoderController = new GeocoderController(getBaseContext());
         mTwitterController = new TwitterController(getTwitterCallbackURL());
         mRunnable = new Runnable() {
@@ -107,29 +108,10 @@ public abstract class BaseService extends Service {
         stopCountdown();
     }
 
-    public DatabaseController getDatabaseController() {
-        if (mDatabaseController == null) {
-            // TODO: Make a new DatabaseController with the right subclass
-            // TODO: Init it if needed
-        }
-        return mDatabaseController;
-    }
-
-    public CloudDataController getCloudDataController() {
-        if (mCloudDataController == null) {
-            // TODO: Make a new CloudDataController with the right subclass
-            // TODO: Init it if needed
-        }
-        return mCloudDataController;
-    }
-
-    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
+    public enum ACTIONS {
+        CLOUD_EVENT_LIST, LOCAL_EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
     PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SET_ACCEPTED}
-
-    public TwitterController getTwitterController() {
-        return mTwitterController;
-    }
 
     private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
@@ -168,22 +150,25 @@ public abstract class BaseService extends Service {
                             Object result = null;
                             switch (theAction) {
                                 case EVENT_SPEAKERS:
-                                    result = mCloudDataController.getEventSpeakers((String) arguments[0]);
+                                    result = mCloudDatabaseController.getEventSpeakers((String) arguments[0]);
                                     break;
                                 case EVENT_CREATE:
-                                    mCloudDataController.createEvent((Event) arguments[0]);
+                                    mCloudDatabaseController.createEvent((Event) arguments[0]);
                                     break;
                                 case EVENT_UPDATE:
-                                    mCloudDataController.updateEvent((Event) arguments[0]);
+                                    mCloudDatabaseController.updateEvent((Event) arguments[0]);
                                     break;
                                 case EVENT_DELETE:
-                                    mCloudDataController.deleteEvent((Event) arguments[0]);
+                                    mCloudDatabaseController.deleteEvent((Event) arguments[0]);
                                     break;
-                                case EVENT_LIST:
-                                    result = mCloudDataController.getEvents((boolean) arguments[0]);
+                                case CLOUD_EVENT_LIST:
+                                    result = mCloudDatabaseController.getEvents((boolean) arguments[0]);
+                                    break;
+                                case LOCAL_EVENT_LIST:
+                                    result = mLocalDatabaseController.getEvents((boolean) arguments[0]);
                                     break;
                                 case EVENT_DETAIL:
-                                    result = mCloudDataController.getEvent((String) arguments[0]);
+                                    result = mCloudDatabaseController.getEvent((String) arguments[0]);
                                     break;
                                 case POSITION_ADDRESS:
                                     result = mGeocoderController.getAddressFromCoordinates((LatLng) arguments[0]);
@@ -214,28 +199,28 @@ public abstract class BaseService extends Service {
                                     break;
                                 case SUBSCRIBER_CHECKIN:
                                     //Object[] arguments  = (Object[]) arguments;
-                                    result = mCloudDataController.setCheckIn((String)arguments[0], (String)arguments[1]);
+                                    result = mCloudDatabaseController.setCheckIn((String) arguments[0], (String) arguments[1]);
                                     break;
                                 case PARTICIPANT_LIST:
-                                    result = mCloudDataController.getEventSubscribers((String) arguments[0]);
+                                    result = mCloudDatabaseController.getEventSubscribers((String) arguments[0]);
                                     break;
                                 case SET_ACCEPTED:
                                     //Object[] objects = (Object[]) arguments;
-                                    mCloudDataController.setAccepted((String)arguments[0], (List<Subscriber>) arguments[1]);
+                                    mCloudDatabaseController.setAccepted((String) arguments[0], (List<Subscriber>) arguments[1]);
                                     break;
                                 case SUBSCRIBER_EXISTS:
-                                    result = mCloudDataController.getSubscriberId((String) arguments[0]);
+                                    result = mCloudDatabaseController.getSubscriberId((String) arguments[0]);
                                     break;
                                 case IS_SUBSCRIBED:
                                     //Object[] object = (Object[])arguments;
-                                    result = mCloudDataController.isSubscribed((String)arguments[0], (String) arguments[1]);
+                                    result = mCloudDatabaseController.isSubscribed((String) arguments[0], (String) arguments[1]);
                                     break;
                                 case SUBSCRIBER_CREATE:
-                                    result = mCloudDataController.createSubscriber((Subscriber) arguments[0]);
+                                    result = mCloudDatabaseController.createSubscriber((Subscriber) arguments[0]);
                                     break;
                                 case EVENTS_TO_SUBSCRIBER_CREATE:
                                     //Object[] obj = (Object[])arguments;
-                                    mCloudDataController.createEventToSubscriber((Subscriber) arguments[0], (String) arguments[1]);
+                                    mCloudDatabaseController.createEventToSubscriber((Subscriber) arguments[0], (String) arguments[1]);
                                     break;
                             }
 

@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
     <include
-        layout="@layout/toolbar" />
+        layout="@layout/toolbar"/>
 
     <TextView
         android:id="@+id/connection_ribbon"
-        android:visibility="gone"
+        style="@style/condensed_light_medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:background="@color/red"
-        android:textColor="@color/white"
-        android:paddingRight="@dimen/padding_ribbon"
+        android:gravity="center_horizontal"
         android:paddingLeft="@dimen/padding_ribbon"
-        android:text="@string/no_connection"/>
+        android:paddingRight="@dimen/padding_ribbon"
+        android:text="@string/no_connection"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/white"
+        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
