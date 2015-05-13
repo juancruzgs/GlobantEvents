@@ -20,6 +20,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
 import com.globant.eventscorelib.baseActivities.BaseEventListActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
@@ -102,7 +103,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
+                mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
@@ -222,7 +223,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
-            case EVENT_LIST:
+            case CLOUD_EVENT_LIST:
+            case LOCAL_EVENT_LIST:
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
                     mRecyclerView.setAdapter(getAdapter());
@@ -252,6 +254,11 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
                 break;
+            case CLOUD_EVENT_LIST:
+                //Refresh without internet connection
+                mSwipeRefreshLayout.setRefreshing(false);
+                hideUtilsAndShowContentOverlay();
+                break;
             default:
                 showErrorOverlay();
                 break;
@@ -273,7 +280,11 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         showProgressOverlay();
         mEventList = ((BaseEventListActivity)getActivity()).getEventList();
         if (mEventList == null) {
-            mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
+            if (((BaseActivity) getActivity()).isOnline()) {
+                mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
+            } else {
+                mService.executeAction(BaseService.ACTIONS.LOCAL_EVENT_LIST, getBindingKey(), getIsGlober());
+            }
         } else {
             mRecyclerView.setAdapter(getAdapter());
             hideUtilsAndShowContentOverlay();

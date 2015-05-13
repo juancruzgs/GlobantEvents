@@ -11,12 +11,10 @@ import com.globant.eventscorelib.utils.CoreConstants;
 
 public class SharedPreferencesController {
 
-    private Context mContext;
     private SharedPreferences mSharedPreferences;
 
-    public SharedPreferencesController(Context ctx) {
-        this.mContext = ctx;
-        mSharedPreferences = mContext.getSharedPreferences("Globant", Context.MODE_PRIVATE);
+    public SharedPreferencesController(Context context) {
+        mSharedPreferences = context.getSharedPreferences("Globant", Context.MODE_PRIVATE);
     }
 
     public static String getUserFirstName(Context context) {
