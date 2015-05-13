@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-abstract public class LocalDataController {
+public final class LocalDataController {
 
     private LocalDataController() {
     }
