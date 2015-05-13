@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,9 +14,12 @@ import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
+import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
+import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.software.shell.fab.ActionButton;
 
 
@@ -69,6 +75,29 @@ public class EventListManagerFragment extends BaseEventListFragment {
         prepareRecyclerView();
         wireUpFAB(rootView);
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_manager_event_list, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.action_history) {
+            Intent intentCredits = new Intent(getActivity(), BaseCreditsActivity.class);
+            startActivity(intentCredits);
+            handled = true;
+        }
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
     }
 
     private void prepareRecyclerView() {

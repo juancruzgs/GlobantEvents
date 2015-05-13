@@ -92,7 +92,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
-        hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
+        hideUtilsAndShowContentOverlay();
         wireUpViews(rootView);
         mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
         if (mEvent != null) {
