@@ -23,6 +23,7 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
     private static EventsManagerPagerActivity ourInstance;
     private CacheObjectsController mCacheObjectsController;
 
+    public static Event mEvent;
     List<Fragment> fragmentList;
     Bundle mSavedInstanceState;
 
@@ -32,6 +33,10 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
         mSavedInstanceState = savedInstanceState;
         ourInstance = this;
         mCacheObjectsController = new CacheObjectsController();
+        if (mEvent != null) {
+            EventsManagerPagerActivity.getInstance().setEvent(mEvent);
+            EventsManagerPagerActivity.getInstance().setSpeakersList(mEvent.getSpeakers());
+        }
     }
 
     @Override
@@ -53,7 +58,6 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
     public void setEvent (Event event) {mCacheObjectsController.setEvent(event);}
 
     public Event getEvent() {return mCacheObjectsController.getEvent();}
-
 
     @Override
     protected List<Fragment> getFragments() {

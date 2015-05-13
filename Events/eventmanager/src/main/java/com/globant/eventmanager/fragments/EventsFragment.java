@@ -34,7 +34,9 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -42,9 +44,9 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.activities.MapEventCreationActivity;
-import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -81,6 +83,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     private View mToolbar;
     private View mOverlayView;
     private AppCompatTextView mEventTitle;
+    private ImageButton mMapIcon;
     private ObservableScrollView mScrollView;
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
@@ -104,7 +107,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     private AppCompatEditText mEditTextStartTime;
     private AppCompatEditText mEditTextEndDate;
     private AppCompatEditText mEditTextEndTime;
-    protected AppCompatEditText mEditTextMap;
     private AppCompatEditText mEditTextAddress;
     private AppCompatEditText mEditTextCountry;
     private AppCompatEditText mEditTextCity;
@@ -149,7 +151,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     ErrorLabelLayout mErrorLabelLayoutStartTime;
     ErrorLabelLayout mErrorLabelLayoutEndDate;
     ErrorLabelLayout mErrorLabelLayoutEndTime;
-    ErrorLabelLayout mErrorLabelLayoutMap;
     ErrorLabelLayout mErrorLabelLayoutAddress;
     ErrorLabelLayout mErrorLabelLayoutCity;
     ErrorLabelLayout mErrorLabelLayoutCountry;
@@ -187,7 +188,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         }
 
         hideUtilsAndShowContentOverlay();
-
         setHasOptionsMenu(true);
         setRetainInstance(true);
         return rootView;
@@ -233,7 +233,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             mEvent.setTitle(mEditTextTitle.getText().toString());
             mEvent.setFullDescription(mEditTextFullDescription.getText().toString());
             mEvent.setShortDescription(mEditTextShortDescription.getText().toString());
-            mEvent.setAdditionalInfo(mEditTextAdditionalInfo.getText().toString());
+            mEvent.setAdditionalInfo(mEditTextAdditionalInfo.getText().toString().isEmpty()?"-":mEditTextAdditionalInfo.getText().toString());
             mEvent.setHashtag(mEditTextHashtag.getText().toString());
             mEvent.setLanguage(mEditTextLanguage.getText().toString());
             mEvent.setStartDate(mStartDate.getTime());
@@ -332,12 +332,30 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         }
         else if (id== (R.id.CategorySpinner)){
             mIconToChange= mIconCategory;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_category);
+            switch (((Spinner)view).getSelectedItemPosition()){
+                case 0:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_social);
+                    break;
+                case 1:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_informative);
+                    break;
+                case 2:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_technical);
+                    break;
+            }
+
             mErrorLabelLayout= mErrorLabelLayoutCategory;
         }
         else if (id== (R.id.PublicSpinner)){
             mIconToChange= mIconPublic;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_public);
+            switch (((Spinner)view).getSelectedItemPosition()){
+                case 0:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_public);
+                    break;
+                case 1:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_private);
+                    break;
+            }
             mErrorLabelLayout= mErrorLabelLayoutPublic;
         }
         else if (id== (R.id.edit_text_hashtag)){
@@ -370,11 +388,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_end_time);
             mErrorLabelLayout= mErrorLabelLayoutEndTime;
         }
-        else if (id== (R.id.edit_text_map)){
-            mIconToChange= mIconMap;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_map);
-            mErrorLabelLayout=mErrorLabelLayoutMap;
-        }
         else if (id== (R.id.edit_text_address)){
             mIconToChange= mIconAddress;
             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_location);
@@ -399,6 +412,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mOverlayView = rootView.findViewById(R.id.evets_overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.event_scroll);
         mEventTitle = (AppCompatTextView) rootView.findViewById(R.id.title);
+        mMapIcon = (ImageButton) rootView.findViewById(R.id.image_button_map);
 
         mEditTextTitle =(AppCompatEditText)rootView.findViewById(R.id.edit_text_title);
         mEditTextFullDescription =(AppCompatEditText)rootView.findViewById(R.id.edit_text_full_description);
@@ -416,7 +430,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mEditTextEndDate.setInputType(InputType.TYPE_NULL);
         mEditTextEndTime =(AppCompatEditText)rootView.findViewById(R.id.edit_text_end_time);
         mEditTextEndTime.setInputType(InputType.TYPE_NULL);
-        mEditTextMap =(AppCompatEditText)rootView.findViewById(R.id.edit_text_map);
         mEditTextAddress =(AppCompatEditText)rootView.findViewById(R.id.edit_text_address);
         mEditTextCountry=(AppCompatEditText)rootView.findViewById(R.id.edit_text_country);
         mEditTextCity=(AppCompatEditText)rootView.findViewById(R.id.edit_text_city);
@@ -436,7 +449,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mIconEndDate =(ImageView)rootView.findViewById(R.id.icon_end_date);
         mIconStartTime =(ImageView)rootView.findViewById(R.id.icon_start_time);
         mIconEndTime =(ImageView)rootView.findViewById(R.id.icon_end_time);
-        mIconMap =(ImageView)rootView.findViewById(R.id.icon_map);
+        mIconMap =(ImageView)rootView.findViewById(R.id.image_button_map);
         mIconAddress =(ImageView)rootView.findViewById(R.id.icon_address);
         mIconCountry=(ImageView)rootView.findViewById(R.id.icon_country);
         mIconCity=(ImageView)rootView.findViewById(R.id.icon_city);
@@ -453,7 +466,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mErrorLabelLayoutEndDate = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEndDate);
         mErrorLabelLayoutStartTime = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutStartTime);
         mErrorLabelLayoutEndTime = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEndTime);
-        mErrorLabelLayoutMap = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorMap);
         mErrorLabelLayoutAddress = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorAddress);
         mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCity);
         mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCountry);
@@ -468,6 +480,21 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position){
+                    case 0:
+                        mIconCategory.setImageResource(R.mipmap.ic_social);
+                        break;
+                    case 1:
+                        mIconCategory.setImageResource(R.mipmap.ic_informative);
+                        break;
+                    case 2:
+                        mIconCategory.setImageResource(R.mipmap.ic_technical);
+                        break;
+                }
+                if (!mSpinnerCategory.isDirty())
+                onViewFocusChange(mSpinnerCategory, true);
+                else
+                onViewFocusChange(mSpinnerCategory, false);
                 mSpinnerCategory.setSelection(position);
             }
 
@@ -478,9 +505,8 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mSpinnerCategory.setFocusableInTouchMode(true);
         mSpinnerPublic.setFocusableInTouchMode(true);
 
-
         String[] publicInfo = getResources().getStringArray(R.array.public_entries);
-        ArrayAdapter<String> public_adapter = new ArrayAdapter<>(getActivity(),  R.layout.simple_spinner_item, publicInfo);
+        ArrayAdapter<String> public_adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, publicInfo);
 
         public_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerPublic.setAdapter(public_adapter);
@@ -488,6 +514,18 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mSpinnerPublic.setSelection(position);
+                switch (position) {
+                    case 0:
+                        mIconPublic.setImageResource(R.mipmap.ic_public);
+                        break;
+                    case 1:
+                        mIconPublic.setImageResource(R.mipmap.ic_private);
+                        break;
+                }
+                if (!mSpinnerPublic.isDirty())
+                    onViewFocusChange(mSpinnerPublic, true);
+                else
+                    onViewFocusChange(mSpinnerPublic, false);
             }
 
             @Override
@@ -668,11 +706,22 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
     protected void prepareImageButton() {
 
+        mMapIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MapEventCreationActivity.class);
+                intent.putExtra(CoreConstants.MAP_MARKER_POSITION_INTENT, mLatLng);
+                startActivityForResult(intent, CoreConstants.MAP_MANAGER_REQUEST);
+            }
+        });
+
         mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
+                if(mFabIsShown) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
+                }
             }
         });
 
@@ -703,14 +752,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mFabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
         ViewHelper.setScaleX(mFloatingActionButtonPhoto, 0);
         ViewHelper.setScaleY(mFloatingActionButtonPhoto, 0);
-        mEditTextMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MapEventCreationActivity.class);
-                intent.putExtra(CoreConstants.MAP_MARKER_POSITION_INTENT, mLatLng);
-                startActivityForResult(intent, CoreConstants.MAP_MANAGER_REQUEST);
-            }
-        });
+
 
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
@@ -734,7 +776,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_events, menu);
 
-        MenuItem item = menu.findItem(R.id.events_action_delete);
+        MenuItem item = menu.findItem(com.globant.eventmanager.R.id.events_action_delete);
 
         if (mEventAction == ActionType.EDIT_EVENT) {
             item.setVisible(true);
@@ -750,7 +792,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.events_action_done) {
+        if (id == com.globant.eventmanager.R.id.events_action_done) {
             Boolean savePreferences;
             savePreferences  = tintRequiredIconsAndShowError(mEditTextTitle);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextFullDescription);
@@ -828,7 +870,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
     @Override
     public void onResumeFragment() {
-
     }
 
     //ObservableScrollViewCallbacks implementation
