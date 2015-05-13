@@ -91,6 +91,8 @@ public class CoreConstants {
     // RecyclerView
     public static final String KEY_LAYOUT_MANAGER = "layoutManager";
     public static final String KEY_LAYOUT_PLACEHOLDER = "placeholder666";
+    public static final String SCROLL_BOTTOM = "bot";
+    public static final String SCROLL_TOP = "top";
 
     //SubscriberProfile
     public static final String SHARED_PREF_IMG = "img.jpg";

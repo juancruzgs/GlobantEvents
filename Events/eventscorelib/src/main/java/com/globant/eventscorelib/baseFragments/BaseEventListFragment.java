@@ -3,6 +3,7 @@ package com.globant.eventscorelib.baseFragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,7 +57,9 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     private List<Event> mEventList;
 
     protected abstract int getFragmentLayout();
+
     protected abstract boolean getIsGlober();
+
     protected abstract BaseEventsListAdapter getAdapter();
 
     protected int getEventListRecyclerView() {
@@ -117,7 +120,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void setRecyclerViewLayoutManager(Bundle savedInstanceState) {
 
         if (savedInstanceState != null) {
-            mCurrentLayoutManagerType = (LayoutManagerType)savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
+            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -231,7 +234,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
                 hideUtilsAndShowContentOverlay();
-                ((BaseEventListActivity)getActivity()).setEventList(mEventList);
+                ((BaseEventListActivity) getActivity()).setEventList(mEventList);
+                scrollTo(CoreConstants.SCROLL_TOP);
                 break;
             case SUBSCRIBER_CHECKIN:
                 postCheckinTweet((Event) result);
@@ -271,7 +275,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void setService(BaseService service) {
         super.setService(service);
         showProgressOverlay();
-        mEventList = ((BaseEventListActivity)getActivity()).getEventList();
+        mEventList = ((BaseEventListActivity) getActivity()).getEventList();
         if (mEventList == null) {
             mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
         } else {
@@ -314,6 +318,27 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public String getBindingKey() {
         return mBindingKey;
+    }
+
+    public void scrollTo(String position) {
+        int itemCount = mRecyclerView.getAdapter().getItemCount();
+        if (itemCount > 0) {
+            final int start, stop;
+            if (position.equals(CoreConstants.SCROLL_TOP)) {
+                start = itemCount - 1;
+                stop = 0;
+            } else {
+                start = 0;
+                stop = itemCount - 1;
+            }
+            mRecyclerView.scrollToPosition(start);
+            ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
+                @Override
+                public void run() {
+                    mRecyclerView.smoothScrollToPosition(stop);
+                }
+            });
+        }
     }
 
 
