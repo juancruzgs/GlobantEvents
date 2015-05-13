@@ -1,4 +1,92 @@
 package com.globant.eventscorelib.controllers;
 
+import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.utils.CoreConstants;
+import com.google.android.gms.maps.model.LatLng;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 abstract public class LocalDataController {
+
+    private LocalDataController() {
+    }
+
+    public static List<Event> getEvents(boolean isGlober) throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        query.fromLocalDatastore();
+        query.whereGreaterThan(CoreConstants.FIELD_END_DATE, new Date());
+        query.orderByAscending(CoreConstants.FIELD_START_DATE);
+        if (!isGlober) {
+            query.whereEqualTo(CoreConstants.FIELD_PUBLIC, true);
+        }
+        List<ParseObject> databaseEventsList = query.find();
+        List<Event> domainEventsList = new ArrayList<>();
+        for (ParseObject databaseEvent : databaseEventsList) {
+            ParseRelation relation = databaseEvent.getRelation(CoreConstants.FIELD_SPEAKERS);
+            ParseQuery relationQuery = relation.getQuery();
+            relationQuery.fromLocalDatastore();
+            List<ParseObject> databaseSpeakersList = relationQuery.find();
+            List<Speaker> domainSpeakersList = new ArrayList<>();
+            for (ParseObject databaseSpeaker : databaseSpeakersList) {
+                Speaker domainSpeaker = createDomainSpeakerFromDatabase(databaseSpeaker);
+                domainSpeakersList.add(domainSpeaker);
+            }
+            Event domainEvent = createDomainEventFromDatabase(databaseEvent);
+            domainEvent.setSpeakers(domainSpeakersList);
+            domainEventsList.add(domainEvent);
+        }
+        return domainEventsList;
+    }
+
+    private static Speaker createDomainSpeakerFromDatabase(ParseObject databaseSpeaker) throws ParseException {
+        Speaker speaker = new Speaker();
+        speaker.setName(databaseSpeaker.getString(CoreConstants.FIELD_NAME));
+        speaker.setLastName(databaseSpeaker.getString(CoreConstants.FIELD_LAST_NAME));
+        speaker.setTitle(databaseSpeaker.getString(CoreConstants.FIELD_TITLE));
+        speaker.setPicture(getImageFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
+        speaker.setBiography(databaseSpeaker.getString(CoreConstants.FIELD_BIOGRAPHY));
+        return speaker;
+    }
+
+    private static Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
+        Event domainEvent = new Event();
+        domainEvent.setObjectID(databaseEvent.getObjectId());
+        domainEvent.setTitle(databaseEvent.getString(CoreConstants.FIELD_TITLE));
+        domainEvent.setShortDescription(databaseEvent.getString(CoreConstants.FIELD_SHORT_DESCRIPTION));
+        domainEvent.setCity(databaseEvent.getString(CoreConstants.FIELD_CITY));
+        domainEvent.setCountry(databaseEvent.getString(CoreConstants.FIELD_COUNTRY));
+        domainEvent.setCategory(databaseEvent.getString(CoreConstants.FIELD_CATEGORY));
+        domainEvent.setStartDate(databaseEvent.getDate(CoreConstants.FIELD_START_DATE));
+        domainEvent.setEndDate(databaseEvent.getDate(CoreConstants.FIELD_END_DATE));
+        domainEvent.setPublic(databaseEvent.getBoolean(CoreConstants.FIELD_PUBLIC));
+        domainEvent.setIcon(getImageFromDatabase(databaseEvent, CoreConstants.FIELD_ICON));
+        domainEvent.setEventLogo(getImageFromDatabase(databaseEvent, CoreConstants.FIELD_EVENT_LOGO));
+        domainEvent.setFullDescription(databaseEvent.getString(CoreConstants.FIELD_FULL_DESCRIPTION));
+        domainEvent.setAdditionalInfo(databaseEvent.getString(CoreConstants.FIELD_ADDITIONAL_INFO));
+        domainEvent.setAddress(databaseEvent.getString(CoreConstants.FIELD_ADDRESS));
+        domainEvent.setQrCode(databaseEvent.getString(CoreConstants.FIELD_QR_CODE));
+        domainEvent.setLanguage(databaseEvent.getString(CoreConstants.FIELD_LANGUAGE));
+        domainEvent.setHashtag(databaseEvent.getString(CoreConstants.FIELD_HASHTAG));
+        domainEvent.setCoordinates(getCoordinatesFromDatabaseObject(databaseEvent));
+        return domainEvent;
+    }
+
+    private static byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
+        ParseFile file = databaseObject.getParseFile(field);
+        return file != null ? file.getData() : null;
+    }
+
+    private static LatLng getCoordinatesFromDatabaseObject(ParseObject databaseObject) {
+        ParseGeoPoint geoPoint = databaseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES);
+        return geoPoint != null ? new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()) : null;
+    }
 }

@@ -102,7 +102,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
+                mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
@@ -222,7 +222,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
-            case EVENT_LIST:
+            case CLOUD_EVENT_LIST:
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
                     mRecyclerView.setAdapter(getAdapter());
@@ -273,7 +273,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         showProgressOverlay();
         mEventList = ((BaseEventListActivity)getActivity()).getEventList();
         if (mEventList == null) {
-            mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober());
+            mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
         } else {
             mRecyclerView.setAdapter(getAdapter());
             hideUtilsAndShowContentOverlay();

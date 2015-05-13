@@ -9,8 +9,8 @@ import android.os.Handler;
 import android.os.IBinder;
 
 import com.globant.eventscorelib.controllers.CloudDataController;
-import com.globant.eventscorelib.controllers.LocalDataController;
 import com.globant.eventscorelib.controllers.GeocoderController;
+import com.globant.eventscorelib.controllers.LocalDataController;
 import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -104,7 +104,8 @@ public abstract class BaseService extends Service {
         stopCountdown();
     }
 
-    public enum ACTIONS {EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
+    public enum ACTIONS {
+        CLOUD_EVENT_LIST, LOCAL_EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
     PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SET_ACCEPTED}
 
@@ -156,8 +157,11 @@ public abstract class BaseService extends Service {
                                 case EVENT_DELETE:
                                     CloudDataController.deleteEvent((Event) arguments[0]);
                                     break;
-                                case EVENT_LIST:
+                                case CLOUD_EVENT_LIST:
                                     result = CloudDataController.getEvents((boolean) arguments[0]);
+                                    break;
+                                case LOCAL_EVENT_LIST:
+                                    result = LocalDataController.getEvents((boolean) arguments[0]);
                                     break;
                                 case EVENT_DETAIL:
                                     result = CloudDataController.getEvent((String) arguments[0]);
