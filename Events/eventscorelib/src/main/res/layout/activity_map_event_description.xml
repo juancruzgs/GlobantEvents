@@ -3,15 +3,16 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity" >
-<include
-    layout="@layout/toolbar" />
+              tools:context="com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity">
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:id="@+id/container"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity"/>
+    <include
+        layout="@layout/toolbar"/>
+
+    <FrameLayout android:id="@+id/container"
+                 xmlns:android="http://schemas.android.com/apk/res/android"
+                 xmlns:tools="http://schemas.android.com/tools"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 tools:context="com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity"/>
 
 </LinearLayout>
