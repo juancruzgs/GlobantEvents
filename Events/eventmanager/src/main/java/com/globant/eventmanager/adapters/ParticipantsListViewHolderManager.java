@@ -207,16 +207,21 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
                     if (leftToRight){ //accept
                         linearLayoutMiddleLeft.setVisibility(View.VISIBLE);
                         linearLayoutMiddle.setVisibility(View.INVISIBLE);
+                        mFrameLayoutLeft.setVisibility(View.INVISIBLE);
+                        mFrameLayoutRight.setVisibility(View.VISIBLE);
                         mFragment.acceptSubscriber(mSubPosition);
                     } else{  //decline
                         linearLayoutMiddleLeft.setVisibility(View.INVISIBLE);
                         linearLayoutMiddle.setVisibility(View.VISIBLE);
+                        mFrameLayoutLeft.setVisibility(View.VISIBLE);
+                        mFrameLayoutRight.setVisibility(View.INVISIBLE);
                         mFragment.declineSubscriber(mSubPosition);
                     }
                     if (mFragment.isLastVisibleItem()){
                         mFragment.notifyAdapter();
                     }
                 } else {
+                    mColorTransition.reverse();
                     mAnimationCancelled = false;
                 }
             }
@@ -257,17 +262,7 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
                     animation.reset();
                     mTranslateAnimationText.cancel();
                     mTranslateAnimationText.reset();
-                    mColorTransition.reverse();
-                } else {
-                    frameLayoutFrom.setVisibility(View.INVISIBLE);
-                    frameLayoutTo.setVisibility(View.VISIBLE);
-                    if (leftToRight) {
-                        //mFrameLayoutHolder.setBackgroundColor(Color.parseColor("#2D27D500"));
-                    } else {
-                        //mFrameLayoutHolder.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
-                    }
                 }
-
             }
 
             @Override
