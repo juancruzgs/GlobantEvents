@@ -37,7 +37,9 @@ public class GeocoderController {
         List<Address> addresses;
         try {
             addresses = mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, CoreConstants.MAX_GEOCODER_RESULTS);
+            if(!addresses.isEmpty())
             return addresses.get(CoreConstants.ZERO);
+            else return null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;

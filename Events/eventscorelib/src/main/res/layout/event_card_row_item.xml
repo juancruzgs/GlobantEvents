@@ -10,9 +10,9 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -21,65 +21,65 @@
                 android:gravity="bottom">
 
                 <com.flaviofaria.kenburnsview.KenBurnsView
+                    android:id="@+id/event_image_view"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/event_logo_card_row_height"
-                    android:id="@+id/event_image_view"
-                    android:src="@drawable/party_image"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/party_image"/>
 
                 <FrameLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="179dp"
                     android:layout_alignBottom="@+id/event_image_view"
-                    android:background="@color/Semi_transparent_grey_dark">
+                    android:background="@color/Semi_transparent_grey_dark"
+                    android:orientation="vertical">
 
                 </FrameLayout>
 
                 <ImageView
+                    android:id="@+id/imageView_Event_Type_Logo"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/imageView_Event_Type_Logo"
                     android:layout_alignRight="@+id/event_image_view"
                     android:layout_alignTop="@+id/event_image_view"
                     android:src="@mipmap/ic_social"
                     />
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:id="@+id/event_title_text_view"
-                    android:text="La Fiesta del Chorizo"
                     style="@style/condensed_normal_large"
-                    android:textColor="@color/white"
-                    android:paddingLeft="4dp"
-                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_above="@+id/event_date_text_view"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="4dp"
+                    android:text="La Fiesta del Chorizo"
+                    android:textColor="@color/white"
                     />
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="20:00 PM 11/04/2015"
-                    style="@style/condensed_normal_medium"
                     android:id="@+id/event_date_text_view"
-                    android:textColor="@color/grey_card"
-                    android:paddingLeft="4dp"
-                    android:gravity="center_vertical"
+                    style="@style/condensed_normal_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_above="@+id/event_location_text_view"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="4dp"
+                    android:text="20:00 PM 11/04/2015"
+                    android:textColor="@color/grey_card"
                     />
 
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/event_location_text_view"
+                    style="@style/condensed_light_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mar del Plata, Argentina"
-                    style="@style/condensed_light_small"
-                    android:id="@+id/event_location_text_view"
-                    android:textColor="@color/grey_card"
-                    android:paddingLeft="4dp"
-                    android:gravity="center_vertical"
                     android:layout_alignBottom="@+id/event_image_view"
-                    android:paddingBottom="4dp"/>
+                    android:gravity="center_vertical"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="4dp"
+                    android:text="Mar del Plata, Argentina"
+                    android:textColor="@color/grey_card"/>
 
             </RelativeLayout>
 
@@ -115,11 +115,11 @@
 
                 <View
                     android:id="@+id/separator_view"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginRight="50dp"
                     android:layout_width="match_parent"
                     android:layout_height="0.25dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginTop="6dp"
                     android:background="@color/grey"/>
 
                 <android.support.v7.widget.AppCompatTextView
@@ -135,7 +135,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
 
     </android.support.v7.widget.CardView>
 

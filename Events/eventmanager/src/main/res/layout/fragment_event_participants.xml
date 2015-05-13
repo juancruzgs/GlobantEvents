@@ -1,65 +1,65 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
              android:background="#ffffffff">
 
     <view
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/event_participants_recycler_view"
         class="android.support.v7.widget.RecyclerView"
-        android:id="@+id/event_participants_recycler_view" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/linear_layout_buttons_add_and_decline"
         android:layout_width="fill_parent"
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:background="@color/globant_green"
-        android:id="@+id/linear_layout_buttons_add_and_decline"
-        android:layout_gravity="bottom">
+        android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_accept_all"
+            style="@style/condensed_normal_small"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:text="@string/text_view_add_all_participants"
-            android:id="@+id/text_view_accept_all"
+            android:layout_weight="1"
             android:background="@drawable/add_decline_all_selector"
-            style="@style/condensed_normal_small"
-            android:textColor="@color/white"
             android:gravity="center"
-            android:layout_weight="1" />
+            android:text="@string/text_view_add_all_participants"
+            android:textColor="@color/white"/>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="1dp"
             android:layout_height="fill_parent"
-            android:background="@color/white"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="3dp"
             android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"></LinearLayout>
+            android:background="@color/white"
+            android:orientation="horizontal"></LinearLayout>
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_decline_all"
+            style="@style/condensed_normal_small"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:text="@string/text_view_decline_all_participants"
-            android:id="@+id/text_view_decline_all"
-            android:background="@drawable/add_decline_all_selector"
-            style="@style/condensed_normal_small"
-            android:textColor="@color/white"
-            android:gravity="center"
             android:layout_alignParentRight="true"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@drawable/add_decline_all_selector"
+            android:gravity="center"
+            android:text="@string/text_view_decline_all_participants"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 
     <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/text_view_no_participants"
+        style="@style/condensed_normal_large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_view_no_participants"
-        style="@style/condensed_normal_large"
-        android:id="@+id/text_view_no_participants"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:text="@string/text_view_no_participants"
+        android:visibility="gone"/>
 
 
 </FrameLayout>
