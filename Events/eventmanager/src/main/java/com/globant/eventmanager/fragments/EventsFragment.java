@@ -218,7 +218,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             mLatLng = event.getCoordinates();
 
            // Bitmap eventLogo = ConvertImage.convertByteToBitmap(event.getEventLogo());
-            if (event.getEventLogo().length>0){
+            if (event.getEventLogo()!= null){
                 mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
             }else {
