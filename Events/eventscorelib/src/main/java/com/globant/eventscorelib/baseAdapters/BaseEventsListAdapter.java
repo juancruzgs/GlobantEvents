@@ -40,7 +40,6 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
         eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
         mEventList = eventList;
     }
-
     protected abstract BaseEventsListViewHolder getViewHolder(View view);
 
     @Override
