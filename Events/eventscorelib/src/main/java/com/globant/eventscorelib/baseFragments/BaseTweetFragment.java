@@ -58,7 +58,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBindingKey = this.getClass().getSimpleName();// + new Date().toString();
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override

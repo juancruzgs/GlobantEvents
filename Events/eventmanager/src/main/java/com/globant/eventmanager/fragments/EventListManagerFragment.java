@@ -16,10 +16,14 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.software.shell.fab.ActionButton;
 
+import java.util.Date;
+
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
     private ActionButton mActionButton;
+
+    private String mBindingKey;
 
     @Override
     protected int getFragmentLayout() {
@@ -45,8 +49,14 @@ public class EventListManagerFragment extends BaseEventListFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+    }
+
+    @Override
     public String getBindingKey() {
-        return EventListManagerFragment.class.getSimpleName();
+        return mBindingKey;
     }
 
     @Override

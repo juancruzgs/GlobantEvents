@@ -24,6 +24,7 @@ import com.globant.eventscorelib.domainObjects.Speaker;
 import com.software.shell.fab.ActionButton;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,7 +53,7 @@ public class BaseSpeakersListAllFragment extends BaseFragment implements BaseSer
     public String getBindingKey() {
         // TODO: Return an appropriated key
         //return "BaseSpeakersListFragment";
-        return BaseSpeakersListAllFragment.class.getSimpleName();
+        return this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override

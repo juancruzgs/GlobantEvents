@@ -77,7 +77,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBindingKey = this.getClass().getSimpleName();// + new Date().toString();
+        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
