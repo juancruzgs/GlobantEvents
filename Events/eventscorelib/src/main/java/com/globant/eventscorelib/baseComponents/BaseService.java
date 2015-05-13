@@ -34,7 +34,6 @@ public abstract class BaseService extends Service {
 
     public static boolean isRunning = false;
     protected static List<String> cancelKeys = new ArrayList<>();
-    //protected static List<ActionWrapper> listenersToCancel = new ArrayList<>();
     // This is the object that receives interactions from clients.
     private final IBinder mBinder = new BaseBinder();
 
@@ -138,14 +137,6 @@ public abstract class BaseService extends Service {
     public void subscribeActor(ActionListener anActionListener){
         String bindingKey = anActionListener.getBindingKey();
 
-/*
-        for (ActionWrapper subscriber : currentSubscribers.values()) {
-            if (subscriber.theListener.getClass().isInstance(anActionListener)) {
-                listenersToCancel.add(subscriber);
-            }
-        }
-*/
-
         if (!currentSubscribers.containsKey(bindingKey)) {
             ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
             currentSubscribers.put(bindingKey, currentSubscriber);
@@ -159,9 +150,6 @@ public abstract class BaseService extends Service {
                 anActionListener.onFinishAction(key,cachedElement.remove(key));
             }
         }
-
-//        if (cancelKeys.contains(anActionListener.getBindingKey()))
-//            cancelKeys.remove(anActionListener.getBindingKey());
 
     }
     
@@ -258,7 +246,6 @@ public abstract class BaseService extends Service {
                             }
 
                             if (!cancelKeys.contains(bindingKey)) {
-                            //if (!listenersToCancel.contains(currentSubscriber)) {
                                 currentSubscriber.finishAction(theAction, result);
                             }
                             else {
@@ -272,7 +259,6 @@ public abstract class BaseService extends Service {
                 }
 
                 //cancelKeys.clear();
-                //listenersToCancel.clear();
             }
         };
         new Thread(r).start();
