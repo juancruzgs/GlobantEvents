@@ -767,7 +767,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+        mBindingKey = this.getClass().getSimpleName();// + new Date().toString();
         setHasOptionsMenu(true);
     }
 

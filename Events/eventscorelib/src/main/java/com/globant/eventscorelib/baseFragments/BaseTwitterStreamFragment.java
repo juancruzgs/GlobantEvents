@@ -86,7 +86,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+        mBindingKey = this.getClass().getSimpleName();// + new Date().toString();
     }
 
     @Override

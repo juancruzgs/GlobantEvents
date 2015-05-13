@@ -51,7 +51,8 @@ public class BaseSpeakersListAllFragment extends BaseFragment implements BaseSer
     @Override
     public String getBindingKey() {
         // TODO: Return an appropriated key
-        return "BaseSpeakersListFragment";
+        //return "BaseSpeakersListFragment";
+        return BaseSpeakersListAllFragment.class.getSimpleName();
     }
 
     @Override

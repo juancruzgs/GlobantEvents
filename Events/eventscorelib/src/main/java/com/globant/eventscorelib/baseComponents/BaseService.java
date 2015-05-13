@@ -146,8 +146,11 @@ public abstract class BaseService extends Service {
             }
         }
 
-        if (cancelKeys.contains(anActionListener.getBindingKey()))
-            cancelKeys.remove(anActionListener.getBindingKey());
+//        if (cancelKeys.contains(anActionListener.getBindingKey()))
+//            cancelKeys.remove(anActionListener.getBindingKey());
+        if (!cancelKeys.contains(anActionListener.getBindingKey()))
+            cancelKeys.add(anActionListener.getBindingKey());
+
     }
     
     synchronized public void unSubscribeActor(ActionListener anActionListener){
@@ -239,10 +242,7 @@ public abstract class BaseService extends Service {
                                     break;
                             }
 
-                            if (cancelKeys.contains(bindingKey)) {
-                                cancelKeys.remove(bindingKey);
-                            }
-                            else {
+                            if (!cancelKeys.contains(bindingKey)) {
                                 currentSubscriber.finishAction(theAction, result);
                             }
                         } catch (Exception e) {
@@ -251,6 +251,8 @@ public abstract class BaseService extends Service {
                         }
                     }
                 }
+
+                cancelKeys.clear();
             }
         };
         new Thread(r).start();
