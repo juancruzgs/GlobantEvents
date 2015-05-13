@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventsManagerPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
@@ -155,11 +156,26 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onResumeFragment() {
-        mSpeakers = ((BaseEventDetailPagerActivity) getActivity()).getEvent().getSpeakers();
+        Activity activity = getActivity();
+        if (activity instanceof BaseEventDetailPagerActivity)
+            mSpeakers = ((BaseEventDetailPagerActivity) getActivity()).getEvent().getSpeakers();
+        else
+            mSpeakers = ((BaseEventsManagerPagerActivity) getActivity()).getEvent().getSpeakers();
+
+
         if (mSpeakers == null) {
-            Event event = ((BaseEventDetailPagerActivity) getActivity()).getEvent();
-            String eventId = event.getObjectID();
-            mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), eventId);
+            if (activity instanceof BaseEventDetailPagerActivity) {
+                Event event = ((BaseEventDetailPagerActivity) getActivity()).getEvent();
+                String eventId = event.getObjectID();
+                mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), eventId);
+            }
+            else
+            {
+                Event event = ((BaseEventsManagerPagerActivity) getActivity()).getEvent();
+                String eventId = event.getObjectID();
+                mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), eventId);
+            }
+
         } else {
             setRecyclerViewAdapter();
         }

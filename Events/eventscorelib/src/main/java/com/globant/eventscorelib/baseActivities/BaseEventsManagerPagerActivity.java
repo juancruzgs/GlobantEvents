@@ -47,9 +47,11 @@ public class BaseEventsManagerPagerActivity extends BasePagerActivity {
             fragmentList = new ArrayList<>();
             if (mSavedInstanceState == null){
                 fragmentList.add(new BaseEventsFragment());
+                fragmentList.add(new BaseSpeakersListFragment());
             }
             else {
                 fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, BaseEventsFragment.class.getName()));
+                fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, BaseSpeakersListFragment.class.getName()));
             }
             return fragmentList;
 
@@ -59,6 +61,7 @@ public class BaseEventsManagerPagerActivity extends BasePagerActivity {
     protected List<String> getTitlesList() {
         ArrayList fragmentsTitles = new ArrayList<>();
         fragmentsTitles.add("Event");
+        fragmentsTitles.add("Speakers");
         return fragmentsTitles;
 
 
