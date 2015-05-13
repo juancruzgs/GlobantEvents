@@ -228,8 +228,12 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEvent.put(CoreConstants.FIELD_START_DATE, domainEvent.getStartDate());
         databaseEvent.put(CoreConstants.FIELD_END_DATE, domainEvent.getEndDate());
         databaseEvent.put(CoreConstants.FIELD_PUBLIC, domainEvent.isPublic());
-        databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.png", domainEvent.getIcon()));
-        databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.png", domainEvent.getEventLogo()));
+        if (domainEvent.getIcon() != null) {
+            databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.png", domainEvent.getIcon()));
+        }
+        if (domainEvent.getEventLogo() != null) {
+            databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.png", domainEvent.getEventLogo()));
+        }
         databaseEvent.put(CoreConstants.FIELD_FULL_DESCRIPTION, domainEvent.getFullDescription());
         databaseEvent.put(CoreConstants.FIELD_ADDITIONAL_INFO, domainEvent.getAdditionalInfo());
         databaseEvent.put(CoreConstants.FIELD_ADDRESS, domainEvent.getAddress());
@@ -245,7 +249,9 @@ public class CloudDatabaseController extends DatabaseController{
         databaseSpeaker.put(CoreConstants.FIELD_NAME, domainSpeaker.getName());
         databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSpeaker.getLastName());
         databaseSpeaker.put(CoreConstants.FIELD_BIOGRAPHY, domainSpeaker.getBiography());
-        databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSpeaker.getPicture()));
+        if (domainSpeaker.getPicture() != null) {
+            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSpeaker.getPicture()));
+        }
     }
 
     private void setDatabaseSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSpeaker) {
@@ -259,7 +265,9 @@ public class CloudDatabaseController extends DatabaseController{
         databaseSpeaker.put(CoreConstants.FIELD_ENGLISH, domainSubscriber.speaksEnglish());
         databaseSpeaker.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
         databaseSpeaker.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
-        databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
+        if (domainSubscriber.getPicture() != null) {
+            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
+        }
     }
 
     private void setDatabaseEventToSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSubscriber, ParseObject databaseEvent, ParseObject databaseEventToSubscriber) {
