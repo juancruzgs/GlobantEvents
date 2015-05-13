@@ -27,7 +27,7 @@ public class EventDetailManagerActivity extends BaseEventDetailPagerActivity {
         mSavedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
         Event event = getIntent().getExtras().getParcelable(CoreConstants.FIELD_EVENTS);
-        BaseEventDetailPagerActivity.getInstance().setEvent(event);
+        this.setEvent(event);
     }
 
     @Override

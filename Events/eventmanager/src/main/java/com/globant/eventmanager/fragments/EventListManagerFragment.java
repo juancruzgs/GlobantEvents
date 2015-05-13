@@ -9,8 +9,7 @@ import android.view.ViewGroup;
 
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
-import com.globant.eventscorelib.baseFragments.BaseEventsFragment;
-import com.globant.eventscorelib.baseActivities.BaseEventsManagerPagerActivity;
+import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -21,7 +20,6 @@ import com.software.shell.fab.ActionButton;
 public class EventListManagerFragment extends BaseEventListFragment {
 
     private ActionButton mActionButton;
-    private RecyclerView mRecyclerView;
 
     @Override
     protected int getFragmentLayout() {
@@ -56,7 +54,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
         super.onFinishAction(theAction, result);
         if (mRecyclerView.getAdapter().getItemCount() > 0) {
             mRecyclerView.scrollToPosition(1);
-            ScrollUtils.addOnGlobalLayoutListener(getRecyclerView(), new Runnable() {
+            ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
                 @Override
                 public void run() {
                     mRecyclerView.smoothScrollToPosition(0);
@@ -68,7 +66,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        mRecyclerView = getRecyclerView();
         prepareRecyclerView();
         wireUpFAB(rootView);
         return rootView;
@@ -97,9 +94,9 @@ public class EventListManagerFragment extends BaseEventListFragment {
         mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), BaseEventsManagerPagerActivity.class);
-                BaseEventsFragment.mEventAction = BaseEventsFragment.ActionType.CREATE_EVENT;
-             //   startActivity(intent);
+                Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
+                EventsFragment.mEventAction = EventsFragment.ActionType.CREATE_EVENT;
+                startActivity(intent);
             }
         });
     }

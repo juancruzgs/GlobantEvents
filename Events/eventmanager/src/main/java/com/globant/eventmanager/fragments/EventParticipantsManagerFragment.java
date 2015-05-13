@@ -24,6 +24,7 @@ import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +33,6 @@ import java.util.List;
 public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener, BasePagerActivity.OnPageScrollStateChangedCancelAnimation{
 
     private static final String TAG = "EventParticipantsFragment";
-    private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private List<Subscriber> mSubscribers;
     private List<Subscriber> mAcceptedSubscribers;
     protected LayoutManagerType mCurrentLayoutManagerType;
@@ -64,7 +64,11 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        showProgressOverlay();
+        switch (theAction) {
+            case PARTICIPANT_LIST:
+                showProgressOverlay();
+                break;
+        }
     }
 
     @Override
@@ -72,9 +76,11 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         switch ( theAction ) {
             case PARTICIPANT_LIST:
                 mSubscribers = (List<Subscriber>) result;
+                ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
                 setRecyclerViewAdapter();
                 hideUtilsAndShowContentOverlay();
                 mAcceptedSubscribers = new ArrayList<>();
+                break;
         }
     }
 
@@ -119,7 +125,6 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
@@ -134,12 +139,18 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         hideUtilsAndShowContentOverlay();
         rootView.setTag(TAG);
         setRetainInstance(true);
+        wireUpViews(savedInstanceState, rootView);
+        setAddDeclineAllListener();
+        return rootView;
+    }
+
+    private void wireUpViews(Bundle savedInstanceState, View rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_participants_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         if (savedInstanceState != null) {
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                    .getSerializable(KEY_LAYOUT_MANAGER);
+                    .getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
         setOnScrollListener();
@@ -147,8 +158,6 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         mViewButtonsAddDeclineAll = (LinearLayout) rootView.findViewById(R.id.linear_layout_buttons_add_and_decline);
         mTextViewAcceptAll = (TextView) rootView.findViewById(R.id.text_view_accept_all);
         mTextViewDeclineAll = (TextView) rootView.findViewById(R.id.text_view_decline_all);
-        setAddDeclineAllListener();
-        return rootView;
     }
 
     private void setAddDeclineAllListener() {
@@ -259,7 +268,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
+        savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -285,9 +294,10 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void onResumeFragment(){
+        mSubscribers = ((BaseEventDetailPagerActivity) getActivity()).getSubscriberList();
         if (mSubscribers == null) {
-            mEvent= BaseEventDetailPagerActivity.getInstance().getEvent();
-            String eventId=mEvent.getObjectID();
+            mEvent = ((BaseEventDetailPagerActivity) getActivity()).getEvent();
+            String eventId = mEvent.getObjectID();
             mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
         }
         else {
