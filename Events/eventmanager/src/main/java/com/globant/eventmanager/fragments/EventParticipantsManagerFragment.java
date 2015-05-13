@@ -24,6 +24,7 @@ import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.PushNotifications;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,6 +76,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                 setRecyclerViewAdapter();
                 hideUtilsAndShowContentOverlay();
                 mAcceptedSubscribers = new ArrayList<>();
+                break;
         }
     }
 
@@ -302,6 +304,11 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
             //Object[] objects = {mEvent.getObjectID(), mSubscribers};
             //mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), objects);
             mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
+            for (Subscriber subscriber: mAcceptedSubscribers){
+                PushNotifications.sendNotificationToSubscriber("You are a participant now",
+                        mEvent.getObjectID(),subscriber.getObjectID());
+            }
+
         }
         super.onStop();
     }

@@ -110,44 +110,4 @@ public class EventListManagerFragment extends BaseEventListFragment {
             }
         });
     }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_event_list_manager, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        boolean handled = false;
-        if (id == com.globant.eventscorelib.R.id.action_credits) {
-            Intent intentCredits = new Intent(getActivity(), BaseCreditsActivity.class);
-            startActivity(intentCredits);
-            handled = true;
-        } else {
-            if (id == com.globant.eventscorelib.R.id.action_profile) {
-                Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
-                startActivity(intentSubscriber);
-                handled = true;
-            } else {
-                if (id == com.globant.eventscorelib.R.id.action_checkin) {
-                    Intent intentScan = new Intent(CoreConstants.INTENT_SCAN);
-                    startActivityForResult(intentScan, 0);
-                    handled = true;
-                } else {
-                    if (id == R.id.action_notifications) {
-                        Intent intentNotifications = new Intent(getActivity(), PushNotificationActivity.class);
-                        intentNotifications.putExtra(PushNotificationFragment.SOURCE_TAG, this.getClass().getSimpleName());
-                        startActivity(intentNotifications);
-                        handled = true;
-                    }
-                }
-            }
-        }
-
-        if (!handled) {
-            handled = super.onOptionsItemSelected(item);
-        }
-        return handled;
-    }
 }

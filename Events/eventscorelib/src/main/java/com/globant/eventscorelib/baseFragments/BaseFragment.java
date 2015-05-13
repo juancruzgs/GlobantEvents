@@ -71,7 +71,9 @@ public abstract class BaseFragment extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mService.unSubscribeActor(getActionListener());
+        if (mService != null){
+            mService.unSubscribeActor(getActionListener());
+        }
     }
 
     /// Return an ActionListener to manage the db actions... or just null

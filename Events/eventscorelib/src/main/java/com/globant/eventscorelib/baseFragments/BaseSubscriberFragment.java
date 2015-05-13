@@ -45,6 +45,7 @@ import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
+import com.globant.eventscorelib.utils.PushNotifications;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
@@ -615,6 +616,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             case EVENTS_TO_SUBSCRIBER_CREATE:
                 hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
+                PushNotifications.suscribeToChannel("SUB-" + mEventId);
+                PushNotifications.suscribeToChannel("SUB-"+mEventId+"-"+mSubscriber.getObjectID());
                 getActivity().finish();
                 break;
         }

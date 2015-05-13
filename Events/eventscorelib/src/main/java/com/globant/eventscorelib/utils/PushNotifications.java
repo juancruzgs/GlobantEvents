@@ -8,6 +8,9 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.parse.SendCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,6 +73,29 @@ public class PushNotifications {
             }
             parsePush.setChannel(channel);
         }
+        parsePush.setQuery(ParseInstallation.getQuery());
+        parsePush.sendInBackground(new SendCallback() {
+            @Override
+            public void done(ParseException e) {
+                Logger.d("Notification sended");
+            }
+        });
+    }
+
+    public static void sendNotificationToSubscriber(String message, String event, String idSubscriber){
+        JSONObject data =  new JSONObject();
+        try {
+            data.put("action","com.globant.events.PUSH_RECEIVE");
+            data.put("title", "Title test");
+            data.put("alert", message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ParsePush parsePush = new ParsePush();
+        parsePush.setMessage(message);
+        parsePush.setData(data);
+        parsePush.setChannel("SUB-"+event+"-"+idSubscriber);
         parsePush.setQuery(ParseInstallation.getQuery());
         parsePush.sendInBackground(new SendCallback() {
             @Override
