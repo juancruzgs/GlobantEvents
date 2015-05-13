@@ -15,25 +15,26 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public final class LocalDataController {
+/**
+ * Created by juan.soler on 5/13/2015.
+ */
+public abstract class DatabaseController {
 
-    private LocalDataController() {
-    }
-
-    public static List<Event> getEvents(boolean isGlober) throws ParseException {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-        query.fromLocalDatastore();
-        query.whereGreaterThan(CoreConstants.FIELD_END_DATE, new Date());
-        query.orderByAscending(CoreConstants.FIELD_START_DATE);
+    public List<Event> getEvents(boolean isGlober) throws ParseException {
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        queryFromLocalDatastore(eventsQuery);
+        eventsQuery.whereGreaterThan(CoreConstants.FIELD_END_DATE, new Date());
+        eventsQuery.orderByAscending(CoreConstants.FIELD_START_DATE);
         if (!isGlober) {
-            query.whereEqualTo(CoreConstants.FIELD_PUBLIC, true);
+            eventsQuery.whereEqualTo(CoreConstants.FIELD_PUBLIC, true);
         }
-        List<ParseObject> databaseEventsList = query.find();
+        List<ParseObject> databaseEventsList = eventsQuery.find();
         List<Event> domainEventsList = new ArrayList<>();
         for (ParseObject databaseEvent : databaseEventsList) {
+            pinObjectInBackground(databaseEvent);
             ParseRelation relation = databaseEvent.getRelation(CoreConstants.FIELD_SPEAKERS);
             ParseQuery relationQuery = relation.getQuery();
-            relationQuery.fromLocalDatastore();
+            queryFromLocalDatastore(relationQuery);
             List<ParseObject> databaseSpeakersList = relationQuery.find();
             List<Speaker> domainSpeakersList = new ArrayList<>();
             for (ParseObject databaseSpeaker : databaseSpeakersList) {
@@ -47,7 +48,10 @@ public final class LocalDataController {
         return domainEventsList;
     }
 
-    private static Speaker createDomainSpeakerFromDatabase(ParseObject databaseSpeaker) throws ParseException {
+    protected abstract void pinObjectInBackground(ParseObject object);
+    protected abstract void queryFromLocalDatastore(ParseQuery query);
+
+    protected Speaker createDomainSpeakerFromDatabase(ParseObject databaseSpeaker) throws ParseException {
         Speaker speaker = new Speaker();
         speaker.setName(databaseSpeaker.getString(CoreConstants.FIELD_NAME));
         speaker.setLastName(databaseSpeaker.getString(CoreConstants.FIELD_LAST_NAME));
@@ -57,7 +61,7 @@ public final class LocalDataController {
         return speaker;
     }
 
-    private static Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
+    protected Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
         Event domainEvent = new Event();
         domainEvent.setObjectID(databaseEvent.getObjectId());
         domainEvent.setTitle(databaseEvent.getString(CoreConstants.FIELD_TITLE));
@@ -80,12 +84,12 @@ public final class LocalDataController {
         return domainEvent;
     }
 
-    private static byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
+    protected byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
         ParseFile file = databaseObject.getParseFile(field);
         return file != null ? file.getData() : null;
     }
 
-    private static LatLng getCoordinatesFromDatabaseObject(ParseObject databaseObject) {
+    private LatLng getCoordinatesFromDatabaseObject(ParseObject databaseObject) {
         ParseGeoPoint geoPoint = databaseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES);
         return geoPoint != null ? new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()) : null;
     }
