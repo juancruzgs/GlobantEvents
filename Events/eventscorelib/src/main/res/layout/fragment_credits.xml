@@ -20,7 +20,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_baudo"
@@ -33,7 +33,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_baudo"
@@ -47,7 +47,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_burgos"
@@ -60,7 +60,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/col_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_burgos"
@@ -74,7 +74,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_cattaneo"
@@ -87,7 +87,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_cattaneo"
@@ -101,7 +101,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_cavallo"
@@ -114,7 +114,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_cavallo"
@@ -128,7 +128,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_gonzalez"
@@ -141,7 +141,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_gonzalez"
@@ -155,7 +155,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_gugliotta"
@@ -168,7 +168,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_gugliotta"
@@ -182,7 +182,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_lodi"
@@ -195,7 +195,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_lodi"
@@ -209,7 +209,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_madina"
@@ -222,7 +222,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_madina"
@@ -236,7 +236,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_pena"
@@ -249,7 +249,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_pena"
@@ -263,7 +263,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_ramirez"
@@ -276,7 +276,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/col_divider" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mail_ramirez"
@@ -284,7 +284,7 @@
             android:gravity="right"
             style="@style/condensed_light_medium"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/we_are_ready"

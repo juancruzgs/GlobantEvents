@@ -45,7 +45,7 @@
                     android:src="@mipmap/ic_social"
                     />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/event_title_text_view"
@@ -57,7 +57,7 @@
                     android:layout_above="@+id/event_date_text_view"
                     />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="20:00 PM 11/04/2015"
@@ -69,7 +69,7 @@
                     android:layout_above="@+id/event_location_text_view"
                     />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Mar del Plata, Argentina"
@@ -101,7 +101,7 @@
                         android:layout_weight="1"
                         android:src="@mipmap/ic_speaker"/>
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/event_speakers_text_view"
                         style="@style/condensed_normal_small"
                         android:layout_width="0dp"
@@ -122,7 +122,7 @@
                     android:layout_height="0.25dp"
                     android:background="@color/grey"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/event_short_description_text_view"
                     style="@style/condensed_normal_small"
                     android:layout_width="match_parent"

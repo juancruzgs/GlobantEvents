@@ -18,7 +18,7 @@
         android:id="@+id/linear_layout_buttons_add_and_decline"
         android:layout_gravity="bottom">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:text="@string/text_view_add_all_participants"
@@ -38,7 +38,7 @@
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"></LinearLayout>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:text="@string/text_view_decline_all_participants"
@@ -52,7 +52,7 @@
 
     </LinearLayout>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_view_no_participants"

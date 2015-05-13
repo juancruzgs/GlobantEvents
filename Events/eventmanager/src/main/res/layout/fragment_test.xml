@@ -16,7 +16,7 @@
         android:contentDescription="QR Code"
         android:layout_weight="1"/>
 
-    <Button
+    <android.support.v7.widget.AppCompaButton
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text="Send QR Code"

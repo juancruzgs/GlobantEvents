@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:background="#82000000"
             android:padding="10dp">
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/speaker_fullName"
@@ -34,14 +34,14 @@
                 style="@style/condensed_normal_large"
                 android:textColor="#FFFFFFFF" />
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/condensed_normal_medium"
                 android:id="@+id/speaker_title"
                 android:textColor="#ffafafaf"/>
         </LinearLayout>
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"

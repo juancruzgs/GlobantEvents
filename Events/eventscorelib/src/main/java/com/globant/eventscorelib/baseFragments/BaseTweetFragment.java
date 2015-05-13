@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,9 +36,9 @@ import twitter4j.User;
 public class BaseTweetFragment extends BaseFragment implements BaseService.ActionListener, BaseTweetActivity.NewFragmentIntent {
 
     private ImageView mUserPicture;
-    private TextView mUsername;
-    private TextView mUserFullName;
-    private EditText mTweetText;
+    private AppCompatTextView mUsername;
+    private AppCompatTextView mUserFullName;
+    private AppCompatEditText mTweetText;
     private Button mTweetButton;
     private CropCircleTransformation mCircleTransformation;
 
@@ -95,9 +97,9 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
     private void wireUpViews(View rootView) {
         mUserPicture = (ImageView) rootView.findViewById(R.id.imageView_user);
         Picasso.with(getActivity()).load(R.mipmap.placeholder).transform(mCircleTransformation).into(mUserPicture);
-        mUsername = (TextView) rootView.findViewById(R.id.textView_username);
-        mUserFullName = (TextView) rootView.findViewById(R.id.textView_user_full_name);
-        mTweetText = (EditText) rootView.findViewById(R.id.textView_tweet);
+        mUsername = (AppCompatTextView) rootView.findViewById(R.id.textView_username);
+        mUserFullName = (AppCompatTextView) rootView.findViewById(R.id.textView_user_full_name);
+        mTweetText = (AppCompatEditText) rootView.findViewById(R.id.textView_tweet);
         //mTweetText.setText(getString(R.string.general_hashtag) + event.hashtag); TODO put the event hashtag when the activity starts
         mTweetButton = (Button) rootView.findViewById(R.id.button_tweet);
         mTweetButton.setOnClickListener(new View.OnClickListener() {

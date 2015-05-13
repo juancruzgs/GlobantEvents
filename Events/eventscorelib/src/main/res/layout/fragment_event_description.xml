@@ -87,7 +87,7 @@
                                     android:gravity="center_vertical"
                                     android:orientation="vertical">
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Start_Title"
                                         style="@style/condensed_light_small"
                                         android:layout_width="match_parent"
@@ -96,7 +96,7 @@
                                         android:text="@string/textView_Event_Start_Title"
                                         android:textColor="@color/grey_light"/>
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Start_Date"
                                         style="@style/condensed_normal_medium"
                                         android:layout_width="match_parent"
@@ -136,7 +136,7 @@
                                     android:gravity="center_vertical"
                                     android:orientation="vertical">
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_End_Title"
                                         style="@style/condensed_light_small"
                                         android:layout_width="wrap_content"
@@ -145,7 +145,7 @@
                                         android:text="@string/textView_Event_End_Title"
                                         android:textColor="@color/grey_light"/>
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_End_Date"
                                         style="@style/condensed_normal_medium"
                                         android:layout_width="wrap_content"
@@ -202,7 +202,7 @@
                                         android:layout_height="match_parent"
                                         android:layout_weight="1">
 
-                                        <TextView
+                                        <android.support.v7.widget.AppCompatTextView
                                             android:id="@+id/textView_Event_Address_Title"
                                             style="@style/condensed_light_small"
                                             android:layout_width="wrap_content"
@@ -211,7 +211,7 @@
                                             android:text="@string/textView_Event_Address_Title"
                                             android:textColor="@color/grey_light"/>
 
-                                        <TextView
+                                        <android.support.v7.widget.AppCompatTextView
                                             android:id="@+id/textView_Event_Address"
                                             style="@style/condensed_normal_medium"
                                             android:layout_width="wrap_content"
@@ -264,7 +264,7 @@
                                     android:gravity="center_vertical"
                                     android:orientation="vertical">
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_City_Title"
                                         style="@style/condensed_light_small"
                                         android:layout_width="wrap_content"
@@ -273,7 +273,7 @@
                                         android:text="@string/textView_Event_City_Title"
                                         android:textColor="@color/grey_light"/>
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_City"
                                         style="@style/condensed_normal_medium"
                                         android:layout_width="wrap_content"
@@ -313,7 +313,7 @@
                                     android:gravity="center_vertical"
                                     android:orientation="vertical">
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Country_Title"
                                         style="@style/condensed_light_small"
                                         android:layout_width="wrap_content"
@@ -322,7 +322,7 @@
                                         android:text="@string/textView_Event_Country_Title"
                                         android:textColor="@color/grey_light"/>
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Country"
                                         style="@style/condensed_normal_medium"
                                         android:layout_width="wrap_content"
@@ -372,7 +372,7 @@
                                     android:gravity="center_vertical"
                                     android:orientation="vertical">
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Language_Title"
                                         style="@style/condensed_light_small"
                                         android:layout_width="wrap_content"
@@ -381,7 +381,7 @@
                                         android:text="@string/textView_Event_Language_Title"
                                         android:textColor="@color/grey_light"/>
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Language"
                                         style="@style/condensed_normal_medium"
                                         android:layout_width="match_parent"
@@ -420,7 +420,7 @@
                                     android:gravity="center_vertical"
                                     android:orientation="vertical">
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Add_Info_Title"
                                         style="@style/condensed_light_small"
                                         android:layout_width="wrap_content"
@@ -430,7 +430,7 @@
                                         android:text="@string/texView_Add_Info_Title"
                                         android:textColor="@color/grey_light"/>
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Additional_Info"
                                         style="@style/condensed_normal_medium"
                                         android:layout_width="match_parent"
@@ -472,7 +472,7 @@
                                     android:gravity="center_vertical"
                                     android:orientation="vertical">
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Desc_Title"
                                         style="@style/condensed_light_small"
                                         android:layout_width="match_parent"
@@ -481,7 +481,7 @@
                                         android:text="@string/textView_Event_Desc_Title"
                                         android:textColor="@color/grey_light"/>
 
-                                    <TextView
+                                    <android.support.v7.widget.AppCompatTextView
                                         android:id="@+id/textView_Event_Full_Description"
                                         style="@style/condensed_normal_medium"
                                         android:layout_width="match_parent"
@@ -518,7 +518,7 @@
         android:orientation="vertical"
         >
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

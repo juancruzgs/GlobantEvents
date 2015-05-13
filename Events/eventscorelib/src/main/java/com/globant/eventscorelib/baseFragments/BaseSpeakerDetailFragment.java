@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ import com.globant.eventscorelib.domainObjects.Speaker;
 public class BaseSpeakerDetailFragment extends BaseFragment {
 
     private Speaker speaker;
-    private TextView fullName, speakerTitle, speakerBiography;
+    private AppCompatTextView fullName, speakerTitle, speakerBiography;
     private ImageView speakerImage;
 
      public BaseSpeakerDetailFragment() {
@@ -49,9 +50,9 @@ public class BaseSpeakerDetailFragment extends BaseFragment {
     }
 
     private void wireSpeakerView(View rootView) {
-        fullName = (TextView) rootView.findViewById(R.id.speaker_fullName);
-        speakerTitle = (TextView) rootView.findViewById(R.id.speaker_title);
-        speakerBiography = (TextView) rootView.findViewById(R.id.speaker_biography);
+        fullName = (AppCompatTextView) rootView.findViewById(R.id.speaker_fullName);
+        speakerTitle = (AppCompatTextView) rootView.findViewById(R.id.speaker_title);
+        speakerBiography = (AppCompatTextView) rootView.findViewById(R.id.speaker_biography);
         speakerImage = (ImageView)rootView.findViewById(R.id.speaker_picture);
         fullName.setText(speaker.getName()+" "+speaker.getLastName());
         speakerTitle.setText(speaker.getTitle());
