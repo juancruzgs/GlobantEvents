@@ -138,6 +138,8 @@ public abstract class BaseService extends Service {
             ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
             currentSubscribers.put(anActionListener.getBindingKey(), currentSubscriber);
         }
+        else if (!cancelKeys.contains(anActionListener.getBindingKey()))
+            cancelKeys.add(anActionListener.getBindingKey());
 
         if (cachedElements.containsKey(anActionListener.getBindingKey())){
             HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(anActionListener.getBindingKey());
@@ -148,8 +150,6 @@ public abstract class BaseService extends Service {
 
 //        if (cancelKeys.contains(anActionListener.getBindingKey()))
 //            cancelKeys.remove(anActionListener.getBindingKey());
-        if (!cancelKeys.contains(anActionListener.getBindingKey()))
-            cancelKeys.add(anActionListener.getBindingKey());
 
     }
     
