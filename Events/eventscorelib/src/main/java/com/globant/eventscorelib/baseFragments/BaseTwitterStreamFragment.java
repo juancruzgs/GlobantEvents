@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,7 +37,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     private ActionButton mActionButton;
     private List<Status> mTweetList;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private TextView mTextViewNoTweets;
+    private AppCompatTextView mTextViewNoTweets;
     private String mBindingKey;
 
     public BaseTwitterStreamFragment() {
@@ -98,7 +99,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         prepareSwipeRefreshLayout(rootView);
         wireUpFAB(rootView);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mTextViewNoTweets = (TextView)rootView.findViewById(R.id.text_view_no_tweets);
+        mTextViewNoTweets = (AppCompatTextView)rootView.findViewById(R.id.text_view_no_tweets);
         setRecyclerViewLayoutManager();
         setRetainInstance(true);
         return rootView;

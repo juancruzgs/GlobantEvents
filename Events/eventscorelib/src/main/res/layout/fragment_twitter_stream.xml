@@ -7,7 +7,7 @@
     <include
         layout="@layout/swipe_refresh_layout"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_view_no_tweets"
         style="@style/condensed_normal_large"
         android:layout_width="wrap_content"

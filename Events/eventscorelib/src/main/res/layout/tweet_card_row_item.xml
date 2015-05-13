@@ -26,14 +26,14 @@
             android:orientation="vertical"
             android:paddingLeft="10dp">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textView_user_name"
                 style="@style/condensed_normal_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/globant_green"/>
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textView_tweet"
                 style="@style/condensed_light_medium"
                 android:layout_width="wrap_content"

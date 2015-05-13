@@ -5,7 +5,7 @@
               android:gravity="center"
               android:orientation="vertical">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_view_no_speakers"
         style="@style/condensed_normal_large"
         android:layout_width="wrap_content"

@@ -18,7 +18,7 @@
         android:background="@color/globant_green"
         android:orientation="horizontal">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_accept_all"
             style="@style/condensed_normal_small"
             android:layout_width="0dp"
@@ -38,7 +38,7 @@
             android:background="@color/white"
             android:orientation="horizontal"></LinearLayout>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_decline_all"
             style="@style/condensed_normal_small"
             android:layout_width="0dp"
@@ -52,7 +52,7 @@
 
     </LinearLayout>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_view_no_participants"
         style="@style/condensed_normal_large"
         android:layout_width="wrap_content"

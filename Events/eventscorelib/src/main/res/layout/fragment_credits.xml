@@ -20,7 +20,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_baudo"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_baudo_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_burgos"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/col_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_burgos_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -74,7 +74,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_cattaneo"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -87,7 +87,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_cattaneo_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -101,7 +101,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_cavallo"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -114,7 +114,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_cavallo_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -128,7 +128,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_gonzalez"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -141,7 +141,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_gonzalez_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -155,7 +155,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_gugliotta"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -168,7 +168,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_gugliotta_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -182,7 +182,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_lodi"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -195,7 +195,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_lodi_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -209,7 +209,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_madina"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -222,7 +222,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_madina_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -236,7 +236,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_pena"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -249,7 +249,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/arg_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_pena_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -263,7 +263,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/credits_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_ramirez"
             style="@style/condensed_normal_large"
             android:layout_width="match_parent"
@@ -276,7 +276,7 @@
             android:layout_margin="@dimen/divider_margin"
             android:background="@drawable/col_divider"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_ramirez_mail"
             style="@style/condensed_light_medium"
             android:layout_width="match_parent"
@@ -284,7 +284,7 @@
             android:gravity="right"
             android:text="@string/mail_ramirez"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_ready"
             style="@style/condensed_normal_extra_large"
             android:layout_width="match_parent"

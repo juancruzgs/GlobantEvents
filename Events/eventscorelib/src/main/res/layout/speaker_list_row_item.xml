@@ -31,7 +31,7 @@
             android:paddingLeft="10dp"
             android:paddingTop="15dp">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/text_view_speaker_item_name"
                 style="@style/condensed_normal_large"
                 android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                 android:text="asdasdasd"
                 android:textColor="@color/globant_green"/>
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/text_view_speaker_item_description"
                 style="@style/condensed_normal_small"
                 android:layout_width="match_parent"

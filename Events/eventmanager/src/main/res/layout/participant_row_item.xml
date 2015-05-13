@@ -35,7 +35,7 @@
             android:padding="10dp"
             android:visibility="invisible">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/text_view_participant_name_left"
                 style="@style/condensed_normal_large"
                 android:layout_width="wrap_content"
@@ -47,14 +47,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/text_view_occupation_left"
                     style="@style/condensed_normal_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lawyer"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/text_view_glober_left"
                     style="@style/condensed_normal_medium"
                     android:layout_width="wrap_content"
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/text_view_location_left"
                     style="@style/condensed_light_small"
                     android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/text_view_participant_name"
                 style="@style/condensed_normal_large"
                 android:layout_width="wrap_content"
@@ -100,14 +100,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/text_view_occupation"
                     style="@style/condensed_normal_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lawyer"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/text_view_glober"
                     style="@style/condensed_normal_medium"
                     android:layout_width="wrap_content"
@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/text_view_location"
                     style="@style/condensed_light_small"
                     android:layout_width="wrap_content"
@@ -148,7 +148,7 @@
                 android:src="@drawable/profile_pic"/>
         </FrameLayout>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -30,7 +30,7 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/speaker_fullName"
                     style="@style/condensed_normal_large"
                     android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                     android:textColor="#FFFFFFFF"
                     android:textSize="35sp"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/speaker_title"
                     style="@style/condensed_normal_medium"
                     android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
                     android:textColor="#ffafafaf"/>
             </LinearLayout>
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/speaker_biography"
                 style="@style/condensed_normal_small"
                 android:layout_width="match_parent"

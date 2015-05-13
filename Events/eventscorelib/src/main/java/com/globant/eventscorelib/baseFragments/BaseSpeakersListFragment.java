@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,7 +38,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     protected RecyclerView mRecyclerView;
     protected BaseSpeakersListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    private TextView mTextViewNoSpeakers;
+    private AppCompatTextView mTextViewNoSpeakers;
 
     private String mBindingKey;
 
@@ -104,7 +105,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
         hideUtilsAndShowContentOverlay();
-        mTextViewNoSpeakers=(TextView)rootView.findViewById(R.id.text_view_no_speakers);
+        mTextViewNoSpeakers=(AppCompatTextView)rootView.findViewById(R.id.text_view_no_speakers);
         prepareRecyclerView(rootView);
         setRetainInstance(true);
         return rootView;

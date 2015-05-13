@@ -45,7 +45,7 @@
                     android:src="@mipmap/ic_social"
                     />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/event_title_text_view"
                     style="@style/condensed_normal_large"
                     android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                     android:textColor="@color/white"
                     />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/event_date_text_view"
                     style="@style/condensed_normal_medium"
                     android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                     android:textColor="@color/grey_card"
                     />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/event_location_text_view"
                     style="@style/condensed_light_small"
                     android:layout_width="match_parent"
@@ -101,7 +101,7 @@
                         android:layout_weight="1"
                         android:src="@mipmap/ic_speaker"/>
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/event_speakers_text_view"
                         style="@style/condensed_normal_small"
                         android:layout_width="0dp"
@@ -122,7 +122,7 @@
                     android:layout_marginTop="6dp"
                     android:background="@color/grey"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/event_short_description_text_view"
                     style="@style/condensed_normal_small"
                     android:layout_width="match_parent"
