@@ -17,9 +17,12 @@ import java.util.Date;
 import java.util.List;
 
 
-public class CloudDataController {
+public final class CloudDataController {
 
-    public List<Event> getEvents(boolean isGlober) throws ParseException {
+    private CloudDataController() {
+    }
+
+    public static List<Event> getEvents(boolean isGlober) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         query.whereGreaterThan(CoreConstants.FIELD_END_DATE, new Date());
         query.orderByAscending(CoreConstants.FIELD_START_DATE);
@@ -29,6 +32,7 @@ public class CloudDataController {
         List<ParseObject> databaseEventsList = query.find();
         List<Event> domainEventsList = new ArrayList<>();
         for (ParseObject databaseEvent : databaseEventsList) {
+            databaseEvent.pinInBackground();
             ParseRelation relation = databaseEvent.getRelation(CoreConstants.FIELD_SPEAKERS);
             ParseQuery relationQuery = relation.getQuery();
             List<ParseObject> databaseSpeakersList = relationQuery.find();
@@ -44,22 +48,22 @@ public class CloudDataController {
         return domainEventsList;
     }
 
-    public Event getEvent(String eventId) throws ParseException {
+    public static Event getEvent(String eventId) throws ParseException {
         ParseObject databaseEvent = getDatabaseEvent(eventId);
         return createDomainEventFromDatabase(databaseEvent);
     }
 
-    private ParseObject getDatabaseEvent(String eventId) throws ParseException {
+    private static ParseObject getDatabaseEvent(String eventId) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         return query.get(eventId);
     }
 
-    private ParseObject getDatabaseSubscriber(String subscriberId) throws ParseException {
+    private static ParseObject getDatabaseSubscriber(String subscriberId) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
         return query.get(subscriberId);
     }
 
-    public String getSubscriberId(String subscriberEmail) {
+    public static String getSubscriberId(String subscriberEmail) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
         query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
         String objectId;
@@ -71,7 +75,7 @@ public class CloudDataController {
         return objectId;
     }
 
-    public boolean isSubscribed(String subscriberId, String eventId) {
+    public static boolean isSubscribed(String subscriberId, String eventId) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         try {
             query.whereEqualTo(CoreConstants.FIELD_EVENTS, getDatabaseEvent(eventId));
@@ -83,7 +87,7 @@ public class CloudDataController {
         }
     }
 
-    public Event setCheckIn(String eventId, String subscriberMail) throws ParseException {
+    public static Event setCheckIn(String eventId, String subscriberMail) throws ParseException {
         ParseObject event = getDatabaseEvent(eventId);
         ParseObject subscriber = getDatabaseSubscriberByEmail(subscriberMail);
         ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
@@ -96,13 +100,13 @@ public class CloudDataController {
         return createDomainEventFromDatabase(event);
     }
 
-    private ParseObject getDatabaseSubscriberByEmail(String subscriberEmail) throws ParseException {
+    private static ParseObject getDatabaseSubscriberByEmail(String subscriberEmail) throws ParseException {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
         query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
         return query.getFirst();
     }
 
-    public void setAccepted(String eventId, List<Subscriber> subscribers) throws ParseException {
+    public static void setAccepted(String eventId, List<Subscriber> subscribers) throws ParseException {
         ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         ParseObject event = getDatabaseEvent(eventId);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
@@ -115,7 +119,7 @@ public class CloudDataController {
         }
     }
 
-    public List<Speaker> getEventSpeakers(String eventId) throws ParseException {
+    public static List<Speaker> getEventSpeakers(String eventId) throws ParseException {
         List<Speaker> speakers = new ArrayList<>();
         ParseObject event = getDatabaseEvent(eventId);
         ParseRelation<ParseObject> relation = event.getRelation(CoreConstants.FIELD_SPEAKERS);
@@ -126,7 +130,7 @@ public class CloudDataController {
         return speakers;
     }
 
-    public List<Subscriber> getEventSubscribers(String eventId) throws ParseException {
+    public static List<Subscriber> getEventSubscribers(String eventId) throws ParseException {
         ParseObject event = getDatabaseEvent(eventId);
         ParseQuery<ParseObject> eventsToSubscribersQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         eventsToSubscribersQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
@@ -147,19 +151,19 @@ public class CloudDataController {
         return subscribersList;
     }
 
-    public void createEvent(Event domainEvent) throws ParseException {
+    public static void createEvent(Event domainEvent) throws ParseException {
         ParseObject databaseEvent = new ParseObject(CoreConstants.EVENTS_TABLE);
         setDatabaseEventInformation(domainEvent, databaseEvent);
         databaseEvent.save();
     }
 
-    public void updateEvent(Event domainEvent) throws ParseException {
+    public static void updateEvent(Event domainEvent) throws ParseException {
         ParseObject databaseEvent = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, domainEvent.getObjectID());
         setDatabaseEventInformation(domainEvent, databaseEvent);
         databaseEvent.save();
     }
 
-    public void addEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
+    public static void addEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject event = eventsQuery.get(eventId);
         ParseQuery<ParseObject> speakersQuery = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
@@ -170,7 +174,7 @@ public class CloudDataController {
         event.save();
     }
 
-    public void deleteEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
+    public static void deleteEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject event = eventsQuery.get(eventId);
         ParseQuery<ParseObject> speakersQuery = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
@@ -181,7 +185,7 @@ public class CloudDataController {
         event.save();
     }
 
-    public void deleteEvent(Event domainEvent) throws ParseException {
+    public static void deleteEvent(Event domainEvent) throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject event = eventsQuery.get(domainEvent.getObjectID());
 
@@ -195,20 +199,20 @@ public class CloudDataController {
         event.delete();
     }
 
-    public void createSpeaker(Speaker domainSpeaker) throws ParseException {
+    public static void createSpeaker(Speaker domainSpeaker) throws ParseException {
         ParseObject databaseSpeaker = new ParseObject(CoreConstants.SPEAKERS_TABLE);
         setDatabaseSpeakerInformation(domainSpeaker, databaseSpeaker);
         databaseSpeaker.save();
     }
 
-    public String createSubscriber(Subscriber domainSubscriber) throws ParseException {
+    public static String createSubscriber(Subscriber domainSubscriber) throws ParseException {
         ParseObject databaseSubscriber = new ParseObject(CoreConstants.SUBSCRIBERS_TABLE);
         setDatabaseSubscriberInformation(domainSubscriber, databaseSubscriber);
         databaseSubscriber.save();
         return databaseSubscriber.getObjectId();
     }
 
-    public void createEventToSubscriber(Subscriber domainSubscriber, String eventId) throws ParseException {
+    public static void createEventToSubscriber(Subscriber domainSubscriber, String eventId) throws ParseException {
         ParseObject databaseSubscriber = getDatabaseSubscriber(domainSubscriber.getObjectID());
         ParseObject databaseEvent = getDatabaseEvent(eventId);
         ParseObject databaseEventToSubscriber = new ParseObject(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
@@ -216,17 +220,17 @@ public class CloudDataController {
         databaseEventToSubscriber.save();
     }
 
-    private byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
+    private static byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
         ParseFile file = databaseObject.getParseFile(field);
         return file != null ? file.getData() : null;
     }
 
-    private LatLng getCoordinatesFromDatabaseObject(ParseObject databaseObject) {
+    private static LatLng getCoordinatesFromDatabaseObject(ParseObject databaseObject) {
         ParseGeoPoint geoPoint = databaseObject.getParseGeoPoint(CoreConstants.FIELD_MAP_COORDINATES);
         return geoPoint != null ? new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()) : null;
     }
 
-    private Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
+    private static Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
         Event domainEvent = new Event();
         domainEvent.setObjectID(databaseEvent.getObjectId());
         domainEvent.setTitle(databaseEvent.getString(CoreConstants.FIELD_TITLE));
@@ -249,7 +253,7 @@ public class CloudDataController {
         return domainEvent;
     }
 
-    private Subscriber createDomainSubscriberFromDatabase(ParseObject databaseSubscriber, Boolean accepted, Boolean checkin) throws ParseException {
+    private static Subscriber createDomainSubscriberFromDatabase(ParseObject databaseSubscriber, Boolean accepted, Boolean checkin) throws ParseException {
         Subscriber domainSubscriber = new Subscriber();
         domainSubscriber.setObjectID(databaseSubscriber.getObjectId());
         domainSubscriber.setName(databaseSubscriber.getString(CoreConstants.FIELD_NAME));
@@ -269,7 +273,7 @@ public class CloudDataController {
         return domainSubscriber;
     }
 
-    private Speaker createDomainSpeakerFromDatabase(ParseObject databaseSpeaker) throws ParseException {
+    private static Speaker createDomainSpeakerFromDatabase(ParseObject databaseSpeaker) throws ParseException {
         Speaker speaker = new Speaker();
         speaker.setName(databaseSpeaker.getString(CoreConstants.FIELD_NAME));
         speaker.setLastName(databaseSpeaker.getString(CoreConstants.FIELD_LAST_NAME));
@@ -279,7 +283,7 @@ public class CloudDataController {
         return speaker;
     }
 
-    private void setDatabaseEventInformation(Event domainEvent, ParseObject databaseEvent) {
+    private static void setDatabaseEventInformation(Event domainEvent, ParseObject databaseEvent) {
         databaseEvent.put(CoreConstants.FIELD_TITLE, domainEvent.getTitle());
         databaseEvent.put(CoreConstants.FIELD_SHORT_DESCRIPTION, domainEvent.getShortDescription());
         databaseEvent.put(CoreConstants.FIELD_CITY, domainEvent.getCity());
@@ -300,7 +304,7 @@ public class CloudDataController {
         databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(coordinates.latitude, coordinates.longitude));
     }
 
-    private void setDatabaseSpeakerInformation(Speaker domainSpeaker, ParseObject databaseSpeaker) {
+    private static void setDatabaseSpeakerInformation(Speaker domainSpeaker, ParseObject databaseSpeaker) {
         databaseSpeaker.put(CoreConstants.FIELD_TITLE, domainSpeaker.getTitle());
         databaseSpeaker.put(CoreConstants.FIELD_NAME, domainSpeaker.getName());
         databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSpeaker.getLastName());
@@ -308,7 +312,7 @@ public class CloudDataController {
         databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSpeaker.getPicture()));
     }
 
-    private void setDatabaseSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSpeaker) {
+    private static void setDatabaseSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSpeaker) {
         databaseSpeaker.put(CoreConstants.FIELD_NAME, domainSubscriber.getName());
         databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSubscriber.getLastName());
         databaseSpeaker.put(CoreConstants.FIELD_EMAIL, domainSubscriber.getEmail());
@@ -322,7 +326,7 @@ public class CloudDataController {
         databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
     }
 
-    private void setDatabaseEventToSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSubscriber, ParseObject databaseEvent, ParseObject databaseEventToSubscriber) {
+    private static void setDatabaseEventToSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSubscriber, ParseObject databaseEvent, ParseObject databaseEventToSubscriber) {
         databaseEventToSubscriber.put(CoreConstants.FIELD_SUBSCRIBERS, databaseSubscriber);
         databaseEventToSubscriber.put(CoreConstants.FIELD_EVENTS, databaseEvent);
         databaseEventToSubscriber.put(CoreConstants.FIELD_PUBLIC, domainSubscriber.isPublic());
