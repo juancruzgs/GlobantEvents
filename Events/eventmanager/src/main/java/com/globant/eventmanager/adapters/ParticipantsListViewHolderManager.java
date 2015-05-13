@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,16 +24,16 @@ import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
  */
 public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder implements View.OnTouchListener {
 
-    private final TextView mTextViewName;
-    private TextView mTextViewNameLeft;
-    private TextView mTextViewGlober;
-    private TextView mTextViewGloberLeft;
-    private TextView mTextViewOccupation;
-    private TextView mTextViewOccupationLeft;
+    private final AppCompatTextView mTextViewName;
+    private AppCompatTextView mTextViewNameLeft;
+    private AppCompatTextView mTextViewGlober;
+    private AppCompatTextView mTextViewGloberLeft;
+    private AppCompatTextView mTextViewOccupation;
+    private AppCompatTextView mTextViewOccupationLeft;
     private final ImageView mImageViewParticipantLeft;
     private final ImageView mImageViewParticipantRight;
-    private TextView mTextViewLocation;
-    private TextView mTextViewLocationLeft;
+    private AppCompatTextView mTextViewLocation;
+    private AppCompatTextView mTextViewLocationLeft;
     private final LinearLayout mParticipantHolderItemLayout;
     private final FrameLayout mFrameLayoutLeft;
     private final FrameLayout mFrameLayoutRight;
@@ -49,32 +50,32 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     private TouchListenerItem mAdapter;
     private final Handler mHandler = new Handler();
     private int mSubPosition;
-    private TextView mTextViewPosition;
+    private AppCompatTextView mTextViewPosition;
     private ObjectAnimator mColorTransition;
 
 
 
-    public TextView getTextViewName() {
+    public AppCompatTextView getTextViewName() {
         return mTextViewName;
     }
 
-    public TextView getTextViewNameLeft() {
+    public AppCompatTextView getTextViewNameLeft() {
         return mTextViewNameLeft;
     }
 
-    public TextView getTextViewOccupation() {
+    public AppCompatTextView getTextViewOccupation() {
         return mTextViewOccupation;
     }
 
-    public TextView getTextViewOccupationLeft() {
+    public AppCompatTextView getTextViewOccupationLeft() {
         return mTextViewOccupationLeft;
     }
 
-    public TextView getTextViewGlober() {
+    public AppCompatTextView getTextViewGlober() {
         return mTextViewGlober;
     }
 
-    public TextView getTextViewGloberLeft() {
+    public AppCompatTextView getTextViewGloberLeft() {
         return mTextViewGloberLeft;
     }
 
@@ -90,11 +91,11 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
         return mBooleanIsPressed;
     }
 
-    public TextView getTextViewLocation() {
+    public AppCompatTextView getTextViewLocation() {
         return mTextViewLocation;
     }
 
-    public TextView getTextViewLocationLeft() {
+    public AppCompatTextView getTextViewLocationLeft() {
         return mTextViewLocationLeft;
     }
 
@@ -125,24 +126,24 @@ public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder i
     public ParticipantsListViewHolderManager(View itemView, EventParticipantsManagerFragment fragment, TouchListenerItem adapter) {
         super(itemView);
         mFrameLayoutHolder = (FrameLayout) itemView.findViewById(R.id.frame_layout_holder);
-        mTextViewNameLeft = (TextView) itemView.findViewById(R.id.text_view_participant_name_left);
+        mTextViewNameLeft = (AppCompatTextView) itemView.findViewById(R.id.text_view_participant_name_left);
         mFrameLayoutLeft = (FrameLayout) itemView.findViewById(R.id.frame_layout_left_image);
         mFrameLayoutRight = (FrameLayout) itemView.findViewById(R.id.frame_layout_right_image);
-        mTextViewName = (TextView) itemView.findViewById(R.id.text_view_participant_name);
-        mTextViewGlober = (TextView) itemView.findViewById(R.id.text_view_glober);
-        mTextViewGloberLeft = (TextView) itemView.findViewById(R.id.text_view_glober_left);
+        mTextViewName = (AppCompatTextView) itemView.findViewById(R.id.text_view_participant_name);
+        mTextViewGlober = (AppCompatTextView) itemView.findViewById(R.id.text_view_glober);
+        mTextViewGloberLeft = (AppCompatTextView) itemView.findViewById(R.id.text_view_glober_left);
         mImageViewParticipantLeft = (ImageView) itemView.findViewById(R.id.image_view_participant_left);
         mImageViewParticipantRight = (ImageView) itemView.findViewById(R.id.image_view_participant_right);
-        mTextViewOccupation = (TextView) itemView.findViewById(R.id.text_view_occupation);
-        mTextViewOccupationLeft = (TextView) itemView.findViewById(R.id.text_view_occupation_left);
-        mTextViewLocation = (TextView) itemView.findViewById(R.id.text_view_location);
-        mTextViewLocationLeft = (TextView) itemView.findViewById(R.id.text_view_location_left);
+        mTextViewOccupation = (AppCompatTextView) itemView.findViewById(R.id.text_view_occupation);
+        mTextViewOccupationLeft = (AppCompatTextView) itemView.findViewById(R.id.text_view_occupation_left);
+        mTextViewLocation = (AppCompatTextView) itemView.findViewById(R.id.text_view_location);
+        mTextViewLocationLeft = (AppCompatTextView) itemView.findViewById(R.id.text_view_location_left);
         mParticipantHolderItemLayout = (LinearLayout) itemView.findViewById(R.id.participant_item_holder_layout);
         mLinearLayoutMiddle = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle);
         mFragment = fragment;
         mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
         mAdapter = adapter;
-        mTextViewPosition = (TextView) itemView.findViewById(R.id.text_view_position);
+        mTextViewPosition = (AppCompatTextView) itemView.findViewById(R.id.text_view_position);
         itemView.setOnTouchListener(this);
 
     }
