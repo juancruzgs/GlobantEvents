@@ -154,7 +154,7 @@ public abstract class BaseService extends Service {
     }
     
     public void unSubscribeActor(ActionListener anActionListener){
-        String bindingKey = anActionListener.getBindingKey();
+        String bindingKey = anActionListener != null ? anActionListener.getBindingKey() : "";
         if (anActionListener != null && currentSubscribers.containsKey(bindingKey)) {
             //listenersToCancel.add(currentSubscribers.remove(anActionListener.getBindingKey()));
             currentSubscribers.remove(bindingKey);
