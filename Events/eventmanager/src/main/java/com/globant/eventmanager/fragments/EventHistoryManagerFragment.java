@@ -40,7 +40,7 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
 
     @Override
     public String getTitle() {
-        return "";
+        return "ojete";
     }
 
     @Override
