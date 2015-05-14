@@ -3,6 +3,7 @@ package com.globant.eventmanager.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
@@ -37,7 +39,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private List<Subscriber> mSubscribers;
     private List<Subscriber> mAcceptedSubscribers;
     protected LayoutManagerType mCurrentLayoutManagerType;
-    protected RecyclerView mRecyclerView;
+    protected ObservableRecyclerView mRecyclerView;
     protected EventParticipantsListAdapterManager mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected Boolean scrolling = false;
@@ -48,6 +50,8 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private AppCompatTextView mTextViewNoSubscribers;
     private Boolean mLastVisibleItem = false;
     private String mBindingKey;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     public Boolean isLastVisibleItem() {
         return mLastVisibleItem;
@@ -67,7 +71,9 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     public void onStartAction(BaseService.ACTIONS theAction) {
         switch (theAction) {
             case PARTICIPANT_LIST:
-                showProgressOverlay();
+                if (!mSwipeRefreshLayout.isRefreshing()){
+                    showProgressOverlay();
+                }
                 break;
         }
     }
@@ -79,8 +85,19 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                 mSubscribers = (List<Subscriber>) result;
                 ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
                 setRecyclerViewAdapter();
-                hideUtilsAndShowContentOverlay();
+                if (mSwipeRefreshLayout.isRefreshing()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    mAdapter.notifyDataSetChanged();
+                }else {
+                    hideUtilsAndShowContentOverlay();
+                }
                 mAcceptedSubscribers = new ArrayList<>();
+                break;
+            case SET_ACCEPTED:
+                if (mSwipeRefreshLayout.isRefreshing()){
+                    String eventId = mEvent.getObjectID();
+                    mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
+                }
                 break;
         }
     }
@@ -92,7 +109,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
             mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
             mRecyclerView.setAdapter(mAdapter);
             if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
-                Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_LONG).show();
+                Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
                 SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
             }
         }
@@ -141,12 +158,13 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         rootView.setTag(TAG);
         setRetainInstance(true);
         wireUpViews(savedInstanceState, rootView);
+        prepareSwipeRefreshLayout(rootView);
         setAddDeclineAllListener();
         return rootView;
     }
 
     private void wireUpViews(Bundle savedInstanceState, View rootView) {
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_participants_recycler_view);
+        mRecyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.list_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         if (savedInstanceState != null) {
@@ -159,6 +177,18 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         mViewButtonsAddDeclineAll = (LinearLayout) rootView.findViewById(R.id.linear_layout_buttons_add_and_decline);
         mTextViewAcceptAll = (AppCompatTextView) rootView.findViewById(R.id.text_view_accept_all);
         mTextViewDeclineAll = (AppCompatTextView) rootView.findViewById(R.id.text_view_decline_all);
+    }
+
+    private void prepareSwipeRefreshLayout(View rootView) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(com.globant.eventscorelib.R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mAdapter.getCurrentParticipant().cancelAnimations();
+                mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
     }
 
     private void setAddDeclineAllListener() {
