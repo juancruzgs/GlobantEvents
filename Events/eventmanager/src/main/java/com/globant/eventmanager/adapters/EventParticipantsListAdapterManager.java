@@ -30,6 +30,7 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
     public Boolean mBooleanIsPressed;
     public ParticipantsListViewHolderManager mCurrentParticipant;
     private CropCircleTransformation mTransformation;
+    private Bitmap rectangularBitmap;
 
     public ParticipantsListViewHolderManager getCurrentParticipant() {
         return mCurrentParticipant;
@@ -108,9 +109,32 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
 
     private void setViewHolderImage(ParticipantsListViewHolderManager holder, Subscriber subscriber) {
         Bitmap subscriberPicture = getSubscriberImage(subscriber);
-        Bitmap circularImage = mTransformation.transform(subscriberPicture);
+        cropRectangularImage(subscriberPicture);
+        Bitmap circularImage = mTransformation.transform(rectangularBitmap);
         holder.getImageViewParticipantLeft().setImageBitmap(circularImage);
         holder.getImageViewParticipantRight().setImageBitmap(circularImage);
+    }
+
+    private void cropRectangularImage(Bitmap subscriberPicture) {
+        if (subscriberPicture.getWidth() >= subscriberPicture.getHeight()){
+            rectangularBitmap = Bitmap.createBitmap(
+                    subscriberPicture,
+                    subscriberPicture.getWidth()/2 - subscriberPicture.getHeight()/2,
+                    0,
+                    subscriberPicture.getHeight(),
+                    subscriberPicture.getHeight()
+            );
+
+        }else{
+
+            rectangularBitmap = Bitmap.createBitmap(
+                    subscriberPicture,
+                    0,
+                    subscriberPicture.getHeight()/2 - subscriberPicture.getWidth()/2,
+                    subscriberPicture.getWidth(),
+                    subscriberPicture.getWidth()
+            );
+        }
     }
 
     public Bitmap getSubscriberImage(Subscriber subscriber) {
