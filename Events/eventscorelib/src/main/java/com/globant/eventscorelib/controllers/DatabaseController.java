@@ -77,7 +77,6 @@ public abstract class DatabaseController {
         domainEvent.setFullDescription(databaseEvent.getString(CoreConstants.FIELD_FULL_DESCRIPTION));
         domainEvent.setAdditionalInfo(databaseEvent.getString(CoreConstants.FIELD_ADDITIONAL_INFO));
         domainEvent.setAddress(databaseEvent.getString(CoreConstants.FIELD_ADDRESS));
-        domainEvent.setQrCode(databaseEvent.getString(CoreConstants.FIELD_QR_CODE));
         domainEvent.setLanguage(databaseEvent.getString(CoreConstants.FIELD_LANGUAGE));
         domainEvent.setHashtag(databaseEvent.getString(CoreConstants.FIELD_HASHTAG));
         domainEvent.setCoordinates(getCoordinatesFromDatabaseObject(databaseEvent));
