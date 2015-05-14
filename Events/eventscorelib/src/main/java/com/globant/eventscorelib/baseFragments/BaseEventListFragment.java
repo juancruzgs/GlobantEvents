@@ -106,8 +106,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
-                mSwipeRefreshLayout.setRefreshing(true);
+//                mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
+//                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
@@ -226,8 +226,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
-            case CLOUD_EVENT_LIST:
-            case LOCAL_EVENT_LIST:
+            case EVENT_LIST:
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
                     mRecyclerView.setAdapter(getAdapter());
@@ -258,7 +257,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
                 break;
-            case CLOUD_EVENT_LIST:
+            case EVENT_LIST:
                 //Refresh without internet connection
                 mSwipeRefreshLayout.setRefreshing(false);
                 hideUtilsAndShowContentOverlay();
@@ -284,11 +283,13 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         showProgressOverlay();
         mEventList = ((BaseEventListActivity) getActivity()).getEventList();
         if (mEventList == null) {
-            if (((BaseActivity) getActivity()).isOnline()) {
-                mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
-            } else {
-                mService.executeAction(BaseService.ACTIONS.LOCAL_EVENT_LIST, getBindingKey(), getIsGlober());
-            }
+//            if (((BaseActivity) getActivity()).isOnline()) {
+//                mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
+//            } else {
+//                mService.executeAction(BaseService.ACTIONS.LOCAL_EVENT_LIST, getBindingKey(), getIsGlober());
+//            }
+            boolean isOnline = ((BaseActivity) getActivity()).isOnline();
+            mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober(), isOnline);
         } else {
             mRecyclerView.setAdapter(getAdapter());
             hideUtilsAndShowContentOverlay();
