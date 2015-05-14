@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener, BasePagerActivity.OnPageScrollStateChangedCancelAnimation{
+public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener, BasePagerActivity.OnPageScrollStateChangedCancelAnimation {
 
     private static final String TAG = "EventParticipantsFragment";
     private List<Subscriber> mSubscribers;
@@ -71,7 +71,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     public void onStartAction(BaseService.ACTIONS theAction) {
         switch (theAction) {
             case PARTICIPANT_LIST:
-                if (!mSwipeRefreshLayout.isRefreshing()){
+                if (!mSwipeRefreshLayout.isRefreshing()) {
                     showProgressOverlay();
                 }
                 break;
@@ -80,21 +80,21 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        switch ( theAction ) {
+        switch (theAction) {
             case PARTICIPANT_LIST:
                 mSubscribers = (List<Subscriber>) result;
                 ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
                 setRecyclerViewAdapter();
-                if (mSwipeRefreshLayout.isRefreshing()){
+                if (mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(false);
                     mAdapter.notifyDataSetChanged();
-                }else {
+                } else {
                     hideUtilsAndShowContentOverlay();
                 }
                 mAcceptedSubscribers = new ArrayList<>();
                 break;
             case SET_ACCEPTED:
-                if (mSwipeRefreshLayout.isRefreshing()){
+                if (mSwipeRefreshLayout.isRefreshing()) {
                     String eventId = mEvent.getObjectID();
                     mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
                 }
@@ -103,13 +103,13 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     }
 
     private void setRecyclerViewAdapter() {
-        if (mSubscribers.size() == 0){
+        if (mSubscribers.size() == 0) {
             mTextViewNoSubscribers.setVisibility(View.VISIBLE);
         } else {
             mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
             mRecyclerView.setAdapter(mAdapter);
-            if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
-                Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
+            if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())) {
+                Toast.makeText(this.getActivity(), R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
                 SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
             }
         }
@@ -122,8 +122,10 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void cancelAnimations() {
-        if (mAdapter.getCurrentParticipant() != null){
-            mAdapter.getCurrentParticipant().cancelAnimations();
+        if (mAdapter != null) {
+            if (mAdapter.getCurrentParticipant() != null) {
+                mAdapter.getCurrentParticipant().cancelAnimations();
+            }
         }
     }
 
@@ -200,49 +202,49 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
                 int initPosition = linearLayoutManager.findFirstVisibleItemPosition();
                 int cont = 0;
-                switch (v.getId()){
+                switch (v.getId()) {
                     case R.id.text_view_accept_all:
-                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
+                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++) {
                             linearLayoutManager.findViewByPosition(i);
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE){
+                            if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE) {
                                 current.acceptAnimation();
                                 cont += 1;
                             }
-                            if (i == linearLayoutManager.findLastVisibleItemPosition()){
+                            if (i == linearLayoutManager.findLastVisibleItemPosition()) {
                                 mLastVisibleItem = true;
                             }
                         }
-                        for (Subscriber sub : mSubscribers){
-                            if (!sub.isAccepted()){
+                        for (Subscriber sub : mSubscribers) {
+                            if (!sub.isAccepted()) {
                                 sub.setAccepted(true);
-                                if (!mAcceptedSubscribers.contains(sub)){
+                                if (!mAcceptedSubscribers.contains(sub)) {
                                     mAcceptedSubscribers.add(sub);
                                 }
                             }
                         }
                         break;
                     case R.id.text_view_decline_all:
-                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
+                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++) {
                             linearLayoutManager.findViewByPosition(i);
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE){
+                            if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE) {
                                 current.declineAnimation();
                                 cont += 1;
                             }
-                            if (i == linearLayoutManager.findLastVisibleItemPosition()){
+                            if (i == linearLayoutManager.findLastVisibleItemPosition()) {
                                 mLastVisibleItem = true;
                             }
                         }
-                        for (Subscriber sub : mSubscribers){
+                        for (Subscriber sub : mSubscribers) {
                             sub.setAccepted(false);
-                            if (mAcceptedSubscribers.contains(sub)){
+                            if (mAcceptedSubscribers.contains(sub)) {
                                 mAcceptedSubscribers.remove(sub);
                             }
                         }
                         break;
                 }
-                if (cont == 0){
+                if (cont == 0) {
                     notifyAdapter();
                 }
                 mAdapter.setSubscribers(mSubscribers);
@@ -323,22 +325,20 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     }
 
     @Override
-    public void onResumeFragment(){
+    public void onResumeFragment() {
         mSubscribers = ((BaseEventDetailPagerActivity) getActivity()).getSubscriberList();
         if (mSubscribers == null) {
             mEvent = ((BaseEventDetailPagerActivity) getActivity()).getEvent();
             String eventId = mEvent.getObjectID();
             mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
-        }
-        else {
+        } else {
             setRecyclerViewAdapter();
         }
     }
 
     @Override
     public void onStop() {
-        if (mSubscribers != null)
-        {
+        if (mSubscribers != null) {
             //Object[] objects = {mEvent.getObjectID(), mSubscribers};
             //mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), objects);
             mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
@@ -346,23 +346,23 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         super.onStop();
     }
 
-    public void acceptSubscriber(int position){
+    public void acceptSubscriber(int position) {
         Subscriber subscriber = mSubscribers.get(position);
         subscriber.setAccepted(true);
-        if (!mAcceptedSubscribers.contains(subscriber)){
+        if (!mAcceptedSubscribers.contains(subscriber)) {
             mAcceptedSubscribers.add(subscriber);
         }
     }
 
-    public void declineSubscriber(int position){
+    public void declineSubscriber(int position) {
         Subscriber subscriber = mSubscribers.get(position);
         subscriber.setAccepted(false);
-        if (mAcceptedSubscribers.contains(subscriber)){
+        if (mAcceptedSubscribers.contains(subscriber)) {
             mAcceptedSubscribers.remove(subscriber);
         }
     }
 
-    public void notifyAdapter(){
+    public void notifyAdapter() {
         mAdapter.notifyDataSetChanged();
         mLastVisibleItem = false;
     }
