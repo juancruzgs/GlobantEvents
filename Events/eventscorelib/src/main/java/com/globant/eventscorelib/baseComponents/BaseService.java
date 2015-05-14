@@ -162,6 +162,11 @@ public abstract class BaseService extends Service {
         }
     }
 
+    public ActionListener getActionListener(String bindingKey) {
+        ActionWrapper subscriber = currentSubscribers.get(bindingKey);
+        return subscriber == null ? null : subscriber.theListener;
+    }
+
     public void executeAction(final ACTIONS theAction, final String bindingKey, final Object ... arguments) {
         Runnable r = new Runnable() {
             @Override

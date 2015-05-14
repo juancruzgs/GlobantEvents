@@ -45,7 +45,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return this;
+        return null;
     }
 
     @Override
@@ -54,11 +54,14 @@ public class EventListManagerFragment extends BaseEventListFragment {
         mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
+/*
     @Override
     public String getBindingKey() {
         return mBindingKey;
     }
+*/
 
+/*
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         super.onFinishAction(theAction, result);
@@ -72,6 +75,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
             });
         }
     }
+*/
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
