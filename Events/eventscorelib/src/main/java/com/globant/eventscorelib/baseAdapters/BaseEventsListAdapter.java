@@ -114,7 +114,7 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
             mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
             holder.getCategoryLogo().setImageDrawable(mDrawableToApply);
             holder.getEventTitle().setText(mEventList.get(position).getTitle());
-            holder.getEventDate().setText(CustomDateFormat.getDate(mEventList.get(position).getStartDate(), mContext));
+            holder.getEventDate().setText(CustomDateFormat.getDateWithTimeZone(mEventList.get(position).getStartDate(), mContext));
             holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
             holder.getShortDescriptionEvent().setText(mEventList.get(position).getShortDescription());
         }

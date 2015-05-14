@@ -25,7 +25,6 @@ import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
@@ -303,8 +302,8 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         } else {
             mEventImage.setImageResource(R.mipmap.placeholder);
         }
-        mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
-        mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
+        mEventStartDate.setText(CustomDateFormat.getDateWithTimeZone(mEvent.getStartDate(), getActivity()));
+        mEventEndDate.setText(CustomDateFormat.getDateWithTimeZone(mEvent.getEndDate(), getActivity()));
         mEventAddress.setText(mEvent.getAddress());
         mEventCity.setText(mEvent.getCity());
         mEventCountry.setText(mEvent.getCountry());

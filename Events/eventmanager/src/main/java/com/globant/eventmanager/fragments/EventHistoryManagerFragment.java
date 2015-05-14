@@ -1,8 +1,13 @@
 package com.globant.eventmanager.fragments;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,6 +20,7 @@ import java.util.Date;
 
 public class EventHistoryManagerFragment extends BaseFragment implements BaseService.ActionListener {
 
+    private SearchView mSearchView;
     private String mBindingKey;
 
     public EventHistoryManagerFragment() {
@@ -40,7 +46,34 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
 
     @Override
     public String getTitle() {
-        return "ojete";
+        return "";
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_manager_event_history, menu);
+        prepareSearchView(menu);
+    }
+
+
+    private void prepareSearchView(Menu menu) {
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchView.setQueryHint(getString(R.string.filter_hint));
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
     }
 
     @Override
