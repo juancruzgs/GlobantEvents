@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
+import com.globant.eventmanager.activities.EventHistoryManagerActivity;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
@@ -90,8 +91,8 @@ public class EventListManagerFragment extends BaseEventListFragment {
         boolean handled = false;
 
         if (id == R.id.action_history) {
-            Intent intentCredits = new Intent(getActivity(), BaseCreditsActivity.class);
-            startActivity(intentCredits);
+            Intent intentHistory = new Intent(getActivity(), EventHistoryManagerActivity.class);
+            startActivity(intentHistory);
             handled = true;
         }
         if (!handled) {
