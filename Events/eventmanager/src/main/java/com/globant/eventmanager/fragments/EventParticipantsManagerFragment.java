@@ -122,7 +122,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void cancelAnimations() {
-        if (mAdapter != null && mAdapter.getCurrentParticipant() != null){
+        if (mAdapter.getCurrentParticipant() != null){
             mAdapter.getCurrentParticipant().cancelAnimations();
         }
     }
@@ -184,7 +184,9 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mAdapter.getCurrentParticipant().cancelAnimations();
+                if (mAdapter.getCurrentParticipant() != null) {
+                    mAdapter.getCurrentParticipant().cancelAnimations();
+                }
                 mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
                 mSwipeRefreshLayout.setRefreshing(true);
             }
