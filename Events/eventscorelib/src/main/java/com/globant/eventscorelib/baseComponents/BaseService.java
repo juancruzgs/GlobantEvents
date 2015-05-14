@@ -11,6 +11,7 @@ import android.os.IBinder;
 import com.globant.eventscorelib.controllers.CloudDatabaseController;
 import com.globant.eventscorelib.controllers.GeocoderController;
 import com.globant.eventscorelib.controllers.LocalDatabaseController;
+import com.globant.eventscorelib.controllers.SelectiveDatabaseController;
 import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -42,6 +43,7 @@ public abstract class BaseService extends Service {
 
     protected LocalDatabaseController mLocalDatabaseController = null;
     protected CloudDatabaseController mCloudDatabaseController = null;
+    protected SelectiveDatabaseController mSelectiveDatabaseController = null;
     protected GeocoderController mGeocoderController = null;
     protected TwitterController mTwitterController = null;
 
@@ -60,6 +62,7 @@ public abstract class BaseService extends Service {
     public void onCreate() {
         mLocalDatabaseController = new LocalDatabaseController();
         mCloudDatabaseController = new CloudDatabaseController();
+        mSelectiveDatabaseController  = new SelectiveDatabaseController(mLocalDatabaseController, mCloudDatabaseController);
         mGeocoderController = new GeocoderController(getBaseContext());
         mTwitterController = new TwitterController(getTwitterCallbackURL());
         mRunnable = new Runnable() {
@@ -109,7 +112,7 @@ public abstract class BaseService extends Service {
     }
 
     public enum ACTIONS {
-        CLOUD_EVENT_LIST, LOCAL_EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
+        EVENT_LIST, EVENTS_LIST_REFRESH, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
     PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SET_ACCEPTED}
 
@@ -161,11 +164,11 @@ public abstract class BaseService extends Service {
                                 case EVENT_DELETE:
                                     mCloudDatabaseController.deleteEvent((Event) arguments[0]);
                                     break;
-                                case CLOUD_EVENT_LIST:
+                                case EVENTS_LIST_REFRESH:
                                     result = mCloudDatabaseController.getEvents((boolean) arguments[0]);
                                     break;
-                                case LOCAL_EVENT_LIST:
-                                    result = mLocalDatabaseController.getEvents((boolean) arguments[0]);
+                                case EVENT_LIST:
+                                    result = mSelectiveDatabaseController.getEvents((boolean) arguments[0], (boolean) arguments[1]);
                                     break;
                                 case EVENT_DETAIL:
                                     result = mCloudDatabaseController.getEvent((String) arguments[0]);
