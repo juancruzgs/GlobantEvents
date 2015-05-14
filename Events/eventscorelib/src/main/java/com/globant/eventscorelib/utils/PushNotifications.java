@@ -85,7 +85,6 @@ public class PushNotifications {
     public static void sendNotificationToSubscriber(String message, String event, String idSubscriber){
         JSONObject data =  new JSONObject();
         try {
-            data.put("action","com.globant.events.PUSH_RECEIVE");
             data.put("title", "Title test");
             data.put("alert", message);
         } catch (JSONException e) {
