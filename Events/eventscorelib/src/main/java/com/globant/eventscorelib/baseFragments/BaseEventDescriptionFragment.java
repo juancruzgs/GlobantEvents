@@ -141,8 +141,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         });
 
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        ViewHelper.setScaleX(mFab, 0);
-        ViewHelper.setScaleY(mFab, 0);
 
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
