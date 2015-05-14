@@ -38,6 +38,7 @@ public abstract class DatabaseController {
             List<ParseObject> databaseSpeakersList = relationQuery.find();
             List<Speaker> domainSpeakersList = new ArrayList<>();
             for (ParseObject databaseSpeaker : databaseSpeakersList) {
+                pinObjectInBackground(databaseSpeaker);
                 Speaker domainSpeaker = createDomainSpeakerFromDatabase(databaseSpeaker);
                 domainSpeakersList.add(domainSpeaker);
             }
