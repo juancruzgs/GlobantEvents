@@ -93,9 +93,8 @@ public class PushNotifications {
         }
 
         ParsePush parsePush = new ParsePush();
-        parsePush.setMessage(message);
-        parsePush.setData(data);
         parsePush.setChannel("SUB-"+event+"-"+idSubscriber);
+        parsePush.setData(data);
         parsePush.setQuery(ParseInstallation.getQuery());
         parsePush.sendInBackground(new SendCallback() {
             @Override

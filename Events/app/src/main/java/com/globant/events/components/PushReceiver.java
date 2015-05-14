@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.parse.ParsePushBroadcastReceiver;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class PushReceiver extends BroadcastReceiver {
-    public PushReceiver() {
-    }
+public class PushReceiver extends ParsePushBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

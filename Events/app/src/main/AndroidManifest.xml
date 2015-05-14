@@ -110,7 +110,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.parse.ParsePushBroadcastReceiver"
+            android:name="com.globant.events.components.PushReceiver"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
@@ -118,18 +118,9 @@
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
-
         <meta-data
             android:name="com.parse.push.notification_icon"
             android:resource="@mipmap/ic_launcher" />
-
-        <receiver
-            android:name=".components.PushReceiver"
-            android:enabled="false"
-            android:exported="false" >
-            <intent-filter>  <action android:name="com.globant.events.PUSH_RECEIVE"> </action>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
