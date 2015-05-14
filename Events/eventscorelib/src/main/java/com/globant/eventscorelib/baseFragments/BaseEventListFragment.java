@@ -67,10 +67,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         return R.id.list_recycler_view;
     }
 
-//    public ObservableRecyclerView getRecyclerView() {
-//        return mRecyclerView;
-//    }
-
     public List<Event> getEventList() {
         return mEventList;
     }
@@ -106,8 +102,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
-//                mSwipeRefreshLayout.setRefreshing(true);
+                mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, getBindingKey(), getIsGlober());
+                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
@@ -227,6 +223,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case EVENT_LIST:
+            case EVENTS_LIST_REFRESH:
                 mEventList = (List<Event>) result;
                 if (mEventList != null) {
                     mRecyclerView.setAdapter(getAdapter());
@@ -258,7 +255,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 Toast.makeText(getActivity(), getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
                 break;
             case EVENT_LIST:
-                //Refresh without internet connection
+            case EVENTS_LIST_REFRESH:
                 mSwipeRefreshLayout.setRefreshing(false);
                 hideUtilsAndShowContentOverlay();
                 break;
@@ -283,18 +280,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         showProgressOverlay();
         mEventList = ((BaseEventListActivity) getActivity()).getEventList();
         if (mEventList == null) {
-//            if (((BaseActivity) getActivity()).isOnline()) {
-//                mService.executeAction(BaseService.ACTIONS.CLOUD_EVENT_LIST, getBindingKey(), getIsGlober());
-//            } else {
-//                mService.executeAction(BaseService.ACTIONS.LOCAL_EVENT_LIST, getBindingKey(), getIsGlober());
-//            }
             boolean isOnline = ((BaseActivity) getActivity()).isOnline();
             mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober(), isOnline);
         } else {
             mRecyclerView.setAdapter(getAdapter());
             hideUtilsAndShowContentOverlay();
         }
-        // TODO: See how the mCheckInParameters[] can be better used
         if (mEventId != null) {
             mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),
                     mEventId, mSubscriberMail);

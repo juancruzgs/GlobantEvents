@@ -112,7 +112,7 @@ public abstract class BaseService extends Service {
     }
 
     public enum ACTIONS {
-        EVENT_LIST, EVENTS_REFRESH, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
+        EVENT_LIST, EVENTS_LIST_REFRESH, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
     PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SET_ACCEPTED}
 
@@ -164,12 +164,9 @@ public abstract class BaseService extends Service {
                                 case EVENT_DELETE:
                                     mCloudDatabaseController.deleteEvent((Event) arguments[0]);
                                     break;
-//                                case CLOUD_EVENT_LIST:
-//                                    result = mCloudDatabaseController.getEvents((boolean) arguments[0]);
-//                                    break;
-//                                case LOCAL_EVENT_LIST:
-//                                    result = mLocalDatabaseController.getEvents((boolean) arguments[0]);
-//                                    break;
+                                case EVENTS_LIST_REFRESH:
+                                    result = mCloudDatabaseController.getEvents((boolean) arguments[0]);
+                                    break;
                                 case EVENT_LIST:
                                     result = mSelectiveDatabaseController.getEvents((boolean) arguments[0], (boolean) arguments[1]);
                                     break;
