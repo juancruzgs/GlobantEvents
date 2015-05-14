@@ -34,7 +34,6 @@ public class CoreConstants {
     public static final String FIELD_ICON = "icon";
     public static final String FIELD_MAP_COORDINATES = "map_coordinates";
     public static final String FIELD_PUBLIC = "public";
-    public static final String FIELD_QR_CODE = "qr_code";
     public static final String FIELD_DESCRIPTION = "description";
     public static final String FIELD_BIOGRAPHY = "biography";
     public static final String FIELD_PICTURE = "picture";

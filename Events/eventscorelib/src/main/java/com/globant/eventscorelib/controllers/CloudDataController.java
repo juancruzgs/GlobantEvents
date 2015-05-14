@@ -242,7 +242,6 @@ public class CloudDataController {
         domainEvent.setFullDescription(databaseEvent.getString(CoreConstants.FIELD_FULL_DESCRIPTION));
         domainEvent.setAdditionalInfo(databaseEvent.getString(CoreConstants.FIELD_ADDITIONAL_INFO));
         domainEvent.setAddress(databaseEvent.getString(CoreConstants.FIELD_ADDRESS));
-        domainEvent.setQrCode(databaseEvent.getString(CoreConstants.FIELD_QR_CODE));
         domainEvent.setLanguage(databaseEvent.getString(CoreConstants.FIELD_LANGUAGE));
         domainEvent.setHashtag(databaseEvent.getString(CoreConstants.FIELD_HASHTAG));
         domainEvent.setCoordinates(getCoordinatesFromDatabaseObject(databaseEvent));
@@ -288,12 +287,11 @@ public class CloudDataController {
         databaseEvent.put(CoreConstants.FIELD_START_DATE, domainEvent.getStartDate());
         databaseEvent.put(CoreConstants.FIELD_END_DATE, domainEvent.getEndDate());
         databaseEvent.put(CoreConstants.FIELD_PUBLIC, domainEvent.isPublic());
-        databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.png", domainEvent.getIcon()));
+//        databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.png", domainEvent.getIcon()));
         databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.png", domainEvent.getEventLogo()));
         databaseEvent.put(CoreConstants.FIELD_FULL_DESCRIPTION, domainEvent.getFullDescription());
         databaseEvent.put(CoreConstants.FIELD_ADDITIONAL_INFO, domainEvent.getAdditionalInfo());
         databaseEvent.put(CoreConstants.FIELD_ADDRESS, domainEvent.getAddress());
-        databaseEvent.put(CoreConstants.FIELD_QR_CODE, domainEvent.getQrCode());
         databaseEvent.put(CoreConstants.FIELD_LANGUAGE, domainEvent.getLanguage());
         databaseEvent.put(CoreConstants.FIELD_HASHTAG, domainEvent.getHashtag());
         LatLng coordinates = domainEvent.getCoordinates();
