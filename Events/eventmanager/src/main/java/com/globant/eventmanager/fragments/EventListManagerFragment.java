@@ -98,9 +98,9 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
         if (id == R.id.action_history) {
             ArrayList<Event> events = (ArrayList<Event>) ((BaseEventListActivity)getActivity()).getEventList();
+            events.remove(events.size()-1);
             Intent intentHistory = new Intent(getActivity(), EventHistoryManagerActivity.class);
             intentHistory.putParcelableArrayListExtra(CoreConstants.FIELD_EVENTS, events);
-
             startActivity(intentHistory);
             handled = true;
         }
