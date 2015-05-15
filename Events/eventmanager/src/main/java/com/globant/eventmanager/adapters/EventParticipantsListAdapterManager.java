@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
+import com.globant.eventscorelib.baseAdapters.BaseParticipantListViewHolder;
+import com.globant.eventscorelib.baseAdapters.BaseParticipantsListAdapter;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CropCircleTransformation;
@@ -22,10 +24,10 @@ import java.util.List;
 /**
  * Created by gonzalo.lodi on 4/16/2015.
  */
-public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<ParticipantsListViewHolderManager> implements  ParticipantsListViewHolderManager.TouchListenerItem {
+public class EventParticipantsListAdapterManager extends BaseParticipantsListAdapter implements  ParticipantsListViewHolderManager.TouchListenerItem {
 
     private List<Subscriber> mSubscribers;
-    private final Context mContext;
+    private Context mContext;
     private EventParticipantsManagerFragment mFragment;
     public Boolean mBooleanIsPressed;
     public ParticipantsListViewHolderManager mCurrentParticipant;
@@ -45,10 +47,10 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
     }
 
     public EventParticipantsListAdapterManager(Context context, List<Subscriber> subscribers, EventParticipantsManagerFragment fragment) {
-        mContext = context;
+        super(context,subscribers);
+        mTransformation = new CropCircleTransformation(context);
         mFragment = fragment;
-        mSubscribers = subscribers;
-        mTransformation = new CropCircleTransformation(mContext);
+        mContext = context;
     }
 
     @Override
@@ -121,8 +123,5 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         return subscriberPicture;
     }
 
-    @Override
-    public int getItemCount() {
-        return mSubscribers.size();
-    }
+
 }
