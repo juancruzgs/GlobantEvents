@@ -1,7 +1,6 @@
 package com.globant.eventscorelib.baseFragments;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -31,6 +29,7 @@ import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.BaseEventListActionListener;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -39,14 +38,32 @@ import com.nineoldandroids.view.ViewHelper;
 import java.util.Date;
 import java.util.List;
 
-public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BaseEventsListViewHolder.GetEventInformation {
+public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseEventsListViewHolder.GetEventInformation {
 
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private String mEventId;
     private String mSubscriberMail;
 
+    private BaseService.ActionListener mActionListener;
     private String mBindingKey;
+
+    private static final String KEY_WAITING = "KEY_WAITING";
+    private boolean mWaitingForList = false;
+
+    public void updateEventList(List<Event> eventsList) {
+        mEventList = eventsList;
+        if (mEventList != null) {
+            mRecyclerView.setAdapter(getAdapter());
+        } else {
+            showErrorOverlay();
+        }
+        mSwipeRefreshLayout.setRefreshing(false);
+        hideUtilsAndShowContentOverlay();
+        ((BaseEventListActivity)getActivity()).setEventList(mEventList);
+
+        mWaitingForList = false;
+    }
 
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -77,7 +94,10 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+        mBindingKey = this.getClass().getSimpleName();// + new Date().toString();
+        if (savedInstanceState != null) {
+            mWaitingForList = savedInstanceState.getBoolean(KEY_WAITING, false);
+        }
     }
 
     @Override
@@ -102,6 +122,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, mBindingKey, getIsGlober());
                 mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, getBindingKey(), getIsGlober());
                 mSwipeRefreshLayout.setRefreshing(true);
             }
@@ -128,6 +149,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
+        savedInstanceState.putBoolean(KEY_WAITING, mWaitingForList);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -268,7 +290,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     private void postCheckinTweet(Event event) {
         if (BaseApplication.getInstance().getSharedPreferencesController().isAlreadyTwitterLogged()) {
             String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
-            mService.executeAction(BaseService.ACTIONS.TWEET_POST, getBindingKey(), tweet);
+            mService.executeAction(BaseService.ACTIONS.TWEET_POST, mBindingKey, tweet);
         } else {
             showCheckinOverlay();
         }
@@ -278,16 +300,29 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void setService(BaseService service) {
         super.setService(service);
         showProgressOverlay();
-        mEventList = ((BaseEventListActivity) getActivity()).getEventList();
+        mActionListener = mService.getActionListener(mBindingKey);
+        if (mActionListener == null) {
+            mActionListener = new BaseEventListActionListener();
+            ((BaseEventListActionListener)mActionListener).setActivity((BaseActivity) getActivity());
+            ((BaseEventListActionListener)mActionListener).setBindingKey(mBindingKey);
+            mService.subscribeActor(mActionListener);
+        }
+
+        ((BaseEventListActionListener)mActionListener).setFragment(this);
+        mEventList = ((BaseEventListActivity)getActivity()).getEventList();
         if (mEventList == null) {
             boolean isOnline = ((BaseActivity) getActivity()).isOnline();
             mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober(), isOnline);
+            if (!mWaitingForList) {
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, mBindingKey, getIsGlober());
+                mWaitingForList = true;
+            }
         } else {
             mRecyclerView.setAdapter(getAdapter());
             hideUtilsAndShowContentOverlay();
         }
         if (mEventId != null) {
-            mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),
+            mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey,
                     mEventId, mSubscriberMail);
         }
     }
@@ -301,7 +336,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             mEventId = scanResult.getContents();
             mSubscriberMail = SharedPreferencesController.getUserEmail(getActivity());
             if (mService != null) {
-                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, getBindingKey(),
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey,
                         mEventId, mSubscriberMail);
             }
             //Else do the action when the service is available }

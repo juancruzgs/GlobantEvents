@@ -1,6 +1,7 @@
 package com.globant.eventscorelib.baseComponents;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
@@ -118,30 +119,39 @@ public abstract class BaseService extends Service {
 
     private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
-    synchronized public void subscribeActor(ActionListener anActionListener){
-        if (!currentSubscribers.containsKey(anActionListener.getBindingKey())) {
-            ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
-            currentSubscribers.put(anActionListener.getBindingKey(), currentSubscriber);
-        }
+    public void subscribeActor(ActionListener anActionListener){
+        String bindingKey = anActionListener.getBindingKey();
 
-        if (cachedElements.containsKey(anActionListener.getBindingKey())){
-            HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(anActionListener.getBindingKey());
+        if (!currentSubscribers.containsKey(bindingKey)) {
+            ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
+            currentSubscribers.put(bindingKey, currentSubscriber);
+        }
+        if (cancelKeys.contains(bindingKey))
+            cancelKeys.remove(bindingKey);
+
+        if (cachedElements.containsKey(bindingKey)){
+            HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(bindingKey);
             for (ACTIONS key : cachedElement.keySet()) {
                 anActionListener.onFinishAction(key,cachedElement.remove(key));
             }
         }
 
-        if (cancelKeys.contains(anActionListener.getBindingKey()))
-            cancelKeys.remove(anActionListener.getBindingKey());
     }
     
-    synchronized public void unSubscribeActor(ActionListener anActionListener){
-        if (anActionListener != null && currentSubscribers.containsKey(anActionListener.getBindingKey())) {
-            currentSubscribers.remove(anActionListener.getBindingKey());
+    public void unSubscribeActor(ActionListener anActionListener){
+        String bindingKey = anActionListener != null ? anActionListener.getBindingKey() : "";
+        if (anActionListener != null && currentSubscribers.containsKey(bindingKey)) {
+            currentSubscribers.remove(bindingKey);
+            cancelKeys.add(bindingKey);
         }
     }
 
-    synchronized public void executeAction(final ACTIONS theAction, final String bindingKey, final Object ... arguments) {
+    public ActionListener getActionListener(String bindingKey) {
+        ActionWrapper subscriber = currentSubscribers.get(bindingKey);
+        return subscriber == null ? null : subscriber.theListener;
+    }
+
+    public void executeAction(final ACTIONS theAction, final String bindingKey, final Object ... arguments) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -227,11 +237,11 @@ public abstract class BaseService extends Service {
                                     break;
                             }
 
-                            if (cancelKeys.contains(bindingKey)) {
-                                cancelKeys.remove(bindingKey);
+                            if (!cancelKeys.contains(bindingKey)) {
+                                currentSubscriber.finishAction(theAction, result);
                             }
                             else {
-                                currentSubscriber.finishAction(theAction, result);
+                                cancelKeys.remove(bindingKey);
                             }
                         } catch (Exception e) {
                             currentSubscriber.failAction(theAction, e);
@@ -239,6 +249,8 @@ public abstract class BaseService extends Service {
                         }
                     }
                 }
+
+                //cancelKeys.clear();
             }
         };
         new Thread(r).start();

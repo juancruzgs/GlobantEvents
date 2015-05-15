@@ -48,6 +48,7 @@ import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 
@@ -520,7 +521,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
     @Override
     public String getBindingKey() {
-        return BaseSubscriberFragment.class.getSimpleName();
+        return this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
