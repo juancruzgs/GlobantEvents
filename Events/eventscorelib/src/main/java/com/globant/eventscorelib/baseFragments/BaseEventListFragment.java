@@ -1,7 +1,6 @@
 package com.globant.eventscorelib.baseFragments;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -36,7 +34,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nineoldandroids.view.ViewHelper;
 
-import java.util.Date;
 import java.util.List;
 
 public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseEventsListViewHolder.GetEventInformation {
@@ -254,17 +251,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         showProgressOverlay();
         mActionListener = mService.getActionListener(mBindingKey);
         if (mActionListener == null) {
-            // TODO: Make a new ActionListener from this fragment
             mActionListener = new BaseEventListActionListener();
             ((BaseEventListActionListener)mActionListener).setActivity((BaseActivity) getActivity());
             ((BaseEventListActionListener)mActionListener).setBindingKey(mBindingKey);
             mService.subscribeActor(mActionListener);
         }
-/*
-        else {
-            // TODO: Link this fragment with that mActionListener
-        }
-*/
+
         ((BaseEventListActionListener)mActionListener).setFragment(this);
         mEventList = ((BaseEventListActivity)getActivity()).getEventList();
         if (mEventList == null) {
