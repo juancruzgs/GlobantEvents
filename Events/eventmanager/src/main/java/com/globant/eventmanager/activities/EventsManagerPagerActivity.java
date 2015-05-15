@@ -36,7 +36,37 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
         super.onCreate(savedInstanceState);
         mSavedInstanceState = savedInstanceState;
         ourInstance = this;
+
+        if ((getIntent().getExtras() != null) && (savedInstanceState == null)) {
+            mEvent = getIntent().getExtras().getParcelable(CoreConstants.FIELD_EVENTS);
             mCacheObjectsController = new CacheObjectsController();
+            mEventAction = ActionType.EDIT_EVENT;
+            getInstance().setEvent(mEvent);
+            getInstance().setSpeakersList(mEvent.getSpeakers());
+        }
+        else
+        if (savedInstanceState != null) {
+            mCacheObjectsController = savedInstanceState.getParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS);
+            mEvent = mCacheObjectsController.getEvent();
+            int type = mSavedInstanceState.getInt(CoreConstants.SAVE_INSTANCE_EVENT_ACTION);
+            switch (type){
+                case 0:
+                    mEventAction = ActionType.EDIT_EVENT;
+                    break;
+                default:
+                    mEventAction = ActionType.CREATE_EVENT;
+                    break;
+            }
+        }
+        else{
+            mEventAction = ActionType.CREATE_EVENT;
+            List<Speaker> mSpeakerList = new ArrayList<>();
+            mEvent = new Event();
+            mEvent.setSpeakers(mSpeakerList);
+            mCacheObjectsController = new CacheObjectsController();
+            getInstance().setEvent(mEvent);
+            getInstance().setSpeakersList(mEvent.getSpeakers());
+        }
         if (mEvent != null) {
             getInstance().setEvent(mEvent);
             getInstance().setSpeakersList(mEvent.getSpeakers());
