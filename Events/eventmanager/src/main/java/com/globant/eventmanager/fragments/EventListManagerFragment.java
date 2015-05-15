@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
@@ -82,7 +81,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
-                EventsFragment.mEventAction = EventsFragment.ActionType.CREATE_EVENT;
                 startActivity(intent);
             }
         });
