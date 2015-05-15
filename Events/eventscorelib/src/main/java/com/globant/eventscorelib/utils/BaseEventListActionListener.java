@@ -50,6 +50,7 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case EVENT_LIST:
+            case EVENTS_LIST_REFRESH:
                 mFragment.updateEventList((List<Event>) result);
                 break;
             case SUBSCRIBER_CHECKIN:
@@ -70,6 +71,10 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
             case SUBSCRIBER_CHECKIN:
                 mFragment.hideUtilsAndShowContentOverlay();
                 Toast.makeText(mActivity, mActivity.getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
+                break;
+            case EVENT_LIST:
+            case EVENTS_LIST_REFRESH:
+                mFragment.updateEventListFail();
                 break;
             default:
                 mFragment.showErrorOverlay();

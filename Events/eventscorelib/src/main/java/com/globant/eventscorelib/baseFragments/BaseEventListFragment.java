@@ -61,8 +61,14 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setRefreshing(false);
         hideUtilsAndShowContentOverlay();
         ((BaseEventListActivity)getActivity()).setEventList(mEventList);
+        scrollTo(CoreConstants.SCROLL_TOP);
 
         mWaitingForList = false;
+    }
+
+    public void updateEventListFail() {
+        mSwipeRefreshLayout.setRefreshing(false);
+        hideUtilsAndShowContentOverlay();
     }
 
     protected enum LayoutManagerType {
@@ -122,8 +128,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, mBindingKey, getIsGlober());
-                mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, getBindingKey(), getIsGlober());
+                mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, mBindingKey, getIsGlober());
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
@@ -237,57 +242,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         return handled;
     }
 
-    @Override
-    public void onStartAction(BaseService.ACTIONS theAction) {
-    }
-
-    @Override
-    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        switch (theAction) {
-            case EVENT_LIST:
-            case EVENTS_LIST_REFRESH:
-                mEventList = (List<Event>) result;
-                if (mEventList != null) {
-                    mRecyclerView.setAdapter(getAdapter());
-                } else {
-                    showErrorOverlay();
-                }
-                mSwipeRefreshLayout.setRefreshing(false);
-                hideUtilsAndShowContentOverlay();
-                ((BaseEventListActivity) getActivity()).setEventList(mEventList);
-                scrollTo(CoreConstants.SCROLL_TOP);
-                break;
-            case SUBSCRIBER_CHECKIN:
-                postCheckinTweet((Event) result);
-                break;
-            case TWEET_POST:
-                showCheckinOverlay();
-                break;
-            default:
-                hideUtilsAndShowContentOverlay();
-                break;
-        }
-    }
-
-    @Override
-    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        switch (theAction) {
-            case SUBSCRIBER_CHECKIN:
-                hideUtilsAndShowContentOverlay();
-                Toast.makeText(getActivity(), getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
-                break;
-            case EVENT_LIST:
-            case EVENTS_LIST_REFRESH:
-                mSwipeRefreshLayout.setRefreshing(false);
-                hideUtilsAndShowContentOverlay();
-                break;
-            default:
-                showErrorOverlay();
-                break;
-        }
-    }
-
-    private void postCheckinTweet(Event event) {
+    public void postCheckinTweet(Event event) {
         if (BaseApplication.getInstance().getSharedPreferencesController().isAlreadyTwitterLogged()) {
             String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
             mService.executeAction(BaseService.ACTIONS.TWEET_POST, mBindingKey, tweet);
@@ -311,10 +266,9 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         ((BaseEventListActionListener)mActionListener).setFragment(this);
         mEventList = ((BaseEventListActivity)getActivity()).getEventList();
         if (mEventList == null) {
-            boolean isOnline = ((BaseActivity) getActivity()).isOnline();
-            mService.executeAction(BaseService.ACTIONS.EVENT_LIST, getBindingKey(), getIsGlober(), isOnline);
             if (!mWaitingForList) {
-                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, mBindingKey, getIsGlober());
+                boolean isOnline = ((BaseActivity) getActivity()).isOnline();
+                mService.executeAction(BaseService.ACTIONS.EVENT_LIST, mBindingKey, getIsGlober(), isOnline);
                 mWaitingForList = true;
             }
         } else {
@@ -346,16 +300,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     @Override
     public Event getEvent(int position) {
         return mEventList.get(position);
-    }
-
-    @Override
-    public Activity getBindingActivity() {
-        return getActivity();
-    }
-
-    @Override
-    public String getBindingKey() {
-        return mBindingKey;
     }
 
     public void scrollTo(String position) {
