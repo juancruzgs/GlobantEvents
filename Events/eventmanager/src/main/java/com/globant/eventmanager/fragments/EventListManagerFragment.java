@@ -2,6 +2,7 @@ package com.globant.eventmanager.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,18 +16,23 @@ import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventHistoryManagerActivity;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
-import com.globant.eventscorelib.baseActivities.BaseCreditsActivity;
-import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventListActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
-import com.google.zxing.integration.android.IntentIntegrator;
+import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
     private ActionButton mActionButton;
+
+//    class EventList implements Parcelable
 
     @Override
     protected int getFragmentLayout() {
@@ -91,7 +97,10 @@ public class EventListManagerFragment extends BaseEventListFragment {
         boolean handled = false;
 
         if (id == R.id.action_history) {
+            ArrayList<Event> events = (ArrayList<Event>) ((BaseEventListActivity)getActivity()).getEventList();
             Intent intentHistory = new Intent(getActivity(), EventHistoryManagerActivity.class);
+            intentHistory.putParcelableArrayListExtra(CoreConstants.FIELD_EVENTS, events);
+
             startActivity(intentHistory);
             handled = true;
         }

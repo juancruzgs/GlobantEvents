@@ -95,21 +95,16 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".components.DataServiceManager"
-            android:exported="false" />
-
         <activity
             android:name=".activities.EventHistoryManagerActivity"
             android:label="@string/title_activity_event_history" >
-            android:parentActivityName=".activities.EventsListManagerActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.EventsListManagerActivity" />
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable_filter" />
         </activity>
+        <service
+            android:name=".components.DataServiceManager"
+            android:exported="false" />
     </application>
 
 </manifest>

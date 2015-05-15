@@ -33,8 +33,7 @@ public class EventHistoryListAdapterManager extends RecyclerView.Adapter<EventHi
     public void onBindViewHolder(EventHistoryListViewHolderManager holder, int position) {
         Event event = mEventList.get(position);
         holder.getEventTitle().setText(event.getTitle());
-        holder.getEventDate().setText(CustomDateFormat.getDateWithTimeZone(event.getStartDate(), mContext) + " - " +
-                CustomDateFormat.getDate(event.getEndDate(), mContext));
+        holder.getEventDate().setText(CustomDateFormat.getDateWithTimeZone(event.getStartDate(), mContext));
         holder.getEventCountry().setText(event.getCity() + ", " + event.getCountry());
     }
 
