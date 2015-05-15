@@ -1,69 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<LinearLayout android:id="@+id/mainLayout"
+              xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:id="@+id/mainLayout"
+              android:orientation="vertical"
     >
 
     <LinearLayout
         android:id="@+id/utilsPanel"
         android:layout_width="match_parent"
-        android:orientation="vertical"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:orientation="vertical"
         >
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textView_utils"
+            style="@style/condensed_normal_large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/loading"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-            android:id="@+id/textView_utils"
-            android:textColor="#ff848484"
-            style="@style/condensed_normal_large"/>
+            android:textColor="#ff848484"/>
 
-       <ImageView
+        <ImageView
+            android:id="@+id/imageView_utils"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:id="@+id/imageView_utils"
             android:src="@drawable/loading"
-           />
+            />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/loading_panel"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
         >
 
         <ProgressBar
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:indeterminate="true"
             android:layout_marginRight="10dp"
+            android:indeterminate="true"
             />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_loading"
+            style="@style/condensed_normal_large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/loading"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-            android:id="@+id/text_view_loading"
-            android:textColor="#ff848484"
-            style="@style/condensed_normal_large"/>
+            android:textColor="#ff848484"/>
 
     </LinearLayout>
 
     <FrameLayout
-        android:visibility="gone"
+        android:id="@+id/contentPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/contentPanel">
+        android:visibility="gone">
     </FrameLayout>
 
 </LinearLayout>

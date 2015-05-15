@@ -19,6 +19,7 @@ public class CoreConstants {
     public static final String SPEAKERS_TABLE = "Speakers";
     public static final String SUBSCRIBERS_TABLE = "Subscribers";
 
+    public static final String FIELD_UPDATED_AT = "updatedAt";
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_SHORT_DESCRIPTION = "short_description";
     public static final String FIELD_FULL_DESCRIPTION = "full_description";
@@ -34,7 +35,6 @@ public class CoreConstants {
     public static final String FIELD_ICON = "icon";
     public static final String FIELD_MAP_COORDINATES = "map_coordinates";
     public static final String FIELD_PUBLIC = "public";
-    public static final String FIELD_QR_CODE = "qr_code";
     public static final String FIELD_DESCRIPTION = "description";
     public static final String FIELD_BIOGRAPHY = "biography";
     public static final String FIELD_PICTURE = "picture";
@@ -81,7 +81,8 @@ public class CoreConstants {
     public static final String TWITTER_CONSUMER_SECRET = "lLBZ0E6wBF5vf9GasZnqqqOCmPzwZ58ruei14yU579RFhtED6P";
     public static final String TWITTER_ACCESS_TOKEN = "152693997-IEoWMmAkYDX3f1hO5pxWBKhbgqNh0V09wOFPkG8V";
     public static final String TWITTER_ACCESS_TOKEN_SECRET = "r2C4SZl8MCeF5vXYyFF9VumUvYYJ1kkk2FzM6QVW3Cxjb";
-    public static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
+    public static final String TWITTER_CALLBACK_URL_CLIENT = "oauth://globantevents";
+    public static final String TWITTER_CALLBACK_URL_MANAGER = "oauth://eventsmanager";
     public static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
     public static final String TWITTER_IS_LOGGED_IN = "is_logged_in";
     public static final String TWITTER_PREF_KEY_OAUTH_TOKEN = "oauth_token";
@@ -90,6 +91,8 @@ public class CoreConstants {
     // RecyclerView
     public static final String KEY_LAYOUT_MANAGER = "layoutManager";
     public static final String KEY_LAYOUT_PLACEHOLDER = "placeholder666";
+    public static final String SCROLL_BOTTOM = "bot";
+    public static final String SCROLL_TOP = "top";
 
     //SubscriberProfile
     public static final String SHARED_PREF_IMG = "img.jpg";
@@ -120,4 +123,13 @@ public class CoreConstants {
 
     //Pager
     public static final String CURRENT_FRAGMENT_INTENT = "currentFragmentPosition";
+
+    //Save Instance Cache
+    public static final String SAVE_INSTANCE_CACHE_OBJECTS = "cacheObjects";
+    public static final String SAVE_INSTANCE_EVENT_ACTION = "EventAction";
+
+    // Intents request
+    public static final int MAP_MANAGER_REQUEST = 1000;
+    public static final int PICTURE_SELECTION_REQUEST = 1001;
+
 }

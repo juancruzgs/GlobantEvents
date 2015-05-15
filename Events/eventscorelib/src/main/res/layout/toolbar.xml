@@ -10,13 +10,14 @@
         app:titleTextAppearance="@style/ToolbarTitle"
     >
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/toolbar_fragment_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:gravity="center_vertical"
         android:text="Toolbar Title"
+        style="@style/condensed_light_medium"
         android:textColor="@color/grey_icon"
         android:maxLines="1"
         android:textSize="20sp"/>

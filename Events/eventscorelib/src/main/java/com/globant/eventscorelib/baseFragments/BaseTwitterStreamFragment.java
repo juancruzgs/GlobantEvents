@@ -5,19 +5,23 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
 import com.globant.eventscorelib.baseAdapters.BaseTweetListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
 import java.util.Date;
@@ -28,12 +32,12 @@ import twitter4j.Status;
 
 public class BaseTwitterStreamFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
-    private RecyclerView mRecyclerView;
+    private ObservableRecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private ActionButton mActionButton;
     private List<Status> mTweetList;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
+    private AppCompatTextView mTextViewNoTweets;
     private String mBindingKey;
 
     public BaseTwitterStreamFragment() {
@@ -59,7 +63,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         if (theAction == BaseService.ACTIONS.TWEETS_LIST){
             mTweetList = (List<Status>) result;
             if (mTweetList != null) {
-                BaseEventDetailPagerActivity.getInstance().setTweetList(mTweetList);
+                ((BaseEventDetailPagerActivity) getActivity()).setTweetList(mTweetList);
                 setRecyclerViewAdapter();
             } else {
                 showErrorOverlay();
@@ -95,6 +99,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         prepareSwipeRefreshLayout(rootView);
         wireUpFAB(rootView);
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mTextViewNoTweets = (AppCompatTextView)rootView.findViewById(R.id.text_view_no_tweets);
         setRecyclerViewLayoutManager();
         setRetainInstance(true);
         return rootView;
@@ -106,11 +111,11 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     }
 
     private void prepareSwipeRefreshLayout(View rootView) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                BaseEventDetailPagerActivity.getInstance().setTweetList(null);
+                ((BaseEventDetailPagerActivity) getActivity()).setTweetList(null);
                 mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "#GameOfThrones"); // TODO: put the event hashtag
                 mSwipeRefreshLayout.setRefreshing(true);
             }
@@ -118,7 +123,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     }
 
     private void prepareRecyclerView(View rootView) {
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.tweet_list_recycler_view);
+        mRecyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.list_recycler_view);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -163,6 +168,10 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
     private void setRecyclerViewAdapter() {
         BaseTweetListAdapter adapter = new BaseTweetListAdapter(mTweetList, getActivity());
         mRecyclerView.setAdapter(adapter);
+        if (mTweetList.size()<1){
+            mTextViewNoTweets.setVisibility(View.VISIBLE);
+            mSwipeRefreshLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -171,7 +180,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onResumeFragment() {
-        mTweetList = BaseEventDetailPagerActivity.getInstance().getTweetList();
+        mTweetList = ((BaseEventDetailPagerActivity) getActivity()).getTweetList();
         if (mTweetList == null) {
             mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "GameOfThrones"); // TODO: put the event hashtag
             showProgressOverlay();

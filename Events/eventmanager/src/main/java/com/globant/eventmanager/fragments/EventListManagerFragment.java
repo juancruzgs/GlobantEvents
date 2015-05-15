@@ -1,25 +1,25 @@
 package com.globant.eventmanager.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventmanager.R;
+import com.globant.eventmanager.activities.EventsManagerPagerActivity;
+import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
-import com.globant.eventscorelib.utils.CoreConstants;
 import com.software.shell.fab.ActionButton;
 
+import java.util.Date;
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
     private ActionButton mActionButton;
-    private RecyclerView mRecyclerView;
 
     @Override
     protected int getFragmentLayout() {
@@ -41,32 +41,17 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return this;
+        return null;
     }
 
     @Override
-    public String getBindingKey() {
-        return EventListManagerFragment.class.getSimpleName();
-    }
-
-    @Override
-    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        super.onFinishAction(theAction, result);
-        if (mRecyclerView.getAdapter().getItemCount() > 0) {
-            mRecyclerView.scrollToPosition(1);
-            ScrollUtils.addOnGlobalLayoutListener(getRecyclerView(), new Runnable() {
-                @Override
-                public void run() {
-                    mRecyclerView.smoothScrollToPosition(0);
-                }
-            });
-        }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        mRecyclerView = getRecyclerView();
         prepareRecyclerView();
         wireUpFAB(rootView);
         return rootView;
@@ -92,5 +77,12 @@ public class EventListManagerFragment extends BaseEventListFragment {
         mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+        mActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

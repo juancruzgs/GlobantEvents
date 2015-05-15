@@ -11,4 +11,11 @@
     <string name="text_view_add_all_participants">ACCEPT ALL</string>
     <string name="text_view_decline_all_participants">DECLINE ALL</string>
     <string name="text_view_no_participants">No subscribers registered yet.</string>
+    <string name="toast_hint_participants_list">Hold participant to accept or decline!</string>
+    <string name="error_message_dates">End date must be greater than start date.</string>
+    <string name="error_message_change_dates">Must be greater</string>
+    <string name="event_created">Event Created successfully</string>
+    <string name="event_updated">Event Updated successfully</string>
+    <string name="event_deleted">Event Deleted successfully</string>
+    <string name="share_button">Share Code</string>
 </resources>

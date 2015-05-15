@@ -8,12 +8,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -25,7 +25,6 @@ import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
@@ -41,22 +40,22 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     boolean mStickyToolbar;
     private View mToolbar;
     private ImageView mEventImage;
-    private TextView mEventTitle;
-    private TextView mEventStartDate;
-    private TextView mEventEndDate;
-    private TextView mEventAddress;
-    private TextView mEventCity;
-    private TextView mEventCountry;
-    private TextView mEventLanguage;
-    private TextView mEventAdditionalInfo;
-    private TextView mEventFullDescription;
+    private AppCompatTextView mEventTitle;
+    private AppCompatTextView mEventStartDate;
+    private AppCompatTextView mEventEndDate;
+    private AppCompatTextView mEventAddress;
+    private AppCompatTextView mEventCity;
+    private AppCompatTextView mEventCountry;
+    private AppCompatTextView mEventLanguage;
+    private AppCompatTextView mEventAdditionalInfo;
+    private AppCompatTextView mEventFullDescription;
     protected ImageView mMapIcon;
     private View mOverlayView;
     private ObservableScrollView mScrollView;
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
-    private View mFab;
+    protected View mFab;
     private boolean mFabIsShown;
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
@@ -124,7 +123,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         );
     }
     
-    private void initializeViewParameters() {
+    protected void initializeViewParameters() {
         //((ActionBarActivity)getActivity()).setSupportActionBar((Toolbar) rootView.findViewById(R.id.toolbar));
         mActionBarSize = getActionBarSize();
         mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(R.dimen.flexible_space_show_fab_offset);
@@ -141,8 +140,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         });
 
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        ViewHelper.setScaleX(mFab, 0);
-        ViewHelper.setScaleY(mFab, 0);
 
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
@@ -173,15 +170,15 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     private void wireUpViews(View rootView) {
         mToolbar = rootView.findViewById(R.id.toolbar);
         mEventImage = (ImageView) rootView.findViewById(R.id.image);
-        mEventTitle = (TextView) rootView.findViewById(R.id.title);
-        mEventStartDate = (TextView) rootView.findViewById(R.id.textView_Event_Start_Date);
-        mEventEndDate = (TextView) rootView.findViewById(R.id.textView_Event_End_Date);
-        mEventAddress = (TextView) rootView.findViewById(R.id.textView_Event_Address);
-        mEventCity = (TextView) rootView.findViewById(R.id.textView_Event_City);
-        mEventCountry = (TextView) rootView.findViewById(R.id.textView_Event_Country);
-        mEventLanguage = (TextView) rootView.findViewById(R.id.textView_Event_Language);
-        mEventAdditionalInfo = (TextView) rootView.findViewById(R.id.textView_Event_Additional_Info);
-        mEventFullDescription = (TextView) rootView.findViewById(R.id.textView_Event_Full_Description);
+        mEventTitle = (AppCompatTextView) rootView.findViewById(R.id.title);
+        mEventStartDate = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Start_Date);
+        mEventEndDate = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_End_Date);
+        mEventAddress = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Address);
+        mEventCity = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_City);
+        mEventCountry = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Country);
+        mEventLanguage = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Language);
+        mEventAdditionalInfo = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Additional_Info);
+        mEventFullDescription = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Full_Description);
         mOverlayView = rootView.findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
         mFab = rootView.findViewById(R.id.fab);

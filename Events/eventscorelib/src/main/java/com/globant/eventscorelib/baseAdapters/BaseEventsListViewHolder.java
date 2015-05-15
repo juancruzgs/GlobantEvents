@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,13 +22,14 @@ import java.io.Serializable;
 
 public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final View mViewGroup;
+    private final View mSeparator;
     private final ImageView mImageEvent;
     private final ImageView mCategoryLogo;
-    private final TextView mEventTitle;
-    private final TextView mEventDate;
-    private final TextView mLocationEvent;
-    private final TextView mShortDescriptionEvent;
-    private final TextView mEventSpeakers;
+    private final AppCompatTextView mEventTitle;
+    private final AppCompatTextView mEventDate;
+    private final AppCompatTextView mLocationEvent;
+    private final AppCompatTextView mShortDescriptionEvent;
+    private final AppCompatTextView mEventSpeakers;
     private final LinearLayout mLinearLayoutSpeakers;
 
     public interface GetEventInformation {
@@ -39,13 +41,14 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     public BaseEventsListViewHolder(final View itemView, final Context context, final Fragment fragment) {
         super(itemView);
         mViewGroup = itemView;
+        mSeparator = itemView.findViewById(R.id.separator_view);
         mImageEvent = (ImageView) itemView.findViewById(R.id.event_image_view);
         mCategoryLogo = (ImageView) itemView.findViewById(R.id.imageView_Event_Type_Logo);
-        mEventTitle = (TextView) itemView.findViewById(R.id.event_title_text_view);
-        mEventDate = (TextView) itemView.findViewById(R.id.event_date_text_view);
-        mLocationEvent = (TextView) itemView.findViewById(R.id.event_location_text_view);
-        mShortDescriptionEvent = (TextView) itemView.findViewById(R.id.event_short_description_text_view);
-        mEventSpeakers = (TextView) itemView.findViewById(R.id.event_speakers_text_view);
+        mEventTitle = (AppCompatTextView) itemView.findViewById(R.id.event_title_text_view);
+        mEventDate = (AppCompatTextView) itemView.findViewById(R.id.event_date_text_view);
+        mLocationEvent = (AppCompatTextView) itemView.findViewById(R.id.event_location_text_view);
+        mShortDescriptionEvent = (AppCompatTextView) itemView.findViewById(R.id.event_short_description_text_view);
+        mEventSpeakers = (AppCompatTextView) itemView.findViewById(R.id.event_speakers_text_view);
         mLinearLayoutSpeakers = (LinearLayout) itemView.findViewById(R.id.speakers_layout);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,11 +64,13 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
 
     public void hideSpeakersLayout() {
         mLinearLayoutSpeakers.setVisibility(View.GONE);
+        mSeparator.setVisibility(View.GONE);
     }
 
 
     public void showSpeakersLayout() {
         mLinearLayoutSpeakers.setVisibility(View.VISIBLE);
+        mSeparator.setVisibility(View.VISIBLE);
     }
 
     private void getGreenSpeakerIcon(View itemView) {
@@ -81,19 +86,19 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         return mViewGroup;
     }
 
-    public TextView getLocationEvent() {
+    public AppCompatTextView getLocationEvent() {
         return mLocationEvent;
     }
 
-    public TextView getEventDate() {
+    public AppCompatTextView getEventDate() {
         return mEventDate;
     }
 
-    public TextView getEventSpeakers() {
+    public AppCompatTextView getEventSpeakers() {
         return mEventSpeakers;
     }
 
-    public TextView getEventTitle() {
+    public AppCompatTextView getEventTitle() {
         return mEventTitle;
     }
 
@@ -105,7 +110,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         return mCategoryLogo;
     }
 
-    public TextView getShortDescriptionEvent() {
+    public AppCompatTextView getShortDescriptionEvent() {
         return mShortDescriptionEvent;
     }
 }

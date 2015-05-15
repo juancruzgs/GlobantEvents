@@ -1,6 +1,7 @@
 package com.globant.eventscorelib.baseAdapters;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.domainObjects.Event;
@@ -37,10 +39,11 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
                 mBitmapList.add(BitmapFactory.decodeResource(context.getResources(), R.mipmap.placeholder));
             }
         }
-        eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
+        if (!eventList.get(eventList.size() - 1).getTitle().equals(CoreConstants.KEY_LAYOUT_PLACEHOLDER)) {
+            eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
+        }
         mEventList = eventList;
     }
-
     protected abstract BaseEventsListViewHolder getViewHolder(View view);
 
     @Override
@@ -50,17 +53,22 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
         return getViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
         holder.itemView.setTag(position);
         byte[] eventLogo = mEventList.get(position).getEventLogo();
         if (mEventList.get(position).getTitle().equals(CoreConstants.KEY_LAYOUT_PLACEHOLDER)) {
+            int height = holder.getViewGroup().getHeight();
+            if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                holder.getViewGroup().getLayoutParams().height = height / 3;
+            } else {
+                holder.getViewGroup().getLayoutParams().height = height / 2;
+            }
             holder.getEventTitle().setText(mEventList.get(position).getTitle());
             holder.getViewGroup().setVisibility(View.INVISIBLE);
         } else {
-
-            if (holder.getViewGroup().getVisibility() == View.INVISIBLE) {
+            holder.getViewGroup().getLayoutParams().height = RecyclerView.LayoutParams.MATCH_PARENT;
+            if (holder.getViewGroup().getVisibility() != View.VISIBLE) {
                 holder.getViewGroup().setVisibility(View.VISIBLE);
             }
 
@@ -71,7 +79,7 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
                 holder.getImageEvent().setImageBitmap(mBitmapList.get(position));
             }
             if (mEventList.get(position).getCategory() != null) {
-                switch (mEventList.get(position).getCategory()) {
+                switch (mEventList.get(position).getCategory().toLowerCase()) {
                     case "social":
                         holder.getCategoryLogo().setImageResource(R.mipmap.ic_social);
                         mDrawableToApply = mContext.getResources().getDrawable(R.mipmap.ic_social);
@@ -104,10 +112,9 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
                 DrawableCompat.setTint(mDrawableToApply, mContext.getResources().getColor(R.color.globant_green_dark));
 
             }
-            if (mEventList.get(position).getSpeakers().size() == 0){
+            if (mEventList.get(position).getSpeakers().size() == 0) {
                 holder.hideSpeakersLayout();
-            }
-            else {
+            } else {
                 holder.showSpeakersLayout();
                 holder.getEventSpeakers().setText(speakerToString(mEventList.get(position).getSpeakers()));
             }
@@ -125,12 +132,12 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
         return mEventList.size();
     }
 
-    private String speakerToString(List<Speaker> speakers){
+    private String speakerToString(List<Speaker> speakers) {
         String result = "";
-        for (Speaker speaker : speakers){
+        for (Speaker speaker : speakers) {
             result += speaker.getName() + " " + speaker.getLastName() + ", ";
         }
-        result = result.substring(0,result.length()-2) + ".";
+        result = result.substring(0, result.length() - 2) + ".";
         return result;
     }
 

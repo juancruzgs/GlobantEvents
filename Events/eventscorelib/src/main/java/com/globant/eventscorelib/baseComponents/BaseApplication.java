@@ -29,6 +29,7 @@ abstract public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         ourInstance = this;
+        Parse.enableLocalDatastore(this);
         Parse.initialize(this, CoreConstants.APPLICATION_ID, CoreConstants.CLIENT_KEY);
         mSharedPreferencesController = new SharedPreferencesController(getApplicationContext());
     }

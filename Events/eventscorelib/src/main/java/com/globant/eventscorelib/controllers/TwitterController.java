@@ -26,12 +26,14 @@ import java.util.List;
 public class TwitterController {
 
     private RequestToken requestToken;
+    String mCallbackURL;
 
-    public TwitterController() {
+    public TwitterController(String callbackURL) {
+        mCallbackURL = callbackURL;
     }
 
     public boolean getLoginResponse(Uri uri) {
-        if (uri != null && uri.toString().startsWith(CoreConstants.TWITTER_CALLBACK_URL)) {
+        if (uri != null && uri.toString().startsWith(mCallbackURL)) {
             String verifier = uri.getQueryParameter(CoreConstants.URL_TWITTER_OAUTH_VERIFIER);
             AccessToken accessToken;
             try {
@@ -82,7 +84,7 @@ public class TwitterController {
             if (twitter != null) {
                 if (!BaseApplication.getInstance().getSharedPreferencesController()
                         .isAlreadyTwitterLogged()) {
-                    requestToken = twitter.getOAuthRequestToken(CoreConstants.TWITTER_CALLBACK_URL);
+                    requestToken = twitter.getOAuthRequestToken(mCallbackURL);
                     Intent intent = new Intent(Intent.ACTION_VIEW,
                             Uri.parse(requestToken.getAuthenticationURL()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

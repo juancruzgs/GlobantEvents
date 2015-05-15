@@ -48,6 +48,7 @@ import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 
@@ -113,13 +114,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private int mShakes = 0;
     private boolean globerDetected = false;
 
+
     public BaseSubscriberFragment() {
         // Required empty public constructor
     }
 
-//    public Boolean getDoneClicked() {
-//        return mDoneClicked;
-//    }
 
     @Override
     public BaseService.ActionListener getActionListener() {
@@ -152,7 +151,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 Bitmap bitmapToSave=savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
                 mPhotoProfile.setImageBitmap(bitmapToSave);
                 mPhotoTaken=Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
-        }
+//            if (mPhotoTaken){
+//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
+
+
+             }
 
     }
 
@@ -163,7 +166,9 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         outState.putString(CoreConstants.PHOTO_TAKEN, mPhotoTaken.toString());
         BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
         Bitmap bitmapToSave = drawable.getBitmap();
-        outState.putParcelable(CoreConstants.PHOTO_ROTATE,bitmapToSave);
+        outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
+
+
     }
 
     private void setOnFocusListeners() {
@@ -294,6 +299,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
             mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
             mPhotoTaken=true;
+//            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
         }
 
     }
@@ -349,7 +355,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 mPhoto = extras.getParcelable(CoreConstants.DATA);
                 mPhotoProfile.setImageBitmap(mPhoto);
                 mPhotoTaken=true;
-
+//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
             }
         }
     }
@@ -380,11 +386,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         // set crop properties
         cropIntent.putExtra(CoreConstants.EXTRA_CROP, CoreConstants.EXTRA_TRUE);
         // indicate aspect of desired crop
-        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTX, mPhotoProfile.getWidth());
-        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, mPhotoProfile.getHeight());
+        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTX, 720);
+        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, 360);
         // indicate output X and Y
-        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, mPhotoProfile.getWidth());
-        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY, mPhotoProfile.getHeight());
+        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, 720);
+        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY,360);
         // retrieve data on return
         cropIntent.putExtra(CoreConstants.EXTRA_RETURN_DATA, true);
         // start the activity - we handle returning in onActivityResult
@@ -450,7 +456,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         tintRequiredIconsAndShowError(mEditTextLastName);
         tintRequiredIconsAndShowError(mEditTextPhone);
         tintRequiredIconsAndShowError(mEditTextEmail);
-        tintRequiredIconsAndShowError(mEditTextTwitter);
         tintRequiredIconsAndShowError(mEditTextOccupation);
         tintRequiredIconsAndShowError(mEditTextCity);
         tintRequiredIconsAndShowError(mEditTextCountry);
@@ -516,7 +521,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
     @Override
     public String getBindingKey() {
-        return BaseSubscriberFragment.class.getSimpleName();
+        return this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override

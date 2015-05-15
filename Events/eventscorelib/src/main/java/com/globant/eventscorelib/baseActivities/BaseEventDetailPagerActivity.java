@@ -6,11 +6,12 @@ import android.support.v4.app.Fragment;
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;
 
 import twitter4j.Status;
-import twitter4j.User;
 
 /**
  * Created by paula.baudo on 5/4/2015.
@@ -24,43 +25,49 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ourInstance = this;
-        mCacheObjectsController = new CacheObjectsController();
+        if (savedInstanceState != null) {
+            mCacheObjectsController = savedInstanceState.getParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS);
+        } else {
+            mCacheObjectsController = new CacheObjectsController();
+        }
     }
 
-    public static BaseEventDetailPagerActivity getInstance(){
+    public static BaseEventDetailPagerActivity getInstance() {
         return ourInstance;
     }
 
-    public void setTweetList (List<Status> twitterList) {
-        mCacheObjectsController.setTweetList(twitterList);
+    public void setTweetList(List<Status> twitterList) {
+        ourInstance.mCacheObjectsController.setTweetList(twitterList);
     }
 
-    public List<Status> getTweetList () {
-        return mCacheObjectsController.getTweetList();
+    public List<Status> getTweetList() {
+        return ourInstance.mCacheObjectsController.getTweetList();
     }
 
-    public void setSpeakersList (List<Speaker> speakersList){
-        mCacheObjectsController.setSpeakersList(speakersList);
+    public void setSpeakersList(List<Speaker> speakersList) {
+        ourInstance.mCacheObjectsController.setSpeakersList(speakersList);
     }
 
-    public User getTwitterUser () {
-        return mCacheObjectsController.getUser();
-    }
 
-    public void setEvent (Event event) {
-        mCacheObjectsController.setEvent(event);
+    public void setEvent(Event event) {
+        ourInstance.mCacheObjectsController.setEvent(event);
     }
 
     public Event getEvent() {
-        return mCacheObjectsController.getEvent();
+        return ourInstance.mCacheObjectsController.getEvent();
     }
 
-    public void setTwitterUser (User user) {
-        mCacheObjectsController.setUser(user);
+
+    public List<Speaker> getSpeakersList() {
+        return ourInstance.mCacheObjectsController.getSpeakersList();
     }
 
-    public List<Speaker> getSpeakersList(){
-        return mCacheObjectsController.getSpeakersList();
+    public List<Subscriber> getSubscriberList() {
+        return ourInstance.mCacheObjectsController.getSubscriberList();
+    }
+
+    public void setSubscriberList(List<Subscriber> subscriberList) {
+        ourInstance.mCacheObjectsController.setSubscriberList(subscriberList);
     }
 
     @Override
@@ -71,5 +78,11 @@ public class BaseEventDetailPagerActivity extends BasePagerActivity {
     @Override
     protected List<String> getTitlesList() {
         return null;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, mCacheObjectsController);
     }
 }

@@ -5,9 +5,10 @@ import android.os.Bundle;
 import com.globant.events.fragments.EventListClientFragment;
 import com.globant.events.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventListActivity;
 
 
-public class EventListClientActivity extends BaseActivity {
+public class EventListClientActivity extends BaseEventListActivity {
 
 
     @Override
