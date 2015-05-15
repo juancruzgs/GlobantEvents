@@ -62,6 +62,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setRefreshing(false);
         hideUtilsAndShowContentOverlay();
         ((BaseEventListActivity)getActivity()).setEventList(mEventList);
+
+        mWaitingForList = false;
     }
 
     protected enum LayoutManagerType {
@@ -268,6 +270,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         if (mEventList == null) {
             if (!mWaitingForList) {
                 mService.executeAction(BaseService.ACTIONS.EVENT_LIST, mBindingKey, getIsGlober());
+                mWaitingForList = true;
             }
         } else {
             mRecyclerView.setAdapter(getAdapter());
