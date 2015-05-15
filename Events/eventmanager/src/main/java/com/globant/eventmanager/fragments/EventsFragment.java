@@ -122,7 +122,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     private ImageView mIconEndDate;
     private ImageView mIconStartTime;
     private ImageView mIconEndTime;
-    private ImageView mIconMap;
     private ImageView mIconAddress;
     private ImageView mIconCountry;
     private ImageView mIconCity;
@@ -253,7 +252,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             mEvent.setTitle(mEditTextTitle.getText().toString());
             mEvent.setFullDescription(mEditTextFullDescription.getText().toString());
             mEvent.setShortDescription(mEditTextShortDescription.getText().toString());
-            mEvent.setAdditionalInfo(mEditTextAdditionalInfo.getText().toString().isEmpty() ? "-" : mEditTextAdditionalInfo.getText().toString());
+            mEvent.setAdditionalInfo(mEditTextAdditionalInfo.getText().toString());
             mEvent.setHashtag(mEditTextHashtag.getText().toString());
             mEvent.setLanguage(mEditTextLanguage.getText().toString());
             mEvent.setStartDate(mStartDate.getTime());
@@ -265,8 +264,11 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             mEvent.setPublic(mSpinnerPublic.getSelectedItemPosition() == 0);
             mEvent.setEventLogo(ConvertImage.convertDrawableToByteArray(mPhotoEvent.getDrawable()));
             mEvent.setIcon(null);
-            mEvent.setCoordinates(new LatLng(mLatLng.latitude, mLatLng.longitude));
-
+            if (mLatLng != null) {
+                mEvent.setCoordinates(new LatLng(mLatLng.latitude, mLatLng.longitude));
+            } else {
+                mEvent.setCoordinates(null);
+            }
         }
     }
 
@@ -459,7 +461,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mIconEndDate =(ImageView)rootView.findViewById(R.id.icon_end_date);
         mIconStartTime =(ImageView)rootView.findViewById(R.id.icon_start_time);
         mIconEndTime =(ImageView)rootView.findViewById(R.id.icon_end_time);
-        mIconMap =(ImageView)rootView.findViewById(R.id.image_button_map);
         mIconAddress =(ImageView)rootView.findViewById(R.id.icon_address);
         mIconCountry=(ImageView)rootView.findViewById(R.id.icon_country);
         mIconCity=(ImageView)rootView.findViewById(R.id.icon_city);
@@ -878,7 +879,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     }
 
     private Boolean tintRequiredIconsAndShowError(EditText requiredField){
-        
+
         getIconToTint(requiredField);
 
         if (requiredField.getText().toString().trim().length() == 0) {
