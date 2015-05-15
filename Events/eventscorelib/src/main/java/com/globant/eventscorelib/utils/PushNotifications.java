@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class PushNotifications {
 
-    public static void suscribeToChannel(final String channel){
+    public static void subscribeToChannel(final String channel){
         ParsePush.subscribeInBackground(channel, new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -32,8 +32,8 @@ public class PushNotifications {
         });
     }
 
-    public static  void unsuscribeToChannel(final String channel){
-        ParsePush.unsubscribeInBackground("Giants", new SaveCallback() {
+    public static  void unsubscribeToChannel(final String channel){
+        ParsePush.unsubscribeInBackground(channel, new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
@@ -85,8 +85,11 @@ public class PushNotifications {
     public static void sendNotificationToSubscriber(String message, String event, String idSubscriber){
         JSONObject data =  new JSONObject();
         try {
-            data.put("title", "Title test");
+            //TODO change hardcoded string
+            data.put("title", "Hello Participant!");
             data.put("alert", message);
+            data.put("event", event);
+            data.put("id",idSubscriber);
         } catch (JSONException e) {
             e.printStackTrace();
         }
