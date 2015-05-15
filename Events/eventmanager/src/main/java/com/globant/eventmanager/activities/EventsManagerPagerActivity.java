@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
+import com.globant.eventmanager.fragments.EventSpeakersList;
 import com.globant.eventmanager.fragments.EventsFragment;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
@@ -64,16 +65,17 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
         fragmentList = new ArrayList<>();
         if (mSavedInstanceState == null){
             fragmentList.add(new EventsFragment());
-            fragmentList.add(new BaseSpeakersListFragment());
+            fragmentList.add(new EventSpeakersList());
             fragmentList.add(new EventParticipantsManagerFragment());
         }
         else {
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventsFragment.class.getName()));
-            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, BaseSpeakersListFragment.class.getName()));
+            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventSpeakersList.class.getName()));
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventParticipantsManagerFragment.class.getName()));
         }
         return fragmentList;
     }
+
 
     @Override
     protected List<String> getTitlesList() {

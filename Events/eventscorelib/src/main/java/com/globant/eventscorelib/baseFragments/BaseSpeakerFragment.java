@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
@@ -51,6 +53,7 @@ public class BaseSpeakerFragment extends BaseFragment {
     Drawable mDrawableToApply;
     final int GET_SPEAKER_IMAGE = 1;
     final int CROP_PIC = 2;
+    final  int REQ_CODE_SPEAKER = 999;
     ErrorLabelLayout mErrorLabelLayoutFirstName;
     ErrorLabelLayout mErrorLabelLayoutLastName;
     ErrorLabelLayout mErrorLabelLayoutTitle;
@@ -70,9 +73,10 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     public final String EDIT_MODE= "EDIT_MODE";
     public final String CREATE_MODE= "CREATE_MODE";
+    private static final int RESULT_OK = 1;
 
     public Speaker speakerEdit;
-    public String fragmentMode;
+    public String fragmentMode = CREATE_MODE;
     public String eventId;
 
 
@@ -96,18 +100,19 @@ public class BaseSpeakerFragment extends BaseFragment {
         setOnFocusListeners();
         hideUtilsAndShowContentOverlay();
 
-        if (getActivity().getIntent().getExtras().getSerializable("speaker")!= null) {
-            speakerEdit = (Speaker) getActivity().getIntent().getExtras().getSerializable("speaker");
-            mEditTextFirstName.setText(speakerEdit.getName());
-            mEditTextLastName.setText(speakerEdit.getLastName());
-            mEditTextTitle.setText(speakerEdit.getTitle());
-            mEditTextBiography.setText(speakerEdit.getBiography());
-            mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(speakerEdit.getPicture(), 0, speakerEdit.getPicture().length));
-            fragmentMode= EDIT_MODE;
-        }
-        if(getActivity().getIntent().getExtras().getSerializable("eventId")!= null)
-           eventId= getActivity().getIntent().getExtras().getString("eventId");
+        if (getActivity().getIntent().getExtras()!=null)
+        {
+          if(getActivity().getIntent().getExtras().getSerializable("speaker")!=null)
+          {
+              speakerEdit = (Speaker) getActivity().getIntent().getExtras().getSerializable("speaker");
+              mEditTextFirstName.setText(speakerEdit.getName());
+              mEditTextLastName.setText(speakerEdit.getLastName());
+              fragmentMode= EDIT_MODE;
 
+          }
+            if(getActivity().getIntent().getExtras().getSerializable("eventId")!= null)
+                eventId= getActivity().getIntent().getExtras().getString("eventId");
+        }
         return rootView;
     }
 
@@ -137,14 +142,22 @@ public class BaseSpeakerFragment extends BaseFragment {
             tintRequiredIconsAndShowError(mEditTextTitle,  savePreferences);
             tintRequiredIconsAndShowError(mEditTextBiography,  savePreferences);
 
-            if (savePreferences=false){
+            if (savePreferences=true){
                switch (fragmentMode)
                {
                    case EDIT_MODE  :
                        break;
                    case CREATE_MODE:
+                       Intent resultIntent = new Intent();
+                       Speaker sp = createSpeakerObject();
+                       resultIntent.putExtra("newSpeaker",sp);
+                       getActivity().setResult(RESULT_OK, resultIntent);
+                       getActivity().finish();
                        break;
                }
+
+            }
+            else{
 
                 Toast.makeText(getActivity(), "Required fields missing!",
                         Toast.LENGTH_LONG).show();
@@ -152,7 +165,18 @@ public class BaseSpeakerFragment extends BaseFragment {
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
+    }
+
+    private Speaker createSpeakerObject() {
+        Speaker sp = new Speaker();
+        sp.setName(mEditTextFirstName.getText().toString());
+        sp.setLastName(mEditTextLastName.getText().toString());
+        sp.setTitle(mEditTextTitle.getText().toString());
+        sp.setBiography(mEditTextBiography.getText().toString());
+        Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
+        sp.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
+        return sp;
     }
 
     @Override
