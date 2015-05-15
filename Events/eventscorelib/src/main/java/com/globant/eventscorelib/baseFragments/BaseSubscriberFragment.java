@@ -38,7 +38,6 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -616,8 +615,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             case EVENTS_TO_SUBSCRIBER_CREATE:
                 hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
-                PushNotifications.suscribeToChannel("SUB-" + mEventId);
-                PushNotifications.suscribeToChannel("SUB-"+mEventId+"-"+mSubscriber.getObjectID());
+                PushNotifications.subscribeToChannel("SUB-" + mEventId);
+                PushNotifications.subscribeToChannel("SUB-" + mEventId + "-" + mSubscriber.getObjectID());
                 getActivity().finish();
                 break;
         }

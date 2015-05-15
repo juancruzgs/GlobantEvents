@@ -25,7 +25,6 @@ import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
@@ -137,7 +136,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PushNotifications.suscribeToChannel("SUB-"+mEvent.getObjectID());
+                PushNotifications.subscribeToChannel("SUB-" + mEvent.getObjectID());
                 prepareBaseSubscriberActivity();
             }
         });
