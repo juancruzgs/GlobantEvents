@@ -19,6 +19,7 @@ public class CoreConstants {
     public static final String SPEAKERS_TABLE = "Speakers";
     public static final String SUBSCRIBERS_TABLE = "Subscribers";
 
+    public static final String FIELD_UPDATED_AT = "updatedAt";
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_SHORT_DESCRIPTION = "short_description";
     public static final String FIELD_FULL_DESCRIPTION = "full_description";
@@ -34,7 +35,6 @@ public class CoreConstants {
     public static final String FIELD_ICON = "icon";
     public static final String FIELD_MAP_COORDINATES = "map_coordinates";
     public static final String FIELD_PUBLIC = "public";
-    public static final String FIELD_QR_CODE = "qr_code";
     public static final String FIELD_DESCRIPTION = "description";
     public static final String FIELD_BIOGRAPHY = "biography";
     public static final String FIELD_PICTURE = "picture";

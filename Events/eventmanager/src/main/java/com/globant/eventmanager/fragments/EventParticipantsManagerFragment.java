@@ -3,6 +3,7 @@ package com.globant.eventmanager.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
@@ -31,13 +33,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener, BasePagerActivity.OnPageScrollStateChangedCancelAnimation{
+public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener, BasePagerActivity.OnPageScrollStateChangedCancelAnimation {
 
     private static final String TAG = "EventParticipantsFragment";
     private List<Subscriber> mSubscribers;
     private List<Subscriber> mAcceptedSubscribers;
     protected LayoutManagerType mCurrentLayoutManagerType;
-    protected RecyclerView mRecyclerView;
+    protected ObservableRecyclerView mRecyclerView;
     protected EventParticipantsListAdapterManager mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected Boolean scrolling = false;
@@ -48,6 +50,8 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     private AppCompatTextView mTextViewNoSubscribers;
     private Boolean mLastVisibleItem = false;
     private String mBindingKey;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     public Boolean isLastVisibleItem() {
         return mLastVisibleItem;
@@ -67,32 +71,45 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     public void onStartAction(BaseService.ACTIONS theAction) {
         switch (theAction) {
             case PARTICIPANT_LIST:
-                showProgressOverlay();
+                if (!mSwipeRefreshLayout.isRefreshing()) {
+                    showProgressOverlay();
+                }
                 break;
         }
     }
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        switch ( theAction ) {
+        switch (theAction) {
             case PARTICIPANT_LIST:
                 mSubscribers = (List<Subscriber>) result;
                 ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
                 setRecyclerViewAdapter();
-                hideUtilsAndShowContentOverlay();
+                if (mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    hideUtilsAndShowContentOverlay();
+                }
                 mAcceptedSubscribers = new ArrayList<>();
+                break;
+            case SET_ACCEPTED:
+                if (mSwipeRefreshLayout.isRefreshing()) {
+                    String eventId = mEvent.getObjectID();
+                    mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
+                }
                 break;
         }
     }
 
     private void setRecyclerViewAdapter() {
-        if (mSubscribers.size() == 0){
+        if (mSubscribers.size() == 0) {
             mTextViewNoSubscribers.setVisibility(View.VISIBLE);
         } else {
             mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
             mRecyclerView.setAdapter(mAdapter);
-            if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
-                Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_LONG).show();
+            if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())) {
+                Toast.makeText(this.getActivity(), R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
                 SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
             }
         }
@@ -105,7 +122,7 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public void cancelAnimations() {
-        if (mAdapter != null && mAdapter.getCurrentParticipant() != null){
+        if (mAdapter != null && mAdapter.getCurrentParticipant() != null) {
             mAdapter.getCurrentParticipant().cancelAnimations();
         }
     }
@@ -141,12 +158,13 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         rootView.setTag(TAG);
         setRetainInstance(true);
         wireUpViews(savedInstanceState, rootView);
+        prepareSwipeRefreshLayout(rootView);
         setAddDeclineAllListener();
         return rootView;
     }
 
     private void wireUpViews(Bundle savedInstanceState, View rootView) {
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.event_participants_recycler_view);
+        mRecyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.list_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         if (savedInstanceState != null) {
@@ -161,6 +179,20 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         mTextViewDeclineAll = (AppCompatTextView) rootView.findViewById(R.id.text_view_decline_all);
     }
 
+    private void prepareSwipeRefreshLayout(View rootView) {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(com.globant.eventscorelib.R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (mAdapter.getCurrentParticipant() != null) {
+                    mAdapter.getCurrentParticipant().cancelAnimations();
+                }
+                mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+    }
+
     private void setAddDeclineAllListener() {
         View.OnClickListener addDeclineAllListener = new View.OnClickListener() {
             @Override
@@ -168,49 +200,49 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
                 int initPosition = linearLayoutManager.findFirstVisibleItemPosition();
                 int cont = 0;
-                switch (v.getId()){
+                switch (v.getId()) {
                     case R.id.text_view_accept_all:
-                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
+                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++) {
                             linearLayoutManager.findViewByPosition(i);
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE){
+                            if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE) {
                                 current.acceptAnimation();
                                 cont += 1;
                             }
-                            if (i == linearLayoutManager.findLastVisibleItemPosition()){
+                            if (i == linearLayoutManager.findLastVisibleItemPosition()) {
                                 mLastVisibleItem = true;
                             }
                         }
-                        for (Subscriber sub : mSubscribers){
-                            if (!sub.isAccepted()){
+                        for (Subscriber sub : mSubscribers) {
+                            if (!sub.isAccepted()) {
                                 sub.setAccepted(true);
-                                if (!mAcceptedSubscribers.contains(sub)){
+                                if (!mAcceptedSubscribers.contains(sub)) {
                                     mAcceptedSubscribers.add(sub);
                                 }
                             }
                         }
                         break;
                     case R.id.text_view_decline_all:
-                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
+                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++) {
                             linearLayoutManager.findViewByPosition(i);
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE){
+                            if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE) {
                                 current.declineAnimation();
                                 cont += 1;
                             }
-                            if (i == linearLayoutManager.findLastVisibleItemPosition()){
+                            if (i == linearLayoutManager.findLastVisibleItemPosition()) {
                                 mLastVisibleItem = true;
                             }
                         }
-                        for (Subscriber sub : mSubscribers){
+                        for (Subscriber sub : mSubscribers) {
                             sub.setAccepted(false);
-                            if (mAcceptedSubscribers.contains(sub)){
+                            if (mAcceptedSubscribers.contains(sub)) {
                                 mAcceptedSubscribers.remove(sub);
                             }
                         }
                         break;
                 }
-                if (cont == 0){
+                if (cont == 0) {
                     notifyAdapter();
                 }
                 mAdapter.setSubscribers(mSubscribers);
@@ -291,22 +323,20 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     }
 
     @Override
-    public void onResumeFragment(){
+    public void onResumeFragment() {
         mSubscribers = ((BaseEventDetailPagerActivity) getActivity()).getSubscriberList();
         if (mSubscribers == null) {
             mEvent = ((BaseEventDetailPagerActivity) getActivity()).getEvent();
             String eventId = mEvent.getObjectID();
             mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
-        }
-        else {
+        } else {
             setRecyclerViewAdapter();
         }
     }
 
     @Override
     public void onStop() {
-        if (mSubscribers != null)
-        {
+        if (mSubscribers != null) {
             //Object[] objects = {mEvent.getObjectID(), mSubscribers};
             //mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), objects);
             mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
@@ -314,23 +344,23 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
         super.onStop();
     }
 
-    public void acceptSubscriber(int position){
+    public void acceptSubscriber(int position) {
         Subscriber subscriber = mSubscribers.get(position);
         subscriber.setAccepted(true);
-        if (!mAcceptedSubscribers.contains(subscriber)){
+        if (!mAcceptedSubscribers.contains(subscriber)) {
             mAcceptedSubscribers.add(subscriber);
         }
     }
 
-    public void declineSubscriber(int position){
+    public void declineSubscriber(int position) {
         Subscriber subscriber = mSubscribers.get(position);
         subscriber.setAccepted(false);
-        if (mAcceptedSubscribers.contains(subscriber)){
+        if (mAcceptedSubscribers.contains(subscriber)) {
             mAcceptedSubscribers.remove(subscriber);
         }
     }
 
-    public void notifyAdapter(){
+    public void notifyAdapter() {
         mAdapter.notifyDataSetChanged();
         mLastVisibleItem = false;
     }

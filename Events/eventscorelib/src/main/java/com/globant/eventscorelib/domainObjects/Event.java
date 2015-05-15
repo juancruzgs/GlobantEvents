@@ -1,11 +1,10 @@
 package com.globant.eventscorelib.domainObjects;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +17,6 @@ public class Event extends BaseObject implements Parcelable {
     private String mFullDescription;
     private String mAdditionalInfo;
     private String mAddress;
-    private String mQrCode;
     private String mCity;
     private String mCountry;
     private String mCategory;
@@ -161,14 +159,6 @@ public class Event extends BaseObject implements Parcelable {
         mEventLogo = eventLogo;
     }
 
-    public String getQrCode() {
-        return mQrCode;
-    }
-
-    public void setQrCode(String qrCode) {
-        mQrCode = qrCode;
-    }
-
     public List<Speaker> getSpeakers() {
         return mSpeakers;
     }
@@ -231,7 +221,6 @@ public class Event extends BaseObject implements Parcelable {
         mCategory = in.readString();
         mLanguage = in.readString();
         mHashtag = in.readString();
-        mQrCode = in.readString();
         int sizeEventLogo = in.readInt();
         if (sizeEventLogo != 0) {
             mEventLogo = new byte[sizeEventLogo];
@@ -265,7 +254,6 @@ public class Event extends BaseObject implements Parcelable {
         dest.writeString(mCategory);
         dest.writeString(mLanguage);
         dest.writeString(mHashtag);
-        dest.writeString(mQrCode);
         if (mEventLogo != null) {
             dest.writeInt(mEventLogo.length);
             dest.writeByteArray(mEventLogo);
