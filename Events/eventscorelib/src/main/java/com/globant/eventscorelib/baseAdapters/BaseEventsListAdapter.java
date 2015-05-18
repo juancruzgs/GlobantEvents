@@ -62,7 +62,7 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
             if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 holder.getViewGroup().getLayoutParams().height = height / 3;
             } else {
-                holder.getViewGroup().getLayoutParams().height = height / 2;
+                holder.getViewGroup().getLayoutParams().height = Math.round(height * 0.8f);
             }
             holder.getEventTitle().setText(mEventList.get(position).getTitle());
             holder.getViewGroup().setVisibility(View.INVISIBLE);
