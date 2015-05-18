@@ -48,6 +48,7 @@ import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 
@@ -428,12 +429,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             if ((mSavePreferences) && (mPhotoTaken)) {
                 saveSubscriberObject();
                 SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
-                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
-                        mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
-                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
-                } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
-                }
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
+
             } else if (!(mPhotoTaken)) {
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo),
                         Toast.LENGTH_SHORT).show();
@@ -501,7 +498,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mSubscriber.setEmail(mEditTextEmail.getText().toString());
         mSubscriber.setCountry(mEditTextCountry.getText().toString());
         mSubscriber.setCity(mEditTextCity.getText().toString());
-        mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        if (!mEditTextTwitter.getText().toString().isEmpty()) {
+            mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        } else {
+            mSubscriber.setTwitterUser(null);
+        }
         Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
         mSubscriber.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
@@ -520,7 +521,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
     @Override
     public String getBindingKey() {
-        return BaseSubscriberFragment.class.getSimpleName();
+        return this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
@@ -590,11 +591,24 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case SUBSCRIBER_EXISTS:
-                if (result.equals("")) {
+                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
+                    if (result.equals("")) {
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
-                } else {
+                    } else {
                     mSubscriber.setObjectID((String) result);
                     mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
+                }
+                }
+                else{
+                    if (!(result.equals(""))) {
+                        mSubscriber.setObjectID((String) result);
+                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);}
+                    else{
+                        hideUtilsAndShowContentOverlay();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+                        getActivity().finish();
+                    }
                 }
                 break;
             case IS_SUBSCRIBED:
@@ -615,6 +629,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             case EVENTS_TO_SUBSCRIBER_CREATE:
                 hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+                break;
+            case SUBSCRIBER_UPDATE:
+                hideUtilsAndShowContentOverlay();
+                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
                 break;
         }

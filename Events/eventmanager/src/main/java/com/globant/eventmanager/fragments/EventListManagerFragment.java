@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
@@ -16,6 +15,7 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.software.shell.fab.ActionButton;
 
+import java.util.Date;
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
@@ -41,17 +41,12 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return this;
+        return null;
     }
 
     @Override
-    public String getBindingKey() {
-        return EventListManagerFragment.class.getSimpleName();
-    }
-
-    @Override
-    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        super.onFinishAction(theAction, result);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -86,7 +81,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
-                EventsFragment.mEventAction = EventsFragment.ActionType.CREATE_EVENT;
                 startActivity(intent);
             }
         });

@@ -31,11 +31,7 @@ public class EventListClientFragment extends BaseEventListFragment {
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return this;
+        return null;
     }
 
-    @Override
-    public String getBindingKey() {
-        return EventListClientFragment.class.getSimpleName();
-    }
 }
