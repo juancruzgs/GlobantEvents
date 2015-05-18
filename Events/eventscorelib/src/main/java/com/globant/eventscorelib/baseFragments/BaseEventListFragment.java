@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,7 +75,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
+        LINEAR_LAYOUT_MANAGER,
+        STAGGEREDGRID_LAYOUT_MANAGER
     }
 
     private LayoutManagerType mCurrentLayoutManagerType;
@@ -145,9 +148,14 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         if (savedInstanceState != null) {
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        RecyclerView.LayoutManager layoutManager;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            layoutManager = new StaggeredGridLayoutManager(2,1);
+            mCurrentLayoutManagerType = LayoutManagerType.STAGGEREDGRID_LAYOUT_MANAGER;
+        } else {
+            layoutManager = new LinearLayoutManager(getActivity());
+            mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        }
         mRecyclerView.setLayoutManager(layoutManager);
     }
 
