@@ -85,9 +85,9 @@ public class PushNotifications {
             }
         }
         ParsePush parsePush = new ParsePush();
-        parsePush.setChannel(channel);
+//        parsePush.setChannel(channel);
         parsePush.setData(data);
-        parsePush.setQuery(ParseInstallation.getQuery());
+        parsePush.setQuery(ParseInstallation.getQuery().whereEqualTo("channels",channel));
         parsePush.sendInBackground(new SendCallback() {
             @Override
             public void done(ParseException e) {
@@ -109,9 +109,9 @@ public class PushNotifications {
         }
 
         ParsePush parsePush = new ParsePush();
-        parsePush.setChannel("SUB-"+event+"-"+idSubscriber);
+//        parsePush.setChannel("SUB-"+event+"-"+idSubscriber);
         parsePush.setData(data);
-        parsePush.setQuery(ParseInstallation.getQuery());
+        parsePush.setQuery(ParseInstallation.getQuery().whereEqualTo("channels", "SUB-" + event + "-" + idSubscriber));
         parsePush.sendInBackground(new SendCallback() {
             @Override
             public void done(ParseException e) {
