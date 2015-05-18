@@ -47,8 +47,10 @@ public class PushReceiver extends ParsePushBroadcastReceiver {
 
         notifM.notify(NOTIFICATION_ID, mBuilder.build());
 
-        PushNotifications.unsubscribeToChannel("SUB-" + json.getString("event"));
-        PushNotifications.unsubscribeToChannel("SUB-" + json.getString("event") + "-" + json.getString("id"));
-        PushNotifications.subscribeToChannel("PAR-" + json.getString("event"));
+        if (json.has("event")){
+            PushNotifications.unsubscribeToChannel("SUB-" + json.getString("event"));
+            PushNotifications.unsubscribeToChannel("SUB-" + json.getString("event") + "-" + json.getString("id"));
+            PushNotifications.subscribeToChannel("PAR-" + json.getString("event"));
+        }
     }
 }

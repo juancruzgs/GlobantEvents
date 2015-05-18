@@ -50,8 +50,15 @@ public class PushNotifications {
     }
 
     public static void sendBroadcastNotification(String message){
+        JSONObject data =  new JSONObject();
+        try {
+            data.put("title", "Broadcast Notification");
+            data.put("alert", message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         ParsePush parsePush = new ParsePush();
-        parsePush.setMessage(message);
+        parsePush.setData(data);
         parsePush.setQuery(ParseInstallation.getQuery());
         parsePush.sendInBackground(new SendCallback() {
             @Override
@@ -62,8 +69,13 @@ public class PushNotifications {
     }
 
     public static void sendNotification(String message,String channel,String eventId){
-        ParsePush parsePush = new ParsePush();
-        parsePush.setMessage(message);
+        JSONObject data =  new JSONObject();
+        try {
+            data.put("title", "Notification Event");
+            data.put("alert", message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         //TODO change hardcoded string
         if (!(channel.equals("Everyone"))){
             if (channel.equals("Subscribers")){
@@ -71,8 +83,10 @@ public class PushNotifications {
             } else {
                 channel = "PAR-"+eventId;
             }
-            parsePush.setChannel(channel);
         }
+        ParsePush parsePush = new ParsePush();
+        parsePush.setChannel(channel);
+        parsePush.setData(data);
         parsePush.setQuery(ParseInstallation.getQuery());
         parsePush.sendInBackground(new SendCallback() {
             @Override
