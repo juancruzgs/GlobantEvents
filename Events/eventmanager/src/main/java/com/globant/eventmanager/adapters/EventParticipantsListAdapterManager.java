@@ -49,6 +49,7 @@ public class EventParticipantsListAdapterManager extends BaseParticipantsListAda
         super(context,subscribers);
         mTransformation = new CropCircleTransformation(context);
         mFragment = fragment;
+        mSubscribers = subscribers;
     }
 
     @Override

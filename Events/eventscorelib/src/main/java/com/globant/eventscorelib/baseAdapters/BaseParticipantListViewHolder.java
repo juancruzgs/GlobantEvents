@@ -10,7 +10,7 @@ import com.globant.eventscorelib.R;
 /**
  * Created by gonzalo.lodi on 5/14/2015.
  */
-public class BaseParticipantListViewHolder extends RecyclerView.ViewHolder{
+public abstract class BaseParticipantListViewHolder extends RecyclerView.ViewHolder{
 
     private AppCompatTextView mTextViewName;
     private AppCompatTextView mTextViewGlober;

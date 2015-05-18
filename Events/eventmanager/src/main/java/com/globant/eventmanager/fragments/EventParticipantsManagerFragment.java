@@ -110,6 +110,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     protected BaseParticipantsListAdapter getAdapter() {
+        mSubscribers = getSubscribers();
         mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
         return mAdapter;
     }
@@ -158,9 +159,9 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
         wireUpAddDeclineButtons(rootView);
-        mSubscribers = getSubscribers();
         //prepareSwipeRefreshLayout(rootView);
         setAddDeclineAllListener();
+        setOnScrollListener();
         return rootView;
     }
 
@@ -249,6 +250,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     }
 
     private void setOnScrollListener() {
+        mRecyclerView = getRecyclerView();
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
