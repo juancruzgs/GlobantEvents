@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by gonzalo.lodi on 5/14/2015.
  */
-public class BaseParticipantsListAdapter extends RecyclerView.Adapter<BaseParticipantListViewHolder>{
+public abstract class BaseParticipantsListAdapter extends RecyclerView.Adapter<BaseParticipantListViewHolder>{
 
     private Context mContext;
     private List<Subscriber> mSubscribers;
@@ -32,12 +32,14 @@ public class BaseParticipantsListAdapter extends RecyclerView.Adapter<BasePartic
         mTransformation = new CropCircleTransformation(mContext);
     }
 
+    protected abstract BaseParticipantListViewHolder getViewHolder(View view);
+
     @Override
     public BaseParticipantListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.participant_row_item, parent, false);
 
-        return new BaseParticipantListViewHolder(view);
+        return getViewHolder(view);
     }
 
     @Override
