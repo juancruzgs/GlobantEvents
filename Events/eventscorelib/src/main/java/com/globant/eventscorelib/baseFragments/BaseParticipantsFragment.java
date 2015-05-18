@@ -9,17 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseAdapters.BaseParticipantsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
@@ -31,25 +28,27 @@ import java.util.List;
 /**
  * Created by gonzalo.lodi on 5/14/2015.
  */
-public class BaseParticipantsFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener{
+public abstract class BaseParticipantsFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener{
 
     private static final String TAG = "EventParticipantsFragment";
     private List<Subscriber> mSubscribers;
-    private List<Subscriber> mAcceptedSubscribers;
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected ObservableRecyclerView mRecyclerView;
-    protected EventParticipantsListAdapterManager mAdapter;
+    protected BaseParticipantsListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected Boolean scrolling = false;
-    private LinearLayout mViewButtonsAddDeclineAll;
-    private AppCompatTextView mTextViewAcceptAll;
-    private AppCompatTextView mTextViewDeclineAll;
     private Event mEvent;
     private AppCompatTextView mTextViewNoSubscribers;
-    private Boolean mLastVisibleItem = false;
     private String mBindingKey;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    public List<Subscriber> getSubscribers() {
+        return mSubscribers;
+    }
+
+    public ObservableRecyclerView getRecyclerView() {
+        return mRecyclerView;
+    }
 
     @Override
     public Activity getBindingActivity() {
@@ -63,13 +62,13 @@ public class BaseParticipantsFragment extends BaseFragment implements BasePagerA
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        switch (theAction) {
+        /*switch (theAction) {
             case PARTICIPANT_LIST:
                 if (!mSwipeRefreshLayout.isRefreshing()){
                     showProgressOverlay();
                 }
                 break;
-        }
+        }*/
     }
 
     @Override
@@ -79,46 +78,37 @@ public class BaseParticipantsFragment extends BaseFragment implements BasePagerA
                 mSubscribers = (List<Subscriber>) result;
                 ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
                 setRecyclerViewAdapter();
-                if (mSwipeRefreshLayout.isRefreshing()){
+                /*if (mSwipeRefreshLayout.isRefreshing()){
                     mSwipeRefreshLayout.setRefreshing(false);
                     mAdapter.notifyDataSetChanged();
                 }else {
                     hideUtilsAndShowContentOverlay();
-                }
-                mAcceptedSubscribers = new ArrayList<>();
-                break;
-            case SET_ACCEPTED:
-                if (mSwipeRefreshLayout.isRefreshing()){
-                    String eventId = mEvent.getObjectID();
-                    mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
-                }
+                }*/
+                hideUtilsAndShowContentOverlay();
+                initializeAcceptedSubscribers();
                 break;
         }
     }
 
-    private void setRecyclerViewAdapter() {
+    protected abstract void initializeAcceptedSubscribers();
+
+    protected abstract BaseParticipantsListAdapter getAdapter ();
+
+    protected void setRecyclerViewAdapter() {
         if (mSubscribers.size() == 0){
             mTextViewNoSubscribers.setVisibility(View.VISIBLE);
         } else {
-            mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
+            mAdapter = getAdapter();
             mRecyclerView.setAdapter(mAdapter);
-            if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
-                Toast.makeText(this.getActivity(), R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
-                SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
-            }
+            showHint();
         }
     }
+
+    protected abstract void showHint();
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         showErrorOverlay();
-    }
-
-    @Override
-    public void cancelAnimations() {
-        if (mAdapter.getCurrentParticipant() != null){
-            mAdapter.getCurrentParticipant().cancelAnimations();
-        }
     }
 
     private enum LayoutManagerType {
@@ -143,15 +133,15 @@ public class BaseParticipantsFragment extends BaseFragment implements BasePagerA
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_event_participants, container, false);
+        View rootView = inflater.inflate(getFragmentLayout(), container, false);
         hideUtilsAndShowContentOverlay();
         rootView.setTag(TAG);
         setRetainInstance(true);
         wireUpViews(savedInstanceState, rootView);
-        prepareSwipeRefreshLayout(rootView);
-        setAddDeclineAllListener();
         return rootView;
     }
+
+    protected abstract int getFragmentLayout();
 
     private void wireUpViews(Bundle savedInstanceState, View rootView) {
         mRecyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.list_recycler_view);
@@ -162,127 +152,20 @@ public class BaseParticipantsFragment extends BaseFragment implements BasePagerA
                     .getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-        setOnScrollListener();
         mTextViewNoSubscribers = (AppCompatTextView) rootView.findViewById(R.id.text_view_no_participants);
-        mViewButtonsAddDeclineAll = (LinearLayout) rootView.findViewById(R.id.linear_layout_buttons_add_and_decline);
-        mTextViewAcceptAll = (AppCompatTextView) rootView.findViewById(R.id.text_view_accept_all);
-        mTextViewDeclineAll = (AppCompatTextView) rootView.findViewById(R.id.text_view_decline_all);
+
     }
 
-    private void prepareSwipeRefreshLayout(View rootView) {
+    /*private void prepareSwipeRefreshLayout(View rootView) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(com.globant.eventscorelib.R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (mAdapter.getCurrentParticipant() != null) {
-                    mAdapter.getCurrentParticipant().cancelAnimations();
-                }
                 mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
-    }
-
-    private void setAddDeclineAllListener() {
-        View.OnClickListener addDeclineAllListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-                int initPosition = linearLayoutManager.findFirstVisibleItemPosition();
-                int cont = 0;
-                switch (v.getId()){
-                    case R.id.text_view_accept_all:
-                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
-                            linearLayoutManager.findViewByPosition(i);
-                            ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE){
-                                current.acceptAnimation();
-                                cont += 1;
-                            }
-                            if (i == linearLayoutManager.findLastVisibleItemPosition()){
-                                mLastVisibleItem = true;
-                            }
-                        }
-                        for (Subscriber sub : mSubscribers){
-                            if (!sub.isAccepted()){
-                                sub.setAccepted(true);
-                                if (!mAcceptedSubscribers.contains(sub)){
-                                    mAcceptedSubscribers.add(sub);
-                                }
-                            }
-                        }
-                        break;
-                    case R.id.text_view_decline_all:
-                        for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
-                            linearLayoutManager.findViewByPosition(i);
-                            ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE){
-                                current.declineAnimation();
-                                cont += 1;
-                            }
-                            if (i == linearLayoutManager.findLastVisibleItemPosition()){
-                                mLastVisibleItem = true;
-                            }
-                        }
-                        for (Subscriber sub : mSubscribers){
-                            sub.setAccepted(false);
-                            if (mAcceptedSubscribers.contains(sub)){
-                                mAcceptedSubscribers.remove(sub);
-                            }
-                        }
-                        break;
-                }
-                if (cont == 0){
-                    notifyAdapter();
-                }
-                mAdapter.setSubscribers(mSubscribers);
-            }
-        };
-        mTextViewAcceptAll.setOnClickListener(addDeclineAllListener);
-        mTextViewDeclineAll.setOnClickListener(addDeclineAllListener);
-    }
-
-    private void setOnScrollListener() {
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)) {
-                    scrolling = true;
-                } else {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        scrolling = false;
-                    }
-                }
-            }
-
-            private static final int HIDE_THRESHOLD = 20;
-            private int scrolledDistance = 0;
-            private boolean controlsVisible = true;
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                if (scrolledDistance > HIDE_THRESHOLD && controlsVisible) {
-                    //hide
-                    mViewButtonsAddDeclineAll.animate().translationY(mViewButtonsAddDeclineAll.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
-                    controlsVisible = false;
-                    scrolledDistance = 0;
-                } else if (scrolledDistance < -HIDE_THRESHOLD && !controlsVisible) {
-                    //show
-                    mViewButtonsAddDeclineAll.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                    controlsVisible = true;
-                    scrolledDistance = 0;
-                }
-
-                if ((controlsVisible && dy > 0) || (!controlsVisible && dy < 0)) {
-                    scrolledDistance += dy;
-                }
-            }
-        });
-    }
+    }*/
 
     @Override
     public String getTitle() {
@@ -325,35 +208,4 @@ public class BaseParticipantsFragment extends BaseFragment implements BasePagerA
         }
     }
 
-    @Override
-    public void onStop() {
-        if (mSubscribers != null)
-        {
-            //Object[] objects = {mEvent.getObjectID(), mSubscribers};
-            //mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), objects);
-            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
-        }
-        super.onStop();
-    }
-
-    public void acceptSubscriber(int position){
-        Subscriber subscriber = mSubscribers.get(position);
-        subscriber.setAccepted(true);
-        if (!mAcceptedSubscribers.contains(subscriber)){
-            mAcceptedSubscribers.add(subscriber);
-        }
-    }
-
-    public void declineSubscriber(int position){
-        Subscriber subscriber = mSubscribers.get(position);
-        subscriber.setAccepted(false);
-        if (mAcceptedSubscribers.contains(subscriber)){
-            mAcceptedSubscribers.remove(subscriber);
-        }
-    }
-
-    public void notifyAdapter(){
-        mAdapter.notifyDataSetChanged();
-        mLastVisibleItem = false;
-    }
 }

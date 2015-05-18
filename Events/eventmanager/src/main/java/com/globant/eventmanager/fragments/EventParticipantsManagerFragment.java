@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
@@ -22,8 +21,10 @@ import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseAdapters.BaseParticipantsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
+import com.globant.eventscorelib.baseFragments.BaseParticipantsFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EventParticipantsManagerFragment extends BaseFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener, BasePagerActivity.OnPageScrollStateChangedCancelAnimation{
+public class EventParticipantsManagerFragment extends BaseParticipantsFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener, BasePagerActivity.OnPageScrollStateChangedCancelAnimation{
 
     private static final String TAG = "EventParticipantsFragment";
     private List<Subscriber> mSubscribers;
@@ -64,10 +65,10 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
 
     @Override
     public String getBindingKey() {
-        return mBindingKey;
+        return EventParticipantsManagerFragment.class.getSimpleName();
     }
 
-    @Override
+    /*@Override
     public void onStartAction(BaseService.ACTIONS theAction) {
         switch (theAction) {
             case PARTICIPANT_LIST:
@@ -81,6 +82,12 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch ( theAction ) {
+            case SET_ACCEPTED:
+                if (mSwipeRefreshLayout.isRefreshing()){
+                    String eventId = mEvent.getObjectID();
+                    mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
+                }
+                break;
             case PARTICIPANT_LIST:
                 mSubscribers = (List<Subscriber>) result;
                 ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
@@ -93,25 +100,27 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
                 }
                 mAcceptedSubscribers = new ArrayList<>();
                 break;
-            case SET_ACCEPTED:
-                if (mSwipeRefreshLayout.isRefreshing()){
-                    String eventId = mEvent.getObjectID();
-                    mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
-                }
-                break;
         }
+    }*/
+
+    @Override
+    protected void initializeAcceptedSubscribers() {
+        mAcceptedSubscribers = new ArrayList<>();
     }
 
-    private void setRecyclerViewAdapter() {
-        if (mSubscribers.size() == 0){
-            mTextViewNoSubscribers.setVisibility(View.VISIBLE);
-        } else {
-            mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
-            mRecyclerView.setAdapter(mAdapter);
-            if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
-                Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
-                SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
-            }
+    @Override
+    protected BaseParticipantsListAdapter getAdapter() {
+        mAdapter = new EventParticipantsListAdapterManager(getActivity(), mSubscribers, this);
+        return mAdapter;
+    }
+
+
+
+    @Override
+    protected void showHint() {
+        if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
+            Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
+            SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
         }
     }
 
@@ -141,39 +150,26 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
-    }
-
-    @Override
     public BaseService.ActionListener getActionListener() {
         return this;
     }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_event_participants, container, false);
-        hideUtilsAndShowContentOverlay();
-        rootView.setTag(TAG);
-        setRetainInstance(true);
-        wireUpViews(savedInstanceState, rootView);
-        prepareSwipeRefreshLayout(rootView);
+        View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
+        wireUpAddDeclineButtons(rootView);
+        mSubscribers = getSubscribers();
+        //prepareSwipeRefreshLayout(rootView);
         setAddDeclineAllListener();
         return rootView;
     }
 
-    private void wireUpViews(Bundle savedInstanceState, View rootView) {
-        mRecyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.list_recycler_view);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        if (savedInstanceState != null) {
-            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                    .getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
-        }
-        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-        setOnScrollListener();
-        mTextViewNoSubscribers = (AppCompatTextView) rootView.findViewById(R.id.text_view_no_participants);
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_event_participants;
+    }
+
+    private void wireUpAddDeclineButtons(View rootView) {
         mViewButtonsAddDeclineAll = (LinearLayout) rootView.findViewById(R.id.linear_layout_buttons_add_and_decline);
         mTextViewAcceptAll = (AppCompatTextView) rootView.findViewById(R.id.text_view_accept_all);
         mTextViewDeclineAll = (AppCompatTextView) rootView.findViewById(R.id.text_view_decline_all);
@@ -295,44 +291,13 @@ public class EventParticipantsManagerFragment extends BaseFragment implements Ba
     }
 
     @Override
-    public String getTitle() {
-        return "Participants";
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putSerializable(CoreConstants.KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
-        int scrollPosition = 0;
-        if (mRecyclerView.getLayoutManager() != null) {
-            scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
-                    .findFirstCompletelyVisibleItemPosition();
-        }
-
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.scrollToPosition(scrollPosition);
-    }
-
     @Override
     public void onPauseFragment() {
-    }
-
-    @Override
-    public void onResumeFragment(){
-        mSubscribers = ((BaseEventDetailPagerActivity) getActivity()).getSubscriberList();
-        if (mSubscribers == null) {
-            mEvent = ((BaseEventDetailPagerActivity) getActivity()).getEvent();
-            String eventId = mEvent.getObjectID();
-            mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
-        }
-        else {
-            setRecyclerViewAdapter();
-        }
     }
 
     @Override
