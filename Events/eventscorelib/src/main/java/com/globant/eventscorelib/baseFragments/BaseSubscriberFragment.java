@@ -503,7 +503,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mSubscriber.setEmail(mEditTextEmail.getText().toString());
         mSubscriber.setCountry(mEditTextCountry.getText().toString());
         mSubscriber.setCity(mEditTextCity.getText().toString());
-        mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        if (!mEditTextTwitter.getText().toString().isEmpty()) {
+            mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        } else {
+            mSubscriber.setTwitterUser(null);
+        }
         Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
         mSubscriber.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
