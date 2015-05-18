@@ -12,6 +12,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -191,6 +193,12 @@ public class CloudDatabaseController extends DatabaseController{
         return databaseSubscriber.getObjectId();
     }
 
+    public void updateSubscriber(Subscriber domainSubscriber) throws ParseException {
+        ParseObject databaseSubscriber = ParseObject.createWithoutData(CoreConstants.SUBSCRIBERS_TABLE, domainSubscriber.getObjectID());
+        setDatabaseSubscriberInformation(domainSubscriber, databaseSubscriber);
+        databaseSubscriber.save();
+    }
+
     public void createEventToSubscriber(Subscriber domainSubscriber, String eventId) throws ParseException {
         ParseObject databaseSubscriber = getDatabaseSubscriber(domainSubscriber.getObjectID());
         ParseObject databaseEvent = getDatabaseEvent(eventId);
@@ -253,19 +261,24 @@ public class CloudDatabaseController extends DatabaseController{
         }
     }
 
-    private void setDatabaseSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSpeaker) {
-        databaseSpeaker.put(CoreConstants.FIELD_NAME, domainSubscriber.getName());
-        databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSubscriber.getLastName());
-        databaseSpeaker.put(CoreConstants.FIELD_EMAIL, domainSubscriber.getEmail());
-        databaseSpeaker.put(CoreConstants.FIELD_PHONE, domainSubscriber.getPhone());
-        databaseSpeaker.put(CoreConstants.FIELD_OCCUPATION, domainSubscriber.getOccupation());
-        databaseSpeaker.put(CoreConstants.FIELD_GLOBER, domainSubscriber.isGlober());
-        databaseSpeaker.put(CoreConstants.FIELD_TWITTER_USER, domainSubscriber.getTwitterUser());
-        databaseSpeaker.put(CoreConstants.FIELD_ENGLISH, domainSubscriber.speaksEnglish());
-        databaseSpeaker.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
-        databaseSpeaker.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
+    private void setDatabaseSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSubscriber) {
+        databaseSubscriber.put(CoreConstants.FIELD_NAME, domainSubscriber.getName());
+        databaseSubscriber.put(CoreConstants.FIELD_LAST_NAME, domainSubscriber.getLastName());
+        databaseSubscriber.put(CoreConstants.FIELD_EMAIL, domainSubscriber.getEmail());
+        databaseSubscriber.put(CoreConstants.FIELD_PHONE, domainSubscriber.getPhone());
+        databaseSubscriber.put(CoreConstants.FIELD_OCCUPATION, domainSubscriber.getOccupation());
+        databaseSubscriber.put(CoreConstants.FIELD_GLOBER, domainSubscriber.isGlober());
+        if (domainSubscriber.getTwitterUser() != null) {
+            databaseSubscriber.put(CoreConstants.FIELD_TWITTER_USER, domainSubscriber.getTwitterUser());
+        }
+        else{
+            databaseSubscriber.put(CoreConstants.FIELD_TWITTER_USER, JSONObject.NULL);
+        }
+        databaseSubscriber.put(CoreConstants.FIELD_ENGLISH, domainSubscriber.speaksEnglish());
+        databaseSubscriber.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
+        databaseSubscriber.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
         if (domainSubscriber.getPicture() != null) {
-            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
+            databaseSubscriber.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
         }
     }
 

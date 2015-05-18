@@ -115,7 +115,7 @@ public abstract class BaseService extends Service {
     public enum ACTIONS {
         EVENT_LIST, EVENTS_LIST_REFRESH, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
-    PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SET_ACCEPTED}
+    PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SUBSCRIBER_UPDATE, SET_ACCEPTED}
 
     private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
@@ -220,6 +220,9 @@ public abstract class BaseService extends Service {
                                 case SET_ACCEPTED:
                                     //Object[] objects = (Object[]) arguments;
                                     mCloudDatabaseController.setAccepted((String) arguments[0], (List<Subscriber>) arguments[1]);
+                                    break;
+                                case SUBSCRIBER_UPDATE:
+                                    mCloudDatabaseController.updateSubscriber((Subscriber) arguments[0]);
                                     break;
                                 case SUBSCRIBER_EXISTS:
                                     result = mCloudDatabaseController.getSubscriberId((String) arguments[0]);
