@@ -1,6 +1,8 @@
 package com.globant.eventmanager.fragments;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,13 +10,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.globant.eventmanager.activities.EventSpeakerListActivity;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.activities.TestActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseActivities.BaseSpeakerDetailActivity;
 import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
+import com.globant.eventscorelib.baseAdapters.RecyclerItemClickListener;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
+import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,31 +52,23 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
         return super.getBindingKey();
     }
 
-
-    @Override
-    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
-            mSpeakers = (List<Speaker>) result;
-            if ((mSpeakers.size()) >= 1) {
-                ((EventsManagerPagerActivity) getActivity()).setSpeakersList(mSpeakers);
-                setRecyclerViewAdapter();
-            } else {
-                mRecyclerView.setVisibility(View.GONE);
-                mTextViewNoSpeakers.setVisibility(View.VISIBLE);
-            }
-            hideUtilsAndShowContentOverlay();
-        }
-    }
-
-
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =    super.onCreateEventView(inflater, container, savedInstanceState);
-        prepareRecyclerView(rootView);
+        mActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // add new speaker to current event
+            public void onClick(View v) {
+                Intent intentSpeakerCreate = new Intent(getActivity(), EventSpeakerListActivity.class);
+                startActivityForResult(intentSpeakerCreate, REQ_CODE_SPEAKER);
+            }
+        });
+        mActionButton.show();
         return  rootView;
     }
 
-    private void prepareRecyclerView(View rootView) {
+    @Override
+    protected void prepareRecyclerView(View rootView) {
         int scrollPosition = 0;
         mRecyclerView = (RecyclerView) rootView.findViewById(com.globant.eventscorelib.R.id.speaker_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -78,18 +79,21 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
         mRecyclerView.setHasFixedSize(true);
-        mActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            // add new speaker to current event
-            public void onClick(View v) {
-                    Intent intentSpeakerCreate = new Intent(getActivity(), TestActivity.class);
-                    startActivityForResult(intentSpeakerCreate, REQ_CODE_SPEAKER);
-            }
-        });
-
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Intent intentSpeakerEdit = new Intent(getActivity(),TestActivity.class);
+                        intentSpeakerEdit.putExtra("speaker",mSpeakers.get(position));
+                        intentSpeakerEdit.putExtra("position",position);
+                        startActivityForResult(intentSpeakerEdit, REQ_CODE_SPEAKER);
+                    }
+                })
+        );
 
 
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -98,6 +102,10 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
         {
             if (resultCode == RESULT_OK) {
                 Speaker newSpeaker =  data.getParcelableExtra("newSpeaker");
+                Speaker editedSpeaker = data.getParcelableExtra("editedSpeaker");
+
+                if(newSpeaker!=null)
+                {
                     if(mSpeakers == null) {
                         mSpeakers = new ArrayList<>();
                         mSpeakers.add(newSpeaker);
@@ -112,18 +120,46 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                     }
 
                 }
+                if(editedSpeaker!= null)
+                {
+                    int position = data.getIntExtra("position",0);
+                    mSpeakers.set(position, editedSpeaker);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
         }
     }
 
+
     @Override
     public void onResumeFragment() {
-        //super.onResumeFragment();
+        //el padre tiene speakers?
         mSpeakers = ((EventsManagerPagerActivity) getActivity()).getEvent().getSpeakers();
-        String eventId = ((EventsManagerPagerActivity) getActivity()).getEvent().getObjectID();
-        setRecyclerViewAdapter();
+        //el padre se ha guardado?.
+        eventId = ((EventsManagerPagerActivity) getActivity()).getEvent().getObjectID();
+        if(mSpeakers==null) {
+            if (eventId != null) {
+                mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), eventId);
+            }
+        }
+        else {
+            setRecyclerViewAdapter();
+        }
     }
-
-
+    @Override
+    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
+            mSpeakers = (List<Speaker>) result;
+            if ((mSpeakers.size()) >= 1) {
+                ((EventsManagerPagerActivity) getActivity()).setSpeakersList(mSpeakers);
+                setRecyclerViewAdapter();
+            } else {
+                mRecyclerView.setVisibility(View.GONE);
+                mTextViewNoSpeakers.setVisibility(View.VISIBLE);
+            }
+            hideUtilsAndShowContentOverlay();
+        }
+    }
 
     private void setRecyclerViewAdapter() {
         mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);

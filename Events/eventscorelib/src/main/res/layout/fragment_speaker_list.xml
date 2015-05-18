@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:fab="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -30,6 +30,6 @@
         fab:button_color="@color/globant_green"
         fab:image="@drawable/fab_plus_icon"
         fab:image_size="24dp"
-        fab:type="DEFAULT"/>
-
-</LinearLayout>
+        fab:type="DEFAULT"
+        />
+</RelativeLayout>

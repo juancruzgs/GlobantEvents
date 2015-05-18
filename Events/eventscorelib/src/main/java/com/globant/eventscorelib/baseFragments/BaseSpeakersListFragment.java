@@ -111,10 +111,11 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         prepareRecyclerView(rootView);
         setRetainInstance(true);
         wireUpFAB(rootView);
+
         return rootView;
     }
 
-    private void prepareRecyclerView(View rootView) {
+    protected void prepareRecyclerView(View rootView) {
         int scrollPosition = 0;
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.speaker_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -173,5 +174,6 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         mActionButton = (ActionButton) rootView.findViewById(com.globant.eventscorelib.R.id.action_button);
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+        mActionButton.hide();
     }
 }
