@@ -5,8 +5,6 @@
           android:icon="@mipmap/ic_profile" app:showAsAction="ifRoom" />
     <item android:id="@+id/action_checkin" android:title="@string/action_checkin"
           android:icon="@mipmap/ic_beenhere" app:showAsAction="ifRoom" />
-    <item android:id="@+id/action_notifications" android:title="@string/Notifications"
-          android:icon="@mipmap/ic_notifications" app:showAsAction="ifRoom" />
     <item android:id="@+id/action_credits" android:title="@string/action_credits"
           app:showAsAction="never" />
 </menu>

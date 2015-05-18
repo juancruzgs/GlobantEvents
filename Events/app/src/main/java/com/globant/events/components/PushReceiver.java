@@ -32,9 +32,6 @@ public class PushReceiver extends ParsePushBroadcastReceiver {
     }
     private void generateNotification(Context context,JSONObject json) throws JSONException {
         Intent intent = new Intent(context, EventListClientActivity.class);
-//        Event event = ((BaseEventDetailPagerActivity) context).getEvent();
-//        ((BaseEventDetailPagerActivity) context).getService().executeAction(BaseService.ACTIONS.EVENT_DETAIL);
-//        intent.putExtra(CoreConstants.FIELD_EVENTS, event);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         numMessages = 0;

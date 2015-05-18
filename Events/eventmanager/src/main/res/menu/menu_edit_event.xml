@@ -7,4 +7,8 @@
         android:orderInCategory="100"
         app:showAsAction="always"
         android:icon="@mipmap/ic_fab_edit"/>
+    <item android:id="@+id/action_notifications"
+          android:title="@string/menu_button_notifications"
+          android:icon="@mipmap/ic_notifications"
+          app:showAsAction="ifRoom" />
 </menu>

@@ -4,12 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
+import com.globant.eventmanager.activities.PushNotificationActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
@@ -99,5 +103,28 @@ public class EventListManagerFragment extends BaseEventListFragment {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_push_notification, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled;
+
+        if (id == R.id.action_notifications){
+            Intent intentNotifications = new Intent(getActivity(), PushNotificationActivity.class);
+            intentNotifications.putExtra(PushNotificationFragment.SOURCE_TAG, this.getClass().getSimpleName());
+            startActivity(intentNotifications);
+            handled = true;
+        } else {
+            handled = super.onOptionsItemSelected(item);
+        }
+
+        return  handled;
     }
 }

@@ -80,6 +80,6 @@ public class PushNotificationFragment extends BaseFragment {
 
     @Override
     public String getTitle() {
-        return "Notifications";
+        return getString(R.string.menu_button_notifications);
     }
 }
