@@ -434,6 +434,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
                 }
             } else if (!(mPhotoTaken)) {
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo),
