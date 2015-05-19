@@ -97,7 +97,8 @@
 
         <activity
             android:name=".activities.EventHistoryManagerActivity"
-            android:label="@string/title_activity_event_history" >
+            android:label="@string/title_activity_event_history"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable_filter" />

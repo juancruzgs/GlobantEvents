@@ -3,6 +3,7 @@ package com.globant.eventmanager.fragments;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
@@ -10,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,8 +20,11 @@ import android.view.ViewGroup;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventmanager.R;
+import com.globant.eventmanager.activities.EventDetailManagerActivity;
+import com.globant.eventmanager.activities.EventHistoryManagerActivity;
 import com.globant.eventmanager.adapters.EventHistoryListAdapterManager;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseAdapters.GetEventInformation;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.domainObjects.Event;
@@ -30,7 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class EventHistoryManagerFragment extends BaseFragment implements BaseService.ActionListener {
+public class EventHistoryManagerFragment extends BaseFragment implements BaseService.ActionListener, GetEventInformation {
 
     private SearchView mSearchView;
     private String mBindingKey;
@@ -38,6 +43,7 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
     private List<Event> mEventList;
     private RecyclerView mRecyclerView;
     private AppCompatTextView mTextViewNoEvents;
+    private EventHistoryListAdapterManager mAdapter;
 
     public EventHistoryManagerFragment() {
     }
@@ -51,13 +57,10 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_manager_event_history, container, false);
         hideUtilsAndShowContentOverlay();
-        mEventList = getActivity().getIntent().getExtras().getParcelableArrayList(CoreConstants.FIELD_EVENTS);
         prepareRecyclerView(rootView);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mTextViewNoEvents = (AppCompatTextView) rootView.findViewById(R.id.text_view_no_events);
         setRecyclerViewLayoutManager();
-        setRetainInstance(true);
-        setHasOptionsMenu(true);
         return rootView;
     }
 
@@ -77,7 +80,6 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_manager_event_history, menu);
         prepareSearchView(menu);
-
     }
 
     public void setRecyclerViewLayoutManager() {
@@ -93,12 +95,8 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
 
 
     private void setRecyclerViewAdapter() {
-        EventHistoryListAdapterManager adapter = new EventHistoryListAdapterManager(getActivity(), mEventList);
-        mRecyclerView.setAdapter(adapter);
-//        if (mEventList.size()<1){
-//            mTextViewNoTweets.setVisibility(View.VISIBLE);
-//            mSwipeRefreshLayout.setVisibility(View.GONE);
-//        }
+        mAdapter = new EventHistoryListAdapterManager(mEventList, getActivity(), this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void prepareSearchView(Menu menu) {
@@ -109,13 +107,17 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                return false;
+                if (TextUtils.isEmpty(s)) {
+                    mAdapter.getFilter().filter("");
+                } else {
+                    mAdapter.getFilter().filter(s);
+                }
+                return true;
             }
         });
     }
@@ -129,7 +131,12 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
     @Override
     public void setService(BaseService service) {
         super.setService(service);
-            mService.executeAction(BaseService.ACTIONS.GET_OLD_EVENTS, getBindingKey(), null);
+        mEventList = ((EventHistoryManagerActivity) getActivity()).getEventHistory();
+        if (mEventList == null) {
+            mService.executeAction(BaseService.ACTIONS.GET_EVENT_HISTORY, getBindingKey(), null);
+        } else {
+            setRecyclerViewAdapter();
+        }
     }
 
     @Override
@@ -150,21 +157,38 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
-            case GET_OLD_EVENTS:
-                if (mEventList != null) {
-                    mEventList.addAll((Collection<? extends Event>) result);
+            case GET_EVENT_HISTORY:
+                if (result != null) {
+                    mEventList = (List<Event>) result;
+                    ((EventHistoryManagerActivity) getActivity()).setEventHistory(mEventList);
                     setRecyclerViewAdapter();
+                    setHasOptionsMenu(true);
                 } else {
                     showErrorOverlay();
                 }
+
+                hideUtilsAndShowContentOverlay();
+                break;
+            case GET_EVENT:
+                Intent intent = new Intent(getActivity(), EventDetailManagerActivity.class);
+                intent.putExtra(CoreConstants.FIELD_EVENTS, (Event) result);
+                startActivity(intent);
                 break;
         }
-
-        hideUtilsAndShowContentOverlay();
     }
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         showErrorOverlay();
+    }
+
+    @Override
+    public Event getEvent(int position) {
+        return null;
+    }
+
+    @Override
+    public void getEvent(String eventId) {
+        mService.executeAction(BaseService.ACTIONS.GET_EVENT, getBindingKey(), eventId);
     }
 }

@@ -111,7 +111,7 @@ public abstract class BaseService extends Service {
     public enum ACTIONS {
         CLOUD_EVENT_LIST, LOCAL_EVENT_LIST, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
-    PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SET_ACCEPTED, GET_OLD_EVENTS}
+    PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SET_ACCEPTED, GET_EVENT_HISTORY, GET_EVENT}
 
     private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
@@ -222,8 +222,11 @@ public abstract class BaseService extends Service {
                                     //Object[] obj = (Object[])arguments;
                                     mCloudDatabaseController.createEventToSubscriber((Subscriber) arguments[0], (String) arguments[1]);
                                     break;
-                                case GET_OLD_EVENTS:
-                                    result = mCloudDatabaseController.getOldEvents();
+                                case GET_EVENT_HISTORY:
+                                    result = mCloudDatabaseController.getEventHistory();
+                                    break;
+                                case GET_EVENT:
+                                    result = mCloudDatabaseController.getEventWithSpeakers((String)arguments[0]);
                                     break;
                             }
 

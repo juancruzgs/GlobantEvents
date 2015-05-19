@@ -48,30 +48,6 @@ public abstract class DatabaseController {
         return domainEventsList;
     }
 
-    public List<Event> getOldEvents() throws ParseException {
-        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
-        eventsQuery.whereLessThan(CoreConstants.FIELD_END_DATE, new Date());
-        eventsQuery.orderByAscending(CoreConstants.FIELD_START_DATE);
-        List<ParseObject> databaseEventsList = eventsQuery.find();
-        List<Event> domainEventsList = new ArrayList<>();
-        for (ParseObject databaseEvent : databaseEventsList) {
-            pinObjectInBackground(databaseEvent);
-            ParseRelation relation = databaseEvent.getRelation(CoreConstants.FIELD_SPEAKERS);
-            ParseQuery relationQuery = relation.getQuery();
-            queryFromLocalDatastore(relationQuery);
-            List<ParseObject> databaseSpeakersList = relationQuery.find();
-            List<Speaker> domainSpeakersList = new ArrayList<>();
-            for (ParseObject databaseSpeaker : databaseSpeakersList) {
-                Speaker domainSpeaker = createDomainSpeakerFromDatabase(databaseSpeaker);
-                domainSpeakersList.add(domainSpeaker);
-            }
-            Event domainEvent = createDomainEventFromDatabase(databaseEvent);
-            domainEvent.setSpeakers(domainSpeakersList);
-            domainEventsList.add(domainEvent);
-        }
-        return domainEventsList;
-    }
-
     protected abstract void pinObjectInBackground(ParseObject object);
     protected abstract void queryFromLocalDatastore(ParseQuery query);
 
