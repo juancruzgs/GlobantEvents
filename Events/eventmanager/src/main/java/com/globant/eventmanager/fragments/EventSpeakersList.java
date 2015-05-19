@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import com.globant.eventscorelib.R;
 
 import com.globant.eventmanager.activities.EventSpeakerListActivity;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
@@ -39,6 +41,7 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
     public final static int REQ_CODE_SPEAKER = 999;
     private static final int RESULT_OK = 1;
     private String eventId;
+    private String LOG_TAG = getClass().getSimpleName();
 
 
 
@@ -54,6 +57,7 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(LOG_TAG, Thread.currentThread().getStackTrace()[2].getMethodName());
         View rootView =    super.onCreateEventView(inflater, container, savedInstanceState);
         mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +65,7 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
             public void onClick(View v) {
                 Intent intentSpeakerCreate = new Intent(getActivity(), EventSpeakerListActivity.class);
                 startActivityForResult(intentSpeakerCreate, REQ_CODE_SPEAKER);
-            }
+                }
         });
         mActionButton.show();
         return  rootView;
@@ -83,15 +87,23 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent intentSpeakerEdit = new Intent(getActivity(),TestActivity.class);
-                        intentSpeakerEdit.putExtra("speaker",mSpeakers.get(position));
-                        intentSpeakerEdit.putExtra("position",position);
-                        startActivityForResult(intentSpeakerEdit, REQ_CODE_SPEAKER);
+                        Intent intentSpeakerEdit = new Intent(getActivity(), EventSpeakerListActivity.class);
+                        intentSpeakerEdit.putExtra("speaker", mSpeakers.get(position));
+                        intentSpeakerEdit.putExtra("position", position);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            ImageView cardImage = (ImageView) view.findViewById(R.id.image_view_profile_speaker);
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "cardImage");
+                            getActivity().startActivityForResult(intentSpeakerEdit,REQ_CODE_SPEAKER,options.toBundle());
+                        }
+                        else {
+                            startActivityForResult(intentSpeakerEdit, REQ_CODE_SPEAKER);
+                        }
                     }
                 })
         );
-
-
+        mSpeakers = ((EventsManagerPagerActivity) getActivity()).getEvent().getSpeakers();
+        eventId = ((EventsManagerPagerActivity) getActivity()).getEvent().getObjectID();
     }
 
 
@@ -117,8 +129,10 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                     else
                     {   mAdapter.addSpeaker(newSpeaker);
                         mAdapter.notifyDataSetChanged();
+                        mRecyclerView.setVisibility(View.GONE);
+                        mTextViewNoSpeakers.setVisibility(View.INVISIBLE);
+                        hideUtilsAndShowContentOverlay();
                     }
-
                 }
                 if(editedSpeaker!= null)
                 {
@@ -133,10 +147,7 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
 
     @Override
     public void onResumeFragment() {
-        //el padre tiene speakers?
-        mSpeakers = ((EventsManagerPagerActivity) getActivity()).getEvent().getSpeakers();
-        //el padre se ha guardado?.
-        eventId = ((EventsManagerPagerActivity) getActivity()).getEvent().getObjectID();
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         if(mSpeakers==null) {
             if (eventId != null) {
                 mService.executeAction(BaseService.ACTIONS.EVENT_SPEAKERS, getBindingKey(), eventId);
@@ -169,15 +180,6 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                 mRecyclerView.setVisibility(View.GONE);
                 mTextViewNoSpeakers.setVisibility(View.VISIBLE);
             }
-            else {
-            mRecyclerView.setVisibility(View.GONE);
-            mTextViewNoSpeakers.setVisibility(View.VISIBLE);
-            }
-        else
-        {
-            mRecyclerView.setVisibility(View.GONE);
-            mTextViewNoSpeakers.setVisibility(View.VISIBLE);
-        }
         hideUtilsAndShowContentOverlay();
     }
 

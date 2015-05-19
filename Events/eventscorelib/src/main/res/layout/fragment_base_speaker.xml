@@ -26,6 +26,7 @@
                 android:background="#ffd5d5d5"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/placeholder"
+                android:transitionName="cardImage"
                 />
 
             <com.software.shell.fab.ActionButton

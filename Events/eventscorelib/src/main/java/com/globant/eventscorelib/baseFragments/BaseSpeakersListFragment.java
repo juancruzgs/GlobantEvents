@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,8 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     protected AppCompatTextView mTextViewNoSpeakers;
     protected ActionButton mActionButton;
 
+    private String LOG_TAG = getClass().getSimpleName();
+
     private String mBindingKey;
 
     @Override
@@ -61,11 +64,13 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         showProgressOverlay();
     }
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         if (theAction == BaseService.ACTIONS.EVENT_SPEAKERS) {
             mSpeakers = (List<Speaker>) result;
             if ((mSpeakers.size()) >= 1) {
@@ -81,6 +86,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
 
     private void setRecyclerViewAdapter() {
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
         mRecyclerView.setAdapter(mAdapter);
         if (mSpeakers.size() <1){
@@ -99,12 +105,14 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         super.onCreate(savedInstanceState);
         mBindingKey = this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         View rootView = inflater.inflate(R.layout.fragment_speaker_list, container, false);
         hideUtilsAndShowContentOverlay();
         mTextViewNoSpeakers=(AppCompatTextView)rootView.findViewById(R.id.text_view_no_speakers);
@@ -116,6 +124,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
     }
 
     protected void prepareRecyclerView(View rootView) {
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         int scrollPosition = 0;
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.speaker_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -160,6 +169,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
 
     @Override
     public void onResumeFragment() {
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         Activity activity = getActivity();
         mSpeakers = ((BaseEventDetailPagerActivity) getActivity()).getEvent().getSpeakers();
         if (mSpeakers == null) {
@@ -171,6 +181,7 @@ public class BaseSpeakersListFragment extends BaseFragment implements BaseServic
         }
     }
     private void wireUpFAB(View rootView) {
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         mActionButton = (ActionButton) rootView.findViewById(com.globant.eventscorelib.R.id.action_button);
         mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
         mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
