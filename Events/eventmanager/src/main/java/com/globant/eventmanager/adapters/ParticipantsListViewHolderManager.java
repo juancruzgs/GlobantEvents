@@ -18,11 +18,12 @@ import android.widget.TextView;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
+import com.globant.eventscorelib.baseAdapters.BaseParticipantListViewHolder;
 
 /**
  * Created by paula.baudo on 4/17/2015.
  */
-public class ParticipantsListViewHolderManager extends RecyclerView.ViewHolder implements View.OnTouchListener {
+public class ParticipantsListViewHolderManager extends BaseParticipantListViewHolder implements View.OnTouchListener {
 
     private final AppCompatTextView mTextViewName;
     private AppCompatTextView mTextViewNameLeft;

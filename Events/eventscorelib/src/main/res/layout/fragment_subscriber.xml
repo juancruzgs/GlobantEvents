@@ -140,7 +140,7 @@
                                 android:src="@mipmap/ic_last_name"/>
 
                             <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                android:id="@+id/nameErrorLayoutLastName"
+                                android:id="@+id/name_error_layout_last_name"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="20dp"
@@ -354,7 +354,7 @@
                                 android:src="@mipmap/ic_country"/>
 
                             <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                android:id="@+id/nameErrorCountry"
+                                android:id="@+id/name_error_country"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="20dp"
@@ -404,7 +404,7 @@
                                 android:src="@mipmap/ic_city"/>
 
                             <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                android:id="@+id/nameErrorCity"
+                                android:id="@+id/name_error_city"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="20dp"

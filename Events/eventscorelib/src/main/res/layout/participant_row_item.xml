@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/participant_item_holder_layout"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+
+
+    <FrameLayout
+        android:id="@+id/frame_layout_holder"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/frame_layout_left_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/image_view_participant_left"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/profile_pic"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_middle_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="invisible">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_view_participant_name_left"
+                style="@style/condensed_normal_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hermione Granger"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_view_occupation_left"
+                    style="@style/condensed_normal_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lawyer"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_view_glober_left"
+                    style="@style/condensed_normal_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Glober"
+                    android:textColor="@color/blue_glober"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_view_location_left"
+                    style="@style/condensed_light_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mar del Plata, Argentina"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_middle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="88dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_view_participant_name"
+                style="@style/condensed_normal_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hermione Granger"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_view_occupation"
+                    style="@style/condensed_normal_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lawyer"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_view_glober"
+                    style="@style/condensed_normal_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Glober"
+                    android:textColor="@color/globant_green_dark"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_view_location"
+                    style="@style/condensed_light_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mar del Plata, Argentina"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/frame_layout_right_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:padding="8dp"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/image_view_participant_right"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/profile_pic"/>
+        </FrameLayout>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:visibility="invisible"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_light"
+        android:orientation="vertical">
+    </LinearLayout>
+
+
+</LinearLayout>
