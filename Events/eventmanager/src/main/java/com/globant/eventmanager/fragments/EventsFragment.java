@@ -54,6 +54,7 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
+import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -69,26 +70,17 @@ import java.util.Locale;
 /**
  * Created by david.burgos
  */
-public class EventsFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
+public class EventsFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     private Event mEvent;
     protected LatLng mLatLng;
     private String mBindingKey;
 
-    boolean mStickyToolbar;
     private View mToolbar;
     private View mOverlayView;
     private AppCompatTextView mEventTitle;
     private ImageView mMapIcon;
     private ObservableScrollView mScrollView;
-    private int mActionBarSize;
-    private int mFlexibleSpaceImageHeight;
-    private int mToolbarColor;
-    private boolean mFabIsShown;
-    private int mFlexibleSpaceShowFabOffset;
-    private int mFabMargin;
-    private boolean mTitleShown = false;
-
     private ImageView mPhotoEvent;
     private ActionButton mFloatingActionButtonPhoto;
     private AppCompatEditText mEditTextTitle;
@@ -726,10 +718,8 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mFabIsShown) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
-                }
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
             }
         });
 
@@ -749,15 +739,15 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
             }
         });
-        mActionBarSize = getActionBarSize();
-        mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
-        mToolbarColor = getResources().getColor(com.globant.eventscorelib.R.color.globant_green);
-        mStickyToolbar = false;
-        mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_image_height);
-        mToolbar.setBackgroundColor(Color.TRANSPARENT);
-        mScrollView.setScrollViewCallbacks(this);
+        int actionBarSize = getActionBarSize();
+        int flexibleSpaceImageHeight = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_image_height);
+        int toolbarColor = getResources().getColor(com.globant.eventscorelib.R.color.globant_green);
+        int flexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
+        int fabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
+        ScrollChangeCallbacks scrollChangeCallbacks = new ScrollChangeCallbacks(actionBarSize, flexibleSpaceImageHeight, toolbarColor, flexibleSpaceShowFabOffset,
+                fabMargin, mToolbar, mOverlayView, mEventTitle, mPhotoEvent, mFloatingActionButtonPhoto , false, getActivity());
+        mScrollView.setScrollViewCallbacks(scrollChangeCallbacks);
 
-        mFabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
         ViewHelper.setScaleX(mFloatingActionButtonPhoto, 0);
         ViewHelper.setScaleY(mFloatingActionButtonPhoto, 0);
 
@@ -816,23 +806,23 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
                 if(mStartDate.compareTo(mEndDate) != -1){
                     Toast.makeText(getActivity(),R.string.error_message_dates,Toast.LENGTH_LONG).show();
 
-                    ImageView mIconToBeChange= mIconEndDate;
+                    ImageView iconToChange= mIconEndDate;
                     Drawable mDrawableToApplyChanges=getResources().getDrawable(R.mipmap.ic_event_end_date);
 
                     mErrorLabelLayoutEndDate.setError(getString(R.string.error_message_change_dates));
                     mDrawableToApplyChanges= DrawableCompat.wrap(mDrawableToApplyChanges);
                     DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
                     mDrawableToApplyChanges= DrawableCompat.unwrap(mDrawableToApplyChanges);
-                    mIconToBeChange.setImageDrawable(mDrawableToApplyChanges);
+                    iconToChange.setImageDrawable(mDrawableToApplyChanges);
 
-                    mIconToBeChange= mIconEndTime;
+                    iconToChange= mIconEndTime;
                     mDrawableToApplyChanges=getResources().getDrawable(R.mipmap.ic_end_time);
 
                     mErrorLabelLayoutEndTime.setError("");
                     mDrawableToApplyChanges= DrawableCompat.wrap(mDrawableToApplyChanges);
                     DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
                     mDrawableToApplyChanges= DrawableCompat.unwrap(mDrawableToApplyChanges);
-                    mIconToBeChange.setImageDrawable(mDrawableToApplyChanges);
+                    iconToChange.setImageDrawable(mDrawableToApplyChanges);
                 }
                 else if(mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
                     Toast.makeText(getActivity(),getString(R.string.missing_photo),Toast.LENGTH_SHORT).show();
@@ -907,107 +897,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
     @Override
     public void onResumeFragment() {
-    }
-
-    //ObservableScrollViewCallbacks implementation
-    @Override
-    public void onScrollChanged(int i, boolean b, boolean b1){
-
-        // Translate overlay and image
-        float flexibleRange = mFlexibleSpaceImageHeight - mActionBarSize;
-        int minOverlayTransitionY = mActionBarSize - mOverlayView.getHeight();
-        ViewHelper.setTranslationY(mOverlayView, ScrollUtils.getFloat(-i, minOverlayTransitionY, 0));
-        ViewHelper.setTranslationY(mPhotoEvent, ScrollUtils.getFloat(-i / 2, minOverlayTransitionY, 0));
-
-        // Change alpha of overlay
-        ViewHelper.setAlpha(mOverlayView, ScrollUtils.getFloat((float) i / flexibleRange, 0, 1));
-        mEventTitle.getBackground().setAlpha(Math.round(255 * (1 - ScrollUtils.getFloat((float) i / flexibleRange, 0, 1))));
-
-        // Scale title text
-        float titleHeight = mEventTitle.getHeight();
-        float scaleY = (titleHeight - i + flexibleRange) / titleHeight;
-        float scale = ScrollUtils.getFloat(scaleY, 0, 1);
-        ViewHelper.setPivotX(mEventTitle, 0);
-        ViewHelper.setPivotY(mEventTitle, 0);
-        //ViewHelper.setScaleX(mEventTitle, scale);
-        ViewHelper.setScaleY(mEventTitle, scale);
-
-        int maxTitleTranslationY = (int) (mFlexibleSpaceImageHeight - mEventTitle.getHeight() * scale);
-        int titleTranslationY = maxTitleTranslationY - i;
-
-        //titleTranslationY = Math.max(0, titleTranslationY);
-        ViewHelper.setTranslationY(mEventTitle, titleTranslationY);
-
-        if (mStickyToolbar) {
-            // Change alpha of toolbar background
-            if (-i + mFlexibleSpaceImageHeight <= mActionBarSize) {
-                mToolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(1, mToolbarColor));
-            } else {
-                mToolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, mToolbarColor));
-            }
-        } else {
-            // Translate Toolbar
-            if (i < mFlexibleSpaceImageHeight) {
-                ViewHelper.setTranslationY(mToolbar, 0);
-            } else {
-                ViewHelper.setTranslationY(mToolbar, -i);
-            }
-        }
-
-        if (i > mFlexibleSpaceImageHeight && !mTitleShown){
-            mTitleShown = true;
-            ((BaseActivity) getActivity()).changeFragmentTitle(mEventTitle.getText().toString());
-        }
-
-        // Translate FAB
-        int maxFabTranslationY = mFlexibleSpaceImageHeight - mFloatingActionButtonPhoto.getHeight() / 2;
-        float fabTranslationY = ScrollUtils.getFloat( -i + mFlexibleSpaceImageHeight - mFloatingActionButtonPhoto.getHeight() / 2,
-                mActionBarSize - mFloatingActionButtonPhoto.getHeight() / 2,
-                maxFabTranslationY);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            // On pre-honeycomb, ViewHelper.setTranslationX/Y does not set margin,
-            // which causes FAB's OnClickListener not working.
-            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFloatingActionButtonPhoto.getLayoutParams();
-            lp.leftMargin = mOverlayView.getWidth() - mFabMargin - mFloatingActionButtonPhoto.getWidth();
-            lp.topMargin = (int) fabTranslationY;
-            mFloatingActionButtonPhoto.requestLayout();
-        } else {
-            ViewHelper.setTranslationX(mFloatingActionButtonPhoto, mOverlayView.getWidth() - mFabMargin - mFloatingActionButtonPhoto.getWidth());
-            ViewHelper.setTranslationY(mFloatingActionButtonPhoto, fabTranslationY);
-        }
-
-        // Show-hide FAB
-        if (fabTranslationY < mFlexibleSpaceShowFabOffset-mActionBarSize) {
-            hideFab();
-        } else {
-            showFab();
-        }
-    }
-
-    private void showFab() {
-        if (!mFabIsShown) {
-            ViewPropertyAnimator.animate(mFloatingActionButtonPhoto).cancel();
-            ViewPropertyAnimator.animate(mFloatingActionButtonPhoto).scaleX(1).scaleY(1).setDuration(200).start();
-            mFabIsShown = true;
-        }
-    }
-
-    private void hideFab() {
-        if (mFabIsShown) {
-            ViewPropertyAnimator.animate(mFloatingActionButtonPhoto).cancel();
-            ViewPropertyAnimator.animate(mFloatingActionButtonPhoto).scaleX(0).scaleY(0).setDuration(200).start();
-            mFabIsShown = false;
-        }
-    }
-
-    @Override
-    public void onDownMotionEvent() {
-
-    }
-
-    @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-
     }
 
     // BaseService.ActionListener implementation
