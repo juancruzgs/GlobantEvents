@@ -15,8 +15,6 @@
     <string name="error_message_dates">End date must be greater than start date.</string>
     <string name="error_message_change_dates">Must be greater</string>
     <string name="title_activity_event_speaker_list">EventSpeakerListActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="event_created">Event Created successfully</string>
     <string name="event_updated">Event Updated successfully</string>
     <string name="event_deleted">Event Deleted successfully</string>
