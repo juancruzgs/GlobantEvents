@@ -344,7 +344,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_additional_info);
             mErrorLabelLayout= mErrorLabelLayoutAdditionalInfo;
         }
-        else if (id== (R.id.CategorySpinner)){
+        else if (id== (R.id.category_spinner)){
             mIconToChange= mIconCategory;
             switch (((Spinner)view).getSelectedItemPosition()){
                 case 0:
@@ -360,7 +360,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
             mErrorLabelLayout= mErrorLabelLayoutCategory;
         }
-        else if (id== (R.id.PublicSpinner)){
+        else if (id== (R.id.public_spinner)){
             mIconToChange= mIconPublic;
             switch (((Spinner)view).getSelectedItemPosition()){
                 case 0:
@@ -423,7 +423,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     private void wireUpViews(View rootView) {
 
         mToolbar = rootView.findViewById(R.id.events_toolbar);
-        mOverlayView = rootView.findViewById(R.id.evets_overlay);
+        mOverlayView = rootView.findViewById(R.id.events_overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.event_scroll);
         mEventTitle = (AppCompatTextView) rootView.findViewById(R.id.title);
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_button_map);
@@ -432,8 +432,8 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mEditTextFullDescription =(AppCompatEditText)rootView.findViewById(R.id.edit_text_full_description);
         mEditTextShortDescription =(AppCompatEditText)rootView.findViewById(R.id.edit_text_short_description);
         mEditTextAdditionalInfo =(AppCompatEditText)rootView.findViewById(R.id.edit_text_additional_info);
-        mSpinnerCategory =(AppCompatSpinner)rootView.findViewById(R.id.CategorySpinner);
-        mSpinnerPublic =(AppCompatSpinner)rootView.findViewById(R.id.PublicSpinner);
+        mSpinnerCategory =(AppCompatSpinner)rootView.findViewById(R.id.category_spinner);
+        mSpinnerPublic =(AppCompatSpinner)rootView.findViewById(R.id.public_spinner);
         mEditTextHashtag =(AppCompatEditText)rootView.findViewById(R.id.edit_text_hashtag);
         mEditTextLanguage =(AppCompatEditText)rootView.findViewById(R.id.edit_text_language);
         mEditTextStartDate =(AppCompatEditText)rootView.findViewById(R.id.edit_text_start_date);
@@ -467,21 +467,21 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mIconCountry=(ImageView)rootView.findViewById(R.id.icon_country);
         mIconCity=(ImageView)rootView.findViewById(R.id.icon_city);
 
-        mErrorLabelLayoutTitle = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutTitle);
-        mErrorLabelLayoutFullDescription = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFullDescription);
-        mErrorLabelLayoutShortDescription = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutShortDescription);
-        mErrorLabelLayoutAdditionalInfo = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutAdditionalInfo);
-        mErrorLabelLayoutCategory = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutCategory);
-        mErrorLabelLayoutPublic = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutPublic);
-        mErrorLabelLayoutHashtag = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutHashtag);
-        mErrorLabelLayoutLanguage = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutLanguage);
-        mErrorLabelLayoutStartDate = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutStartDate);
-        mErrorLabelLayoutEndDate = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEndDate);
-        mErrorLabelLayoutStartTime = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutStartTime);
-        mErrorLabelLayoutEndTime = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEndTime);
-        mErrorLabelLayoutAddress = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorAddress);
-        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCity);
-        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCountry);
+        mErrorLabelLayoutTitle = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_title);
+        mErrorLabelLayoutFullDescription = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_full_description);
+        mErrorLabelLayoutShortDescription = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_short_description);
+        mErrorLabelLayoutAdditionalInfo = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_additional_info);
+        mErrorLabelLayoutCategory = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_category);
+        mErrorLabelLayoutPublic = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_public);
+        mErrorLabelLayoutHashtag = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_hashtag);
+        mErrorLabelLayoutLanguage = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_language);
+        mErrorLabelLayoutStartDate = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_start_date);
+        mErrorLabelLayoutEndDate = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_end_date);
+        mErrorLabelLayoutStartTime = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_start_time);
+        mErrorLabelLayoutEndTime = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_end_time);
+        mErrorLabelLayoutAddress = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_address);
+        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_city);
+        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
     }
 
     private void setUpSpinners(){
@@ -809,6 +809,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             savePreferences &= tintRequiredIconsAndShowError(mEditTextStartDate);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextStartTime);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextEndDate);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextEndTime);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextAddress);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextCountry);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextCity);

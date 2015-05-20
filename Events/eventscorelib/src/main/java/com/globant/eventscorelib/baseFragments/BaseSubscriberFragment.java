@@ -38,7 +38,6 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -326,13 +325,13 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mIconEnglishKnowledge = (ImageView) rootView.findViewById(R.id.icon_language);
         mIconTwitter = (ImageView) rootView.findViewById(R.id.icon_twitter);
         mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
-        mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutLastName);
+        mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_last_name);
         mErrorLabelLayoutPhone = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutPhone);
         mErrorLabelLayoutEmail = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEmail);
         mErrorLabelLayoutTwitter = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorTwitter);
         mErrorLabelLayoutOccupation = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorOccupation);
-        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCity);
-        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCountry);
+        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_city);
+        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
         mLayoutToFocus = (LinearLayout) rootView.findViewById(R.id.autoFocusable);
     }
 

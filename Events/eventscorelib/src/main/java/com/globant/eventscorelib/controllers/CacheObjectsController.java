@@ -22,7 +22,7 @@ public class CacheObjectsController implements Parcelable{
     private List<Event> mEventList;
     private List<Subscriber> mSubscriberList;
     private User mUser; // twitter
-    private Event mEvent;
+    private Event mEvent = null;
 
     public CacheObjectsController() {
     }
