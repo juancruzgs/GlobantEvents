@@ -70,6 +70,7 @@ public class PushNotifications {
 
     public static void sendNotification(String message,String channel,String eventId){
         JSONObject data =  new JSONObject();
+        ParsePush parsePush = new ParsePush();
         try {
             data.put("title", "Notification Event");
             data.put("alert", message);
@@ -83,9 +84,9 @@ public class PushNotifications {
             } else {
                 channel = "PAR-"+eventId;
             }
+        } else {
+            channel = eventId;
         }
-        ParsePush parsePush = new ParsePush();
-//        parsePush.setChannel(channel);
         parsePush.setData(data);
         parsePush.setQuery(ParseInstallation.getQuery().whereEqualTo("channels",channel));
         parsePush.sendInBackground(new SendCallback() {
@@ -109,7 +110,6 @@ public class PushNotifications {
         }
 
         ParsePush parsePush = new ParsePush();
-//        parsePush.setChannel("SUB-"+event+"-"+idSubscriber);
         parsePush.setData(data);
         parsePush.setQuery(ParseInstallation.getQuery().whereEqualTo("channels", "SUB-" + event + "-" + idSubscriber));
         parsePush.sendInBackground(new SendCallback() {
