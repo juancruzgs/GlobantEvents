@@ -127,11 +127,12 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                         mAdapter.notifyDataSetChanged();
                     }
                     else
-                    {   mAdapter.addSpeaker(newSpeaker);
+                    {   //mSpeakers.add(newSpeaker);
+                        mAdapter.addSpeaker(newSpeaker);
                         mAdapter.notifyDataSetChanged();
-                        mRecyclerView.setVisibility(View.GONE);
-                        mTextViewNoSpeakers.setVisibility(View.INVISIBLE);
-                        hideUtilsAndShowContentOverlay();
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        mTextViewNoSpeakers.setVisibility(View.VISIBLE);
+                        //setRecyclerViewAdapter();
                     }
                 }
                 if(editedSpeaker!= null)
