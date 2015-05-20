@@ -170,13 +170,14 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
             public void onRefresh() {
                 cancelAnimationOnRefresh();
                 refreshParticipants();
+                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
 
     protected void refreshParticipants() {
-        mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
-        mSwipeRefreshLayout.setRefreshing(true);
+        String eventId = mEvent.getObjectID();
+        mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
     }
 
     @Override

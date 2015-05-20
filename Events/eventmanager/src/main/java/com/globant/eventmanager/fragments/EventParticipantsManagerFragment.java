@@ -132,7 +132,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     protected void refreshParticipants() {
-        super.refreshParticipants();
+        mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
     }
 
     @Override
@@ -221,6 +221,8 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
         mTextViewAcceptAll.setOnClickListener(addDeclineAllListener);
         mTextViewDeclineAll.setOnClickListener(addDeclineAllListener);
     }
+
+
 
     private void setOnScrollListener() {
         mRecyclerView = getRecyclerView();
