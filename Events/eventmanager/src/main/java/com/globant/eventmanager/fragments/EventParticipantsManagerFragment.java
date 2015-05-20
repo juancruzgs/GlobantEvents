@@ -42,13 +42,11 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected ObservableRecyclerView mRecyclerView;
     protected EventParticipantsListAdapterManager mAdapter;
-    protected RecyclerView.LayoutManager mLayoutManager;
     protected Boolean scrolling = false;
     private LinearLayout mViewButtonsAddDeclineAll;
     private AppCompatTextView mTextViewAcceptAll;
     private AppCompatTextView mTextViewDeclineAll;
     private Event mEvent;
-    private AppCompatTextView mTextViewNoSubscribers;
     private Boolean mLastVisibleItem = false;
     private String mBindingKey;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -68,40 +66,19 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
         return EventParticipantsManagerFragment.class.getSimpleName();
     }
 
-    /*@Override
-    public void onStartAction(BaseService.ACTIONS theAction) {
-        switch (theAction) {
-            case PARTICIPANT_LIST:
-                if (!mSwipeRefreshLayout.isRefreshing()){
-                    showProgressOverlay();
-                }
-                break;
-        }
-    }
-
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        super.onFinishAction(theAction, result);
         switch ( theAction ) {
             case SET_ACCEPTED:
                 if (mSwipeRefreshLayout.isRefreshing()){
+                    mEvent = getEvent();
                     String eventId = mEvent.getObjectID();
                     mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
                 }
                 break;
-            case PARTICIPANT_LIST:
-                mSubscribers = (List<Subscriber>) result;
-                ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
-                setRecyclerViewAdapter();
-                if (mSwipeRefreshLayout.isRefreshing()){
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    mAdapter.notifyDataSetChanged();
-                }else {
-                    hideUtilsAndShowContentOverlay();
-                }
-                mAcceptedSubscribers = new ArrayList<>();
-                break;
         }
-    }*/
+    }
 
     @Override
     protected void initializeAcceptedSubscribers() {
@@ -156,12 +133,17 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     }
 
     @Override
+    protected void refreshParticipants() {
+        super.refreshParticipants();
+    }
+
+    @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
         wireUpAddDeclineButtons(rootView);
-        //prepareSwipeRefreshLayout(rootView);
         setAddDeclineAllListener();
         setOnScrollListener();
+        mSwipeRefreshLayout = getSwipeRefreshLayout();
         return rootView;
     }
 
@@ -170,24 +152,17 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
         return R.layout.fragment_event_participants;
     }
 
+    @Override
+    protected void cancelAnimationOnRefresh() {
+        if (mAdapter.getCurrentParticipant() != null) {
+            mAdapter.getCurrentParticipant().cancelAnimations();
+        }
+    }
+
     private void wireUpAddDeclineButtons(View rootView) {
         mViewButtonsAddDeclineAll = (LinearLayout) rootView.findViewById(R.id.linear_layout_buttons_add_and_decline);
         mTextViewAcceptAll = (AppCompatTextView) rootView.findViewById(R.id.text_view_accept_all);
         mTextViewDeclineAll = (AppCompatTextView) rootView.findViewById(R.id.text_view_decline_all);
-    }
-
-    private void prepareSwipeRefreshLayout(View rootView) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(com.globant.eventscorelib.R.id.swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (mAdapter.getCurrentParticipant() != null) {
-                    mAdapter.getCurrentParticipant().cancelAnimations();
-                }
-                mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
-                mSwipeRefreshLayout.setRefreshing(true);
-            }
-        });
     }
 
     private void setAddDeclineAllListener() {

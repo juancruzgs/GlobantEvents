@@ -42,6 +42,14 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
     private String mBindingKey;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    public SwipeRefreshLayout getSwipeRefreshLayout() {
+        return mSwipeRefreshLayout;
+    }
+
+    public Event getEvent() {
+        return mEvent;
+    }
+
     public List<Subscriber> getSubscribers() {
         return mSubscribers;
     }
@@ -62,13 +70,13 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
-        /*switch (theAction) {
+        switch (theAction) {
             case PARTICIPANT_LIST:
                 if (!mSwipeRefreshLayout.isRefreshing()){
                     showProgressOverlay();
                 }
                 break;
-        }*/
+        }
     }
 
     @Override
@@ -78,12 +86,12 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
                 mSubscribers = (List<Subscriber>) result;
                 ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
                 setRecyclerViewAdapter();
-                /*if (mSwipeRefreshLayout.isRefreshing()){
+                if (mSwipeRefreshLayout.isRefreshing()){
                     mSwipeRefreshLayout.setRefreshing(false);
                     mAdapter.notifyDataSetChanged();
                 }else {
                     hideUtilsAndShowContentOverlay();
-                }*/
+                }
                 hideUtilsAndShowContentOverlay();
                 initializeAcceptedSubscribers();
                 break;
@@ -137,6 +145,7 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
         hideUtilsAndShowContentOverlay();
         rootView.setTag(TAG);
         setRetainInstance(true);
+        prepareSwipeRefreshLayout(rootView);
         wireUpViews(savedInstanceState, rootView);
         return rootView;
     }
@@ -156,16 +165,23 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
 
     }
 
-    /*private void prepareSwipeRefreshLayout(View rootView) {
+    protected abstract void cancelAnimationOnRefresh();
+
+    private void prepareSwipeRefreshLayout(View rootView) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(com.globant.eventscorelib.R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
-                mSwipeRefreshLayout.setRefreshing(true);
+                cancelAnimationOnRefresh();
+                refreshParticipants();
             }
         });
-    }*/
+    }
+
+    protected void refreshParticipants() {
+        mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
+        mSwipeRefreshLayout.setRefreshing(true);
+    }
 
     @Override
     public String getTitle() {
