@@ -186,8 +186,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
                 // Set translation movement
                 cardY = cardView.getY();
-                movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height / childHeight)) - 1)), 10);
-                movementX = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height / childHeight)) - 1)), 0);
+                int speed = 2;
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    speed = 7;
+                }
+                movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * speed), -(childHeight * ((Math.round(height / childHeight)) - 1)), 10);
+                movementX = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * speed), -(childHeight * ((Math.round(height / childHeight)) - 1)), 0);
 
                 // Translations
                 ViewHelper.setTranslationY(titleView, movementY);
@@ -197,7 +201,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 ViewHelper.setTranslationX(locationView, -(movementX * 3));
 
                 // Alphas
-                float alpha = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (z * 2), 0, 255) / 64;
+                float alpha = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (z * speed), 0, 255) / 64;
                 ViewHelper.setAlpha(dateView, 1 - (alpha));
                 ViewHelper.setAlpha(locationView, 1 - (alpha));
                 ViewHelper.setAlpha(TypeLogoView, 1 - (alpha));
