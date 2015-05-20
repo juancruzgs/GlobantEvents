@@ -39,6 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity{
     private BaseService mService = null;
     protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
+    boolean mIsOnline;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -99,7 +100,8 @@ public abstract class BaseActivity extends AppCompatActivity{
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (isOnline(context)){
+                mIsOnline = isOnline(context);
+                if (mIsOnline){
                     mConnectionRibbon.setVisibility(View.GONE);
                 }else {
                     mConnectionRibbon.setVisibility(View.VISIBLE);
@@ -112,6 +114,10 @@ public abstract class BaseActivity extends AppCompatActivity{
                 return (netInfo != null && netInfo.isConnected());
             }
         };
+    }
+
+    public boolean isOnline() {
+        return mIsOnline;
     }
 
     private Class<? extends BaseService> getServiceClass() {

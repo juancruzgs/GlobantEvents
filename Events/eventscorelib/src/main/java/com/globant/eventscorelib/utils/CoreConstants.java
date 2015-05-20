@@ -19,6 +19,7 @@ public class CoreConstants {
     public static final String SPEAKERS_TABLE = "Speakers";
     public static final String SUBSCRIBERS_TABLE = "Subscribers";
 
+    public static final String FIELD_UPDATED_AT = "updatedAt";
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_SHORT_DESCRIPTION = "short_description";
     public static final String FIELD_FULL_DESCRIPTION = "full_description";
@@ -34,7 +35,6 @@ public class CoreConstants {
     public static final String FIELD_ICON = "icon";
     public static final String FIELD_MAP_COORDINATES = "map_coordinates";
     public static final String FIELD_PUBLIC = "public";
-    public static final String FIELD_QR_CODE = "qr_code";
     public static final String FIELD_DESCRIPTION = "description";
     public static final String FIELD_BIOGRAPHY = "biography";
     public static final String FIELD_PICTURE = "picture";
@@ -73,7 +73,7 @@ public class CoreConstants {
     public static final String MAP_ADDRESS_INTENT = "address";
     public static final String MAP_MARKER_POSITION_INTENT = "markerPosition";
     public static final String MAP_CAMERA_POSITION_INTENT = "cameraPosition";
-    public static final String MAP_SEARCH_QUERY_INTENT = "searchQuery";
+    public static final String SEARCH_QUERY_INTENT = "searchQuery";
     public static final int DOUBLE_TAP_TIME_INTERVAL = 2000;
 
     // Twitter
@@ -91,6 +91,8 @@ public class CoreConstants {
     // RecyclerView
     public static final String KEY_LAYOUT_MANAGER = "layoutManager";
     public static final String KEY_LAYOUT_PLACEHOLDER = "placeholder666";
+    public static final String SCROLL_BOTTOM = "bot";
+    public static final String SCROLL_TOP = "top";
 
     //SubscriberProfile
     public static final String SHARED_PREF_IMG = "img.jpg";
@@ -124,6 +126,7 @@ public class CoreConstants {
 
     //Save Instance Cache
     public static final String SAVE_INSTANCE_CACHE_OBJECTS = "cacheObjects";
+    public static final String SAVE_INSTANCE_EVENT_ACTION = "EventAction";
 
     // Intents request
     public static final int MAP_MANAGER_REQUEST = 1000;

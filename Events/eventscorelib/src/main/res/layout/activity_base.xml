@@ -7,7 +7,7 @@
     <include
         layout="@layout/toolbar"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/connection_ribbon"
         style="@style/condensed_light_medium"
         android:layout_width="match_parent"

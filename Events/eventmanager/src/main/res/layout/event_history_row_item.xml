@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.andexert.library.RippleView
+    rv_centered="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:rv_rippleDuration="500"
+    app:rv_type="doubleRipple"
+    app:rv_color="@color/globant_green_dark"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="7dp"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_text_view_card_row_5">
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_event_title"
+            style="@style/condensed_bold_large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/globant_green_dark"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_event_date"
+            style="@style/condensed_normal_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_event_country"
+            style="@style/condensed_normal_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_event_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/grey_light"/>
+
+    </LinearLayout>
+
+</com.andexert.library.RippleView>

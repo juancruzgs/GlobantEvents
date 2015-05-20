@@ -3,11 +3,8 @@
              android:layout_height="match_parent"
              android:background="#ffffffff">
 
-    <view
-        android:id="@+id/event_participants_recycler_view"
-        class="android.support.v7.widget.RecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <include
+        layout="@layout/swipe_refresh_layout"/>
 
     <LinearLayout
         android:id="@+id/linear_layout_buttons_add_and_decline"

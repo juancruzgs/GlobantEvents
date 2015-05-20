@@ -14,7 +14,7 @@
         android:orientation="vertical"
         >
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textView_utils"
             style="@style/condensed_normal_large"
             android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
             android:indeterminate="true"
             />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_loading"
             style="@style/condensed_normal_large"
             android:layout_width="wrap_content"
