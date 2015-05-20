@@ -91,7 +91,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_event_description, container, false);
-        hideUtilsAndShowContentOverlay(); // REMOVE AFTER TESTING !!!
+        hideUtilsAndShowContentOverlay();
         wireUpViews(rootView);
         mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
         if (mEvent != null) {
@@ -300,8 +300,8 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         } else {
             mEventImage.setImageResource(R.mipmap.placeholder);
         }
-        mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
-        mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
+        mEventStartDate.setText(CustomDateFormat.getDateWithTimeZone(mEvent.getStartDate(), getActivity()));
+        mEventEndDate.setText(CustomDateFormat.getDateWithTimeZone(mEvent.getEndDate(), getActivity()));
         mEventAddress.setText(mEvent.getAddress());
         mEventCity.setText(mEvent.getCity());
         mEventCountry.setText(mEvent.getCountry());

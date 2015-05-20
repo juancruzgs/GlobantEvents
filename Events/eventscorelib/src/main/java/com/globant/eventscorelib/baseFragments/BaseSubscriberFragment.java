@@ -611,7 +611,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 break;
             case IS_SUBSCRIBED:
                 if ((Boolean) result) {
-                    hideUtilsAndShowContentOverlay();
                     Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 } else {
@@ -625,7 +624,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                         mSubscriber, mEventId);
                 break;
             case EVENTS_TO_SUBSCRIBER_CREATE:
-                hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
                 break;
