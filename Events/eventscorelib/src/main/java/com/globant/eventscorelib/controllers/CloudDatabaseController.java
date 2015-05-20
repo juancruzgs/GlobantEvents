@@ -221,10 +221,11 @@ public class CloudDatabaseController extends DatabaseController{
         return databaseSubscriber.getObjectId();
     }
 
-    public void updateSubscriber(Subscriber domainSubscriber) throws ParseException {
+    public String updateSubscriber(Subscriber domainSubscriber) throws ParseException {
         ParseObject databaseSubscriber = ParseObject.createWithoutData(CoreConstants.SUBSCRIBERS_TABLE, domainSubscriber.getObjectID());
         setDatabaseSubscriberInformation(domainSubscriber, databaseSubscriber);
         databaseSubscriber.save();
+        return databaseSubscriber.getObjectId();
     }
 
     public void createEventToSubscriber(Subscriber domainSubscriber, String eventId) throws ParseException {

@@ -427,6 +427,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             if ((mSavePreferences) && (mPhotoTaken)) {
                 saveSubscriberObject();
                 SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
+                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();}
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
 
             } else if (!(mPhotoTaken)) {
@@ -589,49 +591,40 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case SUBSCRIBER_EXISTS:
-                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
-                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
                     if (result.equals("")) {
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
                     } else {
-                    mSubscriber.setObjectID((String) result);
-                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
-                }
-                }
-                else{
-                    if (!(result.equals(""))) {
                         mSubscriber.setObjectID((String) result);
-                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);}
-                    else{
-                        hideUtilsAndShowContentOverlay();
-                        Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
+                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);
                     }
-                }
                 break;
             case IS_SUBSCRIBED:
                 if ((Boolean) result) {
+                     hideUtilsAndShowContentOverlay();
                     Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 } else {
-                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
-                            mSubscriber, mEventId);
+                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),mSubscriber, mEventId);
                 }
                 break;
             case SUBSCRIBER_CREATE:
-                mSubscriber.setObjectID((String)result);
-                 mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
-                        mSubscriber, mEventId);
+                 mSubscriber.setObjectID((String)result);
+                 mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(),result, mEventId);
                 break;
             case EVENTS_TO_SUBSCRIBER_CREATE:
+                hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
                 break;
             case SUBSCRIBER_UPDATE:
-                hideUtilsAndShowContentOverlay();
-                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-                break;
+               if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                   mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(),result, mEventId);}
+                else {
+                   hideUtilsAndShowContentOverlay();
+                   Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+                   getActivity().finish();
+                   break;
+               }
         }
 
     }

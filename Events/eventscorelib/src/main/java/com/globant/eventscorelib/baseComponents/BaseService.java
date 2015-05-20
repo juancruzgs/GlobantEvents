@@ -223,7 +223,7 @@ public abstract class BaseService extends Service {
                                     mCloudDatabaseController.setAccepted((String) arguments[0], (List<Subscriber>) arguments[1]);
                                     break;
                                 case SUBSCRIBER_UPDATE:
-                                    mCloudDatabaseController.updateSubscriber((Subscriber) arguments[0]);
+                                    result = mCloudDatabaseController.updateSubscriber((Subscriber) arguments[0]);
                                     break;
                                 case SUBSCRIBER_EXISTS:
                                     result = mCloudDatabaseController.getSubscriberId((String) arguments[0]);
