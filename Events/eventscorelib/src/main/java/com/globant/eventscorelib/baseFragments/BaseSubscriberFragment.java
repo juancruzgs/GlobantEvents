@@ -38,7 +38,6 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -405,7 +404,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         if (!globerDetected) {
             sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
             senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
@@ -528,7 +527,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onResume() {
         super.onResume();
         if (!globerDetected) {
-            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
