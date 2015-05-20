@@ -37,17 +37,13 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
     protected BaseParticipantsListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected Boolean scrolling = false;
-    private Event mEvent;
+    protected Event mEvent;
     private AppCompatTextView mTextViewNoSubscribers;
     private String mBindingKey;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public SwipeRefreshLayout getSwipeRefreshLayout() {
         return mSwipeRefreshLayout;
-    }
-
-    public Event getEvent() {
-        return mEvent;
     }
 
     public List<Subscriber> getSubscribers() {

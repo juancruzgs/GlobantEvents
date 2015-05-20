@@ -46,7 +46,6 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     private LinearLayout mViewButtonsAddDeclineAll;
     private AppCompatTextView mTextViewAcceptAll;
     private AppCompatTextView mTextViewDeclineAll;
-    private Event mEvent;
     private Boolean mLastVisibleItem = false;
     private String mBindingKey;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -72,7 +71,6 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
         switch ( theAction ) {
             case SET_ACCEPTED:
                 if (mSwipeRefreshLayout.isRefreshing()){
-                    mEvent = getEvent();
                     String eventId = mEvent.getObjectID();
                     mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
                 }
@@ -281,8 +279,6 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     public void onStop() {
         if (mSubscribers != null)
         {
-            //Object[] objects = {mEvent.getObjectID(), mSubscribers};
-            //mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), objects);
             mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
         }
         super.onStop();
