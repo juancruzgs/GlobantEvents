@@ -34,6 +34,32 @@ import com.software.shell.fab.ActionButton;
  */
 public class BaseSpeakerFragment extends BaseFragment {
 
+    public static final String EXTRA_CROP = "crop";
+    public static final String EXTRA_TRUE = "true";
+    public static final String EXTRA_ASPECTX = "aspectX";
+    public static final String EXTRA_ASPECTY = "aspectY";
+    public static final String EXTRA_OUTPUTX = "outputX";
+    public static final String EXTRA_OUTPUTY= "outputY";
+    public static final String EXTRA_RETURN_DATA= "return-data";
+    public static final String DATA= "data";
+    public static final String IMAGE_CROP = "com.android.camera.action.CROP";
+    public static final String URI_NAME = "image/*";
+    public static final String EDITED_SPEAKER = "editedSpeaker";
+    public static final String POSITION = "position";
+    public static final String NEW_SPEAKER = "newSpeaker";
+    public static final String EDIT_MODE= "EDIT_MODE";
+    public static final String CREATE_MODE= "CREATE_MODE";
+    public static final int RESULT_OK = 1;
+    public static final int GET_SPEAKER_IMAGE = 1;
+    public static final int CROP_PIC = 2;
+    public static final String REQUIRED_FIELDS_MISSING = "Required fields missing!";
+    public Speaker speakerEdit;
+    public String fragmentMode = CREATE_MODE;
+    public String eventId;
+    public int position;
+    Boolean mSave;
+    Boolean mPhotoPicked = false;
+
     Bitmap mPhoto;
     ImageView mPhotoProfile;
     ActionButton mFloatingActionButtonPhoto;
@@ -51,36 +77,12 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     ImageView mIconToChange;
     Drawable mDrawableToApply;
-    final int GET_SPEAKER_IMAGE = 1;
-    final int CROP_PIC = 2;
-    final  int REQ_CODE_SPEAKER = 999;
+
     ErrorLabelLayout mErrorLabelLayoutFirstName;
     ErrorLabelLayout mErrorLabelLayoutLastName;
     ErrorLabelLayout mErrorLabelLayoutTitle;
     ErrorLabelLayout mErrorLabelLayoutBiography;
     ErrorLabelLayout mErrorLabelLayout;
-
-    public static final String EXTRA_CROP = "crop";
-    public static final String EXTRA_TRUE = "true";
-    public static final String EXTRA_ASPECTX = "aspectX";
-    public static final String EXTRA_ASPECTY = "aspectY";
-    public static final String EXTRA_OUTPUTX = "outputX";
-    public static final String EXTRA_OUTPUTY= "outputY";
-    public static final String EXTRA_RETURN_DATA= "return-data";
-    public static final String DATA= "data";
-    public static final String IMAGE_CROP = "com.android.camera.action.CROP";
-    public static final String URI_NAME = "image/*";
-
-    public final String EDIT_MODE= "EDIT_MODE";
-    public final String CREATE_MODE= "CREATE_MODE";
-    private static final int RESULT_OK = 1;
-
-    public Speaker speakerEdit;
-    public String fragmentMode = CREATE_MODE;
-    public String eventId;
-    public int position;
-
-
 
     public BaseSpeakerFragment() {
         // Required empty public constructor
@@ -108,7 +110,7 @@ public class BaseSpeakerFragment extends BaseFragment {
         if (getActivity().getIntent().getExtras()!=null) {
             if (getActivity().getIntent().getParcelableExtra("speaker")!=null)
             {
-                  position = getActivity().getIntent().getExtras().getInt("position", -1);
+                  position = getActivity().getIntent().getExtras().getInt(POSITION, -1);
                   speakerEdit =  getActivity().getIntent().getExtras().getParcelable("speaker");
                   mEditTextFirstName.setText(speakerEdit.getName());
                   mEditTextLastName.setText(speakerEdit.getLastName());
@@ -143,36 +145,36 @@ public class BaseSpeakerFragment extends BaseFragment {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
-            Boolean savePreferences=true;
-            tintRequiredIconsAndShowError(mEditTextFirstName,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextLastName,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextTitle,  savePreferences);
-            tintRequiredIconsAndShowError(mEditTextBiography,  savePreferences);
+            mSave=true;
+            tintRequiredIconsAndShowError(mEditTextFirstName);
+            tintRequiredIconsAndShowError(mEditTextLastName);
+            tintRequiredIconsAndShowError(mEditTextTitle);
+            tintRequiredIconsAndShowError(mEditTextBiography);
 
-            if (savePreferences=true){
+            if (mSave== true && mPhotoPicked){
                Intent resultIntent = new Intent();
                switch (fragmentMode)
                {
                    case EDIT_MODE  :
-                       resultIntent.putExtra("editedSpeaker",fillSpeakerObject());
-                       resultIntent.putExtra("position",position);
+                       resultIntent.putExtra(EDITED_SPEAKER,fillSpeakerObject());
+                       resultIntent.putExtra(POSITION,position);
                        break;
                    case CREATE_MODE:
-                       resultIntent.putExtra("newSpeaker",fillSpeakerObject());
+                       resultIntent.putExtra(NEW_SPEAKER,fillSpeakerObject());
                        break;
                }
                 getActivity().setResult(RESULT_OK, resultIntent);
                 getActivity().finish();
             }
+            else if (!mPhotoPicked) {
+                Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo), Toast.LENGTH_SHORT).show();
+            }
             else{
-
-                Toast.makeText(getActivity(), "Required fields missing!",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),REQUIRED_FIELDS_MISSING,Toast.LENGTH_LONG).show();
             }
             return true;
         }
-
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     private Speaker fillSpeakerObject() {
@@ -205,6 +207,7 @@ public class BaseSpeakerFragment extends BaseFragment {
                 // get the cropped bitmap
                 mPhoto = extras.getParcelable(DATA);
                 mPhotoProfile.setImageBitmap(mPhoto);
+                mPhotoPicked = true;
             }
         }
     }
@@ -335,19 +338,18 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     }
 
-    private void tintRequiredIconsAndShowError(EditText requiredField,  Boolean savePreferences){
-        getIconToTint(requiredField);
-
-        if (requiredField.getText().toString().trim().length() == 0) {
-            mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
-            mDrawableToApply=DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply,getResources().getColor(R.color.red_error));
-            mDrawableToApply=DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
-        }
-        else{
-            tintGrey();
-        }
+    private void tintRequiredIconsAndShowError(EditText requiredField){
+         getIconToTint(requiredField);
+         if (requiredField.getText().toString().trim().length() == 0) {
+                mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
+                mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
+                DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
+                mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
+                mIconToChange.setImageDrawable(mDrawableToApply);
+                mSave = false;
+            } else {
+                tintGrey();
+            }
     }
 
 
