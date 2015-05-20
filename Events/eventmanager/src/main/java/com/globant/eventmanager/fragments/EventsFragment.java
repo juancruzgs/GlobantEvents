@@ -87,7 +87,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     private boolean mFabIsShown;
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
-    private boolean mTitleShown = false;
 
     private ImageView mPhotoEvent;
     private ActionButton mFloatingActionButtonPhoto;
@@ -167,39 +166,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
         mEvent = EventsManagerPagerActivity.getInstance().getEvent();
         populateInfo(mEvent);
-/*
-        switch (EventsManagerPagerActivity.mEventAction){
-            case CREATE_EVENT:
-//                mEvent = new Event();
-                        //TODO: erase after test
-                        mEvent.setTitle("Apero Urbano");
-                        mEvent.setShortDescription("Picnic, cerveza y comida!");
-                        mEvent.setFullDescription("evento realizado el ultimo viernes de cada mes para integrar la ciudad en diferentes actividades.");
-                        mEvent.setAddress("Parque de la presidenta");
-                        mEvent.setCity("Medellin");
-                        mEvent.setCountry("Colombia");
-                        mEvent.setAdditionalInfo("-");
-                        mEvent.setHashtag("#Apero");
-                        mEvent.setCategory("Social");
-                        mEvent.setPublic(true);
-                        mEvent.setLanguage("Spanglish");
-                        Calendar fecha = Calendar.getInstance();
-                        fecha.set(fecha.get(Calendar.YEAR)+1, fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH),fecha.get(Calendar.HOUR_OF_DAY),30);
-                        mEvent.setEndDate(fecha.getTime());
-                        mEvent.setStartDate(fecha.getTime());
-                        populateInfo(mEvent);
-
-   //             EventsManagerPagerActivity.getInstance().setEvent(mEvent);
-                mEvent = EventsManagerPagerActivity.getInstance().getEvent();
-                mLatLng = new LatLng(0,0);
-                break;
-            case EDIT_EVENT:
-               mEvent = EventsManagerPagerActivity.getInstance().getEvent();
-                if (mEvent != null) {
-                    populateInfo(mEvent);
-                }
-                break;
-        }*/
 
         hideUtilsAndShowContentOverlay();
         setHasOptionsMenu(true);
@@ -208,42 +174,40 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     }
 
     private void populateInfo(Event event){
-        if (event != null){
-            mEventTitle.setText(event.getTitle());
-            mEditTextTitle.setText(event.getTitle());
-            mEditTextFullDescription.setText(event.getFullDescription());
-            mEditTextShortDescription.setText(event.getShortDescription());
-            mEditTextAdditionalInfo.setText(event.getAdditionalInfo());
-            String[] category = getResources().getStringArray(R.array.category_entries);
-            int CategoryIndex = Arrays.asList(category).indexOf(event.getCategory());
-            if (CategoryIndex>=0){
-                mSpinnerCategory.setSelection(CategoryIndex);
-            }
-            mSpinnerPublic.setSelection(event.isPublic() ? 0 : 1);
-            mEditTextHashtag.setText(event.getHashtag());
-            mEditTextLanguage.setText(event.getLanguage());
-            if(event.getStartDate() != null) {
-                mEditTextStartDate.setText(dateFormatter.format(event.getStartDate()));
-                mEditTextStartTime.setText(TimeFormatter.format(event.getStartDate()));
-                mStartDate.setTime(event.getStartDate());
-            }
-            if(event.getEndDate() != null) {
-                mEditTextEndDate.setText(dateFormatter.format(event.getEndDate()));
-                mEditTextEndTime.setText(TimeFormatter.format(event.getEndDate()));
-                mEndDate.setTime(event.getEndDate());
-            }
-            mEditTextAddress.setText(event.getAddress());
-            mEditTextCountry.setText(event.getCountry());
-            mEditTextCity.setText(event.getCity());
-            mLatLng = event.getCoordinates();
+        mEventTitle.setText(event.getTitle());
+        mEditTextTitle.setText(event.getTitle());
+        mEditTextFullDescription.setText(event.getFullDescription());
+        mEditTextShortDescription.setText(event.getShortDescription());
+        mEditTextAdditionalInfo.setText(event.getAdditionalInfo());
+        String[] category = getResources().getStringArray(R.array.category_entries);
+        int CategoryIndex = Arrays.asList(category).indexOf(event.getCategory());
+        if (CategoryIndex>=0){
+            mSpinnerCategory.setSelection(CategoryIndex);
+        }
+        mSpinnerPublic.setSelection(event.isPublic() ? 0 : 1);
+        mEditTextHashtag.setText(event.getHashtag());
+        mEditTextLanguage.setText(event.getLanguage());
+        if(event.getStartDate() != null) {
+            mEditTextStartDate.setText(dateFormatter.format(event.getStartDate()));
+            mEditTextStartTime.setText(TimeFormatter.format(event.getStartDate()));
+            mStartDate.setTime(event.getStartDate());
+        }
+        if(event.getEndDate() != null) {
+            mEditTextEndDate.setText(dateFormatter.format(event.getEndDate()));
+            mEditTextEndTime.setText(TimeFormatter.format(event.getEndDate()));
+            mEndDate.setTime(event.getEndDate());
+        }
+        mEditTextAddress.setText(event.getAddress());
+        mEditTextCountry.setText(event.getCountry());
+        mEditTextCity.setText(event.getCity());
+        mLatLng = event.getCoordinates();
 
-            if (event.getEventLogo()!= null){
-                mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
-            }else {
-                mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
-                mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
-            }
+        if (event.getEventLogo()!= null){
+            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+        }else {
+            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
+            mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
         }
     }
 
@@ -836,7 +800,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
                     mIconToBeChange.setImageDrawable(mDrawableToApplyChanges);
                 }
                 else if(mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
-                    Toast.makeText(getActivity(),getString(R.string.missing_photo),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),getString(R.string.title_event_photo),Toast.LENGTH_SHORT).show();
                 }else{
                     retrieveInfo();
 
@@ -949,8 +913,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             }
         }
 
-        if (i > mFlexibleSpaceImageHeight && !mTitleShown){
-            mTitleShown = true;
+        if (i > mFlexibleSpaceImageHeight){
             ((BaseActivity) getActivity()).changeFragmentTitle(mEventTitle.getText().toString());
         }
 
