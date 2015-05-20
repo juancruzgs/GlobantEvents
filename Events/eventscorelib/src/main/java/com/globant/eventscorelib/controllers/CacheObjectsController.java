@@ -23,6 +23,7 @@ public class CacheObjectsController implements Parcelable{
     private List<Subscriber> mSubscriberList;
     private User mUser; // twitter
     private Event mEvent;
+    private List<Event> mEventHistory;
 
     public CacheObjectsController() {
     }
@@ -67,9 +68,19 @@ public class CacheObjectsController implements Parcelable{
 
     public void setSubscriberList (List<Subscriber> subscriberList) { mSubscriberList = subscriberList; }
 
+    public List<Event> getEventHistory() {
+        return mEventHistory;
+    }
+
+    public void setEventHistory(List<Event> eventHistory) {
+        mEventHistory = eventHistory;
+    }
+
     private CacheObjectsController(Parcel in) {
         mEventList = new ArrayList<>();
         in.readTypedList(mEventList, Event.CREATOR);
+        mEventHistory = new ArrayList<>();
+        in.readTypedList(mEventHistory, Event.CREATOR);
         mSpeakersList= new ArrayList<>();
         in.readTypedList(mSpeakersList, Speaker.CREATOR);
         mSubscriberList= new ArrayList<>();
@@ -100,6 +111,7 @@ public class CacheObjectsController implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(mEventList);
+        dest.writeTypedList(mEventHistory);
         dest.writeTypedList(mSpeakersList);
         dest.writeTypedList(mSubscriberList);
         dest.writeList(mTweetList);

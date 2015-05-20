@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.globant.eventmanager.R;
+import com.globant.eventmanager.activities.EventHistoryManagerActivity;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
@@ -57,6 +61,29 @@ public class EventListManagerFragment extends BaseEventListFragment {
         return rootView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_manager_event_list, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.action_history) {
+            Intent intentHistory = new Intent(getActivity(), EventHistoryManagerActivity.class);
+            startActivity(intentHistory);
+            handled = true;
+        }
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
+    }
+
     private void prepareRecyclerView() {
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -84,5 +111,9 @@ public class EventListManagerFragment extends BaseEventListFragment {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void getEvent(String eventId) {
     }
 }

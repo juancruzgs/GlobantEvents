@@ -27,6 +27,7 @@ import com.globant.eventscorelib.baseActivities.BaseEventListActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
+import com.globant.eventscorelib.baseAdapters.GetEventInformation;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
@@ -40,7 +41,7 @@ import com.nineoldandroids.view.ViewHelper;
 import java.util.Date;
 import java.util.List;
 
-public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseEventsListViewHolder.GetEventInformation {
+public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, GetEventInformation {
 
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
