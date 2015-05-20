@@ -15,7 +15,7 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
 
     private long lastUpdate = 0;
     private float last_x,last_y,last_z;
-    private static int mNShakes = 5;
+    private static int mNShakesLimit = 5;
     private static final int SHAKE_THRESHOLD = 2500;
     private static final int ONE_SHAKE_TIME_MILLIS = 80;
     private static final String HANDSHAKE_MESSAGE = "Glober detected";
@@ -27,8 +27,8 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
         super.subscribeListener(listener);
 
         if (senAcelerometer == null) {
-            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            senAcelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            mSensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
@@ -36,8 +36,8 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
     public void unsubscribeListener(EasterEggListener listener) {
         super.unsubscribeListener(listener);
 
-        if (sensorManager != null) {
-            sensorManager.unregisterListener(this);
+        if (mSensorManager != null) {
+            mSensorManager.unregisterListener(this);
         }
     }
 
@@ -56,11 +56,11 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
     }
 
     public void setOneSideShakes(int shakesNumber) {
-        mNShakes = 2 * shakesNumber + 1;
+        mNShakesLimit = 2 * shakesNumber + 1;
     }
 
     public void setBothDirectionsShakes(int shakesNumber) {
-        mNShakes = shakesNumber;
+        mNShakesLimit = shakesNumber;
     }
 
     private void checkHandShake(SensorEvent event) {
@@ -78,7 +78,7 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
             {
                 mShakes++;
                 // 5 shakes: 3 forward with 2 backward
-                if (mShakes >= mNShakes) {
+                if (mShakes >= mNShakesLimit) {
                     // TODO: Use this to identify the owner as glober
                     // NOTE: Here lies a pseudo bug: if you shake, exit, back and shake again, getActivity() returns null.
 /*
@@ -88,8 +88,8 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
                     mGloberDetected = true;
                     Toast.makeText(mActivity, HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
                     // TODO: This needs to be managed from the listener (when it unsubscribes), but let's let it here for testing
-                    sensorManager.unregisterListener(this);
-                    for (EasterEggListener eggListener : eggListeners) {
+                    mSensorManager.unregisterListener(this);
+                    for (EasterEggListener eggListener : mEggListeners) {
                         eggListener.onEasterEgg();
                     }
                 }

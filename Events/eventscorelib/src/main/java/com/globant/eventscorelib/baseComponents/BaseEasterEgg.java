@@ -11,13 +11,13 @@ public class BaseEasterEgg {
         void onEasterEgg();
     }
 
-    protected List<EasterEggListener> eggListeners = new ArrayList<>();
+    protected List<EasterEggListener> mEggListeners = new ArrayList<>();
 
     public void subscribeListener(EasterEggListener listener) {
-        eggListeners.add(listener);
+        mEggListeners.add(listener);
     }
 
     public void unsubscribeListener(EasterEggListener listener) {
-        eggListeners.remove(listener);
+        mEggListeners.remove(listener);
     }
 }

@@ -1,8 +1,6 @@
 package com.globant.eventscorelib.baseComponents;
 
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
@@ -13,7 +11,7 @@ import com.globant.eventscorelib.baseActivities.BaseActivity;
  */
 public abstract class BaseSensorEasterEgg extends BaseEasterEgg implements SensorEventListener {
     protected BaseActivity mActivity;
-    protected SensorManager sensorManager = null;
+    protected SensorManager mSensorManager = null;
 
     public void setActivity(BaseActivity activity) {
         mActivity = activity;
@@ -23,8 +21,8 @@ public abstract class BaseSensorEasterEgg extends BaseEasterEgg implements Senso
     public void subscribeListener(EasterEggListener listener) {
         super.subscribeListener(listener);
         // TODO: Start sensor
-        if (sensorManager == null) {
-            sensorManager = (SensorManager) mActivity.getSystemService(Context.SENSOR_SERVICE);
+        if (mSensorManager == null) {
+            mSensorManager = (SensorManager) mActivity.getSystemService(Context.SENSOR_SERVICE);
         }
     }
 
