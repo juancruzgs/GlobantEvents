@@ -54,6 +54,7 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
+import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -69,26 +70,17 @@ import java.util.Locale;
 /**
  * Created by david.burgos
  */
-public class EventsFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
+public class EventsFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
     private Event mEvent;
     protected LatLng mLatLng;
     private String mBindingKey;
 
-    boolean mStickyToolbar;
     private View mToolbar;
     private View mOverlayView;
     private AppCompatTextView mEventTitle;
     private ImageView mMapIcon;
     private ObservableScrollView mScrollView;
-    private int mActionBarSize;
-    private int mFlexibleSpaceImageHeight;
-    private int mToolbarColor;
-    private boolean mFabIsShown;
-    private int mFlexibleSpaceShowFabOffset;
-    private int mFabMargin;
-    private boolean mTitleShown = false;
-
     private ImageView mPhotoEvent;
     private ActionButton mFloatingActionButtonPhoto;
     private AppCompatEditText mEditTextTitle;
@@ -167,39 +159,6 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
         mEvent = EventsManagerPagerActivity.getInstance().getEvent();
         populateInfo(mEvent);
-/*
-        switch (EventsManagerPagerActivity.mEventAction){
-            case CREATE_EVENT:
-//                mEvent = new Event();
-                        //TODO: erase after test
-                        mEvent.setTitle("Apero Urbano");
-                        mEvent.setShortDescription("Picnic, cerveza y comida!");
-                        mEvent.setFullDescription("evento realizado el ultimo viernes de cada mes para integrar la ciudad en diferentes actividades.");
-                        mEvent.setAddress("Parque de la presidenta");
-                        mEvent.setCity("Medellin");
-                        mEvent.setCountry("Colombia");
-                        mEvent.setAdditionalInfo("-");
-                        mEvent.setHashtag("#Apero");
-                        mEvent.setCategory("Social");
-                        mEvent.setPublic(true);
-                        mEvent.setLanguage("Spanglish");
-                        Calendar fecha = Calendar.getInstance();
-                        fecha.set(fecha.get(Calendar.YEAR)+1, fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH),fecha.get(Calendar.HOUR_OF_DAY),30);
-                        mEvent.setEndDate(fecha.getTime());
-                        mEvent.setStartDate(fecha.getTime());
-                        populateInfo(mEvent);
-
-   //             EventsManagerPagerActivity.getInstance().setEvent(mEvent);
-                mEvent = EventsManagerPagerActivity.getInstance().getEvent();
-                mLatLng = new LatLng(0,0);
-                break;
-            case EDIT_EVENT:
-               mEvent = EventsManagerPagerActivity.getInstance().getEvent();
-                if (mEvent != null) {
-                    populateInfo(mEvent);
-                }
-                break;
-        }*/
 
         hideUtilsAndShowContentOverlay();
         setHasOptionsMenu(true);
@@ -208,42 +167,40 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     }
 
     private void populateInfo(Event event){
-        if (event != null){
-            mEventTitle.setText(event.getTitle());
-            mEditTextTitle.setText(event.getTitle());
-            mEditTextFullDescription.setText(event.getFullDescription());
-            mEditTextShortDescription.setText(event.getShortDescription());
-            mEditTextAdditionalInfo.setText(event.getAdditionalInfo());
-            String[] category = getResources().getStringArray(R.array.category_entries);
-            int CategoryIndex = Arrays.asList(category).indexOf(event.getCategory());
-            if (CategoryIndex>=0){
-                mSpinnerCategory.setSelection(CategoryIndex);
-            }
-            mSpinnerPublic.setSelection(event.isPublic() ? 0 : 1);
-            mEditTextHashtag.setText(event.getHashtag());
-            mEditTextLanguage.setText(event.getLanguage());
-            if(event.getStartDate() != null) {
-                mEditTextStartDate.setText(dateFormatter.format(event.getStartDate()));
-                mEditTextStartTime.setText(TimeFormatter.format(event.getStartDate()));
-                mStartDate.setTime(event.getStartDate());
-            }
-            if(event.getEndDate() != null) {
-                mEditTextEndDate.setText(dateFormatter.format(event.getEndDate()));
-                mEditTextEndTime.setText(TimeFormatter.format(event.getEndDate()));
-                mEndDate.setTime(event.getEndDate());
-            }
-            mEditTextAddress.setText(event.getAddress());
-            mEditTextCountry.setText(event.getCountry());
-            mEditTextCity.setText(event.getCity());
-            mLatLng = event.getCoordinates();
+        mEventTitle.setText(event.getTitle());
+        mEditTextTitle.setText(event.getTitle());
+        mEditTextFullDescription.setText(event.getFullDescription());
+        mEditTextShortDescription.setText(event.getShortDescription());
+        mEditTextAdditionalInfo.setText(event.getAdditionalInfo());
+        String[] category = getResources().getStringArray(R.array.category_entries);
+        int CategoryIndex = Arrays.asList(category).indexOf(event.getCategory());
+        if (CategoryIndex>=0){
+            mSpinnerCategory.setSelection(CategoryIndex);
+        }
+        mSpinnerPublic.setSelection(event.isPublic() ? 0 : 1);
+        mEditTextHashtag.setText(event.getHashtag());
+        mEditTextLanguage.setText(event.getLanguage());
+        if(event.getStartDate() != null) {
+            mEditTextStartDate.setText(dateFormatter.format(event.getStartDate()));
+            mEditTextStartTime.setText(TimeFormatter.format(event.getStartDate()));
+            mStartDate.setTime(event.getStartDate());
+        }
+        if(event.getEndDate() != null) {
+            mEditTextEndDate.setText(dateFormatter.format(event.getEndDate()));
+            mEditTextEndTime.setText(TimeFormatter.format(event.getEndDate()));
+            mEndDate.setTime(event.getEndDate());
+        }
+        mEditTextAddress.setText(event.getAddress());
+        mEditTextCountry.setText(event.getCountry());
+        mEditTextCity.setText(event.getCity());
+        mLatLng = event.getCoordinates();
 
-            if (event.getEventLogo()!= null){
-                mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
-            }else {
-                mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
-                mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
-            }
+        if (event.getEventLogo()!= null){
+            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+        }else {
+            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
+            mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
         }
     }
 
@@ -344,7 +301,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             mDrawableToApply=getResources().getDrawable(R.mipmap.ic_additional_info);
             mErrorLabelLayout= mErrorLabelLayoutAdditionalInfo;
         }
-        else if (id== (R.id.CategorySpinner)){
+        else if (id== (R.id.category_spinner)){
             mIconToChange= mIconCategory;
             switch (((Spinner)view).getSelectedItemPosition()){
                 case 0:
@@ -360,7 +317,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
             mErrorLabelLayout= mErrorLabelLayoutCategory;
         }
-        else if (id== (R.id.PublicSpinner)){
+        else if (id== (R.id.public_spinner)){
             mIconToChange= mIconPublic;
             switch (((Spinner)view).getSelectedItemPosition()){
                 case 0:
@@ -423,7 +380,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
     private void wireUpViews(View rootView) {
 
         mToolbar = rootView.findViewById(R.id.events_toolbar);
-        mOverlayView = rootView.findViewById(R.id.evets_overlay);
+        mOverlayView = rootView.findViewById(R.id.events_overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.event_scroll);
         mEventTitle = (AppCompatTextView) rootView.findViewById(R.id.title);
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_button_map);
@@ -432,8 +389,8 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mEditTextFullDescription =(AppCompatEditText)rootView.findViewById(R.id.edit_text_full_description);
         mEditTextShortDescription =(AppCompatEditText)rootView.findViewById(R.id.edit_text_short_description);
         mEditTextAdditionalInfo =(AppCompatEditText)rootView.findViewById(R.id.edit_text_additional_info);
-        mSpinnerCategory =(AppCompatSpinner)rootView.findViewById(R.id.CategorySpinner);
-        mSpinnerPublic =(AppCompatSpinner)rootView.findViewById(R.id.PublicSpinner);
+        mSpinnerCategory =(AppCompatSpinner)rootView.findViewById(R.id.category_spinner);
+        mSpinnerPublic =(AppCompatSpinner)rootView.findViewById(R.id.public_spinner);
         mEditTextHashtag =(AppCompatEditText)rootView.findViewById(R.id.edit_text_hashtag);
         mEditTextLanguage =(AppCompatEditText)rootView.findViewById(R.id.edit_text_language);
         mEditTextStartDate =(AppCompatEditText)rootView.findViewById(R.id.edit_text_start_date);
@@ -467,21 +424,21 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mIconCountry=(ImageView)rootView.findViewById(R.id.icon_country);
         mIconCity=(ImageView)rootView.findViewById(R.id.icon_city);
 
-        mErrorLabelLayoutTitle = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutTitle);
-        mErrorLabelLayoutFullDescription = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFullDescription);
-        mErrorLabelLayoutShortDescription = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutShortDescription);
-        mErrorLabelLayoutAdditionalInfo = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutAdditionalInfo);
-        mErrorLabelLayoutCategory = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutCategory);
-        mErrorLabelLayoutPublic = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutPublic);
-        mErrorLabelLayoutHashtag = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutHashtag);
-        mErrorLabelLayoutLanguage = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutLanguage);
-        mErrorLabelLayoutStartDate = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutStartDate);
-        mErrorLabelLayoutEndDate = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEndDate);
-        mErrorLabelLayoutStartTime = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutStartTime);
-        mErrorLabelLayoutEndTime = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEndTime);
-        mErrorLabelLayoutAddress = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorAddress);
-        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCity);
-        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCountry);
+        mErrorLabelLayoutTitle = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_title);
+        mErrorLabelLayoutFullDescription = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_full_description);
+        mErrorLabelLayoutShortDescription = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_short_description);
+        mErrorLabelLayoutAdditionalInfo = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_additional_info);
+        mErrorLabelLayoutCategory = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_category);
+        mErrorLabelLayoutPublic = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_public);
+        mErrorLabelLayoutHashtag = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_hashtag);
+        mErrorLabelLayoutLanguage = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_language);
+        mErrorLabelLayoutStartDate = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_start_date);
+        mErrorLabelLayoutEndDate = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_end_date);
+        mErrorLabelLayoutStartTime = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_start_time);
+        mErrorLabelLayoutEndTime = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_end_time);
+        mErrorLabelLayoutAddress = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_address);
+        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_city);
+        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
     }
 
     private void setUpSpinners(){
@@ -726,10 +683,8 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
         mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mFabIsShown) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
-                }
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
             }
         });
 
@@ -749,15 +704,15 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
             }
         });
-        mActionBarSize = getActionBarSize();
-        mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
-        mToolbarColor = getResources().getColor(com.globant.eventscorelib.R.color.globant_green);
-        mStickyToolbar = false;
-        mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_image_height);
-        mToolbar.setBackgroundColor(Color.TRANSPARENT);
-        mScrollView.setScrollViewCallbacks(this);
+        int actionBarSize = getActionBarSize();
+        int flexibleSpaceImageHeight = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_image_height);
+        int toolbarColor = getResources().getColor(com.globant.eventscorelib.R.color.globant_green);
+        int flexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
+        int fabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
+        ScrollChangeCallbacks scrollChangeCallbacks = new ScrollChangeCallbacks(actionBarSize, flexibleSpaceImageHeight, toolbarColor, flexibleSpaceShowFabOffset,
+                fabMargin, mToolbar, mOverlayView, mEventTitle, mPhotoEvent, mFloatingActionButtonPhoto , false, getActivity());
+        mScrollView.setScrollViewCallbacks(scrollChangeCallbacks);
 
-        mFabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
         ViewHelper.setScaleX(mFloatingActionButtonPhoto, 0);
         ViewHelper.setScaleY(mFloatingActionButtonPhoto, 0);
 
@@ -794,10 +749,8 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        boolean handled = false;
 
         if (id == com.globant.eventmanager.R.id.events_action_done) {
             Boolean savePreferences;
@@ -809,6 +762,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
             savePreferences &= tintRequiredIconsAndShowError(mEditTextStartDate);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextStartTime);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextEndDate);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextEndTime);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextAddress);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextCountry);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextCity);
@@ -817,23 +771,23 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
                 if(mStartDate.compareTo(mEndDate) != -1){
                     Toast.makeText(getActivity(),R.string.error_message_dates,Toast.LENGTH_LONG).show();
 
-                    ImageView mIconToBeChange= mIconEndDate;
+                    ImageView iconToChange= mIconEndDate;
                     Drawable mDrawableToApplyChanges=getResources().getDrawable(R.mipmap.ic_event_end_date);
 
                     mErrorLabelLayoutEndDate.setError(getString(R.string.error_message_change_dates));
                     mDrawableToApplyChanges= DrawableCompat.wrap(mDrawableToApplyChanges);
                     DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
                     mDrawableToApplyChanges= DrawableCompat.unwrap(mDrawableToApplyChanges);
-                    mIconToBeChange.setImageDrawable(mDrawableToApplyChanges);
+                    iconToChange.setImageDrawable(mDrawableToApplyChanges);
 
-                    mIconToBeChange= mIconEndTime;
+                    iconToChange= mIconEndTime;
                     mDrawableToApplyChanges=getResources().getDrawable(R.mipmap.ic_end_time);
 
                     mErrorLabelLayoutEndTime.setError("");
                     mDrawableToApplyChanges= DrawableCompat.wrap(mDrawableToApplyChanges);
                     DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
                     mDrawableToApplyChanges= DrawableCompat.unwrap(mDrawableToApplyChanges);
-                    mIconToBeChange.setImageDrawable(mDrawableToApplyChanges);
+                    iconToChange.setImageDrawable(mDrawableToApplyChanges);
                 }
                 else if(mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
                     Toast.makeText(getActivity(),getString(R.string.missing_photo),Toast.LENGTH_SHORT).show();
@@ -854,7 +808,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
                 Toast.makeText(getActivity(),getString(R.string.missing_fields),Toast.LENGTH_SHORT).show();
             }
 
-            return true;
+            handled = true;
         }else {
             if (id == R.id.events_action_delete) {
                 new AlertDialog.Builder(getActivity())
@@ -867,9 +821,15 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
                                 mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, getBindingKey(), mEvent);
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
+                handled = true;
             }
         }
-        return super.onOptionsItemSelected(item);
+
+        if (!handled) {
+            handled =  super.onOptionsItemSelected(item);
+        }
+
+        return handled;
     }
 
     private Boolean tintRequiredIconsAndShowError(EditText requiredField){

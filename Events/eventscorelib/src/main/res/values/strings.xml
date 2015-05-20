@@ -127,6 +127,8 @@
     <string name="have_been_subscribed">You\'ve been subscribed to this event</string>
     <string name="preference_participant_hint_showed">preference_participant_hint_showed</string>
     <string name="no_tweet_steam">No tweets yet, be the first!</string>
+    <string name="text_view_no_participants">No subscribers registered yet.</string>
+
     <string name="action_history">History</string>
 
 

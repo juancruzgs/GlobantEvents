@@ -10,6 +10,10 @@ import com.globant.eventscorelib.utils.CoreConstants;
 
 
 public class EventListClientFragment extends BaseEventListFragment {
+    @Override
+    public void getEvent(String eventId) {
+
+    }
 
     @Override
     protected int getFragmentLayout() {

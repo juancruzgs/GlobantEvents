@@ -321,8 +321,8 @@ public class BaseSpeakerFragment extends BaseFragment {
         mIconTitle=(ImageView)rootView.findViewById(R.id.icon_title);
         mIconBiography=(ImageView)rootView.findViewById(R.id.icon_biography);
         mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
-        mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutLastName);
-        mErrorLabelLayoutTitle = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutTitle);
+        mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_last_name);
+        mErrorLabelLayoutTitle = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_title);
         mErrorLabelLayoutBiography = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutBiography);
     }
 

@@ -15,7 +15,6 @@ import com.parse.ParseRelation;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -277,6 +276,7 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEvent.put(CoreConstants.FIELD_LANGUAGE, domainEvent.getLanguage());
         databaseEvent.put(CoreConstants.FIELD_HASHTAG, domainEvent.getHashtag());
         LatLng coordinates = domainEvent.getCoordinates();
+        if (coordinates != null)
         databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(coordinates.latitude, coordinates.longitude));
     }
 
