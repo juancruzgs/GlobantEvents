@@ -132,7 +132,7 @@
                                 android:src="@mipmap/ic_last_name"/>
 
                             <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                android:id="@+id/nameErrorLayoutLastName"
+                                android:id="@+id/name_error_layout_last_name"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="20dp"
@@ -180,7 +180,7 @@
                                 android:src="@mipmap/ic_diploma"/>
 
                             <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                android:id="@+id/nameErrorLayoutTitle"
+                                android:id="@+id/name_error_layout_title"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="20dp"

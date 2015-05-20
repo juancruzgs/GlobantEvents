@@ -22,8 +22,8 @@ public class CacheObjectsController implements Parcelable{
     private List<Event> mEventList;
     private List<Subscriber> mSubscriberList;
     private User mUser; // twitter
-    private Event mEvent;
     private List<Event> mEventHistory;
+    private Event mEvent = null;
 
     public CacheObjectsController() {
     }
