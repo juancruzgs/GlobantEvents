@@ -5,7 +5,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,19 +17,16 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventDetailManagerActivity;
 import com.globant.eventmanager.activities.EventHistoryManagerActivity;
 import com.globant.eventmanager.adapters.EventHistoryListAdapterManager;
-import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseAdapters.GetEventInformation;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -44,6 +40,7 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
     private RecyclerView mRecyclerView;
     private AppCompatTextView mTextViewNoEvents;
     private EventHistoryListAdapterManager mAdapter;
+    private String mInitialQuery = "";
 
     public EventHistoryManagerFragment() {
     }
@@ -61,6 +58,9 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
         mLayoutManager = new LinearLayoutManager(getActivity());
         mTextViewNoEvents = (AppCompatTextView) rootView.findViewById(R.id.text_view_no_events);
         setRecyclerViewLayoutManager();
+        if (savedInstanceState != null) {
+            mInitialQuery =  savedInstanceState.getString(CoreConstants.SEARCH_QUERY_INTENT);
+        }
         return rootView;
     }
 
@@ -82,6 +82,14 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
         prepareSearchView(menu);
     }
 
+    private void prepareInitialSearchState() {
+        if (!mInitialQuery.isEmpty()) {
+            mSearchView.setQuery(mInitialQuery, true);
+            mSearchView.setIconified(false);
+            mSearchView.clearFocus();
+        }
+    }
+
     public void setRecyclerViewLayoutManager() {
         int scrollPosition = 0;
         if (mRecyclerView.getLayoutManager() != null) {
@@ -95,7 +103,7 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
 
 
     private void setRecyclerViewAdapter() {
-        mAdapter = new EventHistoryListAdapterManager(mEventList, getActivity(), this);
+        mAdapter = new EventHistoryListAdapterManager(mEventList, getActivity(), this, mTextViewNoEvents, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -120,6 +128,7 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
                 return true;
             }
         });
+        prepareInitialSearchState();
     }
 
     private void prepareRecyclerView(View rootView) {
@@ -135,7 +144,15 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
         if (mEventList == null) {
             mService.executeAction(BaseService.ACTIONS.GET_EVENT_HISTORY, getBindingKey(), null);
         } else {
-            setRecyclerViewAdapter();
+            setHasOptionsMenu(true);
+            if (mEventList.size() == 0) {
+                mTextViewNoEvents.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            } else {
+                setRecyclerViewAdapter();
+                mTextViewNoEvents.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -163,11 +180,10 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
                     ((EventHistoryManagerActivity) getActivity()).setEventHistory(mEventList);
                     setRecyclerViewAdapter();
                     setHasOptionsMenu(true);
+                    hideUtilsAndShowContentOverlay();
                 } else {
                     showErrorOverlay();
                 }
-
-                hideUtilsAndShowContentOverlay();
                 break;
             case GET_EVENT:
                 Intent intent = new Intent(getActivity(), EventDetailManagerActivity.class);
@@ -175,6 +191,13 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
                 startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        hideUtilsAndShowContentOverlay();
+
     }
 
     @Override
@@ -190,5 +213,11 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
     @Override
     public void getEvent(String eventId) {
         mService.executeAction(BaseService.ACTIONS.GET_EVENT, getBindingKey(), eventId);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(CoreConstants.SEARCH_QUERY_INTENT, mSearchView.getQuery().toString());
+        super.onSaveInstanceState(outState);
     }
 }

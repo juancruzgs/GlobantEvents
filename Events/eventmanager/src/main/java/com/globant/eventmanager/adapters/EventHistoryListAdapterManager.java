@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.TextView;
 
 import com.globant.eventmanager.R;
 import com.globant.eventscorelib.domainObjects.Event;
@@ -23,11 +24,15 @@ public class EventHistoryListAdapterManager extends RecyclerView.Adapter<EventHi
     private Context mContext;
     private List<Event> mFilteredEventList;
     private Fragment mFragment;
+    private TextView mTextViewNoEvents;
+    private RecyclerView mRecyclerView;
 
-    public EventHistoryListAdapterManager(List<Event> events, Context context, Fragment fragment) {
+    public EventHistoryListAdapterManager(List<Event> events, Context context, Fragment fragment, TextView textViewNoEvents, RecyclerView recyclerView) {
         mContext = context;
         mEventList = events;
         mFragment = fragment;
+        mTextViewNoEvents = textViewNoEvents;
+        mRecyclerView = recyclerView;
     }
 
     @Override
@@ -83,6 +88,11 @@ public class EventHistoryListAdapterManager extends RecyclerView.Adapter<EventHi
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 mEventList = (ArrayList<Event>) results.values;
+                if (mEventList.size() == 0) {
+                    mTextViewNoEvents.setVisibility(View.VISIBLE);
+                } else {
+                    mTextViewNoEvents.setVisibility(View.GONE);
+                }
                 notifyDataSetChanged();
             }
         };
