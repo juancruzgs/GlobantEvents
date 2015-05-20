@@ -167,8 +167,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
         Bitmap bitmapToSave = drawable.getBitmap();
         outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
-
-
     }
 
     private void setOnFocusListeners() {

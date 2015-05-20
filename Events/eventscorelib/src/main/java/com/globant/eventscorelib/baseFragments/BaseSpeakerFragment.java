@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.utils.ConvertImage;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
@@ -57,7 +59,7 @@ public class BaseSpeakerFragment extends BaseFragment {
     public String fragmentMode = CREATE_MODE;
     public String eventId;
     public int position;
-    Boolean mSave;
+    Boolean mDoneClicked = false;
     Boolean mPhotoPicked = false;
 
     Bitmap mPhoto;
@@ -145,13 +147,8 @@ public class BaseSpeakerFragment extends BaseFragment {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
-            mSave=true;
-            tintRequiredIconsAndShowError(mEditTextFirstName);
-            tintRequiredIconsAndShowError(mEditTextLastName);
-            tintRequiredIconsAndShowError(mEditTextTitle);
-            tintRequiredIconsAndShowError(mEditTextBiography);
-
-            if (mSave== true && mPhotoPicked){
+            doneClick();
+            if (mDoneClicked == true && mPhotoPicked){
                Intent resultIntent = new Intent();
                switch (fragmentMode)
                {
@@ -175,6 +172,38 @@ public class BaseSpeakerFragment extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void doneClick() {
+        mDoneClicked = true;
+        tintRequiredIconsAndShowError(mEditTextFirstName);
+        tintRequiredIconsAndShowError(mEditTextLastName);
+        tintRequiredIconsAndShowError(mEditTextTitle);
+        tintRequiredIconsAndShowError(mEditTextBiography);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            {
+                if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false")))
+                    doneClick();
+            }
+            Bitmap bitmapToSave = savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
+            mPhotoProfile.setImageBitmap(bitmapToSave);
+            mPhotoPicked = Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CoreConstants.DONE_CLICKED, mDoneClicked.toString());
+        outState.putString(CoreConstants.PHOTO_TAKEN, mPhotoPicked.toString());
+        BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
+        Bitmap bitmapToSave = drawable.getBitmap();
+        outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
     }
 
     private Speaker fillSpeakerObject() {
@@ -346,7 +375,7 @@ public class BaseSpeakerFragment extends BaseFragment {
                 DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
                 mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
                 mIconToChange.setImageDrawable(mDrawableToApply);
-                mSave = false;
+                mDoneClicked = false;
             } else {
                 tintGrey();
             }
