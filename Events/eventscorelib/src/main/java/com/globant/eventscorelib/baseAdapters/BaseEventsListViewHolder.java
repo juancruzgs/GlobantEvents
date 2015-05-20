@@ -10,15 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
-
-import java.io.Serializable;
 
 public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final View mViewGroup;
@@ -31,10 +27,6 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final AppCompatTextView mShortDescriptionEvent;
     private final AppCompatTextView mEventSpeakers;
     private final LinearLayout mLinearLayoutSpeakers;
-
-    public interface GetEventInformation {
-        Event getEvent(int position);
-    }
 
     protected abstract Class<? extends BasePagerActivity> getActivityClass();
 

@@ -102,7 +102,8 @@
     <string name="title_fragment_subscriber">Profile</string>
     <string name="title_activity_base_speaker">BaseSpeakerActivity</string>
     <string name="title_base_speaker_list_fragment">Speakers</string>
-    <string name="simple_date_format">MM/dd/yyyy hh:mm aa z</string>
+    <string name="simple_date_format_with_time_zone">MM/dd/yyyy hh:mm aa z</string>
+    <string name="simple_date_format">MM/dd/yyyy hh:mm aa </string>
     <string name="missing_photo">Take a picture right now!</string>
     <string name="button_send_notification">Send</string>
     <string name="button_cancel_notification">Cancel</string>
@@ -126,5 +127,7 @@
     <string name="have_been_subscribed">You\'ve been subscribed to this event</string>
     <string name="preference_participant_hint_showed">preference_participant_hint_showed</string>
     <string name="no_tweet_steam">No tweets yet, be the first!</string>
+    <string name="text_view_no_participants">No subscribers registered yet.</string>
+    <string name="action_history">History</string>
     <string name="menu_button_notifications">Notifications</string>
 </resources>

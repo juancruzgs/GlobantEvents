@@ -21,7 +21,11 @@ public class BaseEventListActivity extends  BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ourInstance = this;
-        mCacheObjectsController = new CacheObjectsController();
+        if (savedInstanceState != null) {
+            mCacheObjectsController = savedInstanceState.getParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS);
+        } else {
+            mCacheObjectsController = new CacheObjectsController();
+        }
     }
 
     public void setEventList (List<Event> eventList) {

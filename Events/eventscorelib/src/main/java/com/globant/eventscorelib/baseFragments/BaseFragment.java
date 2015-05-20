@@ -4,6 +4,7 @@ package com.globant.eventscorelib.baseFragments;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +24,8 @@ public abstract class BaseFragment extends Fragment{
     private LinearLayout mUtilsLayout;
     private LinearLayout mLoadingLayout;
     private FrameLayout mContentLayout;
-    private TextView mTextViewUtilsMessage;
-    private TextView mTextViewLoadingMessage;
+    private AppCompatTextView mTextViewUtilsMessage;
+    private AppCompatTextView mTextViewLoadingMessage;
     private ImageView mImageViewUtils;
     protected BaseService mService = null;
     private Boolean mIsCheckin;
@@ -45,8 +46,8 @@ public abstract class BaseFragment extends Fragment{
     }
 
     private void wireUpViews(View rootView) {
-        mTextViewUtilsMessage=(TextView)rootView.findViewById(R.id.textView_utils);
-        mTextViewLoadingMessage=(TextView)rootView.findViewById(R.id.text_view_loading);
+        mTextViewUtilsMessage=(AppCompatTextView)rootView.findViewById(R.id.textView_utils);
+        mTextViewLoadingMessage=(AppCompatTextView)rootView.findViewById(R.id.text_view_loading);
         mImageViewUtils=(ImageView)rootView.findViewById(R.id.imageView_utils);
     }
 

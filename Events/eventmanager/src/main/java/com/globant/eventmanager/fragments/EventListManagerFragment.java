@@ -10,8 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
+import com.globant.eventmanager.activities.EventHistoryManagerActivity;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.activities.PushNotificationActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
@@ -20,6 +20,7 @@ import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.software.shell.fab.ActionButton;
 
+import java.util.Date;
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
@@ -45,26 +46,12 @@ public class EventListManagerFragment extends BaseEventListFragment {
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        return this;
+        return null;
     }
 
     @Override
-    public String getBindingKey() {
-        return EventListManagerFragment.class.getSimpleName();
-    }
-
-    @Override
-    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        super.onFinishAction(theAction, result);
-        if (mRecyclerView.getAdapter().getItemCount() > 0) {
-            mRecyclerView.scrollToPosition(1);
-            ScrollUtils.addOnGlobalLayoutListener(mRecyclerView, new Runnable() {
-                @Override
-                public void run() {
-                    mRecyclerView.smoothScrollToPosition(0);
-                }
-            });
-        }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -73,6 +60,36 @@ public class EventListManagerFragment extends BaseEventListFragment {
         prepareRecyclerView();
         wireUpFAB(rootView);
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_manager_event_list, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.action_history) {
+            Intent intentHistory = new Intent(getActivity(), EventHistoryManagerActivity.class);
+            startActivity(intentHistory);
+            handled = true;
+        } else {
+            if (id == R.id.action_notifications){
+                Intent intentNotifications = new Intent(getActivity(), PushNotificationActivity.class);
+                intentNotifications.putExtra(PushNotificationFragment.SOURCE_TAG, this.getClass().getSimpleName());
+                startActivity(intentNotifications);
+                handled = true;
+            }
+        }
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
     }
 
     private void prepareRecyclerView() {
@@ -99,32 +116,12 @@ public class EventListManagerFragment extends BaseEventListFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
-                EventsFragment.mEventAction = EventsFragment.ActionType.CREATE_EVENT;
                 startActivity(intent);
             }
         });
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_push_notification, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        boolean handled;
-
-        if (id == R.id.action_notifications){
-            Intent intentNotifications = new Intent(getActivity(), PushNotificationActivity.class);
-            intentNotifications.putExtra(PushNotificationFragment.SOURCE_TAG, this.getClass().getSimpleName());
-            startActivity(intentNotifications);
-            handled = true;
-        } else {
-            handled = super.onOptionsItemSelected(item);
-        }
-
-        return  handled;
+    public void getEvent(String eventId) {
     }
 }

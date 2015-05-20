@@ -48,6 +48,7 @@ import com.globant.eventscorelib.utils.PushNotifications;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 
@@ -150,11 +151,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 Bitmap bitmapToSave=savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
                 mPhotoProfile.setImageBitmap(bitmapToSave);
                 mPhotoTaken=Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
-            if (mPhotoTaken){
-                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
-            }
+//            if (mPhotoTaken){
+//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
 
-        }
+
+             }
 
     }
 
@@ -166,8 +167,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
         Bitmap bitmapToSave = drawable.getBitmap();
         outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
-
-
     }
 
     private void setOnFocusListeners() {
@@ -298,7 +297,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
             mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
             mPhotoTaken=true;
-            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
+//            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
         }
 
     }
@@ -325,13 +324,13 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mIconEnglishKnowledge = (ImageView) rootView.findViewById(R.id.icon_language);
         mIconTwitter = (ImageView) rootView.findViewById(R.id.icon_twitter);
         mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
-        mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutLastName);
+        mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_last_name);
         mErrorLabelLayoutPhone = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutPhone);
         mErrorLabelLayoutEmail = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEmail);
         mErrorLabelLayoutTwitter = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorTwitter);
         mErrorLabelLayoutOccupation = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorOccupation);
-        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCity);
-        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorCountry);
+        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_city);
+        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
         mLayoutToFocus = (LinearLayout) rootView.findViewById(R.id.autoFocusable);
     }
 
@@ -354,7 +353,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 mPhoto = extras.getParcelable(CoreConstants.DATA);
                 mPhotoProfile.setImageBitmap(mPhoto);
                 mPhotoTaken=true;
-                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
+//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
             }
         }
     }
@@ -428,12 +427,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             if ((mSavePreferences) && (mPhotoTaken)) {
                 saveSubscriberObject();
                 SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
-                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
-                        mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
-                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
-                } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
-                }
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
+
             } else if (!(mPhotoTaken)) {
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo),
                         Toast.LENGTH_SHORT).show();
@@ -501,7 +496,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mSubscriber.setEmail(mEditTextEmail.getText().toString());
         mSubscriber.setCountry(mEditTextCountry.getText().toString());
         mSubscriber.setCity(mEditTextCity.getText().toString());
-        mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        if (!mEditTextTwitter.getText().toString().isEmpty()) {
+            mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        } else {
+            mSubscriber.setTwitterUser(null);
+        }
         Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
         mSubscriber.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
@@ -520,7 +519,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
     @Override
     public String getBindingKey() {
-        return BaseSubscriberFragment.class.getSimpleName();
+        return this.getClass().getSimpleName() + new Date().toString();
     }
 
     @Override
@@ -590,16 +589,28 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case SUBSCRIBER_EXISTS:
-                if (result.equals("")) {
+                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
+                    if (result.equals("")) {
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
-                } else {
+                    } else {
                     mSubscriber.setObjectID((String) result);
                     mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
+                }
+                }
+                else{
+                    if (!(result.equals(""))) {
+                        mSubscriber.setObjectID((String) result);
+                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);}
+                    else{
+                        hideUtilsAndShowContentOverlay();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+                        getActivity().finish();
+                    }
                 }
                 break;
             case IS_SUBSCRIBED:
                 if ((Boolean) result) {
-                    hideUtilsAndShowContentOverlay();
                     Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 } else {
@@ -613,10 +624,14 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                         mSubscriber, mEventId);
                 break;
             case EVENTS_TO_SUBSCRIBER_CREATE:
-                hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
                 PushNotifications.subscribeToChannel("SUB-" + mEventId);
                 PushNotifications.subscribeToChannel("SUB-" + mEventId + "-" + mSubscriber.getObjectID());
+                getActivity().finish();
+                break;
+            case SUBSCRIBER_UPDATE:
+                hideUtilsAndShowContentOverlay();
+                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
                 break;
         }
