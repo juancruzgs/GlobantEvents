@@ -155,7 +155,7 @@ public class BaseSpeakerFragment extends BaseFragment {
                {
                    case EDIT_MODE  :
                        resultIntent.putExtra("editedSpeaker",fillSpeakerObject());
-                       //resultIntent.putExtra("position",position);
+                       resultIntent.putExtra("position",position);
                        break;
                    case CREATE_MODE:
                        resultIntent.putExtra("newSpeaker",fillSpeakerObject());

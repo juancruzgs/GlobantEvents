@@ -90,11 +90,12 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                         Intent intentSpeakerEdit = new Intent(getActivity(), EventSpeakerListActivity.class);
                         intentSpeakerEdit.putExtra("speaker", mSpeakers.get(position));
                         intentSpeakerEdit.putExtra("position", position);
+                        Log.d(LOG_TAG,"ITEM A EDITAR-> "+Integer.toString(position));
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            ImageView cardImage = (ImageView) view.findViewById(R.id.image_view_profile_speaker);
-                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "cardImage");
-                            getActivity().startActivityForResult(intentSpeakerEdit,REQ_CODE_SPEAKER,options.toBundle());
+                            //ImageView cardImage = (ImageView) view.findViewById(R.id.image_view_profile_speaker);
+                            //ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "cardImage");
+                            startActivityForResult(intentSpeakerEdit,REQ_CODE_SPEAKER);
                         }
                         else {
                             startActivityForResult(intentSpeakerEdit, REQ_CODE_SPEAKER);
@@ -138,8 +139,9 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                 if(editedSpeaker!= null)
                 {
                     int position = data.getIntExtra("position",0);
+                    Log.d(LOG_TAG,"ITEM TO REPLACE-> "+Integer.toString(position));
                     mSpeakers.set(position, editedSpeaker);
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyItemChanged(position);
                 }
             }
         }
