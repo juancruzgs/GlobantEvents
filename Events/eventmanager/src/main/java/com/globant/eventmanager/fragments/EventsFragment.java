@@ -794,10 +794,8 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        boolean handled = false;
 
         if (id == com.globant.eventmanager.R.id.events_action_done) {
             Boolean savePreferences;
@@ -855,7 +853,7 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
                 Toast.makeText(getActivity(),getString(R.string.missing_fields),Toast.LENGTH_SHORT).show();
             }
 
-            return true;
+            handled = true;
         }else {
             if (id == R.id.events_action_delete) {
                 new AlertDialog.Builder(getActivity())
@@ -868,9 +866,15 @@ public class EventsFragment extends BaseFragment implements ObservableScrollView
                                 mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, getBindingKey(), mEvent);
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
+                handled = true;
             }
         }
-        return super.onOptionsItemSelected(item);
+
+        if (!handled) {
+            handled =  super.onOptionsItemSelected(item);
+        }
+
+        return handled;
     }
 
     private Boolean tintRequiredIconsAndShowError(EditText requiredField){
