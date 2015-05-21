@@ -41,6 +41,7 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
     private AppCompatTextView mTextViewNoSubscribers;
     private String mBindingKey;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Date mRefreshDate;
 
     public SwipeRefreshLayout getSwipeRefreshLayout() {
         return mSwipeRefreshLayout;
@@ -82,14 +83,24 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
                 mSubscribers = (List<Subscriber>) result;
                 ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
                 setRecyclerViewAdapter();
-                if (mSwipeRefreshLayout.isRefreshing()){
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    mAdapter.notifyDataSetChanged();
-                }else {
-                    hideUtilsAndShowContentOverlay();
-                }
+                mRefreshDate = new Date();
                 hideUtilsAndShowContentOverlay();
                 initializeAcceptedSubscribers();
+                break;
+            case REFRESH_SUBSCRIBERS:
+                for (Subscriber subscriber:(List<Subscriber>)result){
+                    mSubscribers.add(subscriber);
+                }
+                mRefreshDate = new Date();
+                if (((List<Subscriber>) result).size() != 0){
+                    if (mAdapter != null){
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        setRecyclerViewAdapter();
+                        mTextViewNoSubscribers.setVisibility(View.INVISIBLE);
+                    }
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
                 break;
         }
     }
@@ -169,16 +180,13 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
             @Override
             public void onRefresh() {
                 cancelAnimationOnRefresh();
-                refreshParticipants();
+                String eventId = mEvent.getObjectID();
+                mService.executeAction(BaseService.ACTIONS.REFRESH_SUBSCRIBERS, getBindingKey(), eventId, mRefreshDate);
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
 
-    protected void refreshParticipants() {
-        String eventId = mEvent.getObjectID();
-        mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
-    }
 
     @Override
     public String getTitle() {
