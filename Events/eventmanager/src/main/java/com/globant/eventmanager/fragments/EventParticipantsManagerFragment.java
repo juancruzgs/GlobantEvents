@@ -66,19 +66,6 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     }
 
     @Override
-    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        super.onFinishAction(theAction, result);
-        switch ( theAction ) {
-            case SET_ACCEPTED:
-                if (mSwipeRefreshLayout.isRefreshing()){
-                    String eventId = mEvent.getObjectID();
-                    mService.executeAction(BaseService.ACTIONS.PARTICIPANT_LIST, getBindingKey(), eventId);
-                }
-                break;
-        }
-    }
-
-    @Override
     protected void initializeAcceptedSubscribers() {
         mAcceptedSubscribers = new ArrayList<>();
     }
@@ -131,11 +118,6 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     }
 
     @Override
-    protected void refreshParticipants() {
-        mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
-    }
-
-    @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
         wireUpAddDeclineButtons(rootView);
@@ -152,7 +134,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     protected void cancelAnimationOnRefresh() {
-        if (mAdapter.getCurrentParticipant() != null) {
+        if ((mAdapter != null) && (mAdapter.getCurrentParticipant() != null)) {
             mAdapter.getCurrentParticipant().cancelAnimations();
         }
     }
