@@ -520,7 +520,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
     @Override
     public String getBindingKey() {
-        return this.getClass().getSimpleName() + new Date().toString();
+        return this.getClass().getSimpleName() ;//+ new Date().toString();
     }
 
     @Override
