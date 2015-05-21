@@ -17,9 +17,9 @@
         android:layout_gravity="left"
         android:gravity="center_vertical"
         android:text="Toolbar Title"
-        style="@style/condensed_light_medium"
+        style="@style/condensed_normal_large"
         android:textColor="@color/grey"
         android:maxLines="1"
-        android:textSize="22sp"/>
+        android:textSize="20sp"/>
 
 </app:android.support.v7.widget.Toolbar>
