@@ -15,6 +15,7 @@ import com.parse.ParseRelation;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -316,5 +317,26 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEventToSubscriber.put(CoreConstants.FIELD_PUBLIC, domainSubscriber.isPublic());
         databaseEventToSubscriber.put(CoreConstants.FIELD_ACCEPTED, domainSubscriber.isAccepted());
         databaseEventToSubscriber.put(CoreConstants.FIELD_CHECK_IN, domainSubscriber.checkedIn());
+    }
+
+    public List<Subscriber> refreshSubscribers(String eventId, Date refreshDate) throws ParseException {
+        ParseObject event = getDatabaseEvent(eventId);
+        ParseQuery<ParseObject> eventsToSubscribersQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        eventsToSubscribersQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
+        eventsToSubscribersQuery.whereGreaterThan(CoreConstants.FIELD_CREATED_AT, refreshDate);
+        eventsToSubscribersQuery.include(CoreConstants.FIELD_SUBSCRIBERS);
+        List<ParseObject> eventsToSubscribersList = eventsToSubscribersQuery.find();
+        List<Subscriber> subscribersList = new ArrayList<>();
+        for (ParseObject eventToSubscribersRow : eventsToSubscribersList) {
+            //eventToSubscriberRow get Accepted
+            ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
+            Boolean accepted = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_ACCEPTED);
+            Boolean checkin = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_CHECK_IN);
+            if (databaseSubscriber != null) {
+                Subscriber domainSubscriber = createDomainSubscriberFromDatabase(databaseSubscriber, accepted, checkin);
+                subscribersList.add(domainSubscriber);
+            }
+        }
+        return subscribersList;
     }
 }
