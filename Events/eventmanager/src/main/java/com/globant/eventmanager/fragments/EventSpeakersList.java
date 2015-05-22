@@ -9,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -71,6 +74,8 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
         return  rootView;
     }
 
+
+
     @Override
     protected void prepareRecyclerView(View rootView) {
         int scrollPosition = 0;
@@ -116,6 +121,7 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
             if (resultCode == RESULT_OK) {
                 Speaker newSpeaker =  data.getParcelableExtra("newSpeaker");
                 Speaker editedSpeaker = data.getParcelableExtra("editedSpeaker");
+                Speaker deletedSpeaker = data.getParcelableExtra("deletedSpeaker");
 
                 if(newSpeaker!=null)
                 {
@@ -133,6 +139,7 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                         mAdapter.notifyDataSetChanged();
                         mRecyclerView.setVisibility(View.VISIBLE);
                         mTextViewNoSpeakers.setVisibility(View.VISIBLE);
+                        EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
                         //setRecyclerViewAdapter();
                     }
                 }
@@ -142,6 +149,15 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                     Log.d(LOG_TAG,"ITEM TO REPLACE-> "+Integer.toString(position));
                     mSpeakers.set(position, editedSpeaker);
                     mAdapter.notifyItemChanged(position);
+                    EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
+                }
+                if(deletedSpeaker != null)
+                {
+                    int position = data.getIntExtra("position",0);
+                    Log.d(LOG_TAG,"ITEM TO DELETE-> "+Integer.toString(position));
+                    mSpeakers.remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                    EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
                 }
             }
         }

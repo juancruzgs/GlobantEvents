@@ -123,6 +123,8 @@
     <string name="menu_button_update">Update</string>
     <string name="alert_message_delete_event">Do you really want to delete this event?</string>
     <string name="alert_message_delete_event_title">Delete Event</string>
+    <string name="alert_message_delete_speaker">Do you really want to delete this speaker?</string>
+    <string name="alert_message_delete_speaker_title">Delete Speaker</string>
     <string name="already_subscribed">You\'re already subscribed to this event.</string>
     <string name="have_been_subscribed">You\'ve been subscribed to this event</string>
     <string name="preference_participant_hint_showed">preference_participant_hint_showed</string>
