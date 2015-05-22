@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseFragments.BaseCreditsFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 
 
 public class BaseCreditsActivity extends BaseActivity {
@@ -33,4 +34,13 @@ public class BaseCreditsActivity extends BaseActivity {
         getSupportActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
     }
 
+    @Override
+    protected boolean usesEgg() {
+        return false;
+    }
+
+    @Override
+    protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
+        return null;
+    }
 }

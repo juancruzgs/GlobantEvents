@@ -17,12 +17,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
+import com.globant.eventscorelib.baseComponents.BaseEasterEgg;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;
@@ -40,6 +41,32 @@ public abstract class BaseActivity extends AppCompatActivity{
     protected Class<? extends BaseService> mServiceClass;
     boolean mIsBound = false;
     boolean mIsOnline;
+
+    BaseEasterEgg mEasterEgg;
+
+    protected abstract boolean usesEgg();
+    protected abstract BaseEasterEggsBasket.EASTEREGGS whichEgg();
+
+    // TODO: Complete these "easter egg management methods", taking somehow the easter egg type from a subclass
+    protected void initEasterEgg() {
+        if (usesEgg()) {
+            mEasterEgg = BaseEasterEggsBasket.initEgg(whichEgg(), this);
+        }
+    }
+
+    protected void uninitEasterEgg() {
+        if (usesEgg()) {
+            mEasterEgg.uninit();
+        }
+    }
+
+    public void subscribeEggListener(BaseEasterEgg.EasterEggListener listener) {
+        mEasterEgg.subscribeListener(listener);
+    }
+
+    public void unsubscribeEggListener(BaseEasterEgg.EasterEggListener listener) {
+        mEasterEgg.unsubscribeListener(listener);
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -94,6 +121,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setConnectionReceiver();
         mServiceClass = getServiceClass();
+        initEasterEgg();
     }
 
     private void setConnectionReceiver() {
@@ -189,6 +217,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         if (mIsBound) {
             doUnbindService();
         }
+        uninitEasterEgg();
     }
 
     protected void showErrorOverlay(){

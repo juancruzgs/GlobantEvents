@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseComponents.BaseEasterEgg;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.CoreConstants;
 
@@ -141,6 +143,14 @@ public abstract class BaseFragment extends Fragment{
         if (listener != null){
             mService.subscribeActor(listener);
         }
+    }
+
+    protected void subscribeEggListener(BaseEasterEgg.EasterEggListener listener) {
+        ((BaseActivity)getActivity()).subscribeEggListener(listener);
+    }
+
+    protected void unsubscribeEggListener(BaseEasterEgg.EasterEggListener listener) {
+        ((BaseActivity)getActivity()).unsubscribeEggListener(listener);
     }
 
     public abstract String getTitle();

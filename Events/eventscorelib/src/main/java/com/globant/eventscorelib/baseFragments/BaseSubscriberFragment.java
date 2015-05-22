@@ -38,9 +38,11 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseEasterEgg;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
@@ -54,7 +56,8 @@ import java.util.regex.Pattern;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BaseSubscriberFragment extends BaseFragment implements BaseService.ActionListener, SensorEventListener {
+public class BaseSubscriberFragment extends BaseFragment implements BaseService.ActionListener, SensorEventListener,
+        BaseEasterEgg.EasterEggListener {
 
 
     Bitmap mPhoto;
@@ -402,9 +405,10 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         setHasOptionsMenu(true);
 
         if (!globerDetected) {
-            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            subscribeEggListener(this);
+//            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+//            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
@@ -516,7 +520,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     @Override
     public void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(this);
+        //sensorManager.unregisterListener(this);
     }
     @Override
     public String getBindingKey() {
@@ -527,7 +531,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onResume() {
         super.onResume();
         if (!globerDetected) {
-            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            //sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
@@ -642,5 +646,18 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         showErrorOverlay();
+    }
+
+    @Override
+    public void onEasterEgg() {
+        // TODO: The glober have just been detected
+        globerDetected = true;
+        Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unsubscribeEggListener(this);
     }
 }

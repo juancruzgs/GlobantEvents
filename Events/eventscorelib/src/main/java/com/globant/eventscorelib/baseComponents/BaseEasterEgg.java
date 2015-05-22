@@ -1,14 +1,22 @@
 package com.globant.eventscorelib.baseComponents;
 
+import com.globant.eventscorelib.baseActivities.BaseActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ariel.cattaneo on 06/05/2015.
  */
-public class BaseEasterEgg {
+public abstract class BaseEasterEgg {
     public interface EasterEggListener {
         void onEasterEgg();
+    }
+
+    protected BaseActivity mActivity;
+
+    public void setActivity(BaseActivity activity) {
+        mActivity = activity;
     }
 
     protected List<EasterEggListener> mEggListeners = new ArrayList<>();
@@ -20,4 +28,6 @@ public class BaseEasterEgg {
     public void unsubscribeListener(EasterEggListener listener) {
         mEggListeners.remove(listener);
     }
+
+    public abstract void uninit();
 }

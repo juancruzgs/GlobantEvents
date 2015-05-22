@@ -10,13 +10,7 @@ import com.globant.eventscorelib.baseActivities.BaseActivity;
  * Created by ariel.cattaneo on 07/05/2015.
  */
 public abstract class BaseSensorEasterEgg extends BaseEasterEgg implements SensorEventListener {
-    protected BaseActivity mActivity;
     protected SensorManager mSensorManager = null;
-
-    public void setActivity(BaseActivity activity) {
-        mActivity = activity;
-    }
-
     @Override
     public void subscribeListener(EasterEggListener listener) {
         super.subscribeListener(listener);

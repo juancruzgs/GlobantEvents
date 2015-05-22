@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;
@@ -44,5 +45,15 @@ public class BaseEventListActivity extends  BaseActivity{
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, ourInstance.mCacheObjectsController);
+    }
+
+    @Override
+    protected boolean usesEgg() {
+        return false;
+    }
+
+    @Override
+    protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
+        return null;
     }
 }

@@ -26,7 +26,7 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
     public void subscribeListener(EasterEggListener listener) {
         super.subscribeListener(listener);
 
-        if (senAcelerometer == null) {
+        if (mSensorManager != null && senAcelerometer == null) {
             senAcelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             mSensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
@@ -39,6 +39,10 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
         if (mSensorManager != null) {
             mSensorManager.unregisterListener(this);
         }
+    }
+
+    public void uninit() {
+        mSensorManager.unregisterListener(this);
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseFragments.BaseSubscriberFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 
 public class BaseSubscriberActivity extends BaseActivity {
 
@@ -34,7 +35,15 @@ public class BaseSubscriberActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected boolean usesEgg() {
+        return true;
+    }
 
+    @Override
+    protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
+        return BaseEasterEggsBasket.EASTEREGGS.HANDSHAKE;
+    }
 }
 
 
