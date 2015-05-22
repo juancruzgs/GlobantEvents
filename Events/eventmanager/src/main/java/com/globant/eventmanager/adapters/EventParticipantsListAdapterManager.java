@@ -82,19 +82,17 @@ public class EventParticipantsListAdapterManager extends BaseParticipantsListAda
         participantListViewHolderManager.getTextViewLocationLeft().setText(location);
         setViewHolderImage(participantListViewHolderManager, subscriber);
         if (subscriber.isAccepted()) {
-            setAcceptedVisibility(participantListViewHolderManager);
-        }else {
-            setNotAcceptedVisibility(participantListViewHolderManager);
+            participantListViewHolderManager.getFrameLayoutRight().setVisibility(View.VISIBLE);
         }
         mBooleanIsPressed = participantListViewHolderManager.getBooleanIsPressed();
 
     }
 
-    public void setNotAcceptedVisibility(ParticipantsListViewHolderManager holder) {
+    /*public void setNotAcceptedVisibility(ParticipantsListViewHolderManager holder) {
         holder.getLinearLayoutMiddle().setVisibility(View.VISIBLE);
         holder.getLinearLayoutMiddleLeft().setVisibility(View.INVISIBLE);
         holder.getFrameLayoutLeft().setVisibility(View.VISIBLE);
-        holder.getFrameLayoutRight().setVisibility(View.INVISIBLE);
+        holder.getFrameLayoutRight().setVisibility(View.VISIBLE);
         holder.getFrameLayoutHolder().setBackgroundColor(Color.WHITE);
     }
 
@@ -104,14 +102,16 @@ public class EventParticipantsListAdapterManager extends BaseParticipantsListAda
         holder.getFrameLayoutLeft().setVisibility(View.INVISIBLE);
         holder.getFrameLayoutRight().setVisibility(View.VISIBLE);
         holder.getFrameLayoutHolder().setBackgroundColor(mFragment.getActivity().getResources().getColor(R.color.globant_green_light));
-    }
+    }*/
 
     private void setViewHolderImage(ParticipantsListViewHolderManager holder, Subscriber subscriber) {
         Bitmap subscriberPicture = getSubscriberImage(subscriber);
         cropRectangularImage(subscriberPicture);
         Bitmap circularImage = mTransformation.transform(rectangularBitmap);
         holder.getImageViewParticipantLeft().setImageBitmap(circularImage);
-        holder.getImageViewParticipantRight().setImageBitmap(circularImage);
+        if (!subscriber.isAccepted()){
+            holder.getImageViewParticipantRight().setImageBitmap(circularImage);
+        }
     }
 
     private void cropRectangularImage(Bitmap subscriberPicture) {

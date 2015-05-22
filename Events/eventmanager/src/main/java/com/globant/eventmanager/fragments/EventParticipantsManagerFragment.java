@@ -157,7 +157,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                         for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
                             linearLayoutManager.findViewByPosition(i);
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE){
+                            if (current.getFrameLayoutRight().getVisibility() != View.VISIBLE){
                                 current.acceptAnimation();
                                 cont += 1;
                             }
@@ -178,7 +178,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                         for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
                             linearLayoutManager.findViewByPosition(i);
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE){
+                            if (current.getFrameLayoutLeft().getVisibility() != View.VISIBLE){
                                 current.declineAnimation();
                                 cont += 1;
                             }
@@ -187,15 +187,15 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                             }
                         }
                         for (Subscriber sub : mSubscribers){
-                            sub.setAccepted(false);
                             if (mAcceptedSubscribers.contains(sub)){
+                                sub.setAccepted(false);
                                 mAcceptedSubscribers.remove(sub);
                             }
                         }
                         break;
                 }
                 if (cont == 0){
-                    notifyAdapter();
+                    //notifyAdapter();
                 }
                 mAdapter.setSubscribers(mSubscribers);
             }
@@ -261,9 +261,9 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     public void onStop() {
-        if (mSubscribers != null)
+        if ((mSubscribers != null) && (mAcceptedSubscribers.size() > 0))
         {
-            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
+            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mAcceptedSubscribers);
         }
         super.onStop();
     }

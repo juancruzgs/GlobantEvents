@@ -2,6 +2,7 @@ package com.globant.eventmanager.adapters;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.AppCompatTextView;
@@ -15,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
@@ -151,9 +153,14 @@ public class ParticipantsListViewHolderManager extends BaseParticipantListViewHo
 
     private final Runnable mRunnable = new Runnable() {
         public void run() {
-            mRunnableIsRunning = true;
             if ((!mScrolling) && (mBooleanIsPressed)){
-                startAnimations();
+                if ((mFrameLayoutRight.getVisibility() == View.VISIBLE) &&
+                        (mFrameLayoutLeft.getVisibility() == View.VISIBLE)){
+                    Toast.makeText(mFragment.getActivity(), "Participant already accepted", Toast.LENGTH_SHORT).show();
+                }else {
+                    mRunnableIsRunning = true;
+                    startAnimations();
+                }
             }
         }
     };
@@ -219,7 +226,7 @@ public class ParticipantsListViewHolderManager extends BaseParticipantListViewHo
                         mFragment.declineSubscriber(mSubPosition);
                     }
                     if (mFragment.isLastVisibleItem()){
-                        mFragment.notifyAdapter();
+                        //mFragment.notifyAdapter();
                     }
                 } else {
                     mColorTransition.reverse();
