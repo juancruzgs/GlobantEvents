@@ -264,9 +264,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
 
         } else if (id == (R.id.edit_text_twitter)) {
-            mIconToChange = mIconTwitter;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_twitter1);
-            mErrorLabelLayout = mErrorLabelLayoutTwitter;
             mHintToReturn = getResources().getString(R.string.edit_text_twitter_hint);
 
         }
@@ -437,6 +434,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_fields),
                         Toast.LENGTH_SHORT).show();
             }
+            mLayoutToFocus.requestFocus();
             return true;
         }
 
@@ -483,11 +481,37 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
     private void tintGrey() {
+
         mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
         DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.grey_icon));
         mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
         mIconToChange.setImageDrawable(mDrawableToApply);
     }
+
+
+
+    public void tintAllGrey(){
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_last_name);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_phone);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_email);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_country);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_city);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_occupation);
+        tintGrey();
+
+    }
+
+
+
+
+
 
     private void saveSubscriberObject() {
         mSubscriber.setName(mEditTextFirstName.getText().toString());
