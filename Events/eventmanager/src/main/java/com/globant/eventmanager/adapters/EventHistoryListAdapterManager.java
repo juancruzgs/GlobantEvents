@@ -47,7 +47,7 @@ public class EventHistoryListAdapterManager extends RecyclerView.Adapter<EventHi
         Event event = mEventList.get(position);
         holder.getEventId().setText(event.getObjectID());
         holder.getEventTitle().setText(event.getTitle());
-        holder.getEventDate().setText(CustomDateFormat.getDateWithTimeZone(event.getStartDate(), mContext));
+        holder.getEventDate().setText(CustomDateFormat.getCompleteDate(event.getStartDate(), mContext));
         holder.getEventCountry().setText(event.getCity() + ", " + event.getCountry());
     }
 
@@ -73,7 +73,7 @@ public class EventHistoryListAdapterManager extends RecyclerView.Adapter<EventHi
                     if (mFilteredEventList != null & mFilteredEventList.size() > 0) {
                         for (final Event event : mFilteredEventList) {
                             if ((event.getTitle().toLowerCase().contains(constraint)) ||
-                                    (CustomDateFormat.getDateWithTimeZone(event.getStartDate(), mContext).contains(constraint) ||
+                                    (CustomDateFormat.getCompleteDate(event.getStartDate(), mContext).contains(constraint) ||
                                             (event.getCity().toLowerCase().contains(constraint)) ||
                                             (event.getCountry().toLowerCase().contains(constraint)))) {
                                 results.add(event);

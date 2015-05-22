@@ -2,6 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.globant.eventscorelib.baseActivities.BaseSpeakerActivity">
+    <item android:id="@+id/events_action_delete"
+        android:title="@string/alert_message_delete_event_title"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_delete"/>
     <item android:id="@+id/action_done"
         android:title="@string/action_done"
         android:orderInCategory="100"
