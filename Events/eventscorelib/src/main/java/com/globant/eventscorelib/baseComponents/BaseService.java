@@ -17,7 +17,6 @@ import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.Logger;
-import com.globant.eventscorelib.utils.Mail;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -117,7 +116,7 @@ public abstract class BaseService extends Service {
         EVENT_LIST, EVENTS_LIST_REFRESH, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
     ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
     PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SUBSCRIBER_UPDATE, SET_ACCEPTED,
-        GET_EVENT_HISTORY, GET_EVENT, SEND_EMAIL}
+        GET_EVENT_HISTORY, GET_EVENT}
 
     private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
@@ -246,9 +245,6 @@ public abstract class BaseService extends Service {
                                 case GET_EVENT:
                                     result = mCloudDatabaseController.getEventWithSpeakers((String)arguments[0]);
                                     break;
-                                case SEND_EMAIL:
-                                    Mail mail = (Mail) arguments[0];
-                                    result = mail.sendEmail();
                             }
 
                             if (!cancelKeys.contains(bindingKey)) {
