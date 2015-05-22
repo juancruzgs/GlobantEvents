@@ -46,7 +46,6 @@ import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
-import java.util.Date;
 import java.util.regex.Pattern;
 
 
