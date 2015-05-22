@@ -22,7 +22,8 @@ public class CacheObjectsController implements Parcelable{
     private List<Event> mEventList;
     private List<Subscriber> mSubscriberList;
     private User mUser; // twitter
-    private Event mEvent;
+    private List<Event> mEventHistory;
+    private Event mEvent = null;
 
     public CacheObjectsController() {
     }
@@ -67,20 +68,30 @@ public class CacheObjectsController implements Parcelable{
 
     public void setSubscriberList (List<Subscriber> subscriberList) { mSubscriberList = subscriberList; }
 
+    public List<Event> getEventHistory() {
+        return mEventHistory;
+    }
+
+    public void setEventHistory(List<Event> eventHistory) {
+        mEventHistory = eventHistory;
+    }
+
     private CacheObjectsController(Parcel in) {
         mEventList = new ArrayList<>();
         in.readTypedList(mEventList, Event.CREATOR);
+        mEventHistory = new ArrayList<>();
+        in.readTypedList(mEventHistory, Event.CREATOR);
         mSpeakersList= new ArrayList<>();
         in.readTypedList(mSpeakersList, Speaker.CREATOR);
         mSubscriberList= new ArrayList<>();
         in.readTypedList(mSubscriberList, Subscriber.CREATOR);
         mTweetList = new ArrayList<>();
-        in.readList(mTweetList, Twitter.class.getClassLoader());
-        mEvent = in.readParcelable(Event.class.getClassLoader());
+        in.readList(mTweetList, this.getClass().getClassLoader());
+        mEvent = in.readParcelable(this.getClass().getClassLoader());
         mUser = (User) in.readSerializable();
     }
 
-    static final Parcelable.Creator<CacheObjectsController> CREATOR = new Parcelable.Creator<CacheObjectsController>() {
+    public static final Parcelable.Creator<CacheObjectsController> CREATOR = new Parcelable.Creator<CacheObjectsController>() {
         @Override
         public CacheObjectsController createFromParcel(Parcel source) {
             return new CacheObjectsController(source);
@@ -100,6 +111,7 @@ public class CacheObjectsController implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(mEventList);
+        dest.writeTypedList(mEventHistory);
         dest.writeTypedList(mSpeakersList);
         dest.writeTypedList(mSubscriberList);
         dest.writeList(mTweetList);

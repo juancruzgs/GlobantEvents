@@ -20,6 +20,7 @@ public class CoreConstants {
     public static final String SUBSCRIBERS_TABLE = "Subscribers";
 
     public static final String FIELD_UPDATED_AT = "updatedAt";
+    public static final String FIELD_CREATED_AT = "createdAt";
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_SHORT_DESCRIPTION = "short_description";
     public static final String FIELD_FULL_DESCRIPTION = "full_description";
@@ -73,7 +74,7 @@ public class CoreConstants {
     public static final String MAP_ADDRESS_INTENT = "address";
     public static final String MAP_MARKER_POSITION_INTENT = "markerPosition";
     public static final String MAP_CAMERA_POSITION_INTENT = "cameraPosition";
-    public static final String MAP_SEARCH_QUERY_INTENT = "searchQuery";
+    public static final String SEARCH_QUERY_INTENT = "searchQuery";
     public static final int DOUBLE_TAP_TIME_INTERVAL = 2000;
 
     // Twitter
@@ -131,5 +132,8 @@ public class CoreConstants {
     // Intents request
     public static final int MAP_MANAGER_REQUEST = 1000;
     public static final int PICTURE_SELECTION_REQUEST = 1001;
+
+    // Intents constants
+    public static final String EVENTS_HISTORY = "eventHistory";
 
 }

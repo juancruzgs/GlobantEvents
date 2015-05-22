@@ -111,7 +111,7 @@ public class MapEventCreationActivity extends BaseMapActivity implements BaseSer
             LatLng latLng = mMarker.getPosition();
             outState.putParcelable(CoreConstants.MAP_MARKER_POSITION_INTENT, latLng);
         }
-        outState.putString(CoreConstants.MAP_SEARCH_QUERY_INTENT, mSearchView.getQuery().toString());
+        outState.putString(CoreConstants.SEARCH_QUERY_INTENT, mSearchView.getQuery().toString());
         super.onSaveInstanceState(outState);
     }
 
@@ -119,7 +119,7 @@ public class MapEventCreationActivity extends BaseMapActivity implements BaseSer
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mInitialMarkerPosition = (LatLng)savedInstanceState.get(CoreConstants.MAP_MARKER_POSITION_INTENT);
-        mInitialQuery = savedInstanceState.getString(CoreConstants.MAP_SEARCH_QUERY_INTENT);
+        mInitialQuery = savedInstanceState.getString(CoreConstants.SEARCH_QUERY_INTENT);
     }
 
     @Override

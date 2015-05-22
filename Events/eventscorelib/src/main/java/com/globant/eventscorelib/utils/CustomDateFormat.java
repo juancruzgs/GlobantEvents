@@ -10,8 +10,19 @@ import java.util.Locale;
 
 public class CustomDateFormat {
 
-    public static String getDate(Date date, Context context) {
-        SimpleDateFormat dateFormat = new java.text.SimpleDateFormat(context.getString(R.string.simple_date_format), Locale.US);
+    public static String getCompleteDate(Date date, Context context) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(context.getString(R.string.simple_date_format_complete_date), Locale.US);
         return  dateFormat.format(date);
     }
+
+    public static String getDate(Date date, Context context) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(context.getString(R.string.simple_date_format_date), Locale.US);
+        return  dateFormat.format(date) + "\n" + getHour(date, context);
+    }
+
+    public static String getHour (Date date, Context context) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(context.getString(R.string.simple_date_format_hour), Locale.US);
+        return  dateFormat.format(date);
+    }
+
 }

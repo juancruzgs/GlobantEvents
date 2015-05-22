@@ -17,8 +17,8 @@
         android:layout_gravity="left"
         android:gravity="center_vertical"
         android:text="Toolbar Title"
-        style="@style/condensed_light_medium"
-        android:textColor="@color/grey_icon"
+        style="@style/condensed_normal_large"
+        android:textColor="@color/grey"
         android:maxLines="1"
         android:textSize="20sp"/>
 

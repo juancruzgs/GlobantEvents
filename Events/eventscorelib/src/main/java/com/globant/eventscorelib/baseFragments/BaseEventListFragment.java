@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +27,7 @@ import com.globant.eventscorelib.baseActivities.BaseEventListActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListViewHolder;
+import com.globant.eventscorelib.baseAdapters.GetEventInformation;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
@@ -38,7 +41,7 @@ import com.nineoldandroids.view.ViewHelper;
 import java.util.Date;
 import java.util.List;
 
-public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, BaseEventsListViewHolder.GetEventInformation {
+public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, GetEventInformation {
 
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -73,7 +76,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     protected enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
+        LINEAR_LAYOUT_MANAGER,
+        STAGGEREDGRID_LAYOUT_MANAGER
     }
 
     private LayoutManagerType mCurrentLayoutManagerType;
@@ -145,9 +149,14 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         if (savedInstanceState != null) {
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState.getSerializable(CoreConstants.KEY_LAYOUT_MANAGER);
         }
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        RecyclerView.LayoutManager layoutManager;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            layoutManager = new StaggeredGridLayoutManager(2,1);
+            mCurrentLayoutManagerType = LayoutManagerType.STAGGEREDGRID_LAYOUT_MANAGER;
+        } else {
+            layoutManager = new LinearLayoutManager(getActivity());
+            mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        }
         mRecyclerView.setLayoutManager(layoutManager);
     }
 
@@ -178,8 +187,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
                 // Set translation movement
                 cardY = cardView.getY();
-                movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height / childHeight)) - 1)), 10);
-                movementX = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * 2), -(childHeight * ((Math.round(height / childHeight)) - 1)), 0);
+                int speed = 2;
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    speed = 7;
+                }
+                movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * speed), -(childHeight * ((Math.round(height / childHeight)) - 1)), 10);
+                movementX = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * speed), -(childHeight * ((Math.round(height / childHeight)) - 1)), 0);
 
                 // Translations
                 ViewHelper.setTranslationY(titleView, movementY);
@@ -189,7 +202,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 ViewHelper.setTranslationX(locationView, -(movementX * 3));
 
                 // Alphas
-                float alpha = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (z * 2), 0, 255) / 64;
+                float alpha = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (z * speed), 0, 255) / 64;
                 ViewHelper.setAlpha(dateView, 1 - (alpha));
                 ViewHelper.setAlpha(locationView, 1 - (alpha));
                 ViewHelper.setAlpha(TypeLogoView, 1 - (alpha));

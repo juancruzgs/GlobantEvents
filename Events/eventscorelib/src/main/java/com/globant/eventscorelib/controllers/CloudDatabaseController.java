@@ -12,6 +12,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +32,34 @@ public class CloudDatabaseController extends DatabaseController{
     public Event getEvent(String eventId) throws ParseException {
         ParseObject databaseEvent = getDatabaseEvent(eventId);
         return createDomainEventFromDatabase(databaseEvent);
+    }
+
+    public Event getEventWithSpeakers(String eventId) throws ParseException {
+        ParseObject databaseEvent = getDatabaseEvent(eventId);
+        ParseRelation relation = databaseEvent.getRelation(CoreConstants.FIELD_SPEAKERS);
+        ParseQuery relationQuery = relation.getQuery();
+        List<ParseObject> databaseSpeakersList = relationQuery.find();
+        List<Speaker> domainSpeakersList = new ArrayList<>();
+        for (ParseObject databaseSpeaker : databaseSpeakersList) {
+            Speaker domainSpeaker = createDomainSpeakerFromDatabase(databaseSpeaker);
+            domainSpeakersList.add(domainSpeaker);
+        }
+        Event domainEvent = createDomainEventFromDatabase(databaseEvent);
+        domainEvent.setSpeakers(domainSpeakersList);
+        return domainEvent;
+    }
+
+
+    public List<Event> getEventHistory() throws ParseException {
+        ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        eventsQuery.orderByDescending(CoreConstants.FIELD_START_DATE);
+        List<ParseObject> databaseEventsList = eventsQuery.find();
+        List<Event> domainEventsList = new ArrayList<>();
+        for (ParseObject databaseEvent : databaseEventsList) {
+             Event domainEvent = createDomainEventFromDatabase(databaseEvent);
+             domainEventsList.add(domainEvent);
+        }
+        return domainEventsList;
     }
 
     private ParseObject getDatabaseEvent(String eventId) throws ParseException {
@@ -191,6 +221,13 @@ public class CloudDatabaseController extends DatabaseController{
         return databaseSubscriber.getObjectId();
     }
 
+    public String updateSubscriber(Subscriber domainSubscriber) throws ParseException {
+        ParseObject databaseSubscriber = ParseObject.createWithoutData(CoreConstants.SUBSCRIBERS_TABLE, domainSubscriber.getObjectID());
+        setDatabaseSubscriberInformation(domainSubscriber, databaseSubscriber);
+        databaseSubscriber.save();
+        return databaseSubscriber.getObjectId();
+    }
+
     public void createEventToSubscriber(Subscriber domainSubscriber, String eventId) throws ParseException {
         ParseObject databaseSubscriber = getDatabaseSubscriber(domainSubscriber.getObjectID());
         ParseObject databaseEvent = getDatabaseEvent(eventId);
@@ -240,6 +277,7 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEvent.put(CoreConstants.FIELD_LANGUAGE, domainEvent.getLanguage());
         databaseEvent.put(CoreConstants.FIELD_HASHTAG, domainEvent.getHashtag());
         LatLng coordinates = domainEvent.getCoordinates();
+        if (coordinates != null)
         databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(coordinates.latitude, coordinates.longitude));
     }
 
@@ -253,19 +291,24 @@ public class CloudDatabaseController extends DatabaseController{
         }
     }
 
-    private void setDatabaseSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSpeaker) {
-        databaseSpeaker.put(CoreConstants.FIELD_NAME, domainSubscriber.getName());
-        databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSubscriber.getLastName());
-        databaseSpeaker.put(CoreConstants.FIELD_EMAIL, domainSubscriber.getEmail());
-        databaseSpeaker.put(CoreConstants.FIELD_PHONE, domainSubscriber.getPhone());
-        databaseSpeaker.put(CoreConstants.FIELD_OCCUPATION, domainSubscriber.getOccupation());
-        databaseSpeaker.put(CoreConstants.FIELD_GLOBER, domainSubscriber.isGlober());
-        databaseSpeaker.put(CoreConstants.FIELD_TWITTER_USER, domainSubscriber.getTwitterUser());
-        databaseSpeaker.put(CoreConstants.FIELD_ENGLISH, domainSubscriber.speaksEnglish());
-        databaseSpeaker.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
-        databaseSpeaker.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
+    private void setDatabaseSubscriberInformation(Subscriber domainSubscriber, ParseObject databaseSubscriber) {
+        databaseSubscriber.put(CoreConstants.FIELD_NAME, domainSubscriber.getName());
+        databaseSubscriber.put(CoreConstants.FIELD_LAST_NAME, domainSubscriber.getLastName());
+        databaseSubscriber.put(CoreConstants.FIELD_EMAIL, domainSubscriber.getEmail());
+        databaseSubscriber.put(CoreConstants.FIELD_PHONE, domainSubscriber.getPhone());
+        databaseSubscriber.put(CoreConstants.FIELD_OCCUPATION, domainSubscriber.getOccupation());
+        databaseSubscriber.put(CoreConstants.FIELD_GLOBER, domainSubscriber.isGlober());
+        if (domainSubscriber.getTwitterUser() != null) {
+            databaseSubscriber.put(CoreConstants.FIELD_TWITTER_USER, domainSubscriber.getTwitterUser());
+        }
+        else{
+            databaseSubscriber.put(CoreConstants.FIELD_TWITTER_USER, JSONObject.NULL);
+        }
+        databaseSubscriber.put(CoreConstants.FIELD_ENGLISH, domainSubscriber.speaksEnglish());
+        databaseSubscriber.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
+        databaseSubscriber.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
         if (domainSubscriber.getPicture() != null) {
-            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
+            databaseSubscriber.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
         }
     }
 
@@ -275,5 +318,26 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEventToSubscriber.put(CoreConstants.FIELD_PUBLIC, domainSubscriber.isPublic());
         databaseEventToSubscriber.put(CoreConstants.FIELD_ACCEPTED, domainSubscriber.isAccepted());
         databaseEventToSubscriber.put(CoreConstants.FIELD_CHECK_IN, domainSubscriber.checkedIn());
+    }
+
+    public List<Subscriber> refreshSubscribers(String eventId, Date refreshDate) throws ParseException {
+        ParseObject event = getDatabaseEvent(eventId);
+        ParseQuery<ParseObject> eventsToSubscribersQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        eventsToSubscribersQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
+        eventsToSubscribersQuery.whereGreaterThan(CoreConstants.FIELD_CREATED_AT, refreshDate);
+        eventsToSubscribersQuery.include(CoreConstants.FIELD_SUBSCRIBERS);
+        List<ParseObject> eventsToSubscribersList = eventsToSubscribersQuery.find();
+        List<Subscriber> subscribersList = new ArrayList<>();
+        for (ParseObject eventToSubscribersRow : eventsToSubscribersList) {
+            //eventToSubscriberRow get Accepted
+            ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
+            Boolean accepted = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_ACCEPTED);
+            Boolean checkin = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_CHECK_IN);
+            if (databaseSubscriber != null) {
+                Subscriber domainSubscriber = createDomainSubscriberFromDatabase(databaseSubscriber, accepted, checkin);
+                subscribersList.add(domainSubscriber);
+            }
+        }
+        return subscribersList;
     }
 }

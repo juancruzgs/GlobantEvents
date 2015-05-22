@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
+import com.globant.eventscorelib.baseAdapters.BaseParticipantListViewHolder;
+import com.globant.eventscorelib.baseAdapters.BaseParticipantsListAdapter;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CropCircleTransformation;
@@ -22,10 +24,9 @@ import java.util.List;
 /**
  * Created by gonzalo.lodi on 4/16/2015.
  */
-public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<ParticipantsListViewHolderManager> implements  ParticipantsListViewHolderManager.TouchListenerItem {
+public class EventParticipantsListAdapterManager extends BaseParticipantsListAdapter implements  ParticipantsListViewHolderManager.TouchListenerItem {
 
     private List<Subscriber> mSubscribers;
-    private final Context mContext;
     private EventParticipantsManagerFragment mFragment;
     public Boolean mBooleanIsPressed;
     public ParticipantsListViewHolderManager mCurrentParticipant;
@@ -46,48 +47,46 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
     }
 
     public EventParticipantsListAdapterManager(Context context, List<Subscriber> subscribers, EventParticipantsManagerFragment fragment) {
-        mContext = context;
+        super(context,subscribers);
+        mTransformation = new CropCircleTransformation(context);
         mFragment = fragment;
         mSubscribers = subscribers;
-        mTransformation = new CropCircleTransformation(mContext);
     }
 
     @Override
-    public ParticipantsListViewHolderManager onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(com.globant.eventmanager.R.layout.participant_row_item, parent, false);
-
+    protected BaseParticipantListViewHolder getViewHolder(View view) {
         return new ParticipantsListViewHolderManager(view, mFragment, this);
     }
 
     @Override
-    public void onBindViewHolder(ParticipantsListViewHolderManager holder, int position) {
+    public void onBindViewHolder(BaseParticipantListViewHolder holder, int position) {
         Subscriber subscriber = mSubscribers.get(position);
-        holder.getTextViewPosition().setText(String.valueOf(position));
+        ParticipantsListViewHolderManager participantListViewHolderManager = (ParticipantsListViewHolderManager) holder;
+        participantListViewHolderManager.getTextViewPosition().setText(String.valueOf(position));
         String name = subscriber.getName()+" "+subscriber.getLastName();
-        holder.getTextViewName().setText(name);
-        holder.getTextViewNameLeft().setText(name);
+        participantListViewHolderManager.getTextViewName().setText(name);
+        participantListViewHolderManager.getTextViewNameLeft().setText(name);
         String occupation = subscriber.getOccupation();
-        holder.getTextViewOccupation().setText(occupation);
-        holder.getTextViewOccupationLeft().setText(occupation);
+        participantListViewHolderManager.getTextViewOccupation().setText(occupation);
+        participantListViewHolderManager.getTextViewOccupationLeft().setText(occupation);
         Boolean isGlober = subscriber.isGlober();
         if (isGlober) {
-            holder.getTextViewGlober().setText("Glober");
-            holder.getTextViewGloberLeft().setText("Glober");
+            participantListViewHolderManager.getTextViewGlober().setText("Glober");
+            participantListViewHolderManager.getTextViewGloberLeft().setText("Glober");
         }else {
-            holder.getTextViewGlober().setText("");
-            holder.getTextViewGloberLeft().setText("");
+            participantListViewHolderManager.getTextViewGlober().setText("");
+            participantListViewHolderManager.getTextViewGloberLeft().setText("");
         }
         String location = subscriber.getCity() + ", " + subscriber.getCountry();
-        holder.getTextViewLocation().setText(location);
-        holder.getTextViewLocationLeft().setText(location);
-        setViewHolderImage(holder, subscriber);
+        participantListViewHolderManager.getTextViewLocation().setText(location);
+        participantListViewHolderManager.getTextViewLocationLeft().setText(location);
+        setViewHolderImage(participantListViewHolderManager, subscriber);
         if (subscriber.isAccepted()) {
-            setAcceptedVisibility(holder);
+            setAcceptedVisibility(participantListViewHolderManager);
         }else {
-            setNotAcceptedVisibility(holder);
+            setNotAcceptedVisibility(participantListViewHolderManager);
         }
-        mBooleanIsPressed = holder.getBooleanIsPressed();
+        mBooleanIsPressed = participantListViewHolderManager.getBooleanIsPressed();
 
     }
 
@@ -145,8 +144,5 @@ public class EventParticipantsListAdapterManager extends RecyclerView.Adapter<Pa
         return subscriberPicture;
     }
 
-    @Override
-    public int getItemCount() {
-        return mSubscribers.size();
-    }
+
 }
