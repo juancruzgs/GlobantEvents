@@ -150,7 +150,6 @@
                                 android:gravity="center_vertical">
 
                                 <android.support.v7.widget.AppCompatEditText
-
                                     android:id="@+id/edit_text_last_name"
                                     style="@style/condensed_normal_small"
                                     android:layout_width="match_parent"
