@@ -434,6 +434,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_fields),
                         Toast.LENGTH_SHORT).show();
             }
+            mLayoutToFocus.requestFocus();
             return true;
         }
 
