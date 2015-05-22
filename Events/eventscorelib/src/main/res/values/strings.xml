@@ -102,8 +102,9 @@
     <string name="title_fragment_subscriber">Profile</string>
     <string name="title_activity_base_speaker">BaseSpeakerActivity</string>
     <string name="title_base_speaker_list_fragment">Speakers</string>
-    <string name="simple_date_format_with_time_zone">MM/dd/yyyy hh:mm aa z</string>
-    <string name="simple_date_format">MM/dd/yyyy hh:mm aa </string>
+    <string name="simple_date_format_complete_date">MMM, dd yyyy HH:mm z</string>
+    <string name="simple_date_format_date">MMM, dd yyyy</string>
+    <string name="simple_date_format_hour">HH:mm z</string>
     <string name="missing_photo">Take a picture right now!</string>
     <string name="button_send_notification">Send</string>
     <string name="button_cancel_notification">Cancel</string>

@@ -1,6 +1,5 @@
 package com.globant.eventscorelib.baseFragments;
 
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -44,6 +43,8 @@ import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
+import com.globant.eventscorelib.utils.Logger;
+import com.globant.eventscorelib.utils.Mail;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
@@ -187,7 +188,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             }
         });
     }
-
 
     private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
         public void onFocusChange(View view, boolean gainFocus) {
@@ -579,6 +579,17 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             last_z=z;
         }
     }
+
+    public void sendEmail() {
+        Mail mail = new Mail("micaela.cavallo@gmail.com", "37240168");
+        String[] toArr = {"micaela.cavallo@globant.com"};
+        mail.setTo(toArr);
+        mail.setFrom("micaela.cavallo@gmail.com");
+        mail.setSubject("This is an email sent using my Mail JavaMail wrapper from an Android device.");
+        mail.setBody("Email body.");
+        mService.executeAction(BaseService.ACTIONS.SEND_EMAIL, getBindingKey(), mail);
+    }
+
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
         showProgressOverlay();
@@ -623,6 +634,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                         mSubscriber, mEventId);
                 break;
             case EVENTS_TO_SUBSCRIBER_CREATE:
+                sendEmail();
                 Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
                 break;
@@ -631,6 +643,16 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
                 break;
+            case SEND_EMAIL:
+                try {
+                    if((boolean)result) {
+                        Toast.makeText(getActivity(), "Email was sent successfully.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), "Email was not sent.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
         }
 
     }

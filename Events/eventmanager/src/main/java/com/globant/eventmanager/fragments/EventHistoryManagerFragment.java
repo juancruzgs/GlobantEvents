@@ -188,6 +188,7 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
             case GET_EVENT:
                 Intent intent = new Intent(getActivity(), EventDetailManagerActivity.class);
                 intent.putExtra(CoreConstants.FIELD_EVENTS, (Event) result);
+                intent.putExtra(CoreConstants.EVENTS_HISTORY, true);
                 startActivity(intent);
                 break;
         }
