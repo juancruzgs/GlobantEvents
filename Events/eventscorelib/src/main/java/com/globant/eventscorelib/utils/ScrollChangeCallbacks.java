@@ -24,6 +24,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
+    private boolean mFabIsShown;
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
     private boolean mStickyToolbar;
@@ -122,18 +123,20 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
     }
 
     private void showFab() {
-        if (!mFloatingActionButton.isEnabled()) {
+        if (!mFabIsShown) {
+            mFloatingActionButton.setVisibility(View.VISIBLE);
             ViewPropertyAnimator.animate(mFloatingActionButton).cancel();
             ViewPropertyAnimator.animate(mFloatingActionButton).scaleX(1).scaleY(1).setDuration(200).start();
-            mFloatingActionButton.setEnabled(true);
+            mFabIsShown = true;
         }
     }
 
     private void hideFab() {
-        if (mFloatingActionButton.isEnabled()) {
+        if (mFabIsShown) {
+            mFloatingActionButton.setVisibility(View.GONE);
             ViewPropertyAnimator.animate(mFloatingActionButton).cancel();
             ViewPropertyAnimator.animate(mFloatingActionButton).scaleX(0).scaleY(0).setDuration(200).start();
-            mFloatingActionButton.setEnabled(false);
+            mFabIsShown = false;
         }
     }
 
