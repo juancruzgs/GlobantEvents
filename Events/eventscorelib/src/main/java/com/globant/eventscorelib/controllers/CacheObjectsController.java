@@ -86,12 +86,12 @@ public class CacheObjectsController implements Parcelable{
         mSubscriberList= new ArrayList<>();
         in.readTypedList(mSubscriberList, Subscriber.CREATOR);
         mTweetList = new ArrayList<>();
-        in.readList(mTweetList, Twitter.class.getClassLoader());
-        mEvent = in.readParcelable(Event.class.getClassLoader());
+        in.readList(mTweetList, this.getClass().getClassLoader());
+        mEvent = in.readParcelable(this.getClass().getClassLoader());
         mUser = (User) in.readSerializable();
     }
 
-    static final Parcelable.Creator<CacheObjectsController> CREATOR = new Parcelable.Creator<CacheObjectsController>() {
+    public static final Parcelable.Creator<CacheObjectsController> CREATOR = new Parcelable.Creator<CacheObjectsController>() {
         @Override
         public CacheObjectsController createFromParcel(Parcel source) {
             return new CacheObjectsController(source);

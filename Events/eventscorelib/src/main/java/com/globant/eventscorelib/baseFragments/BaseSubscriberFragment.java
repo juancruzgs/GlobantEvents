@@ -1,6 +1,5 @@
 package com.globant.eventscorelib.baseFragments;
 
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -187,7 +186,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             }
         });
     }
-
 
     private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
         public void onFocusChange(View view, boolean gainFocus) {
