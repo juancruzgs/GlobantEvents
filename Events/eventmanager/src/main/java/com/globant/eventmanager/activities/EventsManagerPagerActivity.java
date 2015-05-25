@@ -80,7 +80,7 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
         }
         outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, mCacheObjectsController);
         outState.putInt(CoreConstants.SAVE_INSTANCE_EVENT_ACTION, EventsManagerPagerActivity.mEventAction.ordinal());
-        super.onSaveInstanceState(outState);
+       // super.onSaveInstanceState(outState);
     }
 
     @Override

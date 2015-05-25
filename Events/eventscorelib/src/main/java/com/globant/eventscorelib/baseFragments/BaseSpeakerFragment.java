@@ -207,10 +207,10 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     private void doneClick() {
         mDoneClicked = true;
-        tintRequiredIconsAndShowError(mEditTextFirstName);
-        tintRequiredIconsAndShowError(mEditTextLastName);
-        tintRequiredIconsAndShowError(mEditTextTitle);
-        tintRequiredIconsAndShowError(mEditTextBiography);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextFirstName);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextLastName);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextTitle);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextBiography);
     }
 
     @Override
@@ -398,7 +398,7 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     }
 
-    private void tintRequiredIconsAndShowError(EditText requiredField){
+    private boolean tintRequiredIconsAndShowError(EditText requiredField){
          getIconToTint(requiredField);
          if (requiredField.getText().toString().trim().length() == 0) {
                 mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
@@ -406,9 +406,11 @@ public class BaseSpeakerFragment extends BaseFragment {
                 DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
                 mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
                 mIconToChange.setImageDrawable(mDrawableToApply);
-                mDoneClicked = false;
+                return false;
             } else {
                 tintGrey();
+                return true;
+
             }
     }
 

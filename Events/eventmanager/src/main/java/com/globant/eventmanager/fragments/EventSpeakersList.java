@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -112,6 +113,17 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
         eventId = ((EventsManagerPagerActivity) getActivity()).getEvent().getObjectID();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName().toString());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName().toString());
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
