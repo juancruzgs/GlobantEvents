@@ -1,6 +1,5 @@
 package com.globant.eventscorelib.baseFragments;
 
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -47,7 +46,6 @@ import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
-import java.util.Date;
 import java.util.regex.Pattern;
 
 
@@ -183,11 +181,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language_ambar));
                 if (mIconToChange != null) {
                     tintGrey();
+                    mIconToChange.setImageDrawable(mDrawableToApply);
                 }
             }
         });
     }
-
 
     private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
         public void onFocusChange(View view, boolean gainFocus) {
@@ -206,6 +204,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             //onBlur
             else {
                 tintGrey();
+                mIconToChange.setImageDrawable(mDrawableToApply);
                 mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
                 mEditTextToChangeHint.setHint(mHintToReturn);
             }
@@ -307,8 +306,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mEditTextEmail = (AppCompatEditText) rootView.findViewById(R.id.edit_text_email);
         mEditTextCountry = (AppCompatEditText) rootView.findViewById(R.id.edit_text_country);
         mEditTextCity = (AppCompatEditText) rootView.findViewById(R.id.edit_text_city);
+
         mCheckBoxEnglishKnowledge = (AppCompatCheckBox) rootView.findViewById(R.id.check_box_english_knowledge);
+
         mFloatingActionButtonPhoto = (ActionButton) rootView.findViewById(R.id.fab);
+
         mPhotoProfile = (ImageView) rootView.findViewById(R.id.header);
         mIconFirstName = (ImageView) rootView.findViewById(R.id.icon_first_name);
         mIconLastName = (ImageView) rootView.findViewById(R.id.icon_last_name);
@@ -319,6 +321,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mIconCity = (ImageView) rootView.findViewById(R.id.icon_city);
         mIconEnglishKnowledge = (ImageView) rootView.findViewById(R.id.icon_language);
         mIconTwitter = (ImageView) rootView.findViewById(R.id.icon_twitter);
+
         mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
         mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_last_name);
         mErrorLabelLayoutPhone = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutPhone);
@@ -327,6 +330,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mErrorLabelLayoutOccupation = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorOccupation);
         mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_city);
         mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
+
         mLayoutToFocus = (LinearLayout) rootView.findViewById(R.id.autoFocusable);
     }
 
@@ -466,6 +470,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             mSavePreferences = false;
         } else {
             tintGrey();
+            mIconToChange.setImageDrawable(mDrawableToApply);
         }
 
         if (requiredField == mEditTextEmail) {
@@ -485,7 +490,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
         DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.grey_icon));
         mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-        mIconToChange.setImageDrawable(mDrawableToApply);
     }
 
 

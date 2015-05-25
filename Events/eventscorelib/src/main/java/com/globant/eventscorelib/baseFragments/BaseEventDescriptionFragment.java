@@ -3,24 +3,18 @@ package com.globant.eventscorelib.baseFragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
@@ -31,8 +25,6 @@ import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
 
 import java.util.Date;
@@ -191,13 +183,13 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         } else {
             mEventImage.setImageResource(R.mipmap.placeholder);
         }
-        mEventStartDate.setText(CustomDateFormat.getDateWithTimeZone(mEvent.getStartDate(), getActivity()));
-        mEventEndDate.setText(CustomDateFormat.getDateWithTimeZone(mEvent.getEndDate(), getActivity()));
+        mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
+        mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
         mEventAddress.setText(mEvent.getAddress());
         mEventCity.setText(mEvent.getCity());
         mEventCountry.setText(mEvent.getCountry());
         mEventLanguage.setText(mEvent.getLanguage());
-        if (mEvent.getAdditionalInfo() != null) {
+        if (mEvent.getAdditionalInfo() != null && !mEvent.getAdditionalInfo().equals("")) {
             mEventAdditionalInfo.setText(mEvent.getAdditionalInfo());
         } else {
             mEventAdditionalInfo.setText("-");
@@ -209,6 +201,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             mMapIcon.setVisibility(View.GONE);
         }
     }
+
 
 
     @Override

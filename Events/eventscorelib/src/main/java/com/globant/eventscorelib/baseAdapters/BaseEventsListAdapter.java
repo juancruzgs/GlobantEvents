@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.domainObjects.Event;
@@ -119,7 +118,7 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
             mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
             holder.getCategoryLogo().setImageDrawable(mDrawableToApply);
             holder.getEventTitle().setText(mEventList.get(position).getTitle());
-            holder.getEventDate().setText(CustomDateFormat.getDateWithTimeZone(mEventList.get(position).getStartDate(), mContext));
+            holder.getEventDate().setText(CustomDateFormat.getCompleteDate(mEventList.get(position).getStartDate(), mContext));
             holder.getLocationEvent().setText(mEventList.get(position).getCity() + ", " + mEventList.get(position).getCountry());
             holder.getShortDescriptionEvent().setText(mEventList.get(position).getShortDescription());
         }

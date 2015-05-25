@@ -33,8 +33,8 @@
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="#ffd5d5d5"
                 android:src="@mipmap/placeholder"
+                android:elevation="30dp"
                 />
 
             <com.software.shell.fab.ActionButton
@@ -48,7 +48,9 @@
                 android:layout_marginRight="20dp"
                 fab:button_color="#FFC107"
                 fab:image="@mipmap/ic_camera_white"
-                fab:image_size="24dp"/>
+                fab:image_size="24dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"/>
 
             <LinearLayout
                 android:id="@+id/body"
@@ -148,7 +150,6 @@
                                 android:gravity="center_vertical">
 
                                 <android.support.v7.widget.AppCompatEditText
-
                                     android:id="@+id/edit_text_last_name"
                                     style="@style/condensed_normal_small"
                                     android:layout_width="match_parent"

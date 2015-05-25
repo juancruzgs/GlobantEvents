@@ -24,7 +24,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
-    private boolean mFabIsShown = false;
+    private boolean mFabIsShown;
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
     private boolean mStickyToolbar;

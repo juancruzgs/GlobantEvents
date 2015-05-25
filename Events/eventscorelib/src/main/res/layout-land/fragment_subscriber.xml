@@ -33,7 +33,6 @@
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="#ffd5d5d5"
                 android:src="@mipmap/placeholder"/>
 
             <com.software.shell.fab.ActionButton
