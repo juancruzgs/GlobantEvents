@@ -158,7 +158,10 @@ public class BaseSpeakerFragment extends BaseFragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
             doneClick();
-            if (mDoneClicked == true && mPhotoPicked){
+            if(fragmentMode== EDIT_MODE)
+                mPhotoPicked=true;
+
+            if (mDoneClicked == true && mPhotoPicked ){
                Intent resultIntent = new Intent();
                switch (fragmentMode)
                {
@@ -256,7 +259,7 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        //super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GET_SPEAKER_IMAGE) {
                 //File file = new File(Environment.getExternalStorageDirectory() + File.separator + SHARED_PREF_IMG);

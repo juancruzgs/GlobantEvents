@@ -47,8 +47,6 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
     private String eventId;
     private String LOG_TAG = getClass().getSimpleName();
 
-
-
     @Override
     public BaseService.ActionListener getActionListener() {
         return super.getActionListener();
@@ -146,13 +144,12 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                         mAdapter.notifyDataSetChanged();
                     }
                     else
-                    {   //mSpeakers.add(newSpeaker);
+                    {
                         mAdapter.addSpeaker(newSpeaker);
                         mAdapter.notifyDataSetChanged();
                         mRecyclerView.setVisibility(View.VISIBLE);
                         mTextViewNoSpeakers.setVisibility(View.VISIBLE);
                         EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
-                        //setRecyclerViewAdapter();
                     }
                 }
                 if(editedSpeaker!= null)
@@ -170,6 +167,7 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                     mSpeakers.remove(position);
                     mAdapter.notifyItemRemoved(position);
                     EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
+                    setNotSpeakerOnListMessage();
                 }
             }
         }
@@ -206,6 +204,10 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
     private void setRecyclerViewAdapter() {
         mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
         mRecyclerView.setAdapter(mAdapter);
+        setNotSpeakerOnListMessage();
+    }
+
+    private void setNotSpeakerOnListMessage() {
         if (mSpeakers !=null)
             if (mSpeakers.size() <1){
                 mRecyclerView.setVisibility(View.GONE);
