@@ -146,6 +146,13 @@
                 android:layout_width="72dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/accept_icon1" />
+
+            <ImageView
+                android:id="@+id/image_view_accepted_icon"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/accept_icon1"
+                android:visibility="invisible" />
         </FrameLayout>
 
         <android.support.v7.widget.AppCompatTextView
@@ -154,6 +161,13 @@
             android:layout_height="wrap_content"
             android:text="New Text"
             android:visibility="invisible"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkbox_accepted"
+            android:checked="false"
+            android:visibility="gone"/>
 
     </FrameLayout>
 

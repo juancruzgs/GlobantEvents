@@ -123,7 +123,7 @@ public class CloudDatabaseController extends DatabaseController{
             ParseObject databaseSubscriber = getDatabaseSubscriber(subscriber.getObjectID());
             eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, databaseSubscriber);
             ParseObject subscription = eventToSubsQuery.getFirst();
-            subscription.put(CoreConstants.FIELD_ACCEPTED, subscriber.isAccepted());
+            subscription.put(CoreConstants.FIELD_ACCEPTED, true);
             subscription.save();
         }
     }

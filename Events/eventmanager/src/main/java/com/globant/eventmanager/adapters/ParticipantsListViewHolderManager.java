@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,8 +56,16 @@ public class ParticipantsListViewHolderManager extends BaseParticipantListViewHo
     private int mSubPosition;
     private AppCompatTextView mTextViewPosition;
     private ObjectAnimator mColorTransition;
+    private ImageView mImageViewAcceptedIcon;
+    private CheckBox mCheckBoxAccepted;
 
+    public ImageView getImageViewAcceptedIcon() {
+        return mImageViewAcceptedIcon;
+    }
 
+    public CheckBox getCheckBoxAccepted() {
+        return mCheckBoxAccepted;
+    }
 
     public AppCompatTextView getTextViewName() {
         return mTextViewName;
@@ -147,6 +156,8 @@ public class ParticipantsListViewHolderManager extends BaseParticipantListViewHo
         mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
         mAdapter = adapter;
         mTextViewPosition = (AppCompatTextView) itemView.findViewById(R.id.text_view_position);
+        mImageViewAcceptedIcon = (ImageView) itemView.findViewById(R.id.image_view_accepted_icon);
+        mCheckBoxAccepted = (CheckBox) itemView.findViewById(R.id.checkbox_accepted);
         itemView.setOnTouchListener(this);
 
     }
@@ -226,7 +237,7 @@ public class ParticipantsListViewHolderManager extends BaseParticipantListViewHo
                         mFragment.declineSubscriber(mSubPosition);
                     }
                     if (mFragment.isLastVisibleItem()){
-                        //mFragment.notifyAdapter();
+                        mFragment.notifyAdapter();
                     }
                 } else {
                     mColorTransition.reverse();

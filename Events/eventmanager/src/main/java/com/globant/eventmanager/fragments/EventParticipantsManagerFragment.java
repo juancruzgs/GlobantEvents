@@ -167,7 +167,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                         }
                         for (Subscriber sub : mSubscribers){
                             if (!sub.isAccepted()){
-                                sub.setAccepted(true);
+                                sub.setChecked(true);
                                 if (!mAcceptedSubscribers.contains(sub)){
                                     mAcceptedSubscribers.add(sub);
                                 }
@@ -188,16 +188,16 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                         }
                         for (Subscriber sub : mSubscribers){
                             if (mAcceptedSubscribers.contains(sub)){
-                                sub.setAccepted(false);
+                                sub.setChecked(false);
                                 mAcceptedSubscribers.remove(sub);
                             }
                         }
                         break;
                 }
                 if (cont == 0){
-                    //notifyAdapter();
+                    notifyAdapter();
                 }
-                mAdapter.setSubscribers(mSubscribers);
+                //mAdapter.setSubscribers(mSubscribers);
             }
         };
         mTextViewAcceptAll.setOnClickListener(addDeclineAllListener);
@@ -270,7 +270,8 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     public void acceptSubscriber(int position){
         Subscriber subscriber = mSubscribers.get(position);
-        subscriber.setAccepted(true);
+        //subscriber.setAccepted(true);
+        subscriber.setChecked(true);
         if (!mAcceptedSubscribers.contains(subscriber)){
             mAcceptedSubscribers.add(subscriber);
         }
@@ -278,7 +279,8 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     public void declineSubscriber(int position){
         Subscriber subscriber = mSubscribers.get(position);
-        subscriber.setAccepted(false);
+        //subscriber.setAccepted(false);
+        subscriber.setChecked(false);
         if (mAcceptedSubscribers.contains(subscriber)){
             mAcceptedSubscribers.remove(subscriber);
         }
