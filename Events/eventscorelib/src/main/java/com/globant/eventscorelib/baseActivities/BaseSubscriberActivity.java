@@ -11,7 +11,6 @@ import com.globant.eventscorelib.controllers.SharedPreferencesController;
 public class BaseSubscriberActivity extends BaseActivity {
 
     BaseSubscriberFragment mBaseSubscriberFragment;
-    android.support.v4.app.Fragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +40,7 @@ public class BaseSubscriberActivity extends BaseActivity {
             getSupportActionBar().setTitle(SharedPreferencesController.getUserFirstName(this) + " " + SharedPreferencesController.getUserLastName(this));
         }
     }
+
 
     @Override
     public void onBackPressed() {
