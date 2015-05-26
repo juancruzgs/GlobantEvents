@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.utils.QRCodeEncoder;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.PushNotifications;
 import com.google.zxing.WriterException;
 
 import java.io.File;
@@ -80,7 +82,12 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
                             public void onPositive(MaterialDialog dialog) {
                                 super.onPositive(dialog);
                                 AppCompatSpinner spinner = (AppCompatSpinner) dialog.getCustomView().findViewById(R.id.spinner_users_filter);
-                                Toast.makeText(dialog.getContext(), "Message send to "+spinner.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
+                                AppCompatEditText editText = (AppCompatEditText) dialog.findViewById(R.id.editText_notification_text);
+                                PushNotifications.sendNotification(editText.getText().toString(),
+                                                                   spinner.getSelectedItem().toString(),
+                                                                   mEvent.getObjectID());
+
+                                Toast.makeText(dialog.getContext(), "Message sent to "+spinner.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
                             }
 
                             @Override

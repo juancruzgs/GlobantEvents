@@ -2,6 +2,7 @@ package com.globant.eventmanager.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -19,6 +21,7 @@ import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
+import com.globant.eventscorelib.utils.PushNotifications;
 import com.software.shell.fab.ActionButton;
 
 public class EventListManagerFragment extends BaseEventListFragment {
@@ -88,7 +91,9 @@ public class EventListManagerFragment extends BaseEventListFragment {
                             @Override
                             public void onPositive(MaterialDialog dialog) {
                                 super.onPositive(dialog);
-                                Toast.makeText(dialog.getContext(), "Message send", Toast.LENGTH_LONG).show();
+                                AppCompatEditText editText = (AppCompatEditText) dialog.findViewById(R.id.editText_notification_text);
+                                PushNotifications.sendBroadcastNotification(editText.getText().toString());
+                                Toast.makeText(dialog.getContext(), "Message sent", Toast.LENGTH_LONG).show();
                             }
 
                             @Override
