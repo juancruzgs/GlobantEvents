@@ -30,7 +30,6 @@ public class EventDetailManagerActivity extends BaseEventDetailPagerActivity {
         super.onCreate(savedInstanceState);
         Event event = getIntent().getExtras().getParcelable(CoreConstants.FIELD_EVENTS);
         this.setEvent(event);
-        mEventHistory = getIntent().getExtras().getBoolean(CoreConstants.EVENTS_HISTORY);
     }
 
     @Override
@@ -44,22 +43,23 @@ public class EventDetailManagerActivity extends BaseEventDetailPagerActivity {
 
     @Override
     protected List<Fragment> getFragments() {
+        mEventHistory = getIntent().getExtras().getBoolean(CoreConstants.EVENTS_HISTORY);
         fragmentList = new ArrayList<>();
         if (mSavedInstanceState == null) {
             fragmentList.add(new EventDescriptionManagerFragment());
             if (mEventHistory != null && mEventHistory) {
-                fragmentList.add(new EventParticipantsManagerFragment());
-            } else {
                 fragmentList.add(new EventHistoryParticipantsManagerFragment());
+            } else {
+                fragmentList.add(new EventParticipantsManagerFragment());
             }
             fragmentList.add(new BaseSpeakersListFragment());
             fragmentList.add(new TwitterStreamManagerFragment());
         } else {
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventDescriptionManagerFragment.class.getName()));
             if (mEventHistory != null && mEventHistory) {
-                fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventParticipantsManagerFragment.class.getName()));
-            } else {
                 fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventHistoryParticipantsManagerFragment.class.getName()));
+            } else {
+                fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventParticipantsManagerFragment.class.getName()));
             }
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, BaseSpeakersListFragment.class.getName()));
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, TwitterStreamManagerFragment.class.getName()));
