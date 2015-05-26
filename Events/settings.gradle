@@ -1,1 +1,1 @@
-include ':app', ':eventmanager', ':eventscorelib'
+include ':eventmanager', ':app', ':eventscorelib'
