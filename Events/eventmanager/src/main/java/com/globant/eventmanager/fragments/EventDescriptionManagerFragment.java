@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,16 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.utils.QRCodeEncoder;
-import android.content.Intent;
-import android.view.MenuItem;
-
-import com.globant.eventmanager.activities.PushNotificationActivity;
-import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
-import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.zxing.WriterException;
@@ -72,13 +70,28 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
             }
         } else {
             if (id == com.globant.eventscorelib.R.id.action_notifications){
-                Intent intentNotifications = new Intent(getActivity(), PushNotificationActivity.class);
-                intentNotifications.putExtra(PushNotificationFragment.SOURCE_TAG,
-                        BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID());
-                startActivity(intentNotifications);
-                return  true;
+                new MaterialDialog.Builder(getActivity())
+                        .title("Push Notifications")
+                        .customView(R.layout.dialog_push_notification, false)
+                        .positiveText("Send")
+                        .negativeText("Cancel")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
+                                AppCompatSpinner spinner = (AppCompatSpinner) dialog.getCustomView().findViewById(R.id.spinner_users_filter);
+                                Toast.makeText(dialog.getContext(), "Message send to "+spinner.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                super.onNegative(dialog);
+                            }
+                        })
+                        .show();
             }
         }
+
         return super.onOptionsItemSelected(item);
 
     }

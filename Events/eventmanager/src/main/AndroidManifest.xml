@@ -158,11 +158,6 @@
             android:name="com.parse.push.notification_icon"
             android:resource="@mipmap/ic_launcher" />
 
-        <activity
-            android:name=".activities.PushNotificationActivity"
-            android:label="@string/title_activity_push_notification"
-            android:theme="@style/Transparent">
-        </activity>
     </application>
 
 </manifest>

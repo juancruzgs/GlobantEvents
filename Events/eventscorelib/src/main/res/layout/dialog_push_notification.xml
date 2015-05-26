@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/title_destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_notification_dialog_channel"/>
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner_users_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:entries="@array/spinner_options"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/title_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_notification_dialog_message"/>
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/editText_notification_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textMultiLine"/>
+</LinearLayout>

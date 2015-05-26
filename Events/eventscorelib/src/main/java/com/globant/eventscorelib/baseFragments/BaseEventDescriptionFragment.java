@@ -131,8 +131,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                PushNotifications.subscribeToChannel("SUB-" + mEvent.getObjectID());
-                PushNotifications.subscribeToChannel(mEvent.getObjectID());
+                PushNotifications.subscribeToChannel("CH-"+mEvent.getObjectID());
                 prepareBaseSubscriberActivity();
             }
         });

@@ -9,18 +9,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventHistoryManagerActivity;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
-import com.globant.eventmanager.activities.PushNotificationActivity;
 import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.software.shell.fab.ActionButton;
-
-import java.util.Date;
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
@@ -80,10 +79,26 @@ public class EventListManagerFragment extends BaseEventListFragment {
             handled = true;
         } else {
             if (id == R.id.action_notifications){
-                Intent intentNotifications = new Intent(getActivity(), PushNotificationActivity.class);
-                intentNotifications.putExtra(PushNotificationFragment.SOURCE_TAG, this.getClass().getSimpleName());
-                startActivity(intentNotifications);
-                handled = true;
+                MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                        .title("Push Notifications")
+                        .customView(R.layout.dialog_push_notification, false)
+                        .positiveText("Send")
+                        .negativeText("Cancel")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
+                                Toast.makeText(dialog.getContext(), "Message send", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                super.onNegative(dialog);
+                            }
+                        }).build();
+                materialDialog.findViewById(R.id.title_destination).setVisibility(View.GONE);
+                materialDialog.findViewById(R.id.spinner_users_filter).setVisibility(View.GONE);
+                materialDialog.show();
             }
         }
         if (!handled) {

@@ -130,4 +130,6 @@
     <string name="text_view_no_participants">No subscribers registered yet.</string>
     <string name="action_history">History</string>
     <string name="menu_button_notifications">Notifications</string>
+    <string name="title_notification_dialog_channel">Choose the channel</string>
+    <string name="title_notification_dialog_message">Enter your message</string>
 </resources>
