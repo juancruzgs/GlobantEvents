@@ -34,8 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:src="@mipmap/placeholder"
-                android:elevation="30dp"
-                />
+                android:background="#fff5f5f5"/>
 
             <com.software.shell.fab.ActionButton
                 android:id="@+id/fab"
@@ -48,9 +47,7 @@
                 android:layout_marginRight="20dp"
                 fab:button_color="#FFC107"
                 fab:image="@mipmap/ic_camera_white"
-                fab:image_size="24dp"
-                android:scaleType="centerInside"
-                android:adjustViewBounds="true"/>
+                fab:image_size="24dp"/>
 
             <LinearLayout
                 android:id="@+id/body"
