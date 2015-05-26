@@ -85,7 +85,7 @@ public class PushNotifications {
                 channel = "PAR-"+eventId;
             }
         } else {
-            channel = eventId;
+            channel = "CH-"+eventId;
         }
         parsePush.setData(data);
         parsePush.setQuery(ParseInstallation.getQuery().whereEqualTo("channels",channel));
@@ -101,7 +101,7 @@ public class PushNotifications {
         JSONObject data =  new JSONObject();
         try {
             //TODO change hardcoded string
-            data.put("title", "Hello Participant!");
+            data.put("title", "Hello!");
             data.put("alert", message);
             data.put("event", event);
             data.put("id",idSubscriber);
