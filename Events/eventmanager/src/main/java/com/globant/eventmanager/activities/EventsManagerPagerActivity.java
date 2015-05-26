@@ -2,6 +2,7 @@ package com.globant.eventmanager.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventSpeakersList;
@@ -67,43 +68,22 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
             getInstance().setEvent(mEvent);
             getInstance().setSpeakersList(mEvent.getSpeakers());
         }
-        if (mEvent != null) {
-            getInstance().setEvent(mEvent);
-            getInstance().setSpeakersList(mEvent.getSpeakers());
-        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        for (Fragment fragment : fragmentList){
+/*        for (Fragment fragment : fragmentList){
             getSupportFragmentManager().putFragment(outState,fragment.getClass().getName(), fragment);
-        }
+        } Throws an exception (See the link https://code.google.com/p/android/issues/detail?id=77285)
+*/
         outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, mCacheObjectsController);
         outState.putInt(CoreConstants.SAVE_INSTANCE_EVENT_ACTION, EventsManagerPagerActivity.mEventAction.ordinal());
-       // super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        mCacheObjectsController = savedInstanceState.getParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS);
-        mEvent = mCacheObjectsController.getEvent();
-        int type = mSavedInstanceState.getInt(CoreConstants.SAVE_INSTANCE_EVENT_ACTION);
-        switch (type){
-            case 0:
-                mEventAction = ActionType.EDIT_EVENT;
-                break;
-            default:
-                mEventAction = ActionType.CREATE_EVENT;
-                break;
-        }
-        super.onRestoreInstanceState(savedInstanceState);
+        super.onSaveInstanceState(outState);
     }
 
     public static EventsManagerPagerActivity getInstance(){return ourInstance;}
 
     public void setSpeakersList (List<Speaker> speakersList){ourInstance.mCacheObjectsController.setSpeakersList(speakersList);}
-
-    public List<Speaker> getSpeakersList(){return ourInstance.mCacheObjectsController.getSpeakersList();}
 
     public void setEvent (Event event) {ourInstance.mCacheObjectsController.setEvent(event);}
 
