@@ -57,14 +57,9 @@ public class ParticipantsListViewHolderManager extends BaseParticipantListViewHo
     private AppCompatTextView mTextViewPosition;
     private ObjectAnimator mColorTransition;
     private ImageView mImageViewAcceptedIcon;
-    private CheckBox mCheckBoxAccepted;
 
     public ImageView getImageViewAcceptedIcon() {
         return mImageViewAcceptedIcon;
-    }
-
-    public CheckBox getCheckBoxAccepted() {
-        return mCheckBoxAccepted;
     }
 
     public AppCompatTextView getTextViewName() {
@@ -157,7 +152,6 @@ public class ParticipantsListViewHolderManager extends BaseParticipantListViewHo
         mAdapter = adapter;
         mTextViewPosition = (AppCompatTextView) itemView.findViewById(R.id.text_view_position);
         mImageViewAcceptedIcon = (ImageView) itemView.findViewById(R.id.image_view_accepted_icon);
-        mCheckBoxAccepted = (CheckBox) itemView.findViewById(R.id.checkbox_accepted);
         itemView.setOnTouchListener(this);
 
     }
