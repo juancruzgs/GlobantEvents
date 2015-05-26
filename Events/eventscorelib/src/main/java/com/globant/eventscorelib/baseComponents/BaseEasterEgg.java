@@ -30,4 +30,10 @@ public abstract class BaseEasterEgg {
     }
 
     public abstract void uninit();
+
+    protected void triggerEgg() {
+        for (EasterEggListener eggListener : mEggListeners) {
+            eggListener.onEasterEgg();
+        }
+    }
 }

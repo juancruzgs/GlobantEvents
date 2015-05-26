@@ -85,6 +85,7 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
                 if (mShakes >= mNShakesLimit) {
                     // TODO: Use this to identify the owner as glober
                     // NOTE: Here lies a pseudo bug: if you shake, exit, back and shake again, getActivity() returns null.
+                    // NOTE2: Perhaps that pseudo-bug is fixed now.
 /*
                     Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                     v.vibrate(400);
@@ -93,9 +94,7 @@ public class HandshakeEasterEgg extends BaseSensorEasterEgg {
                     Toast.makeText(mActivity, HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
                     // TODO: This needs to be managed from the listener (when it unsubscribes), but let's let it here for testing
                     mSensorManager.unregisterListener(this);
-                    for (EasterEggListener eggListener : mEggListeners) {
-                        eggListener.onEasterEgg();
-                    }
+                    triggerEgg();
                 }
             }
             else {
