@@ -137,7 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_gravity="right"
+            android:layout_gravity="center_vertical|right"
             android:padding="8dp"
             android:visibility="invisible">
 
@@ -145,7 +145,15 @@
                 android:id="@+id/image_view_participant_right"
                 android:layout_width="72dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/profile_pic"/>
+                android:src="@drawable/accept_icon1" />
+
+            <ImageView
+                android:id="@+id/image_view_accepted_icon"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/accept_icon1"
+                android:visibility="invisible"
+                android:layout_gravity="center_vertical" />
         </FrameLayout>
 
         <android.support.v7.widget.AppCompatTextView

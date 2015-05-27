@@ -20,6 +20,7 @@ public class Subscriber extends BaseObject implements Parcelable {
     private boolean mPublic;
     private boolean mAccepted;
     private boolean mCheckIn;
+    private boolean mChecked;
 
     public Subscriber() {
     }
@@ -39,6 +40,7 @@ public class Subscriber extends BaseObject implements Parcelable {
         mPublic = aPublic;
         mAccepted = accepted;
         mCheckIn = checkIn;
+        mChecked = false;
     }
 
     public String getObjectID() {
@@ -161,6 +163,14 @@ public class Subscriber extends BaseObject implements Parcelable {
         mAccepted = accepted;
     }
 
+    public boolean isChecked() {
+        return mChecked;
+    }
+
+    public void setChecked(boolean mChecked) {
+        this.mChecked = mChecked;
+    }
+
     private Subscriber(Parcel in) {
         mObjectID = in.readString();
         mName = in.readString();
@@ -181,6 +191,7 @@ public class Subscriber extends BaseObject implements Parcelable {
         mPublic = (in.readInt() == 1);
         mAccepted = (in.readInt() == 1);
         mCheckIn = (in.readInt() == 1);
+        mChecked = (in.readInt() == 1);
     }
 
    public static final Parcelable.Creator<Subscriber> CREATOR = new Parcelable.Creator<Subscriber>() {
@@ -222,6 +233,7 @@ public class Subscriber extends BaseObject implements Parcelable {
         dest.writeInt(mPublic ? 1 : 0);
         dest.writeInt(mAccepted ? 1 : 0);
         dest.writeInt(mCheckIn ? 1 : 0);
+        dest.writeInt(mChecked ? 1 : 0);
     }
 }
 

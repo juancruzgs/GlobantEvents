@@ -2,6 +2,7 @@ package com.globant.eventmanager.adapters;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.AppCompatTextView;
@@ -11,10 +12,12 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
@@ -53,8 +56,11 @@ public class ParticipantsListViewHolderManager extends BaseParticipantListViewHo
     private int mSubPosition;
     private AppCompatTextView mTextViewPosition;
     private ObjectAnimator mColorTransition;
+    private ImageView mImageViewAcceptedIcon;
 
-
+    public ImageView getImageViewAcceptedIcon() {
+        return mImageViewAcceptedIcon;
+    }
 
     public AppCompatTextView getTextViewName() {
         return mTextViewName;
@@ -145,15 +151,21 @@ public class ParticipantsListViewHolderManager extends BaseParticipantListViewHo
         mLinearLayoutMiddleLeft = (LinearLayout) itemView.findViewById(R.id.linear_layout_middle_left);
         mAdapter = adapter;
         mTextViewPosition = (AppCompatTextView) itemView.findViewById(R.id.text_view_position);
+        mImageViewAcceptedIcon = (ImageView) itemView.findViewById(R.id.image_view_accepted_icon);
         itemView.setOnTouchListener(this);
 
     }
 
     private final Runnable mRunnable = new Runnable() {
         public void run() {
-            mRunnableIsRunning = true;
             if ((!mScrolling) && (mBooleanIsPressed)){
-                startAnimations();
+                if ((mFrameLayoutRight.getVisibility() == View.VISIBLE) &&
+                        (mFrameLayoutLeft.getVisibility() == View.VISIBLE)){
+                    Toast.makeText(mFragment.getActivity(), "Participant already accepted", Toast.LENGTH_SHORT).show();
+                }else {
+                    mRunnableIsRunning = true;
+                    startAnimations();
+                }
             }
         }
     };
