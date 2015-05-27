@@ -84,6 +84,8 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
         }
+        mRecyclerView.setVisibility(View.GONE);
+        mTextViewNoSpeakers.setVisibility(View.VISIBLE);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
         mRecyclerView.setHasFixedSize(true);
@@ -147,10 +149,9 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                     {
                         mAdapter.addSpeaker(newSpeaker);
                         mAdapter.notifyDataSetChanged();
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                        mTextViewNoSpeakers.setVisibility(View.VISIBLE);
                         EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
                     }
+                    setNotSpeakerOnListMessage();
                 }
                 if(editedSpeaker!= null)
                 {
@@ -213,7 +214,11 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                 mRecyclerView.setVisibility(View.GONE);
                 mTextViewNoSpeakers.setVisibility(View.VISIBLE);
             }
+            else
+            {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mTextViewNoSpeakers.setVisibility(View.INVISIBLE);
+            }
         hideUtilsAndShowContentOverlay();
     }
-
 }
