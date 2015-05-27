@@ -76,7 +76,7 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
                                 super.onPositive(dialog);
                                 AppCompatSpinner spinner = (AppCompatSpinner) dialog.getCustomView().findViewById(R.id.spinner_users_filter);
                                 AppCompatEditText editText = (AppCompatEditText) dialog.findViewById(R.id.editText_notification_text);
-                                PushNotifications.sendNotification(editText.getText().toString(),
+                                PushNotifications.sendNotification(getActivity(), editText.getText().toString(),
                                                                    spinner.getSelectedItem().toString(),
                                                                    mEvent.getObjectID());
 

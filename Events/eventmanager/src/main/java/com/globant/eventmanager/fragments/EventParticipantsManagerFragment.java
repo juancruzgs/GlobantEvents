@@ -266,7 +266,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
         {
             mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
             for (Subscriber subscriber: mAcceptedSubscribers){
-                PushNotifications.sendNotificationToSubscriber("You are a participant now",
+                PushNotifications.sendNotificationToSubscriber(getActivity(),"You are a participant now",
                         mEvent.getObjectID(),subscriber.getObjectID());
             }
 

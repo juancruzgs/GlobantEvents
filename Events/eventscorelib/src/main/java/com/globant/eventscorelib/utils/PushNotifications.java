@@ -1,5 +1,8 @@
 package com.globant.eventscorelib.utils;
 
+import android.content.Context;
+import android.content.res.Resources;
+
 import com.globant.eventscorelib.R;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
@@ -49,11 +52,12 @@ public class PushNotifications {
         return ParseInstallation.getCurrentInstallation().getList("channels");
     }
 
-    public static void sendBroadcastNotification(String message){
+    public static void sendBroadcastNotification(Context context, String message){
         JSONObject data =  new JSONObject();
         try {
-            data.put("title", "Broadcast Notification");
-            data.put("alert", message);
+            data.put(context.getString(R.string.notification_attribute_title),
+                    context.getString(R.string.notification_broadcast_title));
+            data.put(context.getString(R.string.notification_attribute_alert), message);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -68,27 +72,29 @@ public class PushNotifications {
         });
     }
 
-    public static void sendNotification(String message,String channel,String eventId){
+    public static void sendNotification(Context context, String message,String channel,String eventId){
         JSONObject data =  new JSONObject();
         ParsePush parsePush = new ParsePush();
         try {
-            data.put("title", "Notification Event");
-            data.put("alert", message);
+            data.put(context.getString(R.string.notification_attribute_title),
+                    context.getString(R.string.notification_event_title));
+            data.put(context.getString(R.string.notification_attribute_alert), message);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //TODO change hardcoded string
-        if (!(channel.equals("Everyone"))){
-            if (channel.equals("Subscribers")){
-                channel = "SUB-"+eventId;
+
+        if (!(channel.equals(context.getString(R.string.channel_everyone)))){
+            if (channel.equals(context.getString(R.string.channel_subscriber))){
+                channel = context.getString(R.string.prefix_subscriber)+eventId;
             } else {
-                channel = "PAR-"+eventId;
+                channel = context.getString(R.string.prefix_participants)+eventId;
             }
         } else {
-            channel = "CH-"+eventId;
+            channel = context.getString(R.string.prefix_channel)+eventId;
         }
         parsePush.setData(data);
-        parsePush.setQuery(ParseInstallation.getQuery().whereEqualTo("channels",channel));
+        parsePush.setQuery(ParseInstallation.getQuery()
+                .whereEqualTo(context.getString(R.string.query_attribute_channel), channel));
         parsePush.sendInBackground(new SendCallback() {
             @Override
             public void done(ParseException e) {
@@ -97,21 +103,23 @@ public class PushNotifications {
         });
     }
 
-    public static void sendNotificationToSubscriber(String message, String event, String idSubscriber){
+    public static void sendNotificationToSubscriber(Context context, String message, String event, String idSubscriber){
         JSONObject data =  new JSONObject();
         try {
-            //TODO change hardcoded string
-            data.put("title", "Hello!");
-            data.put("alert", message);
-            data.put("event", event);
-            data.put("id",idSubscriber);
+            data.put(context.getString(R.string.notification_attribute_title),
+                    context.getString(R.string.subs_to_part_title));
+            data.put(context.getString(R.string.notification_attribute_alert), message);
+            data.put(context.getString(R.string.notification_attribute_event), event);
+            data.put(context.getString(R.string.notification_attribute_id),idSubscriber);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         ParsePush parsePush = new ParsePush();
         parsePush.setData(data);
-        parsePush.setQuery(ParseInstallation.getQuery().whereEqualTo("channels", "SUB-" + event + "-" + idSubscriber));
+        parsePush.setQuery(ParseInstallation.getQuery()
+                .whereEqualTo(context.getString(R.string.query_attribute_channel),
+                        context.getString(R.string.prefix_subscriber) + event + "-" + idSubscriber));
         parsePush.sendInBackground(new SendCallback() {
             @Override
             public void done(ParseException e) {

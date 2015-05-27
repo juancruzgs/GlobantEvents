@@ -142,7 +142,7 @@ public class EventHistoryManagerFragment extends BaseFragment implements BaseSer
         super.setService(service);
         mEventList = ((EventHistoryManagerActivity) getActivity()).getEventHistory();
         if (mEventList == null) {
-            mService.executeAction(BaseService.ACTIONS.GET_EVENT_HISTORY, getBindingKey(), null);
+            mService.executeAction(BaseService.ACTIONS.GET_EVENT_HISTORY, getBindingKey());
         } else {
             setHasOptionsMenu(true);
             if (mEventList.size() == 0) {

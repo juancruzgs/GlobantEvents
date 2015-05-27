@@ -135,4 +135,17 @@
     <string name="menu_button_notifications">Notifications</string>
     <string name="title_notification_dialog_channel">Choose the channel</string>
     <string name="title_notification_dialog_message">Enter your message</string>
+    <string name="notification_attribute_title">title</string>
+    <string name="notification_attribute_alert">alert</string>
+    <string name="notification_attribute_event">event</string>
+    <string name="notification_attribute_id">id</string>
+    <string name="channel_everyone">Everyone</string>
+    <string name="channel_subscriber">Subscribers</string>
+    <string name="prefix_subscriber">SUB-</string>
+    <string name="prefix_participants">PAR-</string>
+    <string name="prefix_channel">CH-</string>
+    <string name="query_attribute_channel">channels</string>
+    <string name="subs_to_part_title">Hello!</string>
+    <string name="notification_event_title">Notification Event</string>
+    <string name="notification_broadcast_title">Broadcast Notification</string>
 </resources>

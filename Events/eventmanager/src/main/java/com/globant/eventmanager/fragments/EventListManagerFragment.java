@@ -92,7 +92,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
                             public void onPositive(MaterialDialog dialog) {
                                 super.onPositive(dialog);
                                 AppCompatEditText editText = (AppCompatEditText) dialog.findViewById(R.id.editText_notification_text);
-                                PushNotifications.sendBroadcastNotification(editText.getText().toString());
+                                PushNotifications.sendBroadcastNotification(getActivity(),editText.getText().toString());
                                 Toast.makeText(dialog.getContext(), "Message sent", Toast.LENGTH_LONG).show();
                             }
 
