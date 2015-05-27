@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -43,8 +47,6 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
     private String eventId;
     private String LOG_TAG = getClass().getSimpleName();
 
-
-
     @Override
     public BaseService.ActionListener getActionListener() {
         return super.getActionListener();
@@ -70,6 +72,8 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
         mActionButton.show();
         return  rootView;
     }
+
+
 
     @Override
     protected void prepareRecyclerView(View rootView) {
@@ -107,6 +111,17 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
         eventId = ((EventsManagerPagerActivity) getActivity()).getEvent().getObjectID();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName().toString());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName().toString());
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -116,6 +131,7 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
             if (resultCode == RESULT_OK) {
                 Speaker newSpeaker =  data.getParcelableExtra("newSpeaker");
                 Speaker editedSpeaker = data.getParcelableExtra("editedSpeaker");
+                Speaker deletedSpeaker = data.getParcelableExtra("deletedSpeaker");
 
                 if(newSpeaker!=null)
                 {
@@ -128,12 +144,12 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                         mAdapter.notifyDataSetChanged();
                     }
                     else
-                    {   //mSpeakers.add(newSpeaker);
+                    {
                         mAdapter.addSpeaker(newSpeaker);
                         mAdapter.notifyDataSetChanged();
                         mRecyclerView.setVisibility(View.VISIBLE);
                         mTextViewNoSpeakers.setVisibility(View.VISIBLE);
-                        //setRecyclerViewAdapter();
+                        EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
                     }
                 }
                 if(editedSpeaker!= null)
@@ -142,6 +158,16 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                     Log.d(LOG_TAG,"ITEM TO REPLACE-> "+Integer.toString(position));
                     mSpeakers.set(position, editedSpeaker);
                     mAdapter.notifyItemChanged(position);
+                    EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
+                }
+                if(deletedSpeaker != null)
+                {
+                    int position = data.getIntExtra("position",0);
+                    Log.d(LOG_TAG,"ITEM TO DELETE-> "+Integer.toString(position));
+                    mSpeakers.remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                    EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
+                    setNotSpeakerOnListMessage();
                 }
             }
         }
@@ -178,6 +204,10 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
     private void setRecyclerViewAdapter() {
         mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
         mRecyclerView.setAdapter(mAdapter);
+        setNotSpeakerOnListMessage();
+    }
+
+    private void setNotSpeakerOnListMessage() {
         if (mSpeakers !=null)
             if (mSpeakers.size() <1){
                 mRecyclerView.setVisibility(View.GONE);

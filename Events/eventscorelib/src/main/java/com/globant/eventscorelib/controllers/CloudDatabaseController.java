@@ -221,10 +221,11 @@ public class CloudDatabaseController extends DatabaseController{
         return databaseSubscriber.getObjectId();
     }
 
-    public void updateSubscriber(Subscriber domainSubscriber) throws ParseException {
+    public String updateSubscriber(Subscriber domainSubscriber) throws ParseException {
         ParseObject databaseSubscriber = ParseObject.createWithoutData(CoreConstants.SUBSCRIBERS_TABLE, domainSubscriber.getObjectID());
         setDatabaseSubscriberInformation(domainSubscriber, databaseSubscriber);
         databaseSubscriber.save();
+        return databaseSubscriber.getObjectId();
     }
 
     public void createEventToSubscriber(Subscriber domainSubscriber, String eventId) throws ParseException {
@@ -276,6 +277,7 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEvent.put(CoreConstants.FIELD_LANGUAGE, domainEvent.getLanguage());
         databaseEvent.put(CoreConstants.FIELD_HASHTAG, domainEvent.getHashtag());
         LatLng coordinates = domainEvent.getCoordinates();
+        if (coordinates != null)
         databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(coordinates.latitude, coordinates.longitude));
     }
 
@@ -316,5 +318,26 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEventToSubscriber.put(CoreConstants.FIELD_PUBLIC, domainSubscriber.isPublic());
         databaseEventToSubscriber.put(CoreConstants.FIELD_ACCEPTED, domainSubscriber.isAccepted());
         databaseEventToSubscriber.put(CoreConstants.FIELD_CHECK_IN, domainSubscriber.checkedIn());
+    }
+
+    public List<Subscriber> refreshSubscribers(String eventId, Date refreshDate) throws ParseException {
+        ParseObject event = getDatabaseEvent(eventId);
+        ParseQuery<ParseObject> eventsToSubscribersQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        eventsToSubscribersQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
+        eventsToSubscribersQuery.whereGreaterThan(CoreConstants.FIELD_CREATED_AT, refreshDate);
+        eventsToSubscribersQuery.include(CoreConstants.FIELD_SUBSCRIBERS);
+        List<ParseObject> eventsToSubscribersList = eventsToSubscribersQuery.find();
+        List<Subscriber> subscribersList = new ArrayList<>();
+        for (ParseObject eventToSubscribersRow : eventsToSubscribersList) {
+            //eventToSubscriberRow get Accepted
+            ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
+            Boolean accepted = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_ACCEPTED);
+            Boolean checkin = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_CHECK_IN);
+            if (databaseSubscriber != null) {
+                Subscriber domainSubscriber = createDomainSubscriberFromDatabase(databaseSubscriber, accepted, checkin);
+                subscribersList.add(domainSubscriber);
+            }
+        }
+        return subscribersList;
     }
 }

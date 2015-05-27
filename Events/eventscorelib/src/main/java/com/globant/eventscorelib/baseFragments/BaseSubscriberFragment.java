@@ -1,6 +1,5 @@
 package com.globant.eventscorelib.baseFragments;
 
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -48,7 +47,6 @@ import com.globant.eventscorelib.utils.PushNotifications;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
-import java.util.Date;
 import java.util.regex.Pattern;
 
 
@@ -184,11 +182,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language_ambar));
                 if (mIconToChange != null) {
                     tintGrey();
+                    mIconToChange.setImageDrawable(mDrawableToApply);
                 }
             }
         });
     }
-
 
     private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
         public void onFocusChange(View view, boolean gainFocus) {
@@ -207,6 +205,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             //onBlur
             else {
                 tintGrey();
+                mIconToChange.setImageDrawable(mDrawableToApply);
                 mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
                 mEditTextToChangeHint.setHint(mHintToReturn);
             }
@@ -265,9 +264,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
 
         } else if (id == (R.id.edit_text_twitter)) {
-            mIconToChange = mIconTwitter;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_twitter1);
-            mErrorLabelLayout = mErrorLabelLayoutTwitter;
             mHintToReturn = getResources().getString(R.string.edit_text_twitter_hint);
 
         }
@@ -311,8 +307,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mEditTextEmail = (AppCompatEditText) rootView.findViewById(R.id.edit_text_email);
         mEditTextCountry = (AppCompatEditText) rootView.findViewById(R.id.edit_text_country);
         mEditTextCity = (AppCompatEditText) rootView.findViewById(R.id.edit_text_city);
+
         mCheckBoxEnglishKnowledge = (AppCompatCheckBox) rootView.findViewById(R.id.check_box_english_knowledge);
+
         mFloatingActionButtonPhoto = (ActionButton) rootView.findViewById(R.id.fab);
+
         mPhotoProfile = (ImageView) rootView.findViewById(R.id.header);
         mIconFirstName = (ImageView) rootView.findViewById(R.id.icon_first_name);
         mIconLastName = (ImageView) rootView.findViewById(R.id.icon_last_name);
@@ -323,6 +322,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mIconCity = (ImageView) rootView.findViewById(R.id.icon_city);
         mIconEnglishKnowledge = (ImageView) rootView.findViewById(R.id.icon_language);
         mIconTwitter = (ImageView) rootView.findViewById(R.id.icon_twitter);
+
         mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
         mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_last_name);
         mErrorLabelLayoutPhone = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutPhone);
@@ -331,6 +331,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mErrorLabelLayoutOccupation = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorOccupation);
         mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_city);
         mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
+
         mLayoutToFocus = (LinearLayout) rootView.findViewById(R.id.autoFocusable);
     }
 
@@ -427,6 +428,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             if ((mSavePreferences) && (mPhotoTaken)) {
                 saveSubscriberObject();
                 SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
+                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();}
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
 
             } else if (!(mPhotoTaken)) {
@@ -436,6 +439,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 Toast.makeText(getActivity(), getResources().getString(R.string.missing_fields),
                         Toast.LENGTH_SHORT).show();
             }
+            mLayoutToFocus.requestFocus();
             return true;
         }
 
@@ -467,6 +471,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             mSavePreferences = false;
         } else {
             tintGrey();
+            mIconToChange.setImageDrawable(mDrawableToApply);
         }
 
         if (requiredField == mEditTextEmail) {
@@ -482,11 +487,36 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
     private void tintGrey() {
+
         mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
         DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.grey_icon));
         mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-        mIconToChange.setImageDrawable(mDrawableToApply);
     }
+
+
+
+    public void tintAllGrey(){
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_last_name);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_phone);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_email);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_country);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_city);
+        tintGrey();
+        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_occupation);
+        tintGrey();
+
+    }
+
+
+
+
+
 
     private void saveSubscriberObject() {
         mSubscriber.setName(mEditTextFirstName.getText().toString());
@@ -519,7 +549,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
     @Override
     public String getBindingKey() {
-        return this.getClass().getSimpleName() + new Date().toString();
+        return this.getClass().getSimpleName() ;//+ new Date().toString();
     }
 
     @Override
@@ -589,51 +619,42 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case SUBSCRIBER_EXISTS:
-                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
-                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
                     if (result.equals("")) {
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
                     } else {
-                    mSubscriber.setObjectID((String) result);
-                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
-                }
-                }
-                else{
-                    if (!(result.equals(""))) {
                         mSubscriber.setObjectID((String) result);
-                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);}
-                    else{
-                        hideUtilsAndShowContentOverlay();
-                        Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
+                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);
                     }
-                }
                 break;
             case IS_SUBSCRIBED:
                 if ((Boolean) result) {
+                     hideUtilsAndShowContentOverlay();
                     Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 } else {
-                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
-                            mSubscriber, mEventId);
+                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),mSubscriber, mEventId);
                 }
                 break;
             case SUBSCRIBER_CREATE:
-                mSubscriber.setObjectID((String)result);
-                 mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
-                        mSubscriber, mEventId);
+                 mSubscriber.setObjectID((String)result);
+                 mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(),result, mEventId);
                 break;
             case EVENTS_TO_SUBSCRIBER_CREATE:
+                hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
                 PushNotifications.subscribeToChannel("SUB-" + mEventId);
                 PushNotifications.subscribeToChannel("SUB-" + mEventId + "-" + mSubscriber.getObjectID());
                 getActivity().finish();
                 break;
             case SUBSCRIBER_UPDATE:
-                hideUtilsAndShowContentOverlay();
-                Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-                break;
+               if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                   mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(),result, mEventId);}
+                else {
+                   hideUtilsAndShowContentOverlay();
+                   Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+                   getActivity().finish();
+                   break;
+               }
         }
 
     }

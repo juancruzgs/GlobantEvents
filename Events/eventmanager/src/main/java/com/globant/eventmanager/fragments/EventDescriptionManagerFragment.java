@@ -39,29 +39,22 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_qr_code_event, menu);
-    }
-
-    @Override
-    protected void initializeViewParameters() {
-        super.initializeViewParameters();
-        ((com.software.shell.fab.ActionButton)mFab).setImageResource(R.mipmap.ic_fab_edit);
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
-                intent.putExtra(CoreConstants.FIELD_EVENTS, mEvent);
-                startActivity(intent);
-            }
-        });
+        inflater.inflate(R.menu.menu_edit_event, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.events_action_QR_code){
+        if (id == R.id.events_action_update) {
+            Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
+            intent.putExtra(CoreConstants.FIELD_EVENTS,mEvent);
+            EventsManagerPagerActivity.mEventAction = EventsManagerPagerActivity.ActionType.EDIT_EVENT;
+            startActivity(intent);
+
+        }
+        else if(id == R.id.events_action_QR_code){
             QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(mEvent.getObjectID(), getActivity());
-            Bitmap bitmap;
+            Bitmap bitmap = null;
             try {
                 bitmap = qrCodeEncoder.encodeAsBitmap();
                 ImageView myImage = new ImageView(getActivity());

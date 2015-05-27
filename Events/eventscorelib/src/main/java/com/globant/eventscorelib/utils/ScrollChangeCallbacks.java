@@ -24,10 +24,9 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
-    private boolean mFabIsShown = false;
+    private boolean mFabIsShown;
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
-    private boolean mTitleShown = false;
     private boolean mStickyToolbar;
     private View mToolbar;
     private View mOverlayView;
@@ -94,8 +93,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
             }
         }
 
-        if (i > mFlexibleSpaceImageHeight && !mTitleShown){
-            mTitleShown = true;
+        if (i > mFlexibleSpaceImageHeight){
             ((BaseActivity) mContext).changeFragmentTitle(mTitle.getText().toString());
         }
 
@@ -126,6 +124,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
 
     private void showFab() {
         if (!mFabIsShown) {
+            mFloatingActionButton.setVisibility(View.VISIBLE);
             ViewPropertyAnimator.animate(mFloatingActionButton).cancel();
             ViewPropertyAnimator.animate(mFloatingActionButton).scaleX(1).scaleY(1).setDuration(200).start();
             mFabIsShown = true;
@@ -134,6 +133,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
 
     private void hideFab() {
         if (mFabIsShown) {
+            mFloatingActionButton.setVisibility(View.GONE);
             ViewPropertyAnimator.animate(mFloatingActionButton).cancel();
             ViewPropertyAnimator.animate(mFloatingActionButton).scaleX(0).scaleY(0).setDuration(200).start();
             mFabIsShown = false;

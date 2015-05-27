@@ -11,11 +11,6 @@ import com.globant.eventscorelib.utils.CoreConstants;
 
 public class EventListClientFragment extends BaseEventListFragment {
     @Override
-    public void getEvent(String eventId) {
-
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_client_event_list;
     }
@@ -38,4 +33,8 @@ public class EventListClientFragment extends BaseEventListFragment {
         return null;
     }
 
+    @Override
+    public void getEvent(String eventId) {
+
+    }
 }
