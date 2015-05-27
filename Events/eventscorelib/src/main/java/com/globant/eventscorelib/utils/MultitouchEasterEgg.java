@@ -3,15 +3,13 @@ package com.globant.eventscorelib.utils;
 import android.graphics.PointF;
 import android.util.SparseArray;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Toast;
 
-import com.globant.eventscorelib.baseComponents.BaseTouchListenerEasterEgg;
+import com.globant.eventscorelib.baseComponents.BaseTouchEasterEgg;
 
 /**
  * Created by ariel.cattaneo on 26/05/2015.
  */
-public class MultitouchEasterEgg extends BaseTouchListenerEasterEgg {
+public class MultitouchEasterEgg extends BaseTouchEasterEgg {
 
     @Override
     public void uninit() {
@@ -19,7 +17,7 @@ public class MultitouchEasterEgg extends BaseTouchListenerEasterEgg {
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
+    public void touchEvent(MotionEvent event) {
         SparseArray<PointF> activePointers = new SparseArray<>();
 
         // get pointer index from the event object
@@ -60,6 +58,5 @@ public class MultitouchEasterEgg extends BaseTouchListenerEasterEgg {
         }
 
         // TODO: Set a number of fingers, or trigger a method after any change (quantity from activePointers.size())
-        return true;
     }
 }
