@@ -1,5 +1,7 @@
 package com.globant.eventscorelib.controllers;
 
+import android.util.Log;
+
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -164,12 +166,43 @@ public class CloudDatabaseController extends DatabaseController{
         ParseObject databaseEvent = new ParseObject(CoreConstants.EVENTS_TABLE);
         setDatabaseEventInformation(domainEvent, databaseEvent);
         databaseEvent.save();
+
+        List<Speaker> SpeakerList = domainEvent.getSpeakers();
+
+        if (!SpeakerList.isEmpty()){
+
+            List<String> SpeakersIDs = new ArrayList<>();
+
+            for (Speaker speaker: SpeakerList){
+                SpeakersIDs.add(createSpeaker(speaker));
+            }
+
+            addEventSpeakers(databaseEvent.getObjectId(), SpeakersIDs);
+        }
     }
 
     public void updateEvent(Event domainEvent) throws ParseException {
+
+        List<Speaker> oldSpeakerList = getEventSpeakers(domainEvent.getObjectID());
+        List<String>IdList = new ArrayList<>();
+        if (oldSpeakerList != null && !oldSpeakerList.isEmpty()){
+            for (Speaker speaker: oldSpeakerList)
+                IdList.add(speaker.getObjectID());
+            deleteEventSpeakers(domainEvent.getObjectID(),IdList);
+        }
+
         ParseObject databaseEvent = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, domainEvent.getObjectID());
         setDatabaseEventInformation(domainEvent, databaseEvent);
         databaseEvent.save();
+
+        List<Speaker> newSpeakerList = domainEvent.getSpeakers();
+        List<String>   IdSpeakerList = new ArrayList<>();
+        if (newSpeakerList != null && !newSpeakerList.isEmpty()){
+            for (Speaker speaker: newSpeakerList){
+                IdSpeakerList.add(createSpeaker(speaker));
+            }
+            addEventSpeakers(domainEvent.getObjectID(), IdSpeakerList);
+        }
     }
 
     public void addEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
@@ -208,10 +241,11 @@ public class CloudDatabaseController extends DatabaseController{
         event.delete();
     }
 
-    public void createSpeaker(Speaker domainSpeaker) throws ParseException {
+    public String createSpeaker(Speaker domainSpeaker) throws ParseException {
         ParseObject databaseSpeaker = new ParseObject(CoreConstants.SPEAKERS_TABLE);
         setDatabaseSpeakerInformation(domainSpeaker, databaseSpeaker);
         databaseSpeaker.save();
+        return databaseSpeaker.getObjectId();
     }
 
     public String createSubscriber(Subscriber domainSubscriber) throws ParseException {

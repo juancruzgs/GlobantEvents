@@ -682,8 +682,13 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), CoreConstants.PICTURE_SELECTION_REQUEST);
+
+//                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
             }
         });
 
@@ -756,6 +761,25 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         boolean handled = false;
+
+       // mEvent = new Event(); //TODO: erase after test
+/*        mEvent.setTitle("Apero Urbano");
+        mEvent.setShortDescription("Picnic, cerveza y comida!");
+        mEvent.setFullDescription("evento realizado el ultimo viernes de cada mes para integrar la ciudad en diferentes actividades.");
+        mEvent.setAddress("Parque de la presidenta");
+        mEvent.setCity("Medellin");
+        mEvent.setCountry("Colombia");
+        mEvent.setAdditionalInfo("-");
+        mEvent.setHashtag("#Apero");
+        mEvent.setCategory("Social");
+        mEvent.setPublic(true);
+        mEvent.setLanguage("Spanglish");
+        Calendar fecha = Calendar.getInstance();
+        fecha.set(fecha.get(Calendar.YEAR)+1, fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH),fecha.get(Calendar.HOUR_OF_DAY),30);
+        mEvent.setStartDate(fecha.getTime());
+        fecha.set(fecha.get(Calendar.YEAR), fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH) + 1, fecha.get(Calendar.HOUR_OF_DAY), 30);
+        mEvent.setEndDate(fecha.getTime());
+        populateInfo(mEvent);*/
 
         if (id == com.globant.eventmanager.R.id.events_action_done) {
             Boolean savePreferences;

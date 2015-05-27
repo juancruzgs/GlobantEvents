@@ -54,6 +54,7 @@ public abstract class DatabaseController {
 
     protected Speaker createDomainSpeakerFromDatabase(ParseObject databaseSpeaker) throws ParseException {
         Speaker speaker = new Speaker();
+        speaker.setObjectID(databaseSpeaker.getObjectId());
         speaker.setName(databaseSpeaker.getString(CoreConstants.FIELD_NAME));
         speaker.setLastName(databaseSpeaker.getString(CoreConstants.FIELD_LAST_NAME));
         speaker.setTitle(databaseSpeaker.getString(CoreConstants.FIELD_TITLE));
