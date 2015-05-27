@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -58,7 +59,7 @@ public abstract class BaseFragment extends Fragment{
         mImageViewUtils.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIsCheckin){
+                if (mIsCheckin) {
                     hideUtilsAndShowContentOverlay();
                     mIsCheckin = false;
                 }
@@ -75,6 +76,9 @@ public abstract class BaseFragment extends Fragment{
     public void onDestroy() {
         super.onDestroy();
         mService.unSubscribeActor(getActionListener());
+        if (this instanceof BaseEasterEgg.EasterEggListener) {
+            unsubscribeEggListener((BaseEasterEgg.EasterEggListener) this);
+        }
     }
 
     /// Return an ActionListener to manage the db actions... or just null
@@ -151,6 +155,10 @@ public abstract class BaseFragment extends Fragment{
 
     protected void unsubscribeEggListener(BaseEasterEgg.EasterEggListener listener) {
         ((BaseActivity)getActivity()).unsubscribeEggListener(listener);
+    }
+
+    protected void passEventToEgg(MotionEvent event) {
+        ((BaseActivity)getActivity()).passEventToEgg(event);
     }
 
     public abstract String getTitle();

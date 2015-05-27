@@ -36,11 +36,11 @@ public class BaseCreditsActivity extends BaseActivity {
 
     @Override
     protected boolean usesEgg() {
-        return false;
+        return true;
     }
 
     @Override
     protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
-        return null;
+        return BaseEasterEggsBasket.EASTEREGGS.TWO_FINGER_DOUBLE_TAP;
     }
 }

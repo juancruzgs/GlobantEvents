@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -21,6 +22,7 @@ import android.widget.FrameLayout;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
 import com.globant.eventscorelib.baseComponents.BaseEasterEgg;
+import com.globant.eventscorelib.baseComponents.BaseTouchEasterEgg;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
@@ -66,6 +68,10 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     public void unsubscribeEggListener(BaseEasterEgg.EasterEggListener listener) {
         mEasterEgg.unsubscribeListener(listener);
+    }
+
+    public void passEventToEgg(MotionEvent event) {
+        ((BaseTouchEasterEgg)mEasterEgg).touchEvent(event);
     }
 
     @Override

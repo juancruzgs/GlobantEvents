@@ -10,11 +10,12 @@ import java.util.HashMap;
  * Created by ariel.cattaneo on 21/05/2015.
  */
 public class BaseEasterEggsBasket {
-    public enum EASTEREGGS {HANDSHAKE}
+    public enum EASTEREGGS {HANDSHAKE, TWO_FINGER_DOUBLE_TAP}
 
     private static HashMap<EASTEREGGS, Class<? extends BaseEasterEgg> > mEggsMap = new HashMap<>();
     static {
         mEggsMap.put(EASTEREGGS.HANDSHAKE, HandshakeEasterEgg.class);
+        mEggsMap.put(EASTEREGGS.TWO_FINGER_DOUBLE_TAP, TwoFingerDoubleTapEgg.class);
     }
 
     public static BaseEasterEgg initEgg(EASTEREGGS egg, BaseActivity activity) {
