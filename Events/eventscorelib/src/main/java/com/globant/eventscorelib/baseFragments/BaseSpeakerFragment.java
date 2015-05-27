@@ -2,6 +2,7 @@ package com.globant.eventscorelib.baseFragments;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,6 +50,7 @@ public class BaseSpeakerFragment extends BaseFragment {
     public static final String URI_NAME = "image/*";
     public static final String EDITED_SPEAKER = "editedSpeaker";
     public static final String POSITION = "position";
+    public static final String DELETED_SPEAKER = "deletedSpeaker";
     public static final String NEW_SPEAKER = "newSpeaker";
     public static final String EDIT_MODE= "EDIT_MODE";
     public static final String CREATE_MODE= "CREATE_MODE";
@@ -136,7 +139,14 @@ public class BaseSpeakerFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_speaker, menu);
+        inflater.inflate(R.menu.menu_base_speaker, menu);
+        MenuItem item = menu.findItem(R.id.events_action_delete);
+
+        if (fragmentMode == EDIT_MODE) {
+            item.setVisible(true);
+        } else {
+            item.setVisible(false);
+        }
     }
 
     @Override
@@ -148,7 +158,10 @@ public class BaseSpeakerFragment extends BaseFragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
             doneClick();
-            if (mDoneClicked == true && mPhotoPicked){
+            if(fragmentMode== EDIT_MODE)
+                mPhotoPicked=true;
+
+            if (mDoneClicked == true && mPhotoPicked ){
                Intent resultIntent = new Intent();
                switch (fragmentMode)
                {
@@ -171,15 +184,36 @@ public class BaseSpeakerFragment extends BaseFragment {
             }
             return true;
         }
+        if (id == R.id.events_action_delete) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(getString(R.string.alert_message_delete_speaker))
+                    .setMessage(getString(R.string.alert_message_delete_speaker))
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            if (fragmentMode == EDIT_MODE) {
+                                Intent resultIntent = new Intent();
+                                resultIntent.putExtra(DELETED_SPEAKER, fillSpeakerObject());
+                                resultIntent.putExtra(POSITION, position);
+                                getActivity().setResult(RESULT_OK, resultIntent);
+                                getActivity().finish();
+                            }
+
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
+            //handled = true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void doneClick() {
         mDoneClicked = true;
-        tintRequiredIconsAndShowError(mEditTextFirstName);
-        tintRequiredIconsAndShowError(mEditTextLastName);
-        tintRequiredIconsAndShowError(mEditTextTitle);
-        tintRequiredIconsAndShowError(mEditTextBiography);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextFirstName);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextLastName);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextTitle);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextBiography);
     }
 
     @Override
@@ -225,7 +259,7 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        //super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GET_SPEAKER_IMAGE) {
                 //File file = new File(Environment.getExternalStorageDirectory() + File.separator + SHARED_PREF_IMG);
@@ -367,7 +401,7 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     }
 
-    private void tintRequiredIconsAndShowError(EditText requiredField){
+    private boolean tintRequiredIconsAndShowError(EditText requiredField){
          getIconToTint(requiredField);
          if (requiredField.getText().toString().trim().length() == 0) {
                 mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
@@ -375,9 +409,11 @@ public class BaseSpeakerFragment extends BaseFragment {
                 DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
                 mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
                 mIconToChange.setImageDrawable(mDrawableToApply);
-                mDoneClicked = false;
+                return false;
             } else {
                 tintGrey();
+                return true;
+
             }
     }
 

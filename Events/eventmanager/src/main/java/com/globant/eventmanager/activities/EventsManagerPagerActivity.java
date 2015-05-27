@@ -2,9 +2,9 @@ package com.globant.eventmanager.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.globant.eventmanager.R;
-import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
 import com.globant.eventmanager.fragments.EventSpeakersList;
 import com.globant.eventmanager.fragments.EventsFragment;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
@@ -62,12 +62,9 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
             mEventAction = ActionType.CREATE_EVENT;
             List<Speaker> mSpeakerList = new ArrayList<>();
             mEvent = new Event();
+            mEvent.setPublic(true);
             mEvent.setSpeakers(mSpeakerList);
             mCacheObjectsController = new CacheObjectsController();
-            getInstance().setEvent(mEvent);
-            getInstance().setSpeakersList(mEvent.getSpeakers());
-        }
-        if (mEvent != null) {
             getInstance().setEvent(mEvent);
             getInstance().setSpeakersList(mEvent.getSpeakers());
         }
@@ -75,35 +72,18 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        for (Fragment fragment : fragmentList){
+/*        for (Fragment fragment : fragmentList){
             getSupportFragmentManager().putFragment(outState,fragment.getClass().getName(), fragment);
-        }
+        } Throws an exception (See the link https://code.google.com/p/android/issues/detail?id=77285)
+*/
         outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, mCacheObjectsController);
         outState.putInt(CoreConstants.SAVE_INSTANCE_EVENT_ACTION, EventsManagerPagerActivity.mEventAction.ordinal());
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        mCacheObjectsController = savedInstanceState.getParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS);
-        mEvent = mCacheObjectsController.getEvent();
-        int type = mSavedInstanceState.getInt(CoreConstants.SAVE_INSTANCE_EVENT_ACTION);
-        switch (type){
-            case 0:
-                mEventAction = ActionType.EDIT_EVENT;
-                break;
-            default:
-                mEventAction = ActionType.CREATE_EVENT;
-                break;
-        }
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
     public static EventsManagerPagerActivity getInstance(){return ourInstance;}
 
     public void setSpeakersList (List<Speaker> speakersList){ourInstance.mCacheObjectsController.setSpeakersList(speakersList);}
-
-    public List<Speaker> getSpeakersList(){return ourInstance.mCacheObjectsController.getSpeakersList();}
 
     public void setEvent (Event event) {ourInstance.mCacheObjectsController.setEvent(event);}
 
@@ -115,12 +95,10 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
         if (mSavedInstanceState == null){
             fragmentList.add(new EventsFragment());
             fragmentList.add(new EventSpeakersList());
-            fragmentList.add(new EventParticipantsManagerFragment());
         }
         else {
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventsFragment.class.getName()));
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventSpeakersList.class.getName()));
-            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventParticipantsManagerFragment.class.getName()));
         }
         return fragmentList;
     }
@@ -130,7 +108,6 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
         List<String> titles = new ArrayList<>();
         titles.add(getString(R.string.title_activity_event_detail));
         titles.add(getString(R.string.title_page_speakers));
-        titles.add(getString(R.string.title_page_participants));
         return titles;
     }
 }

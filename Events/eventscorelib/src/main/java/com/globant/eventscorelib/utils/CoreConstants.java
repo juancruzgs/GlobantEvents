@@ -20,6 +20,7 @@ public class CoreConstants {
     public static final String SUBSCRIBERS_TABLE = "Subscribers";
 
     public static final String FIELD_UPDATED_AT = "updatedAt";
+    public static final String FIELD_CREATED_AT = "createdAt";
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_SHORT_DESCRIPTION = "short_description";
     public static final String FIELD_FULL_DESCRIPTION = "full_description";
@@ -131,5 +132,8 @@ public class CoreConstants {
     // Intents request
     public static final int MAP_MANAGER_REQUEST = 1000;
     public static final int PICTURE_SELECTION_REQUEST = 1001;
+
+    // Intents constants
+    public static final String EVENTS_HISTORY = "eventHistory";
 
 }

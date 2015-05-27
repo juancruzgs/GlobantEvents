@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventDescriptionManagerFragment;
+import com.globant.eventmanager.fragments.EventHistoryParticipantsManagerFragment;
 import com.globant.eventmanager.fragments.EventParticipantsManagerFragment;
 import com.globant.eventmanager.fragments.TwitterStreamManagerFragment;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
@@ -21,6 +22,7 @@ public class EventDetailManagerActivity extends BaseEventDetailPagerActivity {
 
     List<Fragment> fragmentList;
     Bundle mSavedInstanceState;
+    Boolean mEventHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +34,8 @@ public class EventDetailManagerActivity extends BaseEventDetailPagerActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        for (Fragment fragment : fragmentList){
-            getSupportFragmentManager().putFragment(outState,fragment.getClass().getName(), fragment);
+        for (Fragment fragment : fragmentList) {
+            getSupportFragmentManager().putFragment(outState, fragment.getClass().getName(), fragment);
 
         }
         super.onSaveInstanceState(outState);
@@ -41,16 +43,24 @@ public class EventDetailManagerActivity extends BaseEventDetailPagerActivity {
 
     @Override
     protected List<Fragment> getFragments() {
+        mEventHistory = getIntent().getExtras().getBoolean(CoreConstants.EVENTS_HISTORY);
         fragmentList = new ArrayList<>();
-        if (mSavedInstanceState == null){
+        if (mSavedInstanceState == null) {
             fragmentList.add(new EventDescriptionManagerFragment());
-            fragmentList.add(new EventParticipantsManagerFragment());
+            if (mEventHistory != null && mEventHistory) {
+                fragmentList.add(new EventHistoryParticipantsManagerFragment());
+            } else {
+                fragmentList.add(new EventParticipantsManagerFragment());
+            }
             fragmentList.add(new BaseSpeakersListFragment());
             fragmentList.add(new TwitterStreamManagerFragment());
-        }
-        else {
+        } else {
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventDescriptionManagerFragment.class.getName()));
-            fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventParticipantsManagerFragment.class.getName()));
+            if (mEventHistory != null && mEventHistory) {
+                fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventHistoryParticipantsManagerFragment.class.getName()));
+            } else {
+                fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, EventParticipantsManagerFragment.class.getName()));
+            }
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, BaseSpeakersListFragment.class.getName()));
             fragmentList.add(getSupportFragmentManager().getFragment(mSavedInstanceState, TwitterStreamManagerFragment.class.getName()));
         }

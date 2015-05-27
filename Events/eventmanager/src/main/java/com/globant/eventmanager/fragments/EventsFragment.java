@@ -13,6 +13,7 @@ import android.location.Address;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
@@ -22,6 +23,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -149,8 +151,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
     @Override
     public View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView= inflater.inflate(R.layout.fragment_events, container, false);
+
+        View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         wireUpViews(rootView);
         setUpSpinners();
         prepareImageButton();
@@ -159,39 +161,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         mEvent = EventsManagerPagerActivity.getInstance().getEvent();
         populateInfo(mEvent);
-/*
-        switch (EventsManagerPagerActivity.mEventAction){
-            case CREATE_EVENT:
-//                mEvent = new Event();
-                        //TODO: erase after test
-                        mEvent.setTitle("Apero Urbano");
-                        mEvent.setShortDescription("Picnic, cerveza y comida!");
-                        mEvent.setFullDescription("evento realizado el ultimo viernes de cada mes para integrar la ciudad en diferentes actividades.");
-                        mEvent.setAddress("Parque de la presidenta");
-                        mEvent.setCity("Medellin");
-                        mEvent.setCountry("Colombia");
-                        mEvent.setAdditionalInfo("-");
-                        mEvent.setHashtag("#Apero");
-                        mEvent.setCategory("Social");
-                        mEvent.setPublic(true);
-                        mEvent.setLanguage("Spanglish");
-                        Calendar fecha = Calendar.getInstance();
-                        fecha.set(fecha.get(Calendar.YEAR)+1, fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH),fecha.get(Calendar.HOUR_OF_DAY),30);
-                        mEvent.setEndDate(fecha.getTime());
-                        mEvent.setStartDate(fecha.getTime());
-                        populateInfo(mEvent);
-
-   //             EventsManagerPagerActivity.getInstance().setEvent(mEvent);
-                mEvent = EventsManagerPagerActivity.getInstance().getEvent();
-                mLatLng = new LatLng(0,0);
-                break;
-            case EDIT_EVENT:
-               mEvent = EventsManagerPagerActivity.getInstance().getEvent();
-                if (mEvent != null) {
-                    populateInfo(mEvent);
-                }
-                break;
-        }*/
 
         hideUtilsAndShowContentOverlay();
         setHasOptionsMenu(true);
@@ -200,42 +169,40 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     private void populateInfo(Event event){
-        if (event != null){
-            mEventTitle.setText(event.getTitle());
-            mEditTextTitle.setText(event.getTitle());
-            mEditTextFullDescription.setText(event.getFullDescription());
-            mEditTextShortDescription.setText(event.getShortDescription());
-            mEditTextAdditionalInfo.setText(event.getAdditionalInfo());
-            String[] category = getResources().getStringArray(R.array.category_entries);
-            int CategoryIndex = Arrays.asList(category).indexOf(event.getCategory());
-            if (CategoryIndex>=0){
-                mSpinnerCategory.setSelection(CategoryIndex);
-            }
-            mSpinnerPublic.setSelection(event.isPublic() ? 0 : 1);
-            mEditTextHashtag.setText(event.getHashtag());
-            mEditTextLanguage.setText(event.getLanguage());
-            if(event.getStartDate() != null) {
-                mEditTextStartDate.setText(dateFormatter.format(event.getStartDate()));
-                mEditTextStartTime.setText(TimeFormatter.format(event.getStartDate()));
-                mStartDate.setTime(event.getStartDate());
-            }
-            if(event.getEndDate() != null) {
-                mEditTextEndDate.setText(dateFormatter.format(event.getEndDate()));
-                mEditTextEndTime.setText(TimeFormatter.format(event.getEndDate()));
-                mEndDate.setTime(event.getEndDate());
-            }
-            mEditTextAddress.setText(event.getAddress());
-            mEditTextCountry.setText(event.getCountry());
-            mEditTextCity.setText(event.getCity());
-            mLatLng = event.getCoordinates();
+        mEventTitle.setText(event.getTitle());
+        mEditTextTitle.setText(event.getTitle());
+        mEditTextFullDescription.setText(event.getFullDescription());
+        mEditTextShortDescription.setText(event.getShortDescription());
+        mEditTextAdditionalInfo.setText(event.getAdditionalInfo());
+        String[] category = getResources().getStringArray(R.array.category_entries);
+        int CategoryIndex = Arrays.asList(category).indexOf(event.getCategory());
+        if (CategoryIndex>=0){
+            mSpinnerCategory.setSelection(CategoryIndex);
+        }
+        mSpinnerPublic.setSelection(event.isPublic() ? 0 : 1);
+        mEditTextHashtag.setText(event.getHashtag());
+        mEditTextLanguage.setText(event.getLanguage());
+        if(event.getStartDate() != null) {
+            mEditTextStartDate.setText(dateFormatter.format(event.getStartDate()));
+            mEditTextStartTime.setText(TimeFormatter.format(event.getStartDate()));
+            mStartDate.setTime(event.getStartDate());
+        }
+        if(event.getEndDate() != null) {
+            mEditTextEndDate.setText(dateFormatter.format(event.getEndDate()));
+            mEditTextEndTime.setText(TimeFormatter.format(event.getEndDate()));
+            mEndDate.setTime(event.getEndDate());
+        }
+        mEditTextAddress.setText(event.getAddress());
+        mEditTextCountry.setText(event.getCountry());
+        mEditTextCity.setText(event.getCity());
+        mLatLng = event.getCoordinates();
 
-            if (event.getEventLogo()!= null){
-                mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
-            }else {
-                mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
-                mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
-            }
+        if (event.getEventLogo()!= null){
+            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+        }else {
+            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
+            mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
         }
     }
 
@@ -247,18 +214,15 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             mEvent.setAdditionalInfo(mEditTextAdditionalInfo.getText().toString());
             mEvent.setHashtag(mEditTextHashtag.getText().toString());
             mEvent.setLanguage(mEditTextLanguage.getText().toString());
-            if(mEndDate.getTime() != null)
+            if(!mEditTextEndDate.getText().toString().isEmpty())
             mEvent.setEndDate(mEndDate.getTime());
-            if(mStartDate.getTime() != null)
+            if(!mEditTextStartDate.getText().toString().isEmpty())
                 mEvent.setStartDate(mStartDate.getTime());
             mEvent.setCategory(mSpinnerCategory.getSelectedItem().toString());
-            if (mEditTextCity.getText() != null)
-                mEvent.setCity(mEditTextCity.getText().toString());
-            if (mEditTextAddress.getText() != null)
-                mEvent.setAddress(mEditTextAddress.getText().toString());
+            mEvent.setCity(mEditTextCity.getText().toString());
+            mEvent.setAddress(mEditTextAddress.getText().toString());
             mEvent.setPublic(mSpinnerPublic.getSelectedItemPosition() == 0);
-            if (mEditTextCountry.getText() != null)
-                mEvent.setCountry(mEditTextCountry.getText().toString());
+            mEvent.setCountry(mEditTextCountry.getText().toString());
             mEvent.setEventLogo(ConvertImage.convertDrawableToByteArray(mPhotoEvent.getDrawable()));
             mEvent.setIcon(null);
             mEvent.setCoordinates(mLatLng);
@@ -538,20 +502,20 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
             }
         });
-        mSpinnerPublic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onViewFocusChange(v, hasFocus);
-                if(hasFocus) mSpinnerPublic.performClick();
-            }
-        });
-        mSpinnerCategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onViewFocusChange(v, hasFocus);
-                if(hasFocus) mSpinnerCategory.performClick();
-            }
-        });
+            mSpinnerCategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    onViewFocusChange(v, hasFocus);
+                    if (hasFocus && mSpinnerCategory.isDirty()) mSpinnerCategory.performClick();
+                }
+            });
+            mSpinnerPublic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    onViewFocusChange(v, hasFocus);
+                    if(hasFocus && mSpinnerPublic.isDirty()) mSpinnerPublic.performClick();
+                }
+            });
     }
 
     private void setDateTimeField() {
@@ -763,9 +727,15 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+        mBindingKey = this.getClass().getSimpleName();
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        retrieveInfo();
+        EventsManagerPagerActivity.getInstance().setEvent(mEvent);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
