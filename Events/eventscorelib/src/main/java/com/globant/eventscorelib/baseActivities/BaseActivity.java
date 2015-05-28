@@ -226,4 +226,12 @@ public abstract class BaseActivity extends AppCompatActivity{
              mFragmentTitle.setText(title);
         }
     }
+
+    public String getFragmentTitle() {
+        if (mFragmentTitle != null){
+            return mFragmentTitle.getText().toString();
+        } else {
+            return "";
+        }
+    }
 }
