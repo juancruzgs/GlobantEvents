@@ -11,9 +11,16 @@ import com.globant.eventscorelib.baseComponents.BaseTouchEasterEgg;
  */
 public class MultitouchEasterEgg extends BaseTouchEasterEgg {
 
+    private int mFingersNumberLast = 0;
+    private int mFingersNumberCheck = 4;
+
     @Override
     public void uninit() {
         // TODO: Well... uninit this multitouch easter egg (if needed)
+    }
+
+    public void setFingersNumberCheck(int fingersNumberCheck) {
+        mFingersNumberCheck = fingersNumberCheck;
     }
 
     @Override
@@ -57,6 +64,12 @@ public class MultitouchEasterEgg extends BaseTouchEasterEgg {
             }
         }
 
-        // TODO: Set a number of fingers, or trigger a method after any change (quantity from activePointers.size())
+        int fingersNumberNow = activePointers.size();
+        if (mFingersNumberLast != fingersNumberNow) {
+            mFingersNumberLast = fingersNumberNow;
+            if (mFingersNumberLast == mFingersNumberCheck) {
+                triggerEgg();
+            }
+        }
     }
 }
