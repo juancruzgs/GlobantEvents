@@ -251,12 +251,12 @@ public abstract class BaseService extends Service {
                                     break;
                             }
 
-                            if (!cancelKeys.contains(bindingKey)) {
+//                            if (!cancelKeys.contains(bindingKey)) {
                                 currentSubscriber.finishAction(theAction, result);
-                            }
-                            else {
-                                cancelKeys.remove(bindingKey);
-                            }
+//                            }
+//                            else {
+//                                cancelKeys.remove(bindingKey);
+//                            }
                         } catch (Exception e) {
                             currentSubscriber.failAction(theAction, e);
                             Logger.e("executeAction", e);
