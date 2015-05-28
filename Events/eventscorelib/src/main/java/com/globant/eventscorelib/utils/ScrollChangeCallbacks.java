@@ -34,6 +34,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
     private ImageView mPhoto;
     private ActionButton mFloatingActionButton;
     private Context mContext;
+    private String mOldTitle;
 
     public ScrollChangeCallbacks(int actionBarSize, int flexibleSpaceImageHeight, int toolbarColor, int flexibleSpaceShowFabOffset, int fabMargin, View toolBar,
                                  View overlayView, AppCompatTextView title, ImageView photo, ActionButton floatingActionButton, boolean stickyToolbar, Context context) {
@@ -50,6 +51,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
         mStickyToolbar = stickyToolbar;
         mFloatingActionButton = floatingActionButton;
         mContext = context;
+        mOldTitle = ((BaseActivity) mContext).getFragmentTitle();
     }
 
     @Override
@@ -95,6 +97,9 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
 
         if (i > mFlexibleSpaceImageHeight){
             ((BaseActivity) mContext).changeFragmentTitle(mTitle.getText().toString());
+        }else{
+            ((BaseActivity) mContext).changeFragmentTitle(mOldTitle);
+
         }
 
         // Translate FAB
