@@ -137,6 +137,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
                 startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
             }
         });
     }

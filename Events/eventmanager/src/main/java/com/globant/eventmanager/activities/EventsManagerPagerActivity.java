@@ -110,4 +110,11 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
         titles.add(getString(R.string.title_page_speakers));
         return titles;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(R.anim.right_in, R.anim.left_out);
+    }
 }

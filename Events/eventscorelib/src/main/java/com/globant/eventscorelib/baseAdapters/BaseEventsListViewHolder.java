@@ -50,6 +50,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
                 Intent intent = new Intent(context, getActivityClass());
                 intent.putExtra(CoreConstants.FIELD_EVENTS, event);
                 context.startActivity(intent);
+                fragment.getActivity().overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
             }
         });
     }

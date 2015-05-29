@@ -150,4 +150,11 @@ abstract public class BasePagerActivity extends BaseActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(R.anim.right_in, R.anim.left_out);
+    }
 }
