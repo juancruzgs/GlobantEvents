@@ -60,17 +60,19 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        if (theAction == BaseService.ACTIONS.TWEETS_LIST){
-            mTweetList = (List<Status>) result;
-            if (mTweetList != null) {
-                ((BaseEventDetailPagerActivity) getActivity()).setTweetList(mTweetList);
-                setRecyclerViewAdapter();
-            } else {
-                showErrorOverlay();
+        if (getActivity() != null) {
+            if (theAction == BaseService.ACTIONS.TWEETS_LIST) {
+                mTweetList = (List<Status>) result;
+                if (mTweetList != null) {
+                    ((BaseEventDetailPagerActivity) getActivity()).setTweetList(mTweetList);
+                    setRecyclerViewAdapter();
+                } else {
+                    showErrorOverlay();
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
             }
-            mSwipeRefreshLayout.setRefreshing(false);
+            hideUtilsAndShowContentOverlay();
         }
-        hideUtilsAndShowContentOverlay();
     }
 
     @Override

@@ -35,7 +35,7 @@ import twitter4j.User;
 public abstract class BaseService extends Service {
 
     public static boolean isRunning = false;
-    protected static List<String> cancelKeys = new ArrayList<>();
+    //protected static List<String> cancelKeys = new ArrayList<>();
     // This is the object that receives interactions from clients.
     private final IBinder mBinder = new BaseBinder();
 
@@ -128,8 +128,8 @@ public abstract class BaseService extends Service {
             ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
             currentSubscribers.put(bindingKey, currentSubscriber);
         }
-        if (cancelKeys.contains(bindingKey))
-            cancelKeys.remove(bindingKey);
+//        if (cancelKeys.contains(bindingKey))
+//            cancelKeys.remove(bindingKey);
 
         if (cachedElements.containsKey(bindingKey)){
             HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(bindingKey);
@@ -144,7 +144,7 @@ public abstract class BaseService extends Service {
         String bindingKey = anActionListener != null ? anActionListener.getBindingKey() : "";
         if (anActionListener != null && currentSubscribers.containsKey(bindingKey)) {
             currentSubscribers.remove(bindingKey);
-            cancelKeys.add(bindingKey);
+//            cancelKeys.add(bindingKey);
         }
     }
 
@@ -251,12 +251,12 @@ public abstract class BaseService extends Service {
                                     break;
                             }
 
-                            if (!cancelKeys.contains(bindingKey)) {
+//                            if (!cancelKeys.contains(bindingKey)) {
                                 currentSubscriber.finishAction(theAction, result);
-                            }
-                            else {
-                                cancelKeys.remove(bindingKey);
-                            }
+//                            }
+//                            else {
+//                                cancelKeys.remove(bindingKey);
+//                            }
                         } catch (Exception e) {
                             currentSubscriber.failAction(theAction, e);
                             Logger.e("executeAction", e);
@@ -341,6 +341,6 @@ public abstract class BaseService extends Service {
 
     public void disengage(String key) {
         cachedElements.remove(key);
-        cancelKeys.add(key);
+//        cancelKeys.add(key);
     }
 }
