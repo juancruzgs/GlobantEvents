@@ -6,8 +6,13 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,6 +30,7 @@ import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
+import com.globant.eventscorelib.utils.SharingIntent;
 import com.software.shell.fab.ActionButton;
 
 import java.util.Date;
@@ -108,7 +114,14 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 }
         );
     }
-    
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        getActivity().getMenuInflater().inflate(R.menu.menu_event_description, menu);
+    }
+
+
     protected void initializeViewParameters() {
         int actionBarSize = getActionBarSize();
         int flexibleSpaceImageHeight = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_image_height);
@@ -116,7 +129,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         int flexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
         int fabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
         ScrollChangeCallbacks scrollChangeCallbacks = new ScrollChangeCallbacks(actionBarSize, flexibleSpaceImageHeight, toolbarColor, flexibleSpaceShowFabOffset,
-                fabMargin, mToolbar, mOverlayView, mEventTitle, mEventImage, mFab , false, getActivity());
+                fabMargin, mToolbar, mOverlayView, mEventTitle, mEventImage, mFab, false, getActivity());
         mScrollView.setScrollViewCallbacks(scrollChangeCallbacks);
 
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +179,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mEventFullDescription = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Full_Description);
         mOverlayView = rootView.findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
-        mFab = (ActionButton)rootView.findViewById(R.id.fab);
+        mFab = (ActionButton) rootView.findViewById(R.id.fab);
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_view_map_icon);
         changeIconColor();
     }
@@ -201,7 +214,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             mMapIcon.setVisibility(View.GONE);
         }
     }
-
 
 
     @Override

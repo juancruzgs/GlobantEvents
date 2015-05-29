@@ -20,7 +20,7 @@ public class CustomDateFormat {
         return  dateFormat.format(date) + "\n" + getHour(date, context);
     }
 
-    public static String getHour (Date date, Context context) {
+    private static String getHour (Date date, Context context) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(context.getString(R.string.simple_date_format_hour), Locale.US);
         return  dateFormat.format(date);
     }

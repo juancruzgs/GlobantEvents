@@ -34,6 +34,14 @@
                     android:background="@color/Semi_transparent_grey_dark"
                     android:orientation="vertical">
 
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/image_view_icon"
+                        android:layout_gravity="right|bottom"
+                        android:src="@drawable/abc_ic_menu_share_mtrl_alpha"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="15dp"/>
                 </FrameLayout>
 
                 <ImageView
