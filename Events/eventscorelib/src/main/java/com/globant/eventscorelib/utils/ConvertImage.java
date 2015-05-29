@@ -1,9 +1,12 @@
 package com.globant.eventscorelib.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 
 import java.io.ByteArrayOutputStream;
 
@@ -23,6 +26,12 @@ public class ConvertImage {
         return bitmap;
     }
 
+    public static Uri getImageUri(Context context, Bitmap image) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), image, "Title", null);
+        return Uri.parse(path);
+    }
     public static byte[] convertBitmapImageToByteArray(Bitmap Photo) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -32,11 +41,8 @@ public class ConvertImage {
     public static byte[] convertDrawableToByteArray(Drawable drawable) {
         if (drawable!=null){
             Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            byte[] bitmapdata = stream.toByteArray();
-            return bitmapdata;
-        }else{
+            return convertBitmapImageToByteArray(bitmap);
+         } else{
             return null;
         }
     }

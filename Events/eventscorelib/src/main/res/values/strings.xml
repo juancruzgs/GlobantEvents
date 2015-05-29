@@ -131,7 +131,9 @@
     <string name="preference_participant_hint_showed">preference_participant_hint_showed</string>
     <string name="no_tweet_steam">No tweets yet, be the first!</string>
     <string name="text_view_no_participants">No subscribers registered yet.</string>
+    <string name="facebook_app_id">383225715212960</string>
     <string name="action_history">History</string>
+    <string name="action_share">Share</string>
     <string name="menu_button_notifications">Notifications</string>
     <string name="title_notification_dialog_channel">Choose the channel</string>
     <string name="title_notification_dialog_message">Enter your message</string>

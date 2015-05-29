@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,6 +27,7 @@ import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
+import com.globant.eventscorelib.utils.SharingIntent;
 import com.globant.eventscorelib.utils.PushNotifications;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -111,7 +114,14 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 }
         );
     }
-    
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        getActivity().getMenuInflater().inflate(R.menu.menu_event_description, menu);
+    }
+
+
     protected void initializeViewParameters() {
         int actionBarSize = getActionBarSize();
         int flexibleSpaceImageHeight = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_image_height);
@@ -205,7 +215,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             mMapIcon.setVisibility(View.GONE);
         }
     }
-
 
 
     @Override

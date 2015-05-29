@@ -33,8 +33,4 @@ public class EventListClientFragment extends BaseEventListFragment {
         return null;
     }
 
-    @Override
-    public void getEvent(String eventId) {
-
-    }
 }
