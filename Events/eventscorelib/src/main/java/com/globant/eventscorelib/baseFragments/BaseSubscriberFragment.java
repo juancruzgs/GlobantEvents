@@ -37,9 +37,11 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseEasterEgg;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
@@ -47,13 +49,15 @@ import com.globant.eventscorelib.utils.PushNotifications;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BaseSubscriberFragment extends BaseFragment implements BaseService.ActionListener, SensorEventListener {
+public class BaseSubscriberFragment extends BaseFragment implements BaseService.ActionListener,
+        BaseEasterEgg.EasterEggListener {
 
 
     Bitmap mPhoto;
@@ -264,6 +268,9 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
 
         } else if (id == (R.id.edit_text_twitter)) {
+            mIconToChange = mIconTwitter;
+            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_twitter1);
+            mErrorLabelLayout = mErrorLabelLayoutTwitter;
             mHintToReturn = getResources().getString(R.string.edit_text_twitter_hint);
 
         }
@@ -402,9 +409,10 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         setHasOptionsMenu(true);
 
         if (!globerDetected) {
-            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+            subscribeEggListener(this);
+//            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+//            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
@@ -487,7 +495,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
     private void tintGrey() {
-
         mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
         DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.grey_icon));
         mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
@@ -545,7 +552,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     @Override
     public void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(this);
+        //sensorManager.unregisterListener(this);
     }
     @Override
     public String getBindingKey() {
@@ -556,60 +563,10 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onResume() {
         super.onResume();
         if (!globerDetected) {
-            sensorManager.registerListener(this, senAcelerometer, sensorManager.SENSOR_DELAY_NORMAL);
+            //sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        Sensor mySensor = event.sensor;
-        if (mySensor.getType()==Sensor.TYPE_ACCELEROMETER)
-        {
-            checkHandShake(event);
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    private void checkHandShake(SensorEvent event) {
-        float x = event.values[0];
-        float y = event.values[1];
-        float z = event.values[2];
-
-        long curTime  = System.currentTimeMillis();
-        if(curTime-lastUpdate > ONE_SHAKE_TIME_MILLIS)
-        {
-            long diffTime = (curTime - lastUpdate);
-            lastUpdate = curTime;
-            float speed = Math.abs(x + y + z - last_x - last_y - last_z)/ diffTime * 10000;
-            if(speed > SHAKE_THRESHOLD)
-            {
-                mShakes++;
-                // 5 shakes: 3 forward with 2 backward
-                if (mShakes >= 2 * N_SHAKES - 1) {
-                    // TODO: Use this to identify the owner as glober
-                    // NOTE: Here lies a pseudo bug: if you shake, exit, back and shake again, getActivity() returns null.
-/*
-                    Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                    v.vibrate(400);
-*/
-                    globerDetected = true;
-                    Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
-                    sensorManager.unregisterListener(this);
-                }
-            }
-            else {
-                mShakes = 0;
-            }
-
-            last_x = x;
-            last_y=y;
-            last_z=z;
-        }
-    }
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
         showProgressOverlay();
@@ -662,5 +619,18 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         showErrorOverlay();
+    }
+
+    @Override
+    public void onEasterEgg() {
+        // TODO: The glober have just been detected
+        globerDetected = true;
+        Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unsubscribeEggListener(this);
     }
 }
