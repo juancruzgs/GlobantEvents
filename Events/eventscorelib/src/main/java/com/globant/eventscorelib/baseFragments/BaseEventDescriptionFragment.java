@@ -180,7 +180,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         return "Description";
     }
 
-    private void loadEventDescription() {
+    protected void loadEventDescription() {
         mEventTitle.setText(mEvent.getTitle());
         if (mEvent.getEventLogo() != null) {
             mEventImage.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));

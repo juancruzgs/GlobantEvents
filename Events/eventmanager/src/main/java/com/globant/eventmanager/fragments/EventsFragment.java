@@ -49,6 +49,7 @@ import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.activities.MapEventCreationActivity;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
@@ -64,9 +65,11 @@ import com.software.shell.fab.ActionButton;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -272,108 +275,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             mDrawableToApply= DrawableCompat.unwrap(mDrawableToApply);
             mIconToChange.setImageDrawable(mDrawableToApply);
         }
-    }
-
-    private void getIconToTint(View view) {
-        int id = view.getId();
-        //noinspection SimplifiableIfStatement
-        if (id == (R.id.edit_text_title)) {
-            mIconToChange = mIconTitle;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_title);
-            mErrorLabelLayout = mErrorLabelLayoutTitle;
-
-        }
-        else if (id== (R.id.edit_text_full_description)){
-            mIconToChange= mIconFullDescription;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_description);
-            mErrorLabelLayout= mErrorLabelLayoutFullDescription;
-
-        }
-        else if (id== (R.id.edit_text_short_description)){
-            mIconToChange= mIconShortDescription;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_short_description);
-            mErrorLabelLayout= mErrorLabelLayoutShortDescription;
-
-        }
-        else if (id== (R.id.edit_text_additional_info)){
-            mIconToChange= mIconAdditionalInfo;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_additional_info);
-            mErrorLabelLayout= mErrorLabelLayoutAdditionalInfo;
-        }
-        else if (id== (R.id.category_spinner)){
-            mIconToChange= mIconCategory;
-            switch (((Spinner)view).getSelectedItemPosition()){
-                case 0:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_social);
-                    break;
-                case 1:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_informative);
-                    break;
-                case 2:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_technical);
-                    break;
-            }
-
-            mErrorLabelLayout= mErrorLabelLayoutCategory;
-        }
-        else if (id== (R.id.public_spinner)){
-            mIconToChange= mIconPublic;
-            switch (((Spinner)view).getSelectedItemPosition()){
-                case 0:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_public);
-                    break;
-                case 1:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_private);
-                    break;
-            }
-            mErrorLabelLayout= mErrorLabelLayoutPublic;
-        }
-        else if (id== (R.id.edit_text_hashtag)){
-            mIconToChange= mIconHashtag;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_hashtag);
-            mErrorLabelLayout= mErrorLabelLayoutHashtag;
-        }
-        else if (id== (R.id.edit_text_language)){
-            mIconToChange= mIconLanguage;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_language);
-            mErrorLabelLayout=mErrorLabelLayoutLanguage;
-        }
-        else if (id== (R.id.edit_text_start_date)){
-            mIconToChange= mIconStartDate;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_event_start_date);
-            mErrorLabelLayout= mErrorLabelLayoutStartDate;
-        }
-        else if (id== (R.id.edit_text_start_time)){
-            mIconToChange= mIconStartTime;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_start_time);
-            mErrorLabelLayout= mErrorLabelLayoutStartTime;
-        }
-        else if (id== (R.id.edit_text_end_date)){
-            mIconToChange= mIconEndDate;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_event_end_date);
-            mErrorLabelLayout= mErrorLabelLayoutEndDate;
-        }
-        else if (id== (R.id.edit_text_end_time)){
-            mIconToChange= mIconEndTime;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_end_time);
-            mErrorLabelLayout= mErrorLabelLayoutEndTime;
-        }
-        else if (id== (R.id.edit_text_address)){
-            mIconToChange= mIconAddress;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_location);
-            mErrorLabelLayout=mErrorLabelLayoutAddress;
-        }
-        else if (id== (com.globant.eventscorelib.R.id.edit_text_country)){
-            mIconToChange=mIconCountry;
-            mDrawableToApply=getResources().getDrawable(com.globant.eventscorelib.R.mipmap.ic_country);
-            mErrorLabelLayout=mErrorLabelLayoutCountry;
-        }
-        else if (id== (com.globant.eventscorelib.R.id.edit_text_city)){
-            mIconToChange=mIconCity;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_city);
-            mErrorLabelLayout=mErrorLabelLayoutCity;
-        }
-
     }
 
     private void wireUpViews(View rootView) {
@@ -627,6 +528,12 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     @Override
+    public void onDestroyView() {
+        tintAllIconsGrey();
+        super.onDestroyView();
+    }
+
+    @Override
     public String getTitle() {
         return getResources().getString(R.string.title_activity_event_detail);
     }
@@ -686,9 +593,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), CoreConstants.PICTURE_SELECTION_REQUEST);
-
-//                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
             }
         });
 
@@ -713,6 +617,16 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         int toolbarColor = getResources().getColor(com.globant.eventscorelib.R.color.globant_green);
         int flexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
         int fabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
+
+        switch (EventsManagerPagerActivity.mEventAction){
+            case CREATE_EVENT:
+                ((BaseActivity)getActivity()).changeFragmentTitle(getString(R.string.title_activity_create_events));
+                break;
+            case EDIT_EVENT:
+                ((BaseActivity)getActivity()).changeFragmentTitle(getString(R.string.menu_button_update));
+                break;
+        }
+
         ScrollChangeCallbacks scrollChangeCallbacks = new ScrollChangeCallbacks(actionBarSize, flexibleSpaceImageHeight, toolbarColor, flexibleSpaceShowFabOffset,
                 fabMargin, mToolbar, mOverlayView, mEventTitle, mPhotoEvent, mFloatingActionButtonPhoto , false, getActivity());
         mScrollView.setScrollViewCallbacks(scrollChangeCallbacks);
@@ -763,23 +677,26 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         boolean handled = false;
 
        // mEvent = new Event(); //TODO: erase after test
-/*        mEvent.setTitle("Apero Urbano");
-        mEvent.setShortDescription("Picnic, cerveza y comida!");
-        mEvent.setFullDescription("evento realizado el ultimo viernes de cada mes para integrar la ciudad en diferentes actividades.");
-        mEvent.setAddress("Parque de la presidenta");
-        mEvent.setCity("Medellin");
-        mEvent.setCountry("Colombia");
-        mEvent.setAdditionalInfo("-");
-        mEvent.setHashtag("#Apero");
-        mEvent.setCategory("Social");
-        mEvent.setPublic(true);
-        mEvent.setLanguage("Spanglish");
-        Calendar fecha = Calendar.getInstance();
-        fecha.set(fecha.get(Calendar.YEAR)+1, fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH),fecha.get(Calendar.HOUR_OF_DAY),30);
-        mEvent.setStartDate(fecha.getTime());
-        fecha.set(fecha.get(Calendar.YEAR), fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH) + 1, fecha.get(Calendar.HOUR_OF_DAY), 30);
-        mEvent.setEndDate(fecha.getTime());
-        populateInfo(mEvent);*/
+/* */
+        if (EventsManagerPagerActivity.mEventAction == EventsManagerPagerActivity.ActionType.CREATE_EVENT) {
+            mEvent.setTitle("Apero Urbano");
+            mEvent.setShortDescription("Picnic, cerveza y comida!");
+            mEvent.setFullDescription("evento realizado el ultimo viernes de cada mes para integrar la ciudad en diferentes actividades.");
+            mEvent.setAddress("Parque de la presidenta");
+            mEvent.setCity("Medellin");
+            mEvent.setCountry("Colombia");
+            mEvent.setAdditionalInfo("-");
+            mEvent.setHashtag("#Apero");
+            mEvent.setCategory("Social");
+            mEvent.setPublic(true);
+            mEvent.setLanguage("Spanglish");
+            Calendar fecha = Calendar.getInstance();
+            fecha.set(fecha.get(Calendar.YEAR)+1, fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH),fecha.get(Calendar.HOUR_OF_DAY),30);
+            mEvent.setStartDate(fecha.getTime());
+            fecha.set(fecha.get(Calendar.YEAR), fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH) + 1, fecha.get(Calendar.HOUR_OF_DAY), 30);
+            mEvent.setEndDate(fecha.getTime());
+            populateInfo(mEvent);
+        }
 
         if (id == com.globant.eventmanager.R.id.events_action_done) {
             Boolean savePreferences;
@@ -831,6 +748,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                             mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, getBindingKey(), mEvent);
                             break;
                     }
+
+                    tintAllIconsGrey();
                 }
             }
             else {
@@ -861,6 +780,107 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         return handled;
     }
 
+    private void getIconToTint(View view) {
+        int id = view.getId();
+        //noinspection SimplifiableIfStatement
+        if (id == (R.id.edit_text_title)) {
+            mIconToChange = mIconTitle;
+            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_title);
+            mErrorLabelLayout = mErrorLabelLayoutTitle;
+
+        }
+        else if (id== (R.id.edit_text_full_description)){
+            mIconToChange= mIconFullDescription;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_description);
+            mErrorLabelLayout= mErrorLabelLayoutFullDescription;
+
+        }
+        else if (id== (R.id.edit_text_short_description)){
+            mIconToChange= mIconShortDescription;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_short_description);
+            mErrorLabelLayout= mErrorLabelLayoutShortDescription;
+
+        }
+        else if (id== (R.id.edit_text_additional_info)){
+            mIconToChange= mIconAdditionalInfo;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_additional_info);
+            mErrorLabelLayout= mErrorLabelLayoutAdditionalInfo;
+        }
+        else if (id== (R.id.category_spinner)){
+            mIconToChange= mIconCategory;
+            switch (((Spinner)view).getSelectedItemPosition()){
+                case 0:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_social);
+                    break;
+                case 1:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_informative);
+                    break;
+                case 2:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_technical);
+                    break;
+            }
+
+            mErrorLabelLayout= mErrorLabelLayoutCategory;
+        }
+        else if (id== (R.id.public_spinner)){
+            mIconToChange= mIconPublic;
+            switch (((Spinner)view).getSelectedItemPosition()){
+                case 0:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_public);
+                    break;
+                case 1:
+                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_private);
+                    break;
+            }
+            mErrorLabelLayout= mErrorLabelLayoutPublic;
+        }
+        else if (id== (R.id.edit_text_hashtag)){
+            mIconToChange= mIconHashtag;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_hashtag);
+            mErrorLabelLayout= mErrorLabelLayoutHashtag;
+        }
+        else if (id== (R.id.edit_text_language)){
+            mIconToChange= mIconLanguage;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_language);
+            mErrorLabelLayout=mErrorLabelLayoutLanguage;
+        }
+        else if (id== (R.id.edit_text_start_date)){
+            mIconToChange= mIconStartDate;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_event_start_date);
+            mErrorLabelLayout= mErrorLabelLayoutStartDate;
+        }
+        else if (id== (R.id.edit_text_start_time)){
+            mIconToChange= mIconStartTime;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_start_time);
+            mErrorLabelLayout= mErrorLabelLayoutStartTime;
+        }
+        else if (id== (R.id.edit_text_end_date)){
+            mIconToChange= mIconEndDate;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_event_end_date);
+            mErrorLabelLayout= mErrorLabelLayoutEndDate;
+        }
+        else if (id== (R.id.edit_text_end_time)){
+            mIconToChange= mIconEndTime;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_end_time);
+            mErrorLabelLayout= mErrorLabelLayoutEndTime;
+        }
+        else if (id== (R.id.edit_text_address)){
+            mIconToChange= mIconAddress;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_location);
+            mErrorLabelLayout=mErrorLabelLayoutAddress;
+        }
+        else if (id== (com.globant.eventscorelib.R.id.edit_text_country)){
+            mIconToChange=mIconCountry;
+            mDrawableToApply=getResources().getDrawable(com.globant.eventscorelib.R.mipmap.ic_country);
+            mErrorLabelLayout=mErrorLabelLayoutCountry;
+        }
+        else if (id== (com.globant.eventscorelib.R.id.edit_text_city)){
+            mIconToChange=mIconCity;
+            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_city);
+            mErrorLabelLayout=mErrorLabelLayoutCity;
+        }
+    }
+
     private Boolean tintRequiredIconsAndShowError(EditText requiredField){
 
         getIconToTint(requiredField);
@@ -881,6 +901,37 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             mIconToChange.setImageDrawable(mDrawableToApply);
             return true;
         }
+    }
+
+    private void tintAllIconsGrey(){
+
+        List<ImageView> Icons = new ArrayList<>();
+
+        Icons.add(mIconTitle);
+        Icons.add(mIconFullDescription);
+        Icons.add(mIconShortDescription);
+        Icons.add(mIconAdditionalInfo);
+        Icons.add(mIconCategory);
+        Icons.add(mIconPublic);
+        Icons.add(mIconHashtag);
+        Icons.add(mIconLanguage);
+        Icons.add(mIconStartDate);
+        Icons.add(mIconEndDate);
+        Icons.add(mIconStartTime);
+        Icons.add(mIconEndTime);
+        Icons.add(mIconAddress);
+        Icons.add(mIconCountry);
+        Icons.add(mIconCity);
+
+        Drawable drawable;
+
+        for (ImageView imageView:Icons){
+            drawable = DrawableCompat.wrap(imageView.getDrawable());
+            DrawableCompat.setTint(drawable, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
+            drawable = DrawableCompat.unwrap(drawable);
+            imageView.setImageDrawable(drawable);
+        }
+
     }
 
     // BasePagerActivity.FragmentLifecycle implementation
@@ -911,19 +962,21 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
 
-        getActivity().finish();
-
         switch (theAction){
             case EVENT_CREATE:
+                BaseEventDetailPagerActivity.getInstance().setEvent(mEvent);
                 Toast.makeText(getActivity(),getResources().getString(R.string.event_created),Toast.LENGTH_SHORT).show();
                 break;
             case EVENT_UPDATE:
+                BaseEventDetailPagerActivity.getInstance().setEvent(mEvent);
                 Toast.makeText(getActivity(),getResources().getString(R.string.event_updated),Toast.LENGTH_SHORT).show();
                 break;
             case EVENT_DELETE:
                 Toast.makeText(getActivity(),getResources().getString(R.string.event_deleted),Toast.LENGTH_SHORT).show();
                 break;
         }
+
+        EventsManagerPagerActivity.Finish(Activity.RESULT_OK, theAction);
     }
 
     @Override

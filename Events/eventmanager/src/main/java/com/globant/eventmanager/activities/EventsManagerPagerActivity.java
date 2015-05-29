@@ -1,5 +1,6 @@
 package com.globant.eventmanager.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -8,6 +9,7 @@ import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventSpeakersList;
 import com.globant.eventmanager.fragments.EventsFragment;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
@@ -79,6 +81,13 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
         outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, mCacheObjectsController);
         outState.putInt(CoreConstants.SAVE_INSTANCE_EVENT_ACTION, EventsManagerPagerActivity.mEventAction.ordinal());
         super.onSaveInstanceState(outState);
+    }
+
+    public static void Finish(int result,BaseService.ACTIONS action){
+        Intent intent = new Intent();
+        intent.putExtra(CoreConstants.SAVE_INSTANCE_EVENT_ACTION,action.ordinal());
+        ourInstance.setResult(result, intent);
+        ourInstance.finish();
     }
 
     public static EventsManagerPagerActivity getInstance(){return ourInstance;}
