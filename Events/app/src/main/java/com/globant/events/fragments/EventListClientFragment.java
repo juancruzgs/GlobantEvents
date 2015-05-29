@@ -6,8 +6,6 @@ import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
-import com.globant.eventscorelib.utils.CoreConstants;
-
 
 public class EventListClientFragment extends BaseEventListFragment {
     @Override
@@ -33,4 +31,8 @@ public class EventListClientFragment extends BaseEventListFragment {
         return null;
     }
 
+    @Override
+    public void getEvent(String eventId) {
+
+    }
 }

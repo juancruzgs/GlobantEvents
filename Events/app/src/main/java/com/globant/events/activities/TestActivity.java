@@ -10,9 +10,20 @@ import com.globant.events.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 
 
 public class TestActivity extends BaseActivity {
+
+    @Override
+    protected boolean usesEgg() {
+        return false;
+    }
+
+    @Override
+    protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
