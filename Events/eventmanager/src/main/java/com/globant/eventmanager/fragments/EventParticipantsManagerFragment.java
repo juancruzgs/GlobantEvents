@@ -90,7 +90,9 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        showErrorOverlay();
+        if (getActivity() != null) {
+            showErrorOverlay();
+        }
     }
 
     @Override
