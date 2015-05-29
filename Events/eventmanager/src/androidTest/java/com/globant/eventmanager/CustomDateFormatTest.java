@@ -30,10 +30,9 @@ public class CustomDateFormatTest extends InstrumentationTestCase {
 
     public void testGetCompleteDate() throws Exception{
         Context context = getInstrumentation().getTargetContext().getApplicationContext();
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         Date date = new Date();
         Calendar calendar = Calendar.getInstance();
-        TimeZone tzInAmerica = TimeZone.getTimeZone("America/New_York");
-        calendar.setTimeZone(tzInAmerica);
         calendar.set(Calendar.YEAR, 2014);
         calendar.set(Calendar.MONTH, Calendar.JANUARY);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -43,6 +42,6 @@ public class CustomDateFormatTest extends InstrumentationTestCase {
         date.setTime(calendar.getTimeInMillis());
 
         String customDate = CustomDateFormat.getCompleteDate(date, context);
-        assertEquals("Jan, 01 2014 10:10 GMT-03:00", customDate);
+        assertEquals("Jan, 01 2014 10:10 UTC", customDate);
     }
 }
