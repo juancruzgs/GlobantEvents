@@ -121,4 +121,11 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
     protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
         return null;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(R.anim.right_in, R.anim.left_out);
+    }
 }
