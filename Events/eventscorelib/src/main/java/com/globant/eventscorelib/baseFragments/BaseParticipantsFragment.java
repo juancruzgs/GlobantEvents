@@ -78,30 +78,32 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-        switch ( theAction ) {
-            case PARTICIPANT_LIST:
-                mSubscribers = (List<Subscriber>) result;
-                ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
-                setRecyclerViewAdapter();
-                mRefreshDate = new Date();
-                hideUtilsAndShowContentOverlay();
-                initializeAcceptedSubscribers();
-                break;
-            case REFRESH_SUBSCRIBERS:
-                for (Subscriber subscriber:(List<Subscriber>)result){
-                    mSubscribers.add(subscriber);
-                }
-                mRefreshDate = new Date();
-                if (((List<Subscriber>) result).size() != 0){
-                    if (mAdapter != null){
-                        mAdapter.notifyDataSetChanged();
-                    } else {
-                        setRecyclerViewAdapter();
-                        mTextViewNoSubscribers.setVisibility(View.INVISIBLE);
+        if (getActivity() != null) {    // This Fragment is not an orphan
+            switch (theAction) {
+                case PARTICIPANT_LIST:
+                    mSubscribers = (List<Subscriber>) result;
+                    ((BaseEventDetailPagerActivity) getActivity()).setSubscriberList(mSubscribers);
+                    setRecyclerViewAdapter();
+                    mRefreshDate = new Date();
+                    hideUtilsAndShowContentOverlay();
+                    initializeAcceptedSubscribers();
+                    break;
+                case REFRESH_SUBSCRIBERS:
+                    for (Subscriber subscriber : (List<Subscriber>) result) {
+                        mSubscribers.add(subscriber);
                     }
-                }
-                mSwipeRefreshLayout.setRefreshing(false);
-                break;
+                    mRefreshDate = new Date();
+                    if (((List<Subscriber>) result).size() != 0) {
+                        if (mAdapter != null) {
+                            mAdapter.notifyDataSetChanged();
+                        } else {
+                            setRecyclerViewAdapter();
+                            mTextViewNoSubscribers.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    break;
+            }
         }
     }
 
