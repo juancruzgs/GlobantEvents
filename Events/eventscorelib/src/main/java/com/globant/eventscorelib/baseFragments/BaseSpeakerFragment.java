@@ -377,29 +377,24 @@ public class BaseSpeakerFragment extends BaseFragment {
         // take care of exceptions
         // call the standard crop action intent (the user device may not
         // support it)
-        try {
-            Intent cropIntent = new Intent(IMAGE_CROP);
-            // indicate image type and Uri
-            cropIntent.setDataAndType(picUri, URI_NAME);
-            // set crop properties
-            cropIntent.putExtra(EXTRA_CROP, EXTRA_TRUE);
-            // indicate aspect of desired crop
-            cropIntent.putExtra(EXTRA_ASPECTX, mPhotoProfile.getWidth());
-            cropIntent.putExtra(EXTRA_ASPECTY,  mPhotoProfile.getHeight());
-            // indicate output X and Y
-            cropIntent.putExtra(EXTRA_OUTPUTX, mPhotoProfile.getWidth());
-            cropIntent.putExtra(EXTRA_OUTPUTY, mPhotoProfile.getHeight());
-            // retrieve data on return
-            cropIntent.putExtra(EXTRA_RETURN_DATA, true);
-            // start the activity - we handle returning in onActivityResult
-            startActivityForResult(cropIntent, CROP_PIC);
-        }
-        catch (Exception ex)
-        {
-            Toast.makeText(getActivity().getBaseContext(), "fds", Toast.LENGTH_SHORT).show();
-        }
-
+        Intent cropIntent = new Intent(CoreConstants.IMAGE_CROP);
+        // indicate image type and Uri
+        cropIntent.setDataAndType(picUri, CoreConstants.URI_NAME);
+        // set crop properties
+        cropIntent.putExtra(CoreConstants.EXTRA_CROP, CoreConstants.EXTRA_TRUE);
+        // indicate aspect of desired crop
+        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTX, 720);
+        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, 360);
+        // indicate output X and Y
+        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, 720);
+        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY,360);
+        // retrieve data on return
+        cropIntent.putExtra(CoreConstants.EXTRA_RETURN_DATA, true);
+        // start the activity - we handle returning in onActivityResult
+        startActivityForResult(cropIntent, CROP_PIC);
     }
+
+
 
     private boolean tintRequiredIconsAndShowError(EditText requiredField){
          getIconToTint(requiredField);
