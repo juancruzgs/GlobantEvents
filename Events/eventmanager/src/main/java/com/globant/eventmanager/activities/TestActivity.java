@@ -7,8 +7,7 @@ import com.globant.eventmanager.fragments.EventSpeakersList;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseActivities.BaseMapActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
-
-
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 
 
 public class TestActivity extends BaseActivity {
@@ -101,4 +100,14 @@ public class TestActivity extends BaseActivity {
             }
         }
     }*/
+
+    @Override
+    protected boolean usesEgg() {
+        return false;
+    }
+
+    @Override
+    protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
+        return null;
+    }
 }
