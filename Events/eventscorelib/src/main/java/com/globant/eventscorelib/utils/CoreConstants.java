@@ -132,6 +132,7 @@ public class CoreConstants {
     // Intents request
     public static final int MAP_MANAGER_REQUEST = 1000;
     public static final int PICTURE_SELECTION_REQUEST = 1001;
+    public static final int EDIT_EVENT_REQUEST = 1002;
 
     // Intents constants
     public static final String EVENTS_HISTORY = "eventHistory";

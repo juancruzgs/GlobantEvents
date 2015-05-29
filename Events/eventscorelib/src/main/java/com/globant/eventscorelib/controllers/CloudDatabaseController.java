@@ -184,25 +184,43 @@ public class CloudDatabaseController extends DatabaseController{
     public void updateEvent(Event domainEvent) throws ParseException {
 
         List<Speaker> oldSpeakerList = getEventSpeakers(domainEvent.getObjectID());
-        List<String>IdList = new ArrayList<>();
+        List<String>IdListToRemove = new ArrayList<>();
         if (oldSpeakerList != null && !oldSpeakerList.isEmpty()){
             for (Speaker speaker: oldSpeakerList)
-                IdList.add(speaker.getObjectID());
-            deleteEventSpeakers(domainEvent.getObjectID(),IdList);
+                IdListToRemove.add(speaker.getObjectID());
         }
 
+        List<Speaker> newSpeakerList = domainEvent.getSpeakers();
+        List<String>   IdListToAdd = new ArrayList<>();
+        if (newSpeakerList != null && !newSpeakerList.isEmpty()){
+            for (Speaker speaker: newSpeakerList){
+                IdListToAdd.add(createSpeaker(speaker));
+            }
+        }
+
+        if (!IdListToRemove.isEmpty() && !IdListToAdd.isEmpty()) {
+            ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+            ParseObject event = eventsQuery.get(domainEvent.getObjectID());
+            ParseQuery<ParseObject> speakersQuery = ParseQuery.getQuery(CoreConstants.SPEAKERS_TABLE);
+            ParseRelation<ParseObject> relation = event.getRelation(CoreConstants.FIELD_SPEAKERS);
+
+            if (!IdListToRemove.isEmpty())
+                for (String speakerId : IdListToRemove){
+                    relation.remove(speakersQuery.get(speakerId));
+                    (speakersQuery.get(speakerId)).delete();
+                }
+
+            if (!IdListToAdd.isEmpty())
+                for (String speakerId : IdListToAdd)
+                    relation.add(speakersQuery.get(speakerId));
+
+            event.save();
+        }
+
+        // Update Event
         ParseObject databaseEvent = ParseObject.createWithoutData(CoreConstants.EVENTS_TABLE, domainEvent.getObjectID());
         setDatabaseEventInformation(domainEvent, databaseEvent);
         databaseEvent.save();
-
-        List<Speaker> newSpeakerList = domainEvent.getSpeakers();
-        List<String>   IdSpeakerList = new ArrayList<>();
-        if (newSpeakerList != null && !newSpeakerList.isEmpty()){
-            for (Speaker speaker: newSpeakerList){
-                IdSpeakerList.add(createSpeaker(speaker));
-            }
-            addEventSpeakers(domainEvent.getObjectID(), IdSpeakerList);
-        }
     }
 
     public void addEventSpeakers(String eventId, List<String> speakersIds) throws ParseException {
