@@ -7,6 +7,7 @@ import com.globant.eventmanager.fragments.EventHistoryManagerFragment;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;
@@ -50,6 +51,16 @@ public class EventHistoryManagerActivity extends BaseActivity {
         if (savedInstanceState != null) {
             mCacheObjectsController = savedInstanceState.getParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS);
         }
+    }
+
+    @Override
+    protected boolean usesEgg() {
+        return false;
+    }
+
+    @Override
+    protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
+        return null;
     }
 
     @Override

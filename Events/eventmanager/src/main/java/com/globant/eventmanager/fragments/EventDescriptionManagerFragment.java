@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,12 +19,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.utils.QRCodeEncoder;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.PushNotifications;
 import com.google.zxing.WriterException;
 
 import java.io.File;
@@ -57,7 +63,35 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
             } catch (WriterException e) {
                 e.printStackTrace();
             }
+        } else {
+            if (id == com.globant.eventscorelib.R.id.action_notifications){
+                new MaterialDialog.Builder(getActivity())
+                        .title("Push Notifications")
+                        .customView(R.layout.dialog_push_notification, false)
+                        .positiveText("Send")
+                        .negativeText("Cancel")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
+                                AppCompatSpinner spinner = (AppCompatSpinner) dialog.getCustomView().findViewById(R.id.spinner_users_filter);
+                                AppCompatEditText editText = (AppCompatEditText) dialog.findViewById(R.id.editText_notification_text);
+                                PushNotifications.sendNotification(getActivity(), editText.getText().toString(),
+                                                                   spinner.getSelectedItem().toString(),
+                                                                   mEvent.getObjectID());
+
+                                Toast.makeText(dialog.getContext(), "Message sent to "+spinner.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                super.onNegative(dialog);
+                            }
+                        })
+                        .show();
+            }
         }
+
         return super.onOptionsItemSelected(item);
 
     }

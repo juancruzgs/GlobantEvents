@@ -24,6 +24,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
+    private boolean mFabIsShown;
     private int mFlexibleSpaceShowFabOffset;
     private int mFabMargin;
     private boolean mStickyToolbar;
@@ -33,6 +34,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
     private ImageView mPhoto;
     private ActionButton mFloatingActionButton;
     private Context mContext;
+    private String mOldTitle;
 
     public ScrollChangeCallbacks(int actionBarSize, int flexibleSpaceImageHeight, int toolbarColor, int flexibleSpaceShowFabOffset, int fabMargin, View toolBar,
                                  View overlayView, AppCompatTextView title, ImageView photo, ActionButton floatingActionButton, boolean stickyToolbar, Context context) {
@@ -49,6 +51,7 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
         mStickyToolbar = stickyToolbar;
         mFloatingActionButton = floatingActionButton;
         mContext = context;
+        mOldTitle = ((BaseActivity) mContext).getFragmentTitle();
     }
 
     @Override
@@ -94,6 +97,9 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
 
         if (i > mFlexibleSpaceImageHeight){
             ((BaseActivity) mContext).changeFragmentTitle(mTitle.getText().toString());
+        }else{
+            ((BaseActivity) mContext).changeFragmentTitle(mOldTitle);
+
         }
 
         // Translate FAB
@@ -122,18 +128,20 @@ public class ScrollChangeCallbacks implements ObservableScrollViewCallbacks {
     }
 
     private void showFab() {
-        if (!mFloatingActionButton.isEnabled()) {
+        if (!mFabIsShown) {
+            mFloatingActionButton.setVisibility(View.VISIBLE);
             ViewPropertyAnimator.animate(mFloatingActionButton).cancel();
             ViewPropertyAnimator.animate(mFloatingActionButton).scaleX(1).scaleY(1).setDuration(200).start();
-            mFloatingActionButton.setEnabled(true);
+            mFabIsShown = true;
         }
     }
 
     private void hideFab() {
-        if (mFloatingActionButton.isEnabled()) {
+        if (mFabIsShown) {
+            mFloatingActionButton.setVisibility(View.GONE);
             ViewPropertyAnimator.animate(mFloatingActionButton).cancel();
             ViewPropertyAnimator.animate(mFloatingActionButton).scaleX(0).scaleY(0).setDuration(200).start();
-            mFloatingActionButton.setEnabled(false);
+            mFabIsShown = false;
         }
     }
 

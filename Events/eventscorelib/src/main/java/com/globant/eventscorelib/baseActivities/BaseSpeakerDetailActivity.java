@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseSpeakerDetailFragment;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 
 public class BaseSpeakerDetailActivity extends BaseActivity {
 
@@ -18,5 +19,15 @@ public class BaseSpeakerDetailActivity extends BaseActivity {
                     .add(R.id.container, new BaseSpeakerDetailFragment())
                     .commit();
         }
+    }
+
+    @Override
+    protected boolean usesEgg() {
+        return false;
+    }
+
+    @Override
+    protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
+        return null;
     }
 }

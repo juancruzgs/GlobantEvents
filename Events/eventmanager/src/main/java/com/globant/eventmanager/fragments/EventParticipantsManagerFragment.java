@@ -29,6 +29,7 @@ import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.PushNotifications;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,7 +90,9 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        showErrorOverlay();
+        if (getActivity() != null) {
+            showErrorOverlay();
+        }
     }
 
     @Override
@@ -157,7 +160,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                         for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
                             linearLayoutManager.findViewByPosition(i);
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.VISIBLE){
+                            if (current.getFrameLayoutRight().getVisibility() != View.VISIBLE){
                                 current.acceptAnimation();
                                 cont += 1;
                             }
@@ -167,7 +170,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                         }
                         for (Subscriber sub : mSubscribers){
                             if (!sub.isAccepted()){
-                                sub.setAccepted(true);
+                                sub.setChecked(true);
                                 if (!mAcceptedSubscribers.contains(sub)){
                                     mAcceptedSubscribers.add(sub);
                                 }
@@ -178,7 +181,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                         for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
                             linearLayoutManager.findViewByPosition(i);
                             ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
-                            if (current.getFrameLayoutLeft().getVisibility() == View.INVISIBLE){
+                            if (current.getFrameLayoutLeft().getVisibility() != View.VISIBLE){
                                 current.declineAnimation();
                                 cont += 1;
                             }
@@ -187,8 +190,8 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                             }
                         }
                         for (Subscriber sub : mSubscribers){
-                            sub.setAccepted(false);
                             if (mAcceptedSubscribers.contains(sub)){
+                                sub.setChecked(false);
                                 mAcceptedSubscribers.remove(sub);
                             }
                         }
@@ -197,7 +200,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                 if (cont == 0){
                     notifyAdapter();
                 }
-                mAdapter.setSubscribers(mSubscribers);
+                //mAdapter.setSubscribers(mSubscribers);
             }
         };
         mTextViewAcceptAll.setOnClickListener(addDeclineAllListener);
@@ -261,16 +264,21 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     public void onStop() {
-        if (mSubscribers != null)
+        if ((mSubscribers != null) && (mAcceptedSubscribers.size() > 0))
         {
-            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mSubscribers);
+            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mAcceptedSubscribers);
+            for (Subscriber subscriber: mAcceptedSubscribers){
+                PushNotifications.sendNotificationToSubscriber(getActivity(),"You are a participant now",
+                        mEvent.getObjectID(),subscriber.getObjectID());
+            }
         }
         super.onStop();
     }
 
     public void acceptSubscriber(int position){
         Subscriber subscriber = mSubscribers.get(position);
-        subscriber.setAccepted(true);
+        //subscriber.setAccepted(true);
+        subscriber.setChecked(true);
         if (!mAcceptedSubscribers.contains(subscriber)){
             mAcceptedSubscribers.add(subscriber);
         }
@@ -278,7 +286,8 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     public void declineSubscriber(int position){
         Subscriber subscriber = mSubscribers.get(position);
-        subscriber.setAccepted(false);
+        //subscriber.setAccepted(false);
+        subscriber.setChecked(false);
         if (mAcceptedSubscribers.contains(subscriber)){
             mAcceptedSubscribers.remove(subscriber);
         }

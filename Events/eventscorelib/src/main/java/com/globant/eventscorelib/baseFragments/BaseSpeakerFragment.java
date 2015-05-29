@@ -158,7 +158,10 @@ public class BaseSpeakerFragment extends BaseFragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
             doneClick();
-            if (mDoneClicked == true && mPhotoPicked){
+            if(fragmentMode== EDIT_MODE)
+                mPhotoPicked=true;
+
+            if (mDoneClicked == true && mPhotoPicked ){
                Intent resultIntent = new Intent();
                switch (fragmentMode)
                {
@@ -207,10 +210,10 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     private void doneClick() {
         mDoneClicked = true;
-        tintRequiredIconsAndShowError(mEditTextFirstName);
-        tintRequiredIconsAndShowError(mEditTextLastName);
-        tintRequiredIconsAndShowError(mEditTextTitle);
-        tintRequiredIconsAndShowError(mEditTextBiography);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextFirstName);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextLastName);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextTitle);
+        mDoneClicked &= tintRequiredIconsAndShowError(mEditTextBiography);
     }
 
     @Override
@@ -256,7 +259,7 @@ public class BaseSpeakerFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        //super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GET_SPEAKER_IMAGE) {
                 //File file = new File(Environment.getExternalStorageDirectory() + File.separator + SHARED_PREF_IMG);
@@ -374,31 +377,26 @@ public class BaseSpeakerFragment extends BaseFragment {
         // take care of exceptions
         // call the standard crop action intent (the user device may not
         // support it)
-        try {
-            Intent cropIntent = new Intent(IMAGE_CROP);
-            // indicate image type and Uri
-            cropIntent.setDataAndType(picUri, URI_NAME);
-            // set crop properties
-            cropIntent.putExtra(EXTRA_CROP, EXTRA_TRUE);
-            // indicate aspect of desired crop
-            cropIntent.putExtra(EXTRA_ASPECTX, mPhotoProfile.getWidth());
-            cropIntent.putExtra(EXTRA_ASPECTY,  mPhotoProfile.getHeight());
-            // indicate output X and Y
-            cropIntent.putExtra(EXTRA_OUTPUTX, mPhotoProfile.getWidth());
-            cropIntent.putExtra(EXTRA_OUTPUTY, mPhotoProfile.getHeight());
-            // retrieve data on return
-            cropIntent.putExtra(EXTRA_RETURN_DATA, true);
-            // start the activity - we handle returning in onActivityResult
-            startActivityForResult(cropIntent, CROP_PIC);
-        }
-        catch (Exception ex)
-        {
-            Toast.makeText(getActivity().getBaseContext(), "fds", Toast.LENGTH_SHORT).show();
-        }
-
+        Intent cropIntent = new Intent(CoreConstants.IMAGE_CROP);
+        // indicate image type and Uri
+        cropIntent.setDataAndType(picUri, CoreConstants.URI_NAME);
+        // set crop properties
+        cropIntent.putExtra(CoreConstants.EXTRA_CROP, CoreConstants.EXTRA_TRUE);
+        // indicate aspect of desired crop
+        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTX, 720);
+        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, 360);
+        // indicate output X and Y
+        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, 720);
+        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY,360);
+        // retrieve data on return
+        cropIntent.putExtra(CoreConstants.EXTRA_RETURN_DATA, true);
+        // start the activity - we handle returning in onActivityResult
+        startActivityForResult(cropIntent, CROP_PIC);
     }
 
-    private void tintRequiredIconsAndShowError(EditText requiredField){
+
+
+    private boolean tintRequiredIconsAndShowError(EditText requiredField){
          getIconToTint(requiredField);
          if (requiredField.getText().toString().trim().length() == 0) {
                 mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
@@ -406,9 +404,11 @@ public class BaseSpeakerFragment extends BaseFragment {
                 DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
                 mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
                 mIconToChange.setImageDrawable(mDrawableToApply);
-                mDoneClicked = false;
+                return false;
             } else {
                 tintGrey();
+                return true;
+
             }
     }
 

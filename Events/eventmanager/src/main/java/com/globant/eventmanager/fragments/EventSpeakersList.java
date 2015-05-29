@@ -1,40 +1,26 @@
 package com.globant.eventmanager.fragments;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import com.globant.eventscorelib.R;
 
 import com.globant.eventmanager.activities.EventSpeakerListActivity;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
-import com.globant.eventmanager.activities.TestActivity;
-import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
-import com.globant.eventscorelib.baseActivities.BaseSpeakerDetailActivity;
 import com.globant.eventscorelib.baseAdapters.BaseSpeakersListAdapter;
 import com.globant.eventscorelib.baseAdapters.RecyclerItemClickListener;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseSpeakersListFragment;
-import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
-import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by juan.ramirez on 13/05/2015.
@@ -45,8 +31,6 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
     private static final int RESULT_OK = 1;
     private String eventId;
     private String LOG_TAG = getClass().getSimpleName();
-
-
 
     @Override
     public BaseService.ActionListener getActionListener() {
@@ -85,6 +69,8 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
         }
+        mRecyclerView.setVisibility(View.GONE);
+        mTextViewNoSpeakers.setVisibility(View.VISIBLE);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
         mRecyclerView.setHasFixedSize(true);
@@ -112,6 +98,17 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
         eventId = ((EventsManagerPagerActivity) getActivity()).getEvent().getObjectID();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName().toString());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName().toString());
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -134,14 +131,12 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                         mAdapter.notifyDataSetChanged();
                     }
                     else
-                    {   //mSpeakers.add(newSpeaker);
+                    {
                         mAdapter.addSpeaker(newSpeaker);
                         mAdapter.notifyDataSetChanged();
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                        mTextViewNoSpeakers.setVisibility(View.VISIBLE);
                         EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
-                        //setRecyclerViewAdapter();
                     }
+                    setNotSpeakerOnListMessage();
                 }
                 if(editedSpeaker!= null)
                 {
@@ -158,6 +153,7 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
                     mSpeakers.remove(position);
                     mAdapter.notifyItemRemoved(position);
                     EventsManagerPagerActivity.getInstance().setSpeakersList(mSpeakers);
+                    setNotSpeakerOnListMessage();
                 }
             }
         }
@@ -194,12 +190,20 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
     private void setRecyclerViewAdapter() {
         mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
         mRecyclerView.setAdapter(mAdapter);
+        setNotSpeakerOnListMessage();
+    }
+
+    private void setNotSpeakerOnListMessage() {
         if (mSpeakers !=null)
             if (mSpeakers.size() <1){
                 mRecyclerView.setVisibility(View.GONE);
                 mTextViewNoSpeakers.setVisibility(View.VISIBLE);
             }
+            else
+            {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mTextViewNoSpeakers.setVisibility(View.INVISIBLE);
+            }
         hideUtilsAndShowContentOverlay();
     }
-
 }

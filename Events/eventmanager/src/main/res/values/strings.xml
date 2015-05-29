@@ -10,6 +10,7 @@
     <string name="edit_text_last_name_hint">Last name</string>
     <string name="text_view_add_all_participants">ACCEPT ALL</string>
     <string name="text_view_decline_all_participants">DECLINE ALL</string>
+    <string name="title_activity_push_notification">Push Notification</string>
     <string name="text_view_no_participants">No subscribers registered yet.</string>
     <string name="toast_hint_participants_list">Hold participant to accept or decline!</string>
     <string name="error_message_dates">End date must be greater than start date.</string>

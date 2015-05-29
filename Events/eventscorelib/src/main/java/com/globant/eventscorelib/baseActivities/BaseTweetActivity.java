@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseFragments.BaseTweetFragment;
 import com.globant.eventscorelib.controllers.CacheObjectsController;
+import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import twitter4j.User;
@@ -58,5 +59,15 @@ public class BaseTweetActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, mCacheObjectsController);
+    }
+
+    @Override
+    protected boolean usesEgg() {
+        return false;
+    }
+
+    @Override
+    protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
+        return null;
     }
 }

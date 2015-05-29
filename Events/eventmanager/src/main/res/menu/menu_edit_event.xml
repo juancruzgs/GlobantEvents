@@ -9,6 +9,8 @@
     <item android:id="@+id/events_action_QR_code"
         android:title="@string/share_button"
         android:orderInCategory="101"
-        app:showAsAction="always"
+        app:showAsAction="never"
         android:icon="@mipmap/ic_qrcode"/>
+    <item android:id="@+id/action_notifications" android:title="@string/menu_button_notifications"
+          android:icon="@mipmap/ic_notifications" app:showAsAction="ifRoom" />
 </menu>

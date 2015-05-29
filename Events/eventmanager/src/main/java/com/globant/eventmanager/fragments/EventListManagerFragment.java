@@ -2,6 +2,7 @@ package com.globant.eventmanager.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,7 +10,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventHistoryManagerActivity;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
@@ -17,9 +21,8 @@ import com.globant.eventmanager.adapters.EventListAdapterManager;
 import com.globant.eventscorelib.baseAdapters.BaseEventsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
+import com.globant.eventscorelib.utils.PushNotifications;
 import com.software.shell.fab.ActionButton;
-
-import java.util.Date;
 
 public class EventListManagerFragment extends BaseEventListFragment {
 
@@ -77,6 +80,31 @@ public class EventListManagerFragment extends BaseEventListFragment {
             Intent intentHistory = new Intent(getActivity(), EventHistoryManagerActivity.class);
             startActivity(intentHistory);
             handled = true;
+        } else {
+            if (id == R.id.action_notifications){
+                MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                        .title("Push Notifications")
+                        .customView(R.layout.dialog_push_notification, false)
+                        .positiveText("Send")
+                        .negativeText("Cancel")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
+                                AppCompatEditText editText = (AppCompatEditText) dialog.findViewById(R.id.editText_notification_text);
+                                PushNotifications.sendBroadcastNotification(getActivity(),editText.getText().toString());
+                                Toast.makeText(dialog.getContext(), "Message sent", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                super.onNegative(dialog);
+                            }
+                        }).build();
+                materialDialog.findViewById(R.id.title_destination).setVisibility(View.GONE);
+                materialDialog.findViewById(R.id.spinner_users_filter).setVisibility(View.GONE);
+                materialDialog.show();
+            }
         }
         if (!handled) {
             handled = super.onOptionsItemSelected(item);
@@ -109,6 +137,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
                 startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
             }
         });
     }

@@ -2,7 +2,11 @@ package com.globant.eventscorelib.baseAdapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatTextView;
@@ -11,10 +15,28 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.share.ShareApi;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareOpenGraphAction;
+import com.facebook.share.model.ShareOpenGraphContent;
+import com.facebook.share.model.ShareOpenGraphObject;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.SharingIntent;
 
 public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final View mViewGroup;
@@ -27,6 +49,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
     private final AppCompatTextView mShortDescriptionEvent;
     private final AppCompatTextView mEventSpeakers;
     private final LinearLayout mLinearLayoutSpeakers;
+    private final ImageView mEventShare;
 
     protected abstract Class<? extends BasePagerActivity> getActivityClass();
 
@@ -42,6 +65,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         mShortDescriptionEvent = (AppCompatTextView) itemView.findViewById(R.id.event_short_description_text_view);
         mEventSpeakers = (AppCompatTextView) itemView.findViewById(R.id.event_speakers_text_view);
         mLinearLayoutSpeakers = (LinearLayout) itemView.findViewById(R.id.speakers_layout);
+        mEventShare = (ImageView) itemView.findViewById(R.id.image_view_icon);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,9 +74,22 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
                 Intent intent = new Intent(context, getActivityClass());
                 intent.putExtra(CoreConstants.FIELD_EVENTS, event);
                 context.startActivity(intent);
+                fragment.getActivity().overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
             }
         });
+
+        mEventShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String shortDescription = mShortDescriptionEvent.getText().toString() +
+                        " - " + mEventDate.getText().toString() + " - " + mLocationEvent.getText().toString();
+                Bitmap photo = ((BitmapDrawable)mImageEvent.getDrawable()).getBitmap();
+              //  Uri imageUri = ConvertImage.getImageUri(context, photo);
+              //  SharingIntent.shareViaFacebook(fragment, mEventTitle.getText().toString(), shortDescription, imageUri);
+            }
+       });
     }
+
 
     public void hideSpeakersLayout() {
         mLinearLayoutSpeakers.setVisibility(View.GONE);

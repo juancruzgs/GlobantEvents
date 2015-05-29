@@ -8,6 +8,8 @@
         <item name="divider">@color/grey_dark</item>
         <item name="android:textColorPrimary">@color/grey</item>
         <item name="android:textColorSecondary">@color/grey</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionButtonOverflow</item>
+        <item name="actionOverflowButtonStyle">@style/ActionButtonOverflow</item>
     </style>
 
     <style name="Toolbar" parent="Theme.AppCompat">
@@ -21,6 +23,9 @@
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:typeface">normal</item>
+    </style>
 
+    <style name="ActionButtonOverflow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@mipmap/ic_overflow_toolbar</item>
     </style>
 </resources>
