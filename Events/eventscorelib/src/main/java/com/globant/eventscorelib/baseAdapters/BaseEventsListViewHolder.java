@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatTextView;
@@ -15,26 +13,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
-import com.facebook.share.ShareApi;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.ShareOpenGraphAction;
-import com.facebook.share.model.ShareOpenGraphContent;
-import com.facebook.share.model.ShareOpenGraphObject;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.widget.ShareDialog;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.domainObjects.Event;
-import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.SharingIntent;
 
@@ -84,12 +65,12 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
                 String shortDescription = mShortDescriptionEvent.getText().toString() +
                         " - " + mEventDate.getText().toString() + " - " + mLocationEvent.getText().toString();
                 Bitmap photo = ((BitmapDrawable)mImageEvent.getDrawable()).getBitmap();
+                SharingIntent.showList(context);
               //  Uri imageUri = ConvertImage.getImageUri(context, photo);
               //  SharingIntent.shareViaFacebook(fragment, mEventTitle.getText().toString(), shortDescription, imageUri);
             }
        });
     }
-
 
     public void hideSpeakersLayout() {
         mLinearLayoutSpeakers.setVisibility(View.GONE);
