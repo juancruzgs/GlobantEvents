@@ -17,8 +17,6 @@ public class ConvertImage {
         if(image != null){
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inMutable = true;
-            options.inPurgeable = true;
-            options.inInputShareable = true;
             bitmap = BitmapFactory.decodeByteArray(image, 0, image.length, options);
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -34,7 +32,7 @@ public class ConvertImage {
     }
     public static byte[] convertBitmapImageToByteArray(Bitmap Photo) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        Photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         return stream.toByteArray();
     }
 

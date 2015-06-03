@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.location.Address;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
@@ -538,6 +540,28 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         return getResources().getString(R.string.title_activity_event_detail);
     }
 
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -547,22 +571,44 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                 if (resultCode == Activity.RESULT_OK){
                     Uri targetUri = data.getData();
                     Bitmap bitmap;
+
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+
                     try {
-                        bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri));
+                        BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
+                        options.inJustDecodeBounds = false;
+
+                        if (options.outHeight >= 1000 && options.outWidth >= 1000){
+                            options.inSampleSize = calculateInSampleSize(options, mPhotoEvent.getWidth(), mPhotoEvent.getHeight());
+                            bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
+                        }else
+                        {
+                            options.inSampleSize = 1;
+                            bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
+                        }
+
                         if (bitmap != null) {
                             mPhotoEvent.setImageBitmap(bitmap);
                             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
                             mEvent.setEventLogo(ConvertImage.convertBitmapImageToByteArray(bitmap));
+                        }else
+                        {
+                            mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
+                            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
+                            mEvent.setEventLogo(null);
                         }
-                    } catch (FileNotFoundException e) {
+
+                    } catch (Exception e) {
                         mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
                         mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
+                        mEvent.setEventLogo(null);
                         e.printStackTrace();
                     }
                 }
                 break;
             case CoreConstants.MAP_MANAGER_REQUEST:
-                if (resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     Address address = data.getExtras().getParcelable(CoreConstants.MAP_ADDRESS_INTENT);
                     if (address != null){
                         mEditTextCity.setText(address.getLocality());
