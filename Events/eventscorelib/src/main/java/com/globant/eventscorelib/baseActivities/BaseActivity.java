@@ -46,8 +46,8 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     BaseEasterEgg mEasterEgg;
 
-    protected abstract boolean usesEgg();
-    protected abstract BaseEasterEggsBasket.EASTEREGGS whichEgg();
+    protected boolean usesEgg() { return false; }
+    protected BaseEasterEggsBasket.EASTEREGGS whichEgg() { return null; }
 
     // TODO: Complete these "easter egg management methods", taking somehow the easter egg type from a subclass
     protected void initEasterEgg() {
