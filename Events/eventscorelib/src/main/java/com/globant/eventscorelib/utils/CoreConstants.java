@@ -53,6 +53,7 @@ public class CoreConstants {
     public static final String FIELD_SUBSCRIBERS = "subscribers";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_LAST_NAME = "last_name";
+    public static final String FIELD_CALENDAR_ID = "calendar_id";
 
     //QR Encoder
     public static final int WHITE = 0xFFFFFFFF;

@@ -32,6 +32,8 @@ public class Event extends BaseObject implements Parcelable {
     private List<Speaker> mSpeakers;
     private List<Subscriber> mSubscribers;
 
+    private Long mCalendarID;
+
     public Event() {
     }
 
@@ -191,6 +193,14 @@ public class Event extends BaseObject implements Parcelable {
         mSubscribers = subscribers;
     }
 
+    public Long getCalendarID() {
+        return mCalendarID;
+    }
+
+    public void setCalendarID(Long calendarID) {
+        mCalendarID = calendarID;
+    }
+
     public static final Parcelable.Creator<Event> CREATOR = new Parcelable.Creator<Event>() {
         @Override
         public Event createFromParcel(Parcel source) {
@@ -238,6 +248,7 @@ public class Event extends BaseObject implements Parcelable {
         in.readTypedList(mSpeakers, Speaker.CREATOR);
         mSubscribers = new ArrayList<>();
         in.readTypedList(mSubscribers, Subscriber.CREATOR);
+        mCalendarID = (Long)in.readValue(Long.class.getClassLoader());
     }
 
     @Override
@@ -271,5 +282,6 @@ public class Event extends BaseObject implements Parcelable {
         dest.writeSerializable(mEndDate);
         dest.writeTypedList(mSpeakers);
         dest.writeTypedList(mSubscribers);
+        dest.writeValue(mCalendarID);
     }
 }

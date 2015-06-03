@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseActivities.BaseCalendarListActivity;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
@@ -33,6 +35,8 @@ import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 public abstract class BaseEventDescriptionFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
@@ -54,6 +58,10 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     protected ActionButton mFab;
     protected Event mEvent;
     private String mBindingKey;
+
+    private AppCompatButton mButtonAddToCalendar;
+
+    public final static String KEY_CALENDAR_LIST = "KEY_CALENDAR_LIST";
 
     public BaseEventDescriptionFragment() {
     }
@@ -77,7 +85,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+        mBindingKey = this.getClass().getSimpleName(); // + new Date().toString();
     }
 
     @Override
@@ -135,7 +143,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PushNotifications.subscribeToChannel("CH-"+mEvent.getObjectID());
+                PushNotifications.subscribeToChannel("CH-" + mEvent.getObjectID());
                 prepareBaseSubscriberActivity();
             }
         });
@@ -157,6 +165,12 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == BaseCalendarListActivity.CODE_CALENDAR) {
+            if (resultCode == Activity.RESULT_OK) {
+                mService.setNCalendar(data.getIntExtra(BaseCalendarListActivity.KEY_CALENDAR_POS, -1));
+                mService.executeAction(BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR, getBindingKey(), mEvent);
+            }
+        }
 //        if (requestCode == 0) {
 //            if (resultCode == Activity.RESULT_OK) {
 //                showProgressOverlay();
@@ -183,6 +197,14 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mFab = (ActionButton)rootView.findViewById(R.id.fab);
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_view_map_icon);
         changeIconColor();
+
+        mButtonAddToCalendar = (AppCompatButton) rootView.findViewById(R.id.button_add_to_calendar);
+        mButtonAddToCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mService.executeAction(BaseService.ACTIONS.GET_CALENDARS, mBindingKey);
+            }
+        });
     }
 
     @Override
@@ -225,6 +247,20 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         hideUtilsAndShowContentOverlay();
+        if (theAction == BaseService.ACTIONS.GET_CALENDARS) {
+            prepareBaseCalendarListActivity(result);
+        }
+        if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
+            // TODO: Save the calendar event id in the Parse event
+            mEvent.setCalendarID((Long) result);
+            mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, mBindingKey, mEvent);
+        }
+    }
+
+    private void prepareBaseCalendarListActivity(Object result) {
+        Intent intent = new Intent(getActivity(), BaseCalendarListActivity.class);
+        intent.putStringArrayListExtra(KEY_CALENDAR_LIST, new ArrayList<>(Arrays.asList((String[]) result)));
+        startActivityForResult(intent, BaseCalendarListActivity.CODE_CALENDAR);
     }
 
     @Override

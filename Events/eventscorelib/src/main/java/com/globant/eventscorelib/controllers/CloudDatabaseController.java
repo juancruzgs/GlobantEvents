@@ -313,6 +313,7 @@ public class CloudDatabaseController extends DatabaseController{
         LatLng coordinates = domainEvent.getCoordinates();
         if (coordinates != null)
         databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(coordinates.latitude, coordinates.longitude));
+        databaseEvent.put(CoreConstants.FIELD_CALENDAR_ID, domainEvent.getCalendarID());
     }
 
     private void setDatabaseSpeakerInformation(Speaker domainSpeaker, ParseObject databaseSpeaker) {

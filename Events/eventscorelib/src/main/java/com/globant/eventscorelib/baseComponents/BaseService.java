@@ -1,13 +1,18 @@
 package com.globant.eventscorelib.baseComponents;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.app.Service;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.CalendarContract;
+import android.support.v4.content.CursorLoader;
 
 import com.globant.eventscorelib.controllers.CloudDatabaseController;
 import com.globant.eventscorelib.controllers.GeocoderController;
@@ -19,11 +24,12 @@ import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TimeZone;
 
 import twitter4j.User;
 
@@ -33,6 +39,56 @@ import twitter4j.User;
  * Created by ariel.cattaneo on 09/04/2015.
  */
 public abstract class BaseService extends Service {
+
+    private int mNCalendar;
+
+    public void setNCalendar(int NCalendar) {
+        mNCalendar = NCalendar;
+    }
+
+    class MyCalendar {
+        public String name;
+        public String id;
+        public MyCalendar(String _name, String _id) {
+            name = _name;
+            id = _id;
+        }
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+    private MyCalendar mCalendars[];
+    private void getCalendars() {
+        String[] l_projection = new String[]{
+                CalendarContract.Calendars._ID,
+                CalendarContract.Calendars.CALENDAR_DISPLAY_NAME
+        };
+        Uri l_calendars;
+        if (Build.VERSION.SDK_INT >= 8 ) {
+            l_calendars = Uri.parse("content://com.android.calendar/calendars");
+        } else {
+            l_calendars = Uri.parse("content://calendar/calendars");
+        }
+        //Cursor l_managedCursor = this.managedQuery(l_calendars, l_projection, null, null, null);    //all calendars
+        CursorLoader loader = new CursorLoader(this, l_calendars, l_projection, null, null, null);    //all calendars
+        //CursorLoader loader = new CursorLoader(this, l_calendars, l_projection, "selected=1", null, null);   //active calendars
+        Cursor l_managedCursor = loader.loadInBackground();
+        if (l_managedCursor.moveToFirst()) {
+            mCalendars = new MyCalendar[l_managedCursor.getCount()];
+            String l_calName;
+            String l_calId;
+            int l_cnt = 0;
+            int l_nameCol = l_managedCursor.getColumnIndex(l_projection[1]);
+            int l_idCol = l_managedCursor.getColumnIndex(l_projection[0]);
+            do {
+                l_calName = l_managedCursor.getString(l_nameCol);
+                l_calId = l_managedCursor.getString(l_idCol);
+                mCalendars[l_cnt] = new MyCalendar(l_calName, l_calId);
+                ++l_cnt;
+            } while (l_managedCursor.moveToNext());
+        }
+    }
 
     public static boolean isRunning = false;
     //protected static List<String> cancelKeys = new ArrayList<>();
@@ -74,9 +130,41 @@ public abstract class BaseService extends Service {
                 stopSelf();
             }
         };
+
+        getCalendars();
     }
 
     protected abstract String getTwitterCallbackURL();
+
+    protected long addEventToCalendar(Event event) {
+        ContentResolver contentResolver = getContentResolver();
+
+        // FIXME: There is only 2 calendars in the phone I used for testing - perhaps now use #1, choose in the future
+        //long calID = 3;
+        //long calID = Long.parseLong(mCalendars[0].id);
+        long calID = Long.parseLong(mCalendars[mNCalendar].id);
+        long startMillis = 0;
+        long endMillis = 0;
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.setTime(event.getStartDate());
+        startMillis = beginTime.getTimeInMillis();
+        Calendar endTime = Calendar.getInstance();
+        endTime.setTime(event.getEndDate());
+        endMillis = endTime.getTimeInMillis();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CalendarContract.Events.DTSTART, startMillis);
+        contentValues.put(CalendarContract.Events.DTEND, endMillis);
+        contentValues.put(CalendarContract.Events.TITLE, event.getTitle());
+        contentValues.put(CalendarContract.Events.DESCRIPTION, event.getShortDescription());
+        contentValues.put(CalendarContract.Events.CALENDAR_ID, calID);
+        // TODO: Get the right timezone. List in TimeZone.getAvailableIDs(). Format: Continent/City
+        contentValues.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+        Uri uri = contentResolver.insert(CalendarContract.Events.CONTENT_URI, contentValues);
+
+        // get the event ID that is the last element in the Uri
+        return Long.parseLong(uri.getLastPathSegment());
+    }
 
     private void startCountdown() {
         mHandler.postDelayed(mRunnable, 60000 * TIMEOUT_MINUTES);
@@ -114,10 +202,10 @@ public abstract class BaseService extends Service {
     }
 
     public enum ACTIONS {
-        EVENT_LIST, EVENTS_LIST_REFRESH, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS
-    ,TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
-    PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SUBSCRIBER_UPDATE, SET_ACCEPTED,
-        GET_EVENT_HISTORY, GET_EVENT, REFRESH_SUBSCRIBERS}
+        EVENT_LIST, EVENTS_LIST_REFRESH, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS,
+        TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
+        PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SUBSCRIBER_UPDATE, SET_ACCEPTED,
+        GET_EVENT_HISTORY, GET_EVENT, REFRESH_SUBSCRIBERS, ADD_EVENT_TO_CALENDAR, GET_CALENDARS}
 
     private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
@@ -244,10 +332,20 @@ public abstract class BaseService extends Service {
                                     result = mCloudDatabaseController.getEventHistory();
                                     break;
                                 case GET_EVENT:
-                                    result = mCloudDatabaseController.getEventWithSpeakers((String)arguments[0]);
+                                    result = mCloudDatabaseController.getEventWithSpeakers((String) arguments[0]);
                                     break;
                                 case REFRESH_SUBSCRIBERS:
-                                    result = mCloudDatabaseController.refreshSubscribers((String)arguments[0], (Date)arguments[1]);
+                                    result = mCloudDatabaseController.refreshSubscribers((String) arguments[0], (Date) arguments[1]);
+                                    break;
+                                case ADD_EVENT_TO_CALENDAR:
+                                    result = addEventToCalendar((Event) arguments[0]);
+                                    break;
+                                case GET_CALENDARS:
+                                    String[] calendarNames = new String[mCalendars.length];
+                                    for (int counter = 0; counter < mCalendars.length; counter++) {
+                                        calendarNames[counter] = mCalendars[counter].name;
+                                    }
+                                    result = calendarNames;
                                     break;
                             }
 
