@@ -2,7 +2,6 @@ package com.globant.eventmanager.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventSpeakersList;
@@ -126,6 +125,6 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(R.anim.right_in, R.anim.left_out);
+        overridePendingTransition(R.anim.left_in, R.anim.right_out);
     }
 }

@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -137,7 +136,7 @@ public class EventListManagerFragment extends BaseEventListFragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
+                getActivity().overridePendingTransition(R.anim.right_bottom_in, R.anim.nothing);
             }
         });
     }
