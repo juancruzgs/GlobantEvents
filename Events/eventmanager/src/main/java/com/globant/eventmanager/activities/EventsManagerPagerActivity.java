@@ -76,7 +76,7 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
     protected void onSaveInstanceState(Bundle outState) {
 /*        for (Fragment fragment : fragmentList){
             getSupportFragmentManager().putFragment(outState,fragment.getClass().getName(), fragment);
-        } Throws an exception (See the link https://code.google.com/p/android/issues/detail?id=77285)
+        } //Throws an exception (See the link https://code.google.com/p/android/issues/detail?id=77285)
 */
         outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, mCacheObjectsController);
         outState.putInt(CoreConstants.SAVE_INSTANCE_EVENT_ACTION, EventsManagerPagerActivity.mEventAction.ordinal());
