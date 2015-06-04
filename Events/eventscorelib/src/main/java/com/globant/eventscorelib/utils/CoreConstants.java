@@ -136,4 +136,10 @@ public class CoreConstants {
     // Intents constants
     public static final String EVENTS_HISTORY = "eventHistory";
 
+    // Social Networks
+    public static final String FACEBOOK = "Facebook";
+    public static final String GMAIL = "Gmail";
+    public static final String WHATSAPP = "Whatsapp";
+    public static final String TWITTER = "Twitter";
+
 }

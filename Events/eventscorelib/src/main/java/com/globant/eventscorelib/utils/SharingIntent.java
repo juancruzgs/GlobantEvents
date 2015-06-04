@@ -5,16 +5,18 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseAdapters.SocialNetworksAdapter;
 
 
 public class SharingIntent {
 
-   private void shareViaTwitter(Context context, String title, String description) {
+    private void shareViaTwitter(Context context, String title, String description) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, (String) "Check out this event!\n");
@@ -38,17 +40,17 @@ public class SharingIntent {
         }
     }
 
-    public static void showList(Context context) {
-new MaterialDialog.Builder(context)
-        .titleColorRes(R.color.globant_green_dark)
-        .dividerColorRes(R.color.grey_light)
-        .title(R.string.dialog_share_via)
-        .items(R.array.social_networks)
-        .itemsCallback(new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-            }
-                })
+    public static void showList(final Context context) {
+        new MaterialDialog.Builder(context)
+                .titleColorRes(R.color.globant_green_dark)
+                .title(R.string.dialog_share_via)
+                .adapter(new SocialNetworksAdapter(context, context.getResources().getStringArray(R.array.social_networks)),
+                        new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                                Toast.makeText(context, "Clicked item " + which, Toast.LENGTH_SHORT).show();
+                            }
+                        })
                 .show();
     }
 }
