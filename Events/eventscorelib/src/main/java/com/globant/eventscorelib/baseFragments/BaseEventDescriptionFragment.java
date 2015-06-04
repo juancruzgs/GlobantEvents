@@ -269,29 +269,17 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         if (theAction == BaseService.ACTIONS.GET_CALENDARS) {
             prepareBaseCalendarListActivity(result);
         }
-        if ((theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) ||
-                (theAction == BaseService.ACTIONS.EVENT_UPDATE)) {
+        if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
             JSONObject eventsArray;
             try {
                 eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
                         getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
 
-                if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
-                    eventsArray.put(mEvent.getObjectID(), result);
-                    //mEvent.setCalendarID((Long) result);
-                    JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
-                            KEY_CALENDAR_LIST, eventsArray);
-                    //mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, mBindingKey, mEvent);
-                    mButtonAddToCalendar.setEnabled(false);
-                }
-/*
-                if (theAction == BaseService.ACTIONS.EVENT_UPDATE) {
-                    if (eventsArray.has(mEvent.getObjectID())) {
-                        //if (mEvent.getCalendarID() != null) {
-                        mButtonAddToCalendar.setEnabled(false);
-                    }
-                }
-*/
+                eventsArray.put(mEvent.getObjectID(), result);
+                JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
+                        KEY_CALENDAR_LIST, eventsArray);
+
+                mButtonAddToCalendar.setEnabled(false);
             } catch (JSONException e) {
                 Logger.e("Error trying to get this event's calendar id", e);
                 mButtonAddToCalendar.setEnabled(false);
