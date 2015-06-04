@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseComponents.BaseEasterEgg;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEgg;
 import com.globant.eventscorelib.baseComponents.BaseService;
 
 /**

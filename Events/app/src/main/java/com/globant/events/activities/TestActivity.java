@@ -10,7 +10,7 @@ import com.globant.events.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 
 
 public class TestActivity extends BaseActivity {

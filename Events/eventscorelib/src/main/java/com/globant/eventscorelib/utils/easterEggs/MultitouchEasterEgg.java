@@ -1,10 +1,10 @@
-package com.globant.eventscorelib.utils;
+package com.globant.eventscorelib.utils.easterEggs;
 
 import android.graphics.PointF;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 
-import com.globant.eventscorelib.baseComponents.BaseTouchEasterEgg;
+import com.globant.eventscorelib.utils.easterEggs.BaseTouchEasterEgg;
 
 /**
  * Created by ariel.cattaneo on 26/05/2015.

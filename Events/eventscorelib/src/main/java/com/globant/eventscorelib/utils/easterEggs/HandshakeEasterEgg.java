@@ -1,11 +1,11 @@
-package com.globant.eventscorelib.utils;
+package com.globant.eventscorelib.utils.easterEggs;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.widget.Toast;
 
-import com.globant.eventscorelib.baseComponents.BaseSensorEasterEgg;
+import com.globant.eventscorelib.utils.easterEggs.BaseSensorEasterEgg;
 
 /**
  * Created by ariel.cattaneo on 07/05/2015.

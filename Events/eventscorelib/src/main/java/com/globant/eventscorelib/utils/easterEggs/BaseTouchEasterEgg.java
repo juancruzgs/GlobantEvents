@@ -1,9 +1,6 @@
-package com.globant.eventscorelib.baseComponents;
+package com.globant.eventscorelib.utils.easterEggs;
 
 import android.view.MotionEvent;
-import android.view.View;
-
-import com.globant.eventscorelib.baseActivities.BaseActivity;
 
 /**
  * Created by ariel.cattaneo on 07/05/2015.

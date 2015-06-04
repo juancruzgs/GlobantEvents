@@ -1,15 +1,12 @@
 package com.globant.eventmanager.activities;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.globant.eventmanager.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseFragments.BaseSpeakerFragment;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 
 public class EventSpeakerListActivity extends BaseActivity {
     @Override

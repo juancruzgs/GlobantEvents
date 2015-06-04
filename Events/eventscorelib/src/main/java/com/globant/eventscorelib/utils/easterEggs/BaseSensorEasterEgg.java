@@ -1,10 +1,8 @@
-package com.globant.eventscorelib.baseComponents;
+package com.globant.eventscorelib.utils.easterEggs;
 
 import android.content.Context;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-
-import com.globant.eventscorelib.baseActivities.BaseActivity;
 
 /**
  * Created by ariel.cattaneo on 07/05/2015.

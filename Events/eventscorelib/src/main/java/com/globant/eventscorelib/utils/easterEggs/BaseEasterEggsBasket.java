@@ -1,7 +1,7 @@
-package com.globant.eventscorelib.utils;
+package com.globant.eventscorelib.utils.easterEggs;
 
 import com.globant.eventscorelib.baseActivities.BaseActivity;
-import com.globant.eventscorelib.baseComponents.BaseEasterEgg;
+import com.globant.eventscorelib.utils.Logger;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
