@@ -28,12 +28,18 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
+import com.globant.eventscorelib.utils.JSONSharedPreferences;
+import com.globant.eventscorelib.utils.Logger;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.globant.eventscorelib.utils.SharingIntent;
 import com.globant.eventscorelib.utils.PushNotifications;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -221,7 +227,17 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         }
         mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
         mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
-        if (mEvent.getCalendarID() != null) {
+        JSONObject eventsArray;
+        try {
+            eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                    getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+            if (eventsArray.has(mEvent.getObjectID())) {
+                //if (mEvent.getCalendarID() != null) {
+                mButtonAddToCalendar.setEnabled(false);
+            }
+        }
+        catch (JSONException e) {
+            Logger.e("Error trying to get this event's calendar id", e);
             mButtonAddToCalendar.setEnabled(false);
         }
         mEventAddress.setText(mEvent.getAddress());
@@ -253,13 +269,31 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         if (theAction == BaseService.ACTIONS.GET_CALENDARS) {
             prepareBaseCalendarListActivity(result);
         }
-        if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
-            // TODO: Save the calendar event id in the Parse event
-            mEvent.setCalendarID((Long) result);
-            mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, mBindingKey, mEvent);
-        }
-        if (theAction == BaseService.ACTIONS.EVENT_UPDATE) {
-            if (mEvent.getCalendarID() != null) {
+        if ((theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) ||
+                (theAction == BaseService.ACTIONS.EVENT_UPDATE)) {
+            JSONObject eventsArray;
+            try {
+                eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                        getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+
+                if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
+                    eventsArray.put(mEvent.getObjectID(), result);
+                    //mEvent.setCalendarID((Long) result);
+                    JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
+                            KEY_CALENDAR_LIST, eventsArray);
+                    //mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, mBindingKey, mEvent);
+                    mButtonAddToCalendar.setEnabled(false);
+                }
+/*
+                if (theAction == BaseService.ACTIONS.EVENT_UPDATE) {
+                    if (eventsArray.has(mEvent.getObjectID())) {
+                        //if (mEvent.getCalendarID() != null) {
+                        mButtonAddToCalendar.setEnabled(false);
+                    }
+                }
+*/
+            } catch (JSONException e) {
+                Logger.e("Error trying to get this event's calendar id", e);
                 mButtonAddToCalendar.setEnabled(false);
             }
         }

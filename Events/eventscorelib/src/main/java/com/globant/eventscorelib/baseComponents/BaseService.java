@@ -139,9 +139,6 @@ public abstract class BaseService extends Service {
     protected long addEventToCalendar(Event event) {
         ContentResolver contentResolver = getContentResolver();
 
-        // FIXME: There is only 2 calendars in the phone I used for testing - perhaps now use #1, choose in the future
-        //long calID = 3;
-        //long calID = Long.parseLong(mCalendars[0].id);
         long calID = Long.parseLong(mCalendars[mNCalendar].id);
         long startMillis = 0;
         long endMillis = 0;

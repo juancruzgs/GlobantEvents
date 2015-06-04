@@ -82,9 +82,11 @@ public abstract class DatabaseController {
         domainEvent.setLanguage(databaseEvent.getString(CoreConstants.FIELD_LANGUAGE));
         domainEvent.setHashtag(databaseEvent.getString(CoreConstants.FIELD_HASHTAG));
         domainEvent.setCoordinates(getCoordinatesFromDatabaseObject(databaseEvent));
+/*
         if (databaseEvent.get(CoreConstants.FIELD_CALENDAR_ID) != null) {
             domainEvent.setCalendarID(databaseEvent.getLong(CoreConstants.FIELD_CALENDAR_ID));
         }
+*/
         return domainEvent;
     }
 
