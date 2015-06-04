@@ -221,6 +221,9 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         }
         mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
         mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
+        if (mEvent.getCalendarID() != null) {
+            mButtonAddToCalendar.setEnabled(false);
+        }
         mEventAddress.setText(mEvent.getAddress());
         mEventCity.setText(mEvent.getCity());
         mEventCountry.setText(mEvent.getCountry());
@@ -254,6 +257,11 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             // TODO: Save the calendar event id in the Parse event
             mEvent.setCalendarID((Long) result);
             mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, mBindingKey, mEvent);
+        }
+        if (theAction == BaseService.ACTIONS.EVENT_UPDATE) {
+            if (mEvent.getCalendarID() != null) {
+                mButtonAddToCalendar.setEnabled(false);
+            }
         }
     }
 

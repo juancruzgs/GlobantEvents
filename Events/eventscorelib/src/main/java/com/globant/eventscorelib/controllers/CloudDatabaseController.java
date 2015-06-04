@@ -306,7 +306,8 @@ public class CloudDatabaseController extends DatabaseController{
             databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.png", domainEvent.getEventLogo()));
         }
         databaseEvent.put(CoreConstants.FIELD_FULL_DESCRIPTION, domainEvent.getFullDescription());
-        databaseEvent.put(CoreConstants.FIELD_ADDITIONAL_INFO, domainEvent.getAdditionalInfo());
+        String additionalInfo = domainEvent.getAdditionalInfo();
+        databaseEvent.put(CoreConstants.FIELD_ADDITIONAL_INFO, additionalInfo != null ? additionalInfo : JSONObject.NULL);
         databaseEvent.put(CoreConstants.FIELD_ADDRESS, domainEvent.getAddress());
         databaseEvent.put(CoreConstants.FIELD_LANGUAGE, domainEvent.getLanguage());
         databaseEvent.put(CoreConstants.FIELD_HASHTAG, domainEvent.getHashtag());
