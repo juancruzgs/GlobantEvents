@@ -1,4 +1,4 @@
-package com.globant.eventscorelib.baseComponents;
+package com.globant.eventscorelib.utils.easterEggs;
 
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 

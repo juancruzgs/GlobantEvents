@@ -21,11 +21,11 @@ import android.widget.FrameLayout;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseComponents.BaseApplication;
-import com.globant.eventscorelib.baseComponents.BaseEasterEgg;
-import com.globant.eventscorelib.baseComponents.BaseTouchEasterEgg;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEgg;
+import com.globant.eventscorelib.utils.easterEggs.BaseTouchEasterEgg;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;

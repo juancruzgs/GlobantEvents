@@ -2,7 +2,6 @@ package com.globant.eventmanager.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventSpeakersList;
@@ -11,7 +10,7 @@ import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;

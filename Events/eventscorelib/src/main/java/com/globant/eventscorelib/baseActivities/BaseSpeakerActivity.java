@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseFragments.BaseSpeakerFragment;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 
 
 public class BaseSpeakerActivity extends BaseActivity {

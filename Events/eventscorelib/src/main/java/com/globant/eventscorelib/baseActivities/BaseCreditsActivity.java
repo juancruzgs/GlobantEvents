@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseFragments.BaseCreditsFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 
 
 public class BaseCreditsActivity extends BaseActivity {

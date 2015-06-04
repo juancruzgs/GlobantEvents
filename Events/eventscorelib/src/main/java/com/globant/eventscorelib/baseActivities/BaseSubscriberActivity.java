@@ -1,13 +1,12 @@
 package com.globant.eventscorelib.baseActivities;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseFragments.BaseSubscriberFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 
 public class BaseSubscriberActivity extends BaseActivity {
 
