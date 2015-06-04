@@ -43,6 +43,7 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -59,6 +60,7 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
+import com.globant.eventscorelib.utils.PushNotifications;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
@@ -579,8 +581,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
                         options.inJustDecodeBounds = false;
 
-                        if (options.outHeight >= 1000 && options.outWidth >= 1000){
-                            options.inSampleSize = calculateInSampleSize(options, mPhotoEvent.getWidth(), mPhotoEvent.getHeight());
+                        if (options.outHeight >= 700 && options.outWidth >= 700){
+                            options.inSampleSize = calculateInSampleSize(options, 700, 700);
                             bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
                         }else
                         {
@@ -805,16 +807,23 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             handled = true;
         }else {
             if (id == R.id.events_action_delete) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(getString(R.string.alert_message_delete_event_title))
-                        .setMessage(getString(R.string.alert_message_delete_event))
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
+                MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                        .title(getString(R.string.alert_message_delete_event_title)).content(getString(R.string.alert_message_delete_event))
+                        .positiveText(android.R.string.yes)
+                        .negativeText(android.R.string.no)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
                                 mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, getBindingKey(), mEvent);
-                            }})
-                        .setNegativeButton(android.R.string.no, null).show();
+                            }
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                super.onNegative(dialog);
+                            }
+                        }).build();
+                materialDialog.show();
                 handled = true;
             }
         }
@@ -1010,7 +1019,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         switch (theAction){
             case EVENT_CREATE:
-                BaseEventDetailPagerActivity.getInstance().setEvent(mEvent);
                 Toast.makeText(getActivity(),getResources().getString(R.string.event_created),Toast.LENGTH_SHORT).show();
                 break;
             case EVENT_UPDATE:
