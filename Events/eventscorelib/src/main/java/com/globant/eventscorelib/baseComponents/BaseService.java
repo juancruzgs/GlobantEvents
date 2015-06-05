@@ -3,6 +3,7 @@ package com.globant.eventscorelib.baseComponents;
 import android.app.Activity;
 import android.app.Service;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -167,6 +168,15 @@ public abstract class BaseService extends Service {
         return Long.parseLong(uri.getLastPathSegment());
     }
 
+    protected long removeEventFromCalendar(Integer calendarID, Long eventID) {
+        ContentResolver cr = getContentResolver();
+        ContentValues values = new ContentValues();
+        Uri deleteUri = null;
+        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+
+        return getContentResolver().delete(deleteUri, null, null);
+    }
+
     private void startCountdown() {
         mHandler.postDelayed(mRunnable, 60000 * TIMEOUT_MINUTES);
     }
@@ -206,7 +216,7 @@ public abstract class BaseService extends Service {
         EVENT_LIST, EVENTS_LIST_REFRESH, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS,
         TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
         PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SUBSCRIBER_UPDATE, SET_ACCEPTED,
-        GET_EVENT_HISTORY, GET_EVENT, REFRESH_SUBSCRIBERS, ADD_EVENT_TO_CALENDAR, GET_CALENDARS}
+        GET_EVENT_HISTORY, GET_EVENT, REFRESH_SUBSCRIBERS, ADD_EVENT_TO_CALENDAR, GET_CALENDARS, REMOVE_EVENT_FROM_CALENDAR}
 
     private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
@@ -348,6 +358,8 @@ public abstract class BaseService extends Service {
                                     }
                                     result = calendarNames;
                                     break;
+                                case REMOVE_EVENT_FROM_CALENDAR:
+                                    result = removeEventFromCalendar((Integer)arguments[0], (Long)arguments[1]);
                             }
 
 //                            if (!cancelKeys.contains(bindingKey)) {

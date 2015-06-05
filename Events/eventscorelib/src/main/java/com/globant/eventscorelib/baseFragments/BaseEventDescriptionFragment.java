@@ -213,12 +213,13 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                     mService.executeAction(BaseService.ACTIONS.GET_CALENDARS, mBindingKey);
                 }
                 else {
-                    // TODO: DELETE THE EVENT!!!!! ARRRRGGGHHH!!!
+                    // TODO: REMOVE THE EVENT!!!!! ARRRRGGGHHH!!!
                     JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
                             getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
                     JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
-                    deleteCalendarEvent(calendarData.getInt("calendarSelfId"),
-                            calendarData.getLong("calendarEventId"));
+                    mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, getBindingKey(),
+                            calendarData.getInt("calendarSelfId"), calendarData.getLong("calendarEventId"));
+
                 }
             }
         });
