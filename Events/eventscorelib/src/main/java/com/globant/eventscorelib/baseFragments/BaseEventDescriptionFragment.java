@@ -206,6 +206,17 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         changeIconColor();
 
         mButtonAddToCalendar = (AppCompatButton) rootView.findViewById(R.id.button_add_to_calendar);
+        try {
+            JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                    getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+            if (eventArray.has(mEvent.getObjectID())) {
+                mButtonAddToCalendar.setText("Remove from calendar");
+            }
+        }
+        catch (JSONException e) {
+            Logger.e("Problems trying to get the event local info", e);
+            mButtonAddToCalendar.setVisibility(View.GONE);
+        }
         mButtonAddToCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,12 +225,16 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 }
                 else {
                     // TODO: REMOVE THE EVENT!!!!! ARRRRGGGHHH!!!
-                    JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
-                            getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
-                    JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
-                    mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, getBindingKey(),
-                            calendarData.getInt("calendarSelfId"), calendarData.getLong("calendarEventId"));
-
+                    try {
+                        JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                                getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+                        JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
+                        mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, getBindingKey(),
+                                calendarData.getInt("calendarSelfId"), calendarData.getLong("calendarEventId"));
+                    }
+                    catch (JSONException e) {
+                        Logger.e("Problems with the internal event info while trying to remove the event", e);
+                    }
                 }
             }
         });
