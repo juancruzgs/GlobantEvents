@@ -15,6 +15,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +39,7 @@ public abstract class DatabaseController {
             pinObjectInBackground(databaseEvent);
             ParseRelation relation = databaseEvent.getRelation(CoreConstants.FIELD_SPEAKERS);
             ParseQuery relationQuery = relation.getQuery();
+            relationQuery.selectKeys(Arrays.asList(CoreConstants.FIELD_NAME, CoreConstants.FIELD_LAST_NAME));
             queryFromLocalDatastore(relationQuery);
             List<ParseObject> databaseSpeakersList = relationQuery.find();
             List<Speaker> domainSpeakersList = new ArrayList<>();
@@ -53,6 +56,7 @@ public abstract class DatabaseController {
     }
 
     protected abstract void pinObjectInBackground(ParseObject object);
+
     protected abstract void queryFromLocalDatastore(ParseQuery query);
 
     protected Speaker createDomainSpeakerFromDatabase(ParseObject databaseSpeaker) throws ParseException {
@@ -60,10 +64,15 @@ public abstract class DatabaseController {
         speaker.setObjectID(databaseSpeaker.getObjectId());
         speaker.setName(databaseSpeaker.getString(CoreConstants.FIELD_NAME));
         speaker.setLastName(databaseSpeaker.getString(CoreConstants.FIELD_LAST_NAME));
-        speaker.setTitle(databaseSpeaker.getString(CoreConstants.FIELD_TITLE));
-        speaker.setPicture(getBitmapFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
-        speaker.setBiography(databaseSpeaker.getString(CoreConstants.FIELD_BIOGRAPHY));
-        return speaker;
+        try {
+            //These fields are not available in the EventList
+            speaker.setTitle(databaseSpeaker.getString(CoreConstants.FIELD_TITLE));
+            speaker.setPicture(getBitmapFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
+            speaker.setBiography(databaseSpeaker.getString(CoreConstants.FIELD_BIOGRAPHY));
+            return speaker;
+        } catch (IllegalStateException exception){
+            return speaker;
+        }
     }
 
     protected Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
@@ -90,7 +99,7 @@ public abstract class DatabaseController {
 
     protected Bitmap getBitmapFromDatabase(ParseObject databaseObject, String field) throws ParseException {
         ParseFile file = databaseObject.getParseFile(field);
-        if (file != null){
+        if (file != null) {
             //TODO Change the hardcoded values. Set the screen width and max container height
             return ConvertImage.convertByteArrayToBitmap(file.getData(), 200, 200);
         } else {

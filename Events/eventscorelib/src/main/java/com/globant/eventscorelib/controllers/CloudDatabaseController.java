@@ -33,10 +33,10 @@ public class CloudDatabaseController extends DatabaseController{
     @Override
     protected void queryFromLocalDatastore(ParseQuery query) {}
 
-    public Event getEvent(String eventId) throws ParseException {
-        ParseObject databaseEvent = getDatabaseEvent(eventId);
-        return createDomainEventFromDatabase(databaseEvent);
-    }
+//    public Event getEvent(String eventId) throws ParseException {
+//        ParseObject databaseEvent = getDatabaseEvent(eventId);
+//        return createDomainEventFromDatabase(databaseEvent);
+//    }
 
     public Event getEventWithSpeakers(String eventId) throws ParseException {
         ParseObject databaseEvent = getDatabaseEvent(eventId);
@@ -67,6 +67,7 @@ public class CloudDatabaseController extends DatabaseController{
     }
 
     private ParseObject getDatabaseEvent(String eventId) throws ParseException {
+        //TODO Use whereMatchesQuery
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         return query.get(eventId);
     }
