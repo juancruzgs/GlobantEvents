@@ -105,6 +105,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             loadEventDescription();
         }
         initializeViewParameters();
+        setCalendarButtonText();
         setHasOptionsMenu(true);
         setRetainInstance(true);
         return rootView;
@@ -206,17 +207,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         changeIconColor();
 
         mButtonAddToCalendar = (AppCompatButton) rootView.findViewById(R.id.button_add_to_calendar);
-        try {
-            JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
-                    getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
-            if (eventArray.has(mEvent.getObjectID())) {
-                mButtonAddToCalendar.setText("Remove from calendar");
-            }
-        }
-        catch (JSONException e) {
-            Logger.e("Problems trying to get the event local info", e);
-            mButtonAddToCalendar.setVisibility(View.GONE);
-        }
         mButtonAddToCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,7 +214,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                     mService.executeAction(BaseService.ACTIONS.GET_CALENDARS, mBindingKey);
                 }
                 else {
-                    // TODO: REMOVE THE EVENT!!!!! ARRRRGGGHHH!!!
                     try {
                         JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
                                 getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
@@ -250,6 +239,23 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         );
     }
 
+    private void setCalendarButtonText() {
+        try {
+            JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                    getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+            if (eventArray.has(mEvent.getObjectID())) {
+                mButtonAddToCalendar.setText("Remove from calendar");
+            }
+            else {
+                mButtonAddToCalendar.setText("Add to calendar");
+            }
+        }
+        catch (JSONException e) {
+            Logger.e("Problems trying to get the event local info", e);
+            mButtonAddToCalendar.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public String getTitle() {
         return "Description";
@@ -264,19 +270,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         }
         mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
         mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
-        JSONObject eventsArray;
-        try {
-            eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
-                    getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
-            if (eventsArray.has(mEvent.getObjectID())) {
-                //if (mEvent.getCalendarID() != null) {
-                mButtonAddToCalendar.setEnabled(false);
-            }
-        }
-        catch (JSONException e) {
-            Logger.e("Error trying to get this event's calendar id", e);
-            mButtonAddToCalendar.setEnabled(false);
-        }
+        setCalendarButtonText();
         mEventAddress.setText(mEvent.getAddress());
         mEventCity.setText(mEvent.getCity());
         mEventCountry.setText(mEvent.getCountry());
@@ -319,7 +313,27 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
                         KEY_CALENDAR_LIST, eventsArray);
 
+                setCalendarButtonText();
+
+                mAddedToCalendar = true;
+            } catch (JSONException e) {
+                Logger.e("Error trying to get this event's calendar id", e);
                 mButtonAddToCalendar.setEnabled(false);
+            }
+        }
+        if (theAction == BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR) {
+            JSONObject eventsArray;
+            try {
+                eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                        getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+
+                eventsArray.remove(mEvent.getObjectID());
+                JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
+                        KEY_CALENDAR_LIST, eventsArray);
+
+                setCalendarButtonText();
+
+                mAddedToCalendar = false;
             } catch (JSONException e) {
                 Logger.e("Error trying to get this event's calendar id", e);
                 mButtonAddToCalendar.setEnabled(false);
