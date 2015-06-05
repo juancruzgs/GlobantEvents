@@ -176,6 +176,23 @@
 
                             </LinearLayout>
 
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="right"
+                                android:paddingBottom="6dp"
+                                android:paddingLeft="6dp"
+                                android:paddingTop="6dp">
+
+                                <android.support.v7.widget.AppCompatButton
+                                    android:id="@+id/button_emergency_shared_preferences_killer"
+                                    android:text="Emergency Shared Preferences Killer"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
                         </LinearLayout>
                     </android.support.v7.widget.CardView>
 

@@ -42,6 +42,10 @@ public abstract class BaseService extends Service {
 
     private int mNCalendar;
 
+    public int getNCalendar() {
+        return mNCalendar;
+    }
+
     public void setNCalendar(int NCalendar) {
         mNCalendar = NCalendar;
     }

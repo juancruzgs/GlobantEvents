@@ -66,6 +66,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     private String mBindingKey;
 
     private AppCompatButton mButtonAddToCalendar;
+    private boolean mAddedToCalendar = false;
 
     public final static String KEY_CALENDAR_LIST = "KEY_CALENDAR_LIST";
 
@@ -208,9 +209,29 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mButtonAddToCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.executeAction(BaseService.ACTIONS.GET_CALENDARS, mBindingKey);
+                if (!mAddedToCalendar) {
+                    mService.executeAction(BaseService.ACTIONS.GET_CALENDARS, mBindingKey);
+                }
+                else {
+                    // TODO: DELETE THE EVENT!!!!! ARRRRGGGHHH!!!
+                    JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                            getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+                    JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
+                    deleteCalendarEvent(calendarData.getInt("calendarSelfId"),
+                            calendarData.getLong("calendarEventId"));
+                }
             }
         });
+
+        rootView.findViewById(R.id.button_emergency_shared_preferences_killer).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        JSONSharedPreferences.remove(getActivity(), getActivity().getApplicationInfo().name,
+                                KEY_CALENDAR_LIST);
+                    }
+                }
+        );
     }
 
     @Override
@@ -275,7 +296,10 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
                         getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
 
-                eventsArray.put(mEvent.getObjectID(), result);
+                JSONObject calendarData = new JSONObject();
+                calendarData.put("calendarSelfId", mService.getNCalendar());
+                calendarData.put("calendarEventId", result);
+                eventsArray.put(mEvent.getObjectID(), calendarData);
                 JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
                         KEY_CALENDAR_LIST, eventsArray);
 
