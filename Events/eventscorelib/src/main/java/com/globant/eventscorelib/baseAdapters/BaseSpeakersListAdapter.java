@@ -51,16 +51,11 @@ public class BaseSpeakersListAdapter extends RecyclerView.Adapter<BaseSpeakersLi
     }
 
     public Bitmap getSpeakerImage(Speaker speaker) {
-        Bitmap speakerPicture;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inMutable = true;
-        if ((speaker.getPicture()!=null)){
-            speakerPicture = BitmapFactory.decodeByteArray(speaker.getPicture(), 0, speaker.getPicture().length, options);}
-        else{
-            speakerPicture= BitmapFactory.decodeResource(mContext.getResources(),(R.mipmap.ic_person));
+        if ((speaker.getPicture()!=null)) {
+            return speaker.getPicture();
+        } else {
+            return BitmapFactory.decodeResource(mContext.getResources(),(R.mipmap.ic_person));
         }
-
-        return speakerPicture;
     }
 
     @Override

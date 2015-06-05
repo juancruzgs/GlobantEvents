@@ -224,16 +224,6 @@ public class Event extends BaseObject implements Parcelable {
         mHashtag = in.readString();
         mEventLogo = in.readParcelable(null);
         mIcon = in.readParcelable(null);
-//        int sizeEventLogo = in.readInt();
-//        if (sizeEventLogo != 0) {
-//            mEventLogo = new byte[sizeEventLogo];
-//            in.readByteArray(mEventLogo);
-//        }
-//        int sizeIcon = in.readInt();
-//        if (sizeIcon != 0) {
-//            mIcon = new byte[sizeIcon];
-//            in.readByteArray(mIcon);
-//        }
         mPublic = (in.readInt() == 1);
         mStartDate = (Date) in.readSerializable();
         mEndDate = (Date) in.readSerializable();
@@ -259,18 +249,6 @@ public class Event extends BaseObject implements Parcelable {
         dest.writeString(mHashtag);
         dest.writeParcelable(mEventLogo, flags);
         dest.writeParcelable(mIcon, flags);
-//        if (mEventLogo != null) {
-//            dest.writeInt(mEventLogo.length);
-//            dest.writeByteArray(mEventLogo);
-//        } else {
-//            dest.writeInt(0);
-//        }
-//        if (mIcon != null) {
-//            dest.writeInt(mIcon.length);
-//            dest.writeByteArray(mIcon);
-//        } else {
-//            dest.writeInt(0);
-//        }
         dest.writeInt(mPublic ? 1 : 0);
         dest.writeSerializable(mStartDate);
         dest.writeSerializable(mEndDate);

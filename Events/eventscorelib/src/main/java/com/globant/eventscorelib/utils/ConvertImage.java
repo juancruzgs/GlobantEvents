@@ -13,28 +13,10 @@ import java.io.ByteArrayOutputStream;
 
 public class ConvertImage {
 
-    public static Bitmap convertByteArrayToBitmap(byte[] image) {
-        if (image != null){
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inMutable = true;
-            options.inPurgeable = true;
-            options.inInputShareable = true;
-            return BitmapFactory.decodeByteArray(image, 0, image.length, options);
-        } else {
-            return null;
-        }
-    }
-
-    public static Uri getImageUri(Context context, Bitmap image) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), image, "Title", null);
-        return Uri.parse(path);
-    }
-
-    public static byte[] convertBitmapToByteArray(Bitmap image) {
+    public static byte[] convertBitmapToByteArrayAndCompress(Bitmap image) {
         if (image != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            //TODO Change the constant. Determine the right quality value
             image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             return stream.toByteArray();
         } else {
@@ -45,14 +27,14 @@ public class ConvertImage {
     public static byte[] convertDrawableToByteArray(Drawable drawable) {
         if (drawable!=null){
             Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-            return convertBitmapToByteArray(bitmap);
+            return convertBitmapToByteArrayAndCompress(bitmap);
          } else{
             return null;
         }
     }
 
-    public static Bitmap decodeSampledBitmapFromByteArray(byte[] image, int reqWidth, int reqHeight) {
-
+    public static Bitmap convertByteArrayToBitmap(byte[] image, int reqWidth, int reqHeight) {
+        //TODO Do this operation with an AsyncTask. Look at this: http://developer.android.com/training/displaying-bitmaps/process-bitmap.html
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;

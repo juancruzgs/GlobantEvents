@@ -61,7 +61,7 @@ public abstract class DatabaseController {
         speaker.setName(databaseSpeaker.getString(CoreConstants.FIELD_NAME));
         speaker.setLastName(databaseSpeaker.getString(CoreConstants.FIELD_LAST_NAME));
         speaker.setTitle(databaseSpeaker.getString(CoreConstants.FIELD_TITLE));
-        speaker.setPicture(getImageFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
+        speaker.setPicture(getBitmapFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
         speaker.setBiography(databaseSpeaker.getString(CoreConstants.FIELD_BIOGRAPHY));
         return speaker;
     }
@@ -96,7 +96,8 @@ public abstract class DatabaseController {
     protected Bitmap getBitmapFromDatabase(ParseObject databaseObject, String field) throws ParseException {
         ParseFile file = databaseObject.getParseFile(field);
         if (file != null){
-            return ConvertImage.decodeSampledBitmapFromByteArray(file.getData(), 200, 200);
+            //TODO Change the hardcoded values. Set the screen width and max container height
+            return ConvertImage.convertByteArrayToBitmap(file.getData(), 200, 200);
         } else {
             return null;
         }

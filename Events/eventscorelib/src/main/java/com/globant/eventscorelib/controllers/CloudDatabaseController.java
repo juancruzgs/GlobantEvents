@@ -283,7 +283,7 @@ public class CloudDatabaseController extends DatabaseController{
         domainSubscriber.setTwitterUser(databaseSubscriber.getString(CoreConstants.FIELD_TWITTER_USER));
         domainSubscriber.setCity(databaseSubscriber.getString(CoreConstants.FIELD_CITY));
         domainSubscriber.setCountry(databaseSubscriber.getString(CoreConstants.FIELD_COUNTRY));
-        domainSubscriber.setPicture(getImageFromDatabase(databaseSubscriber, CoreConstants.FIELD_PICTURE));
+        domainSubscriber.setPicture(getBitmapFromDatabase(databaseSubscriber, CoreConstants.FIELD_PICTURE));
         domainSubscriber.setEnglish(databaseSubscriber.getBoolean(CoreConstants.FIELD_ENGLISH));
         domainSubscriber.setGlober(databaseSubscriber.getBoolean(CoreConstants.FIELD_GLOBER));
         domainSubscriber.setPublic(databaseSubscriber.getBoolean(CoreConstants.FIELD_PUBLIC));
@@ -302,11 +302,11 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEvent.put(CoreConstants.FIELD_END_DATE, domainEvent.getEndDate());
         databaseEvent.put(CoreConstants.FIELD_PUBLIC, domainEvent.isPublic());
         if (domainEvent.getIcon() != null) {
-            byte[] imageIcon = ConvertImage.convertBitmapToByteArray(domainEvent.getIcon());
+            byte[] imageIcon = ConvertImage.convertBitmapToByteArrayAndCompress(domainEvent.getIcon());
             databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.jpeg", imageIcon));
         }
         if (domainEvent.getEventLogo() != null) {
-            byte[] imageLogo = ConvertImage.convertBitmapToByteArray(domainEvent.getEventLogo());
+            byte[] imageLogo = ConvertImage.convertBitmapToByteArrayAndCompress(domainEvent.getEventLogo());
             databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.jpeg", imageLogo));
         }
         databaseEvent.put(CoreConstants.FIELD_FULL_DESCRIPTION, domainEvent.getFullDescription());
@@ -325,7 +325,8 @@ public class CloudDatabaseController extends DatabaseController{
         databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSpeaker.getLastName());
         databaseSpeaker.put(CoreConstants.FIELD_BIOGRAPHY, domainSpeaker.getBiography());
         if (domainSpeaker.getPicture() != null) {
-            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSpeaker.getPicture()));
+            byte[] image = ConvertImage.convertBitmapToByteArrayAndCompress(domainSpeaker.getPicture());
+            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.jpeg", image));
         }
     }
 
@@ -346,7 +347,8 @@ public class CloudDatabaseController extends DatabaseController{
         databaseSubscriber.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
         databaseSubscriber.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
         if (domainSubscriber.getPicture() != null) {
-            databaseSubscriber.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
+            byte[] image = ConvertImage.convertBitmapToByteArrayAndCompress(domainSubscriber.getPicture());
+            databaseSubscriber.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.jpeg", image));
         }
     }
 
