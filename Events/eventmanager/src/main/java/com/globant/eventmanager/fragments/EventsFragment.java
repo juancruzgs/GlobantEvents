@@ -55,6 +55,7 @@ import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
@@ -694,6 +695,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BaseEventListFragment.mIsDataSetChanged = false;
         mBindingKey = this.getClass().getSimpleName();
         setHasOptionsMenu(true);
     }
@@ -1030,10 +1032,13 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                 break;
         }
 
+        BaseEventListFragment.mIsDataSetChanged = true;
         EventsManagerPagerActivity.Finish(Activity.RESULT_OK, theAction);
     }
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        showErrorOverlay();}
+        BaseEventListFragment.mIsDataSetChanged = false;
+        showErrorOverlay();
+    }
 }
