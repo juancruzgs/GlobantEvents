@@ -3,11 +3,14 @@ package com.globant.eventscorelib.controllers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
+
+import java.util.Date;
 
 public class SharedPreferencesController {
 
@@ -223,6 +226,16 @@ public class SharedPreferencesController {
         return mSharedPreferences.getBoolean(CoreConstants.TWITTER_IS_LOGGED_IN, false);
     }
 
+    public static long getCleanChannelDate(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getLong(context.getString(R.string.preference_time),0);
+    }
+
+    public static void setCleanChannelDate(Context context, Long time){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(context.getString(R.string.preference_time), (new Date()).getTime());
+    }
 }
 
 
