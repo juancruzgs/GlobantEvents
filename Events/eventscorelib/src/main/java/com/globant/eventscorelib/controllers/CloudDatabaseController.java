@@ -318,10 +318,10 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEvent.put(CoreConstants.FIELD_END_DATE, domainEvent.getEndDate());
         databaseEvent.put(CoreConstants.FIELD_PUBLIC, domainEvent.isPublic());
         if (domainEvent.getIcon() != null) {
-            databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.png", domainEvent.getIcon()));
+            databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.jpg", domainEvent.getIcon()));
         }
         if (domainEvent.getEventLogo() != null) {
-            databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.png", domainEvent.getEventLogo()));
+            databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.jpg", domainEvent.getEventLogo()));
         }
         databaseEvent.put(CoreConstants.FIELD_FULL_DESCRIPTION, domainEvent.getFullDescription());
         databaseEvent.put(CoreConstants.FIELD_ADDITIONAL_INFO, domainEvent.getAdditionalInfo());
@@ -339,7 +339,7 @@ public class CloudDatabaseController extends DatabaseController{
         databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSpeaker.getLastName());
         databaseSpeaker.put(CoreConstants.FIELD_BIOGRAPHY, domainSpeaker.getBiography());
         if (domainSpeaker.getPicture() != null) {
-            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSpeaker.getPicture()));
+            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.jpg", domainSpeaker.getPicture()));
         }
     }
 
@@ -360,7 +360,7 @@ public class CloudDatabaseController extends DatabaseController{
         databaseSubscriber.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
         databaseSubscriber.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
         if (domainSubscriber.getPicture() != null) {
-            databaseSubscriber.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.png", domainSubscriber.getPicture()));
+            databaseSubscriber.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.jpg", domainSubscriber.getPicture()));
         }
     }
 

@@ -166,6 +166,7 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK){
             if(requestCode == CoreConstants.EDIT_EVENT_REQUEST){
                 if (data != null && data.hasExtra(CoreConstants.SAVE_INSTANCE_EVENT_ACTION)){
@@ -175,8 +176,7 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
 
                     switch (action){
                         case EVENT_CREATE:
-                            mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
-                            loadEventDescription();
+                            getActivity().finish();
                             break;
                         case EVENT_UPDATE:
                             mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
@@ -189,6 +189,5 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
                 }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }
