@@ -19,9 +19,14 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,7 +67,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
     Bitmap mPhoto;
     ImageView mPhotoProfile;
-    ActionButton mFloatingActionButtonPhoto;
+    FloatingActionButton mFloatingActionButtonPhoto;
     AppCompatEditText mEditTextFirstName;
     AppCompatEditText mEditTextLastName;
     AppCompatEditText mEditTextPhone;
@@ -317,7 +322,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
         mCheckBoxEnglishKnowledge = (AppCompatCheckBox) rootView.findViewById(R.id.check_box_english_knowledge);
 
-        mFloatingActionButtonPhoto = (ActionButton) rootView.findViewById(R.id.fab);
+        mFloatingActionButtonPhoto = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         mPhotoProfile = (ImageView) rootView.findViewById(R.id.header);
         mIconFirstName = (ImageView) rootView.findViewById(R.id.icon_first_name);
@@ -340,7 +345,16 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
 
         mLayoutToFocus = (LinearLayout) rootView.findViewById(R.id.autoFocusable);
+
+        final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar_subscriber);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsing_toolbar);
+        if (SharedPreferencesController.getUserFirstName(getActivity()) != null) {
+            collapsingToolbar.setTitle(SharedPreferencesController.getUserFirstName(getActivity()) + " " + SharedPreferencesController.getUserLastName(getActivity()));
+        }
     }
+
 
     @Override
     public String getTitle() {
@@ -352,10 +366,10 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CAMERA_CAPTURE) {
-                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
-                performCrop(Uri.fromFile(file));
-            } else if (requestCode == CROP_PIC) {
-                // get the returned data
+//                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
+//                performCrop(Uri.fromFile(file));
+//            } else if (requestCode == CROP_PIC) {
+//                // get the returned data
                 Bundle extras = data.getExtras();
                 // get the cropped bitmap
                 mPhoto = extras.getParcelable(CoreConstants.DATA);
@@ -371,37 +385,39 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(CoreConstants.IMAGE_CAPTURE);
-    /*create instance of File with name img.jpg*/
-                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
-    /*put uri as extra in intent object*/
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+//                Intent cameraIntent = new Intent(CoreConstants.IMAGE_CAPTURE);
+//    /*create instance of File with name img.jpg*/
+//                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
+//    /*put uri as extra in intent object*/
+//                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+//                startActivityForResult(cameraIntent, CAMERA_CAPTURE);
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_CAPTURE);
 
             }
         });
     }
 
-    private void performCrop(Uri picUri) {
-        // take care of exceptions
-        // call the standard crop action intent (the user device may not
-        // support it)
-        Intent cropIntent = new Intent(CoreConstants.IMAGE_CROP);
-        // indicate image type and Uri
-        cropIntent.setDataAndType(picUri, CoreConstants.URI_NAME);
-        // set crop properties
-        cropIntent.putExtra(CoreConstants.EXTRA_CROP, CoreConstants.EXTRA_TRUE);
-        // indicate aspect of desired crop
-        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTX, 720);
-        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, 360);
-        // indicate output X and Y
-        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, 720);
-        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY,360);
-        // retrieve data on return
-        cropIntent.putExtra(CoreConstants.EXTRA_RETURN_DATA, true);
-        // start the activity - we handle returning in onActivityResult
-        startActivityForResult(cropIntent, CROP_PIC);
-    }
+//    private void performCrop(Uri picUri) {
+//        // take care of exceptions
+//        // call the standard crop action intent (the user device may not
+//        // support it)
+//        Intent cropIntent = new Intent(CoreConstants.IMAGE_CROP);
+//        // indicate image type and Uri
+//        cropIntent.setDataAndType(picUri, CoreConstants.URI_NAME);
+//        // set crop properties
+//        cropIntent.putExtra(CoreConstants.EXTRA_CROP, CoreConstants.EXTRA_TRUE);
+//        // indicate aspect of desired crop
+//        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTX, 720);
+//        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, 360);
+//        // indicate output X and Y
+//        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, 720);
+//        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY,360);
+//        // retrieve data on return
+//        cropIntent.putExtra(CoreConstants.EXTRA_RETURN_DATA, true);
+//        // start the activity - we handle returning in onActivityResult
+//        startActivityForResult(cropIntent, CROP_PIC);
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -2,7 +2,10 @@ package com.globant.eventscorelib.baseActivities;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseFragments.BaseSubscriberFragment;
@@ -17,7 +20,7 @@ public class BaseSubscriberActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscriber);
-        prepareToolbar();
+        getSupportActionBar().hide();
         if (savedInstanceState == null) {
             mBaseSubscriberFragment = new BaseSubscriberFragment();
             getSupportFragmentManager().beginTransaction()
@@ -34,13 +37,6 @@ public class BaseSubscriberActivity extends BaseActivity {
 
     }
 
-    private void prepareToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (SharedPreferencesController.getUserFirstName(this) != null) {
-            getSupportActionBar().setTitle(SharedPreferencesController.getUserFirstName(this) + " " + SharedPreferencesController.getUserLastName(this));
-        }
-    }
 
 
     @Override
