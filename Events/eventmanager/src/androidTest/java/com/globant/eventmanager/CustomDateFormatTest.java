@@ -18,20 +18,25 @@ import java.util.TimeZone;
  */
 public class CustomDateFormatTest extends InstrumentationTestCase {
 
+    private Context mContext;
+    private Date mDate;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        mContext = getInstrumentation().getTargetContext().getApplicationContext();
+        mDate = new Date();
     }
 
     @Override
     protected void tearDown() throws Exception {
+        mContext = null;
+        mDate = null;
         super.tearDown();
     }
 
     public void testGetCompleteDate() throws Exception{
-        Context context = getInstrumentation().getTargetContext().getApplicationContext();
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-        Date date = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, 2014);
         calendar.set(Calendar.MONTH, Calendar.JANUARY);
@@ -39,9 +44,24 @@ public class CustomDateFormatTest extends InstrumentationTestCase {
         calendar.set(Calendar.HOUR_OF_DAY, 10);
         calendar.set(Calendar.MINUTE, 10);
         calendar.set(Calendar.SECOND, 0);
-        date.setTime(calendar.getTimeInMillis());
+        mDate.setTime(calendar.getTimeInMillis());
 
-        String customDate = CustomDateFormat.getCompleteDate(date, context);
+        String customDate = CustomDateFormat.getCompleteDate(mDate, mContext);
         assertEquals("Jan, 01 2014 10:10 UTC", customDate);
+    }
+
+    public void testGetDate(){
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2014);
+        calendar.set(Calendar.MONTH, Calendar.JANUARY);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 4);
+        calendar.set(Calendar.MINUTE, 10);
+        calendar.set(Calendar.SECOND, 0);
+        mDate.setTime(calendar.getTimeInMillis());
+
+        String customDate = CustomDateFormat.getDate(mDate, mContext);
+        assertEquals("Jan, 01 2014\n04:10 UTC", customDate);
     }
 }

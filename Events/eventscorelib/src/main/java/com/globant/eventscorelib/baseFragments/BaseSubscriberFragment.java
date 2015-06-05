@@ -2,7 +2,6 @@ package com.globant.eventscorelib.baseFragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,8 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,7 +38,6 @@ import com.globant.eventscorelib.baseComponents.BaseEasterEgg;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Subscriber;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
@@ -49,7 +45,6 @@ import com.globant.eventscorelib.utils.PushNotifications;
 import com.software.shell.fab.ActionButton;
 
 import java.io.File;
-import java.util.Date;
 import java.util.regex.Pattern;
 
 
@@ -538,8 +533,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         } else {
             mSubscriber.setTwitterUser(null);
         }
-        Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
-        mSubscriber.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
+        mSubscriber.setPicture(ConvertImage.convertDrawableToByteArray(mPhotoProfile.getDrawable()));
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
 
     }

@@ -31,9 +31,9 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
     public BaseEventsListAdapter(List<Event> eventList, Context context) {
         mContext = context;
         mBitmapList = new ArrayList<>();
-        for (int n = 0; n < eventList.size(); n++) {
-            if (eventList.get(n).getEventLogo() != null) {
-                mBitmapList.add(ConvertImage.convertByteToBitmap(eventList.get(n).getEventLogo()));
+        for (int i = 0; i < eventList.size(); i++) {
+            if (eventList.get(i).getEventLogo() != null) {
+                mBitmapList.add(ConvertImage.convertByteArrayToBitmap(eventList.get(i).getEventLogo()));
             } else {
                 mBitmapList.add(BitmapFactory.decodeResource(context.getResources(), R.mipmap.placeholderredux));
             }

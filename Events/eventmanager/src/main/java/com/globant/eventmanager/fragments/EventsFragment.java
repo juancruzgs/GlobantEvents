@@ -7,13 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
@@ -23,7 +20,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,20 +31,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.activities.MapEventCreationActivity;
-import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
@@ -59,14 +51,12 @@ import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -199,7 +189,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         if (event.getEventLogo()!= null){
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+            mPhotoEvent.setImageBitmap(ConvertImage.convertByteArrayToBitmap(mEvent.getEventLogo()));
         }else {
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
             mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
@@ -645,7 +635,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         if (bitmap != null) {
                             mPhotoEvent.setImageBitmap(bitmap);
                             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            mEvent.setEventLogo(ConvertImage.convertBitmapImageToByteArray(bitmap));
+                            mEvent.setEventLogo(ConvertImage.convertBitmapToByteArray(bitmap));
                         }
                     } catch (FileNotFoundException e) {
                         mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);

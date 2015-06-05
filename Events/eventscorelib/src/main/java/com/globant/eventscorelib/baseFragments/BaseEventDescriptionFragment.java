@@ -131,7 +131,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         ScrollChangeCallbacks scrollChangeCallbacks = new ScrollChangeCallbacks(actionBarSize, flexibleSpaceImageHeight, toolbarColor, flexibleSpaceShowFabOffset,
                 fabMargin, mToolbar, mOverlayView, mEventTitle, mEventImage, mFab , false, getActivity());
         mScrollView.setScrollViewCallbacks(scrollChangeCallbacks);
-
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,7 +192,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     private void loadEventDescription() {
         mEventTitle.setText(mEvent.getTitle());
         if (mEvent.getEventLogo() != null) {
-            mEventImage.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+            mEventImage.setImageBitmap(ConvertImage.convertByteArrayToBitmap(mEvent.getEventLogo()));
         } else {
             mEventImage.setImageResource(R.mipmap.placeholder);
         }

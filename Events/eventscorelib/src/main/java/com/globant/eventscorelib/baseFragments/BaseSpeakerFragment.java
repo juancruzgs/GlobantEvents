@@ -241,14 +241,13 @@ public class BaseSpeakerFragment extends BaseFragment {
     }
 
     private Speaker fillSpeakerObject() {
-        Speaker sp = new Speaker();
-        sp.setName(mEditTextFirstName.getText().toString());
-        sp.setLastName(mEditTextLastName.getText().toString());
-        sp.setTitle(mEditTextTitle.getText().toString());
-        sp.setBiography(mEditTextBiography.getText().toString());
-        Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
-        sp.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
-        return sp;
+        Speaker speaker = new Speaker();
+        speaker.setName(mEditTextFirstName.getText().toString());
+        speaker.setLastName(mEditTextLastName.getText().toString());
+        speaker.setTitle(mEditTextTitle.getText().toString());
+        speaker.setBiography(mEditTextBiography.getText().toString());
+        speaker.setPicture(ConvertImage.convertDrawableToByteArray(mPhotoProfile.getDrawable()));
+        return speaker;
     }
 
     @Override
