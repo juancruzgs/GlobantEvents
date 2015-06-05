@@ -63,6 +63,9 @@ public abstract class BaseActivity extends AppCompatActivity{
     }
 
     public void subscribeEggListener(BaseEasterEgg.EasterEggListener listener) {
+        if (mEasterEgg == null) {
+            initEasterEgg();
+        }
         mEasterEgg.subscribeListener(listener);
     }
 
@@ -127,7 +130,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setConnectionReceiver();
         mServiceClass = getServiceClass();
-        initEasterEgg();
+        //initEasterEgg();
     }
 
     private void setConnectionReceiver() {
