@@ -24,15 +24,6 @@ public class ConvertImage {
         }
     }
 
-    public static byte[] convertDrawableToByteArray(Drawable drawable) {
-        if (drawable!=null){
-            Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-            return convertBitmapToByteArrayAndCompress(bitmap);
-         } else{
-            return null;
-        }
-    }
-
     public static Bitmap convertByteArrayToBitmap(byte[] image, int reqWidth, int reqHeight) {
         //TODO Do this operation with an AsyncTask. Look at this: http://developer.android.com/training/displaying-bitmaps/process-bitmap.html
         // First decode with inJustDecodeBounds=true to check dimensions

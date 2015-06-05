@@ -227,10 +227,10 @@ public class Event extends BaseObject implements Parcelable {
         mPublic = (in.readInt() == 1);
         mStartDate = (Date) in.readSerializable();
         mEndDate = (Date) in.readSerializable();
-        mSpeakers = new ArrayList<>();
-        in.readTypedList(mSpeakers, Speaker.CREATOR);
-        mSubscribers = new ArrayList<>();
-        in.readTypedList(mSubscribers, Subscriber.CREATOR);
+//        mSpeakers = new ArrayList<>();
+//        in.readTypedList(mSpeakers, Speaker.CREATOR);
+//        mSubscribers = new ArrayList<>();
+//        in.readTypedList(mSubscribers, Subscriber.CREATOR);
     }
 
     @Override
@@ -252,7 +252,7 @@ public class Event extends BaseObject implements Parcelable {
         dest.writeInt(mPublic ? 1 : 0);
         dest.writeSerializable(mStartDate);
         dest.writeSerializable(mEndDate);
-        dest.writeTypedList(mSpeakers);
-        dest.writeTypedList(mSubscribers);
+//        dest.writeTypedList(mSpeakers);
+//        dest.writeTypedList(mSubscribers);
     }
 }

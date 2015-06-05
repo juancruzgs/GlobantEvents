@@ -88,11 +88,6 @@ public abstract class DatabaseController {
         return domainEvent;
     }
 
-    protected byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
-        ParseFile file = databaseObject.getParseFile(field);
-        return file != null ? file.getData() : null;
-    }
-
     protected Bitmap getBitmapFromDatabase(ParseObject databaseObject, String field) throws ParseException {
         ParseFile file = databaseObject.getParseFile(field);
         if (file != null){
