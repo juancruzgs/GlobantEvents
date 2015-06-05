@@ -65,7 +65,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
                 String shortDescription = mShortDescriptionEvent.getText().toString() +
                         " - " + mEventDate.getText().toString() + " - " + mLocationEvent.getText().toString();
                 Bitmap photo = ((BitmapDrawable)mImageEvent.getDrawable()).getBitmap();
-                SharingIntent.showList(context);
+                SharingIntent.showList(context, fragment, mEventTitle.getText().toString(), shortDescription);
               //  Uri imageUri = ConvertImage.getImageUri(context, photo);
               //  SharingIntent.shareViaFacebook(fragment, mEventTitle.getText().toString(), shortDescription, imageUri);
             }

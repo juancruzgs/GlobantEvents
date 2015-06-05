@@ -16,22 +16,42 @@ import com.globant.eventscorelib.baseAdapters.SocialNetworksAdapter;
 
 public class SharingIntent {
 
-    private void shareViaTwitter(Context context, String title, String description) {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, (String) "Check out this event!\n");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description);
+    private static void shareViaWhatsapp(Context context, String title, String description) {
+        Intent sharingIntent = createSharingIntent(title, description);
         sharingIntent.setPackage("com.whatsapp");
         context.startActivity(sharingIntent);
     }
 
-    private void shareViaFacebook(Fragment fragment, String title, String description, Uri urlImage) {
+
+    private static void shareViaTwitter(Context context, String title, String description) {
+        Intent sharingIntent = createSharingIntent(title, description);
+        sharingIntent.setPackage("com.whatsapp");
+        context.startActivity(sharingIntent);
+
+    }
+
+
+    private static void shareViaGmail(Context context, String title, String description) {
+        Intent sharingIntent = createSharingIntent(title, description);
+        sharingIntent.setPackage("android.gm");
+        context.startActivity(sharingIntent);
+    }
+
+    private static Intent createSharingIntent(String title, String description) {
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this event!");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, "\n" + title + "\n" + description);
+        return sharingIntent;
+    }
+
+    private static void shareViaFacebook(Fragment fragment, String title, String description) {
         ShareDialog shareDialog = new ShareDialog(fragment);
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
                     .setContentTitle(title)
-                    .setImageUrl(urlImage)
+            //        .setImageUrl(urlImage)
                     .setContentDescription(description)
                     .setContentUrl(Uri.parse("https://fb.me/383624728506392"))
                     .build();
@@ -40,7 +60,7 @@ public class SharingIntent {
         }
     }
 
-    public static void showList(final Context context) {
+    public static void showList(final Context context, final Fragment fragment, final String title, final String description) {
         new MaterialDialog.Builder(context)
                 .titleColorRes(R.color.globant_green_dark)
                 .title(R.string.dialog_share_via)
@@ -48,6 +68,20 @@ public class SharingIntent {
                         new MaterialDialog.ListCallback() {
                             @Override
                             public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                                switch (which) {
+                                    case 0:
+                                        shareViaFacebook(fragment, title, description);
+                                        break;
+                                    case 1:
+                                        shareViaWhatsapp(context, title, description);
+                                        break;
+                                    case 2:
+                                        shareViaTwitter(context, title, description);
+                                        break;
+                                    case 3:
+                                        shareViaGmail(context, title, description);
+                                        break;
+                                }
                                 Toast.makeText(context, "Clicked item " + which, Toast.LENGTH_SHORT).show();
                             }
                         })

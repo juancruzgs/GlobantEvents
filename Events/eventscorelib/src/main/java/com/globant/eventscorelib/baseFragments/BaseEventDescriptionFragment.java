@@ -10,6 +10,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -135,7 +136,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PushNotifications.subscribeToChannel("CH-"+mEvent.getObjectID());
+                PushNotifications.subscribeToChannel("CH-" + mEvent.getObjectID());
                 prepareBaseSubscriberActivity();
             }
         });
@@ -216,6 +217,23 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.action_share) {
+            String shortDescription = mEvent.getShortDescription() +
+                    " - " + CustomDateFormat.getCompleteDate(mEvent.getStartDate(), getActivity()) + " - " + mEvent.getCity() + ", " + mEvent.getCountry();
+            SharingIntent.showList(getActivity(), this, mEvent.getTitle(), shortDescription);
+            handled = true;
+        }
+
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
+    }
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
