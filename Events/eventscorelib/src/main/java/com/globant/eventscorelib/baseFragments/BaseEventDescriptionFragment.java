@@ -192,7 +192,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     private void loadEventDescription() {
         mEventTitle.setText(mEvent.getTitle());
         if (mEvent.getEventLogo() != null) {
-            mEventImage.setImageBitmap(ConvertImage.convertByteArrayToBitmap(mEvent.getEventLogo()));
+            mEventImage.setImageBitmap(mEvent.getEventLogo());
         } else {
             mEventImage.setImageResource(R.mipmap.placeholder);
         }

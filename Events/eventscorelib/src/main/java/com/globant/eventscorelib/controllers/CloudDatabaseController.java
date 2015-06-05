@@ -1,10 +1,12 @@
 package com.globant.eventscorelib.controllers;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
@@ -300,10 +302,12 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEvent.put(CoreConstants.FIELD_END_DATE, domainEvent.getEndDate());
         databaseEvent.put(CoreConstants.FIELD_PUBLIC, domainEvent.isPublic());
         if (domainEvent.getIcon() != null) {
-            databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.png", domainEvent.getIcon()));
+            byte[] imageIcon = ConvertImage.convertBitmapToByteArray(domainEvent.getIcon());
+            databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.jpeg", imageIcon));
         }
         if (domainEvent.getEventLogo() != null) {
-            databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.png", domainEvent.getEventLogo()));
+            byte[] imageLogo = ConvertImage.convertBitmapToByteArray(domainEvent.getEventLogo());
+            databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.jpeg", imageLogo));
         }
         databaseEvent.put(CoreConstants.FIELD_FULL_DESCRIPTION, domainEvent.getFullDescription());
         databaseEvent.put(CoreConstants.FIELD_ADDITIONAL_INFO, domainEvent.getAdditionalInfo());

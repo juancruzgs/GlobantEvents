@@ -33,7 +33,7 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
         mBitmapList = new ArrayList<>();
         for (int i = 0; i < eventList.size(); i++) {
             if (eventList.get(i).getEventLogo() != null) {
-                mBitmapList.add(ConvertImage.convertByteArrayToBitmap(eventList.get(i).getEventLogo()));
+                mBitmapList.add(eventList.get(i).getEventLogo());
             } else {
                 mBitmapList.add(BitmapFactory.decodeResource(context.getResources(), R.mipmap.placeholderredux));
             }
@@ -55,7 +55,7 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
     @Override
     public void onBindViewHolder(BaseEventsListViewHolder holder, int position) {
         holder.itemView.setTag(position);
-        byte[] eventLogo = mEventList.get(position).getEventLogo();
+        Bitmap eventLogo = mEventList.get(position).getEventLogo();
         if (mEventList.get(position).getTitle().equals(CoreConstants.KEY_LAYOUT_PLACEHOLDER)) {
             int height = holder.getViewGroup().getHeight();
             if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {

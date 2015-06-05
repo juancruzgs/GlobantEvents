@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.net.Uri;
@@ -189,7 +190,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         if (event.getEventLogo()!= null){
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mPhotoEvent.setImageBitmap(ConvertImage.convertByteArrayToBitmap(mEvent.getEventLogo()));
+            mPhotoEvent.setImageBitmap(mEvent.getEventLogo());
         }else {
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
             mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
@@ -213,7 +214,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             mEvent.setAddress(mEditTextAddress.getText().toString());
             mEvent.setPublic(mSpinnerPublic.getSelectedItemPosition() == 0);
             mEvent.setCountry(mEditTextCountry.getText().toString());
-            mEvent.setEventLogo(ConvertImage.convertDrawableToByteArray(mPhotoEvent.getDrawable()));
+            mEvent.setEventLogo(((BitmapDrawable)mPhotoEvent.getDrawable()).getBitmap());
             mEvent.setIcon(null);
             mEvent.setCoordinates(mLatLng);
 
@@ -635,7 +636,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         if (bitmap != null) {
                             mPhotoEvent.setImageBitmap(bitmap);
                             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            mEvent.setEventLogo(ConvertImage.convertBitmapToByteArray(bitmap));
+                            mEvent.setEventLogo(bitmap);
                         }
                     } catch (FileNotFoundException e) {
                         mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);

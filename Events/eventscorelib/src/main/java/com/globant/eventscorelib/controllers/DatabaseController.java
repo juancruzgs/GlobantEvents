@@ -1,7 +1,10 @@
 package com.globant.eventscorelib.controllers;
 
+import android.graphics.Bitmap;
+
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
@@ -74,8 +77,8 @@ public abstract class DatabaseController {
         domainEvent.setStartDate(databaseEvent.getDate(CoreConstants.FIELD_START_DATE));
         domainEvent.setEndDate(databaseEvent.getDate(CoreConstants.FIELD_END_DATE));
         domainEvent.setPublic(databaseEvent.getBoolean(CoreConstants.FIELD_PUBLIC));
-        domainEvent.setIcon(getImageFromDatabase(databaseEvent, CoreConstants.FIELD_ICON));
-        domainEvent.setEventLogo(getImageFromDatabase(databaseEvent, CoreConstants.FIELD_EVENT_LOGO));
+        domainEvent.setIcon(getBitmapFromDatabase(databaseEvent, CoreConstants.FIELD_ICON));
+        domainEvent.setEventLogo(getBitmapFromDatabase(databaseEvent, CoreConstants.FIELD_EVENT_LOGO));
         domainEvent.setFullDescription(databaseEvent.getString(CoreConstants.FIELD_FULL_DESCRIPTION));
         domainEvent.setAdditionalInfo(databaseEvent.getString(CoreConstants.FIELD_ADDITIONAL_INFO));
         domainEvent.setAddress(databaseEvent.getString(CoreConstants.FIELD_ADDRESS));
@@ -88,6 +91,15 @@ public abstract class DatabaseController {
     protected byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
         ParseFile file = databaseObject.getParseFile(field);
         return file != null ? file.getData() : null;
+    }
+
+    protected Bitmap getBitmapFromDatabase(ParseObject databaseObject, String field) throws ParseException {
+        ParseFile file = databaseObject.getParseFile(field);
+        if (file != null){
+            return ConvertImage.decodeSampledBitmapFromByteArray(file.getData(), 200, 200);
+        } else {
+            return null;
+        }
     }
 
     private LatLng getCoordinatesFromDatabaseObject(ParseObject databaseObject) {
