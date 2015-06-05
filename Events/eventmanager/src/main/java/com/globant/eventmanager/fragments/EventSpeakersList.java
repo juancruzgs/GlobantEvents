@@ -102,12 +102,16 @@ public class EventSpeakersList extends BaseSpeakersListFragment{
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName().toString());
+
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName().toString());
+        Log.d(LOG_TAG, Thread.currentThread().getStackTrace()[2].getMethodName().toString());
+        mAdapter = new BaseSpeakersListAdapter(getActivity(), mSpeakers);
+        mRecyclerView.setAdapter(mAdapter);
+        setNotSpeakerOnListMessage();
     }
 
     @Override
