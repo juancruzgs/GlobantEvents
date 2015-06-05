@@ -56,11 +56,16 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
+import com.globant.eventscorelib.utils.JSONSharedPreferences;
+import com.globant.eventscorelib.utils.Logger;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
@@ -828,6 +833,16 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                             mService.executeAction(BaseService.ACTIONS.EVENT_CREATE, getBindingKey(), mEvent);
                             break;
                         case EDIT_EVENT:
+                            try {
+                                JSONObject eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                                        getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+                                if (eventsArray.has(mEvent.getObjectID())) {
+                                    // TODO: Update the date info in the Calendar event
+                                }
+                            }
+                            catch (JSONException e) {
+                                Logger.e("Problems trying to find local info about this event", e);
+                            }
                             mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, getBindingKey(), mEvent);
                             break;
                     }

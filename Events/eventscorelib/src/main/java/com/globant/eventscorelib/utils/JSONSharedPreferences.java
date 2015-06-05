@@ -15,18 +15,20 @@ import org.json.JSONObject;
 public class JSONSharedPreferences {
     private static final String PREFIX = "json";
 
+    public final static String KEY_CALENDAR = "KEY_CALENDAR";
+
     public static void saveJSONObject(Context c, String prefName, String key, JSONObject object) {
         SharedPreferences settings = c.getSharedPreferences(prefName, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(JSONSharedPreferences.PREFIX+key, object.toString());
-        editor.commit();
+        editor.apply();
     }
 
     public static void saveJSONArray(Context c, String prefName, String key, JSONArray array) {
         SharedPreferences settings = c.getSharedPreferences(prefName, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(JSONSharedPreferences.PREFIX+key, array.toString());
-        editor.commit();
+        editor.apply();
     }
 
     public static JSONObject loadJSONObject(Context c, String prefName, String key) throws JSONException {
@@ -44,7 +46,7 @@ public class JSONSharedPreferences {
         if (settings.contains(JSONSharedPreferences.PREFIX+key)) {
             SharedPreferences.Editor editor = settings.edit();
             editor.remove(JSONSharedPreferences.PREFIX+key);
-            editor.commit();
+            editor.apply();
         }
     }
 }

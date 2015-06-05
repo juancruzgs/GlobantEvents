@@ -216,7 +216,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 else {
                     try {
                         JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
-                                getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+                                getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
                         JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
                         mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, getBindingKey(),
                                 calendarData.getInt("calendarSelfId"), calendarData.getLong("calendarEventId"));
@@ -233,7 +233,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                     @Override
                     public void onClick(View v) {
                         JSONSharedPreferences.remove(getActivity(), getActivity().getApplicationInfo().name,
-                                KEY_CALENDAR_LIST);
+                                JSONSharedPreferences.KEY_CALENDAR);
                     }
                 }
         );
@@ -242,7 +242,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     private void setCalendarButtonText() {
         try {
             JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
-                    getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+                    getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
             if (eventArray.has(mEvent.getObjectID())) {
                 mButtonAddToCalendar.setText("Remove from calendar");
             }
@@ -304,14 +304,14 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             JSONObject eventsArray;
             try {
                 eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
-                        getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+                        getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
 
                 JSONObject calendarData = new JSONObject();
                 calendarData.put("calendarSelfId", mService.getNCalendar());
                 calendarData.put("calendarEventId", result);
                 eventsArray.put(mEvent.getObjectID(), calendarData);
                 JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
-                        KEY_CALENDAR_LIST, eventsArray);
+                        JSONSharedPreferences.KEY_CALENDAR, eventsArray);
 
                 setCalendarButtonText();
 
@@ -325,11 +325,11 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             JSONObject eventsArray;
             try {
                 eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
-                        getActivity().getApplicationInfo().name, KEY_CALENDAR_LIST);
+                        getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
 
                 eventsArray.remove(mEvent.getObjectID());
                 JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
-                        KEY_CALENDAR_LIST, eventsArray);
+                        JSONSharedPreferences.KEY_CALENDAR, eventsArray);
 
                 setCalendarButtonText();
 
