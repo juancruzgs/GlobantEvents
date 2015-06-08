@@ -1,12 +1,15 @@
 package com.globant.eventscorelib.controllers;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -17,11 +20,13 @@ import com.parse.ParseRelation;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 
-public class CloudDatabaseController extends DatabaseController{
+public class CloudDatabaseController extends DatabaseController {
 
     @Override
     protected void pinObjectInBackground(ParseObject object) {
@@ -29,11 +34,7 @@ public class CloudDatabaseController extends DatabaseController{
     }
 
     @Override
-    protected void queryFromLocalDatastore(ParseQuery query) {}
-
-    public Event getEvent(String eventId) throws ParseException {
-        ParseObject databaseEvent = getDatabaseEvent(eventId);
-        return createDomainEventFromDatabase(databaseEvent);
+    protected void queryFromLocalDatastore(ParseQuery query) {
     }
 
 
@@ -43,8 +44,8 @@ public class CloudDatabaseController extends DatabaseController{
         List<ParseObject> databaseEventsList = eventsQuery.find();
         List<Event> domainEventsList = new ArrayList<>();
         for (ParseObject databaseEvent : databaseEventsList) {
-             Event domainEvent = createDomainEventFromDatabase(databaseEvent);
-             domainEventsList.add(domainEvent);
+            Event domainEvent = createDomainEventFromDatabase(databaseEvent);
+            domainEventsList.add(domainEvent);
         }
         return domainEventsList;
     }
@@ -61,6 +62,7 @@ public class CloudDatabaseController extends DatabaseController{
 
     public String getSubscriberId(String subscriberEmail) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        query.selectKeys(Collections.singletonList(CoreConstants.FIELD_OBJECT_ID));
         query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
         String objectId;
         try {
@@ -72,10 +74,17 @@ public class CloudDatabaseController extends DatabaseController{
     }
 
     public boolean isSubscribed(String subscriberId, String eventId) {
+        ParseQuery<ParseObject> eventsInnerQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        eventsInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, eventId);
+
+        ParseQuery<ParseObject> subscribersInnerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        subscribersInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, subscriberId);
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        query.selectKeys(Collections.singletonList(CoreConstants.FIELD_OBJECT_ID));
+        query.whereMatchesQuery(CoreConstants.FIELD_EVENTS, eventsInnerQuery);
+        query.whereMatchesQuery(CoreConstants.FIELD_SUBSCRIBERS, subscribersInnerQuery);
         try {
-            query.whereEqualTo(CoreConstants.FIELD_EVENTS, getDatabaseEvent(eventId));
-            query.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, getDatabaseSubscriber(subscriberId));
             query.getFirst();
             return true;
         } catch (ParseException e) {
@@ -85,10 +94,13 @@ public class CloudDatabaseController extends DatabaseController{
 
     public Event setCheckIn(String eventId, String subscriberMail) throws ParseException {
         ParseObject event = getDatabaseEvent(eventId);
-        ParseObject subscriber = getDatabaseSubscriberByEmail(subscriberMail);
+
+        ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        innerQuery.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberMail);
+
         ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
-        eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, subscriber);
+        eventToSubsQuery.whereMatchesQuery(CoreConstants.FIELD_SUBSCRIBERS, innerQuery);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_ACCEPTED, true);
         ParseObject subscription = eventToSubsQuery.getFirst();
         subscription.put(CoreConstants.FIELD_CHECK_IN, true);
@@ -96,20 +108,18 @@ public class CloudDatabaseController extends DatabaseController{
         return createDomainEventFromDatabase(event);
     }
 
-    private ParseObject getDatabaseSubscriberByEmail(String subscriberEmail) throws ParseException {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
-        query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
-        return query.getFirst();
-    }
+    public void setAccepted(String eventId, List<String> subscribersId) throws ParseException {
+        ParseQuery<ParseObject> eventsInnerQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        eventsInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, eventId);
 
-    public void setAccepted(String eventId, List<Subscriber> subscribers) throws ParseException {
+        ParseQuery<ParseObject> subscribersInnerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        subscribersInnerQuery.whereContainedIn(CoreConstants.FIELD_OBJECT_ID, subscribersId);
+
         ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
-        ParseObject event = getDatabaseEvent(eventId);
-        eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
-        for (Subscriber subscriber : subscribers) {
-            ParseObject databaseSubscriber = getDatabaseSubscriber(subscriber.getObjectID());
-            eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_SUBSCRIBERS, databaseSubscriber);
-            ParseObject subscription = eventToSubsQuery.getFirst();
+        eventToSubsQuery.whereMatchesQuery(CoreConstants.FIELD_EVENTS, eventsInnerQuery);
+        eventToSubsQuery.whereMatchesQuery(CoreConstants.FIELD_SUBSCRIBERS, subscribersInnerQuery);
+        List<ParseObject> eventToSubs = eventToSubsQuery.find();
+        for (ParseObject subscription : eventToSubs) {
             subscription.put(CoreConstants.FIELD_ACCEPTED, true);
             subscription.save();
         }
@@ -127,15 +137,18 @@ public class CloudDatabaseController extends DatabaseController{
     }
 
     public List<Subscriber> getEventSubscribers(String eventId) throws ParseException {
-        ParseObject event = getDatabaseEvent(eventId);
+        ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        innerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, eventId);
+
         ParseQuery<ParseObject> eventsToSubscribersQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
-        eventsToSubscribersQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
+        eventsToSubscribersQuery.selectKeys(Arrays.asList(CoreConstants.FIELD_SUBSCRIBERS, CoreConstants.FIELD_ACCEPTED,
+                CoreConstants.FIELD_CHECK_IN));
+        eventsToSubscribersQuery.whereMatchesQuery(CoreConstants.FIELD_EVENTS, innerQuery);
         eventsToSubscribersQuery.include(CoreConstants.FIELD_SUBSCRIBERS);
 
         List<ParseObject> eventsToSubscribersList = eventsToSubscribersQuery.find();
         List<Subscriber> subscribersList = new ArrayList<>();
         for (ParseObject eventToSubscribersRow : eventsToSubscribersList) {
-            //eventToSubscriberRow get Accepted
             ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
             Boolean accepted = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_ACCEPTED);
             Boolean checkin = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_CHECK_IN);
@@ -152,22 +165,19 @@ public class CloudDatabaseController extends DatabaseController{
         setDatabaseEventInformation(domainEvent, databaseEvent);
         databaseEvent.save();
 
-        List<Speaker> SpeakerList = domainEvent.getSpeakers();
+        List<Speaker> speakerList = domainEvent.getSpeakers();
+        if (!speakerList.isEmpty()) {
 
-        if (!SpeakerList.isEmpty()){
-
-            List<String> SpeakersIDs = new ArrayList<>();
-
-            for (Speaker speaker: SpeakerList){
-                SpeakersIDs.add(createSpeaker(speaker));
+            List<String> speakersIDs = new ArrayList<>();
+            for (Speaker speaker : speakerList) {
+                speakersIDs.add(createSpeaker(speaker));
             }
 
-            addEventSpeakers(databaseEvent.getObjectId(), SpeakersIDs);
+            addEventSpeakers(databaseEvent.getObjectId(), speakersIDs);
         }
     }
 
     public void updateEvent(Event domainEvent) throws ParseException {
-
         List<Speaker> oldSpeakerList = getEventSpeakers(domainEvent.getObjectID());
         List<String>IdListToRemove = new ArrayList<>();
         if (oldSpeakerList != null && !oldSpeakerList.isEmpty()){
@@ -231,6 +241,7 @@ public class CloudDatabaseController extends DatabaseController{
     }
 
     public void deleteEvent(Event domainEvent) throws ParseException {
+        //TODO Delete entries from EventsToSubscribers too
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         ParseObject event = eventsQuery.get(domainEvent.getObjectID());
 
@@ -284,7 +295,7 @@ public class CloudDatabaseController extends DatabaseController{
         domainSubscriber.setTwitterUser(databaseSubscriber.getString(CoreConstants.FIELD_TWITTER_USER));
         domainSubscriber.setCity(databaseSubscriber.getString(CoreConstants.FIELD_CITY));
         domainSubscriber.setCountry(databaseSubscriber.getString(CoreConstants.FIELD_COUNTRY));
-        domainSubscriber.setPicture(getImageFromDatabase(databaseSubscriber, CoreConstants.FIELD_PICTURE));
+        domainSubscriber.setPicture(getBitmapFromDatabase(databaseSubscriber, CoreConstants.FIELD_PICTURE));
         domainSubscriber.setEnglish(databaseSubscriber.getBoolean(CoreConstants.FIELD_ENGLISH));
         domainSubscriber.setGlober(databaseSubscriber.getBoolean(CoreConstants.FIELD_GLOBER));
         domainSubscriber.setPublic(databaseSubscriber.getBoolean(CoreConstants.FIELD_PUBLIC));
@@ -303,10 +314,12 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEvent.put(CoreConstants.FIELD_END_DATE, domainEvent.getEndDate());
         databaseEvent.put(CoreConstants.FIELD_PUBLIC, domainEvent.isPublic());
         if (domainEvent.getIcon() != null) {
-            databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.jpg", domainEvent.getIcon()));
+            byte[] imageIcon = ConvertImage.convertBitmapToByteArrayAndCompress(domainEvent.getIcon());
+            databaseEvent.put(CoreConstants.FIELD_ICON, new ParseFile("picture.jpeg", imageIcon));
         }
         if (domainEvent.getEventLogo() != null) {
-            databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.jpg", domainEvent.getEventLogo()));
+            byte[] imageLogo = ConvertImage.convertBitmapToByteArrayAndCompress(domainEvent.getEventLogo());
+            databaseEvent.put(CoreConstants.FIELD_EVENT_LOGO, new ParseFile("picture.jpeg", imageLogo));
         }
         databaseEvent.put(CoreConstants.FIELD_FULL_DESCRIPTION, domainEvent.getFullDescription());
         databaseEvent.put(CoreConstants.FIELD_ADDITIONAL_INFO, domainEvent.getAdditionalInfo());
@@ -315,7 +328,7 @@ public class CloudDatabaseController extends DatabaseController{
         databaseEvent.put(CoreConstants.FIELD_HASHTAG, domainEvent.getHashtag());
         LatLng coordinates = domainEvent.getCoordinates();
         if (coordinates != null)
-        databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(coordinates.latitude, coordinates.longitude));
+            databaseEvent.put(CoreConstants.FIELD_MAP_COORDINATES, new ParseGeoPoint(coordinates.latitude, coordinates.longitude));
     }
 
     private void setDatabaseSpeakerInformation(Speaker domainSpeaker, ParseObject databaseSpeaker) {
@@ -324,7 +337,8 @@ public class CloudDatabaseController extends DatabaseController{
         databaseSpeaker.put(CoreConstants.FIELD_LAST_NAME, domainSpeaker.getLastName());
         databaseSpeaker.put(CoreConstants.FIELD_BIOGRAPHY, domainSpeaker.getBiography());
         if (domainSpeaker.getPicture() != null) {
-            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.jpg", domainSpeaker.getPicture()));
+            byte[] image = ConvertImage.convertBitmapToByteArrayAndCompress(domainSpeaker.getPicture());
+            databaseSpeaker.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.jpeg", image));
         }
     }
 
@@ -337,15 +351,15 @@ public class CloudDatabaseController extends DatabaseController{
         databaseSubscriber.put(CoreConstants.FIELD_GLOBER, domainSubscriber.isGlober());
         if (domainSubscriber.getTwitterUser() != null) {
             databaseSubscriber.put(CoreConstants.FIELD_TWITTER_USER, domainSubscriber.getTwitterUser());
-        }
-        else{
+        } else {
             databaseSubscriber.put(CoreConstants.FIELD_TWITTER_USER, JSONObject.NULL);
         }
         databaseSubscriber.put(CoreConstants.FIELD_ENGLISH, domainSubscriber.speaksEnglish());
         databaseSubscriber.put(CoreConstants.FIELD_CITY, domainSubscriber.getCity());
         databaseSubscriber.put(CoreConstants.FIELD_COUNTRY, domainSubscriber.getCountry());
         if (domainSubscriber.getPicture() != null) {
-            databaseSubscriber.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.jpg", domainSubscriber.getPicture()));
+            byte[] image = ConvertImage.convertBitmapToByteArrayAndCompress(domainSubscriber.getPicture());
+            databaseSubscriber.put(CoreConstants.FIELD_PICTURE, new ParseFile("picture.jpeg", image));
         }
     }
 
@@ -358,15 +372,16 @@ public class CloudDatabaseController extends DatabaseController{
     }
 
     public List<Subscriber> refreshSubscribers(String eventId, Date refreshDate) throws ParseException {
-        ParseObject event = getDatabaseEvent(eventId);
+        ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
+        innerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, eventId);
+
         ParseQuery<ParseObject> eventsToSubscribersQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
-        eventsToSubscribersQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
+        eventsToSubscribersQuery.whereMatchesQuery(CoreConstants.FIELD_EVENTS, innerQuery);
         eventsToSubscribersQuery.whereGreaterThan(CoreConstants.FIELD_CREATED_AT, refreshDate);
         eventsToSubscribersQuery.include(CoreConstants.FIELD_SUBSCRIBERS);
         List<ParseObject> eventsToSubscribersList = eventsToSubscribersQuery.find();
         List<Subscriber> subscribersList = new ArrayList<>();
         for (ParseObject eventToSubscribersRow : eventsToSubscribersList) {
-            //eventToSubscriberRow get Accepted
             ParseObject databaseSubscriber = eventToSubscribersRow.getParseObject(CoreConstants.FIELD_SUBSCRIBERS);
             Boolean accepted = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_ACCEPTED);
             Boolean checkin = eventToSubscribersRow.getBoolean(CoreConstants.FIELD_CHECK_IN);

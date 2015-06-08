@@ -1,6 +1,7 @@
 package com.globant.eventscorelib.domainObjects;
 
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,17 +13,9 @@ public class Speaker extends BaseObject implements Parcelable {
     private String mName;
     private String mLastName;
     private String mBiography;
-    private byte[] mPicture;
+    private Bitmap mPicture;
 
     public Speaker() {
-    }
-
-    public Speaker(String title, String name, String lastName, String biography, byte[] picture) {
-        mTitle = title;
-        mName = name;
-        mLastName = lastName;
-        mBiography = biography;
-        mPicture = picture;
     }
 
     public String getObjectID() {
@@ -65,11 +58,11 @@ public class Speaker extends BaseObject implements Parcelable {
         this.mBiography = biography;
     }
 
-    public byte[] getPicture() {
+    public Bitmap getPicture() {
         return mPicture;
     }
 
-    public void setPicture(byte[] picture) {
+    public void setPicture(Bitmap picture) {
         this.mPicture = picture;
     }
 
@@ -79,11 +72,7 @@ public class Speaker extends BaseObject implements Parcelable {
         mName = in.readString();
         mLastName = in.readString();
         mBiography = in.readString();
-        int sizePicture= in.readInt();
-        if (sizePicture != 0) {
-            mPicture = new byte[sizePicture];
-            in.readByteArray(mPicture);
-        }
+        mPicture = in.readParcelable(null);
     }
 
    public static final Parcelable.Creator<Speaker> CREATOR = new Parcelable.Creator<Speaker>() {
@@ -111,11 +100,6 @@ public class Speaker extends BaseObject implements Parcelable {
         dest.writeString(mName);
         dest.writeString(mLastName);
         dest.writeString(mBiography);
-        if (mPicture != null) {
-            dest.writeInt(mPicture.length);
-            dest.writeByteArray(mPicture);
-        } else {
-            dest.writeInt(0);
-        }
+        dest.writeParcelable(mPicture, flags);
     }
 }

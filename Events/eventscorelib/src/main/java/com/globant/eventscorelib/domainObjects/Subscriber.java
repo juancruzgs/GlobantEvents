@@ -1,5 +1,6 @@
 package com.globant.eventscorelib.domainObjects;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,7 +15,7 @@ public class Subscriber extends BaseObject implements Parcelable {
     private String mTwitterUser;
     private String mCity;
     private String mCountry;
-    private byte[] mPicture;
+    private Bitmap mPicture;
     private boolean mEnglish;
     private boolean mGlober;
     private boolean mPublic;
@@ -23,24 +24,6 @@ public class Subscriber extends BaseObject implements Parcelable {
     private boolean mChecked;
 
     public Subscriber() {
-    }
-
-    public Subscriber(String name, String lastName, String email, String phone, String occupation, String twitterUser, String city, String country, byte[] picture, boolean english, boolean glober, boolean aPublic, boolean accepted, boolean checkIn) {
-        mName = name;
-        mLastName = lastName;
-        mEmail = email;
-        mPhone = phone;
-        mOccupation = occupation;
-        mTwitterUser = twitterUser;
-        mCity = city;
-        mCountry = country;
-        mPicture = picture;
-        mEnglish = english;
-        mGlober = glober;
-        mPublic = aPublic;
-        mAccepted = accepted;
-        mCheckIn = checkIn;
-        mChecked = false;
     }
 
     public String getObjectID() {
@@ -99,11 +82,11 @@ public class Subscriber extends BaseObject implements Parcelable {
         mOccupation = occupation;
     }
 
-    public byte[] getPicture() {
+    public Bitmap getPicture() {
         return mPicture;
     }
 
-    public void setPicture(byte[] picture) {
+    public void setPicture(Bitmap picture) {
         mPicture = picture;
     }
 
@@ -181,11 +164,7 @@ public class Subscriber extends BaseObject implements Parcelable {
         mTwitterUser = in.readString();
         mCity = in.readString();
         mCountry = in.readString();
-        int sizePicture= in.readInt();
-        if (sizePicture != 0) {
-            mPicture = new byte[sizePicture];
-            in.readByteArray(mPicture);
-        }
+        mPicture = in.readParcelable(null);
         mEnglish = (in.readInt() == 1);
         mGlober = (in.readInt() == 1);
         mPublic = (in.readInt() == 1);
@@ -222,12 +201,7 @@ public class Subscriber extends BaseObject implements Parcelable {
         dest.writeString(mTwitterUser);
         dest.writeString(mCity);
         dest.writeString(mCountry);
-        if (mPicture != null) {
-            dest.writeInt(mPicture.length);
-            dest.writeByteArray(mPicture);
-        } else {
-            dest.writeInt(0);
-        }
+        dest.writeParcelable(mPicture, flags);
         dest.writeInt(mEnglish ? 1 : 0);
         dest.writeInt(mGlober ? 1 : 0);
         dest.writeInt(mPublic ? 1 : 0);

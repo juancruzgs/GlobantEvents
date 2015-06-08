@@ -1,7 +1,10 @@
 package com.globant.eventscorelib.controllers;
 
+import android.graphics.Bitmap;
+
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
@@ -12,6 +15,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +55,7 @@ public abstract class DatabaseController {
     }
 
     protected abstract void pinObjectInBackground(ParseObject object);
+
     protected abstract void queryFromLocalDatastore(ParseQuery query);
 
     protected Speaker createDomainSpeakerFromDatabase(ParseObject databaseSpeaker) throws ParseException {
@@ -57,10 +63,15 @@ public abstract class DatabaseController {
         speaker.setObjectID(databaseSpeaker.getObjectId());
         speaker.setName(databaseSpeaker.getString(CoreConstants.FIELD_NAME));
         speaker.setLastName(databaseSpeaker.getString(CoreConstants.FIELD_LAST_NAME));
-        speaker.setTitle(databaseSpeaker.getString(CoreConstants.FIELD_TITLE));
-        speaker.setPicture(getImageFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
-        speaker.setBiography(databaseSpeaker.getString(CoreConstants.FIELD_BIOGRAPHY));
-        return speaker;
+        try {
+            //These fields are not available in the EventList
+            speaker.setTitle(databaseSpeaker.getString(CoreConstants.FIELD_TITLE));
+            speaker.setPicture(getBitmapFromDatabase(databaseSpeaker, CoreConstants.FIELD_PICTURE));
+            speaker.setBiography(databaseSpeaker.getString(CoreConstants.FIELD_BIOGRAPHY));
+            return speaker;
+        } catch (IllegalStateException exception){
+            return speaker;
+        }
     }
 
     protected Event createDomainEventFromDatabase(ParseObject databaseEvent) throws ParseException {
@@ -74,8 +85,8 @@ public abstract class DatabaseController {
         domainEvent.setStartDate(databaseEvent.getDate(CoreConstants.FIELD_START_DATE));
         domainEvent.setEndDate(databaseEvent.getDate(CoreConstants.FIELD_END_DATE));
         domainEvent.setPublic(databaseEvent.getBoolean(CoreConstants.FIELD_PUBLIC));
-        domainEvent.setIcon(getImageFromDatabase(databaseEvent, CoreConstants.FIELD_ICON));
-        domainEvent.setEventLogo(getImageFromDatabase(databaseEvent, CoreConstants.FIELD_EVENT_LOGO));
+        domainEvent.setIcon(getBitmapFromDatabase(databaseEvent, CoreConstants.FIELD_ICON));
+        domainEvent.setEventLogo(getBitmapFromDatabase(databaseEvent, CoreConstants.FIELD_EVENT_LOGO));
         domainEvent.setFullDescription(databaseEvent.getString(CoreConstants.FIELD_FULL_DESCRIPTION));
         domainEvent.setAdditionalInfo(databaseEvent.getString(CoreConstants.FIELD_ADDITIONAL_INFO));
         domainEvent.setAddress(databaseEvent.getString(CoreConstants.FIELD_ADDRESS));
@@ -85,9 +96,14 @@ public abstract class DatabaseController {
         return domainEvent;
     }
 
-    protected byte[] getImageFromDatabase(ParseObject databaseObject, String field) throws ParseException {
+    protected Bitmap getBitmapFromDatabase(ParseObject databaseObject, String field) throws ParseException {
         ParseFile file = databaseObject.getParseFile(field);
-        return file != null ? file.getData() : null;
+        if (file != null) {
+            //TODO Change the hardcoded values. Set the screen width and max container height
+            return ConvertImage.convertByteArrayToBitmap(file.getData(), 200, 200);
+        } else {
+            return null;
+        }
     }
 
     private LatLng getCoordinatesFromDatabaseObject(ParseObject databaseObject) {

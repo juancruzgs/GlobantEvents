@@ -529,8 +529,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         } else {
             mSubscriber.setTwitterUser(null);
         }
-        Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
-        mSubscriber.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
+        mSubscriber.setPicture(((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap());
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
 
     }

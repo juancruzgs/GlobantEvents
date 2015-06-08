@@ -8,6 +8,7 @@ import android.util.Base64;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.Date;
@@ -87,7 +88,8 @@ public class SharedPreferencesController {
         editor.putString(context.getString(R.string.preference_user_twitter), subscriber.getTwitterUser());
         editor.putString(context.getString(R.string.preference_user_country), subscriber.getCountry());
         editor.putString(context.getString(R.string.preference_user_city), subscriber.getCity());
-        String encoded = Base64.encodeToString(subscriber.getPicture(), Base64.DEFAULT);
+        byte[] image = ConvertImage.convertBitmapToByteArrayAndCompress(subscriber.getPicture());
+        String encoded = Base64.encodeToString(image, Base64.DEFAULT);
         editor.putString(context.getString(R.string.preference_user_picture), encoded);
         editor.putBoolean(context.getString(R.string.preference_user_is_glober), subscriber.isGlober());
         //TODO add field is public

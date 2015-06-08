@@ -53,7 +53,7 @@ public class CropCircleTransformation implements Transformation {
 //		if (output != source) {
 //			source.recycle();
 //		}
-		source_a.recycle();
+//		source_a.recycle();
 		source.recycle();
 
 		return output;
