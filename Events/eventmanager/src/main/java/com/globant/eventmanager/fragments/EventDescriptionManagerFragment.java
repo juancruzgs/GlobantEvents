@@ -55,7 +55,7 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
             intent.putExtra(CoreConstants.FIELD_EVENTS,mEvent);
             EventsManagerPagerActivity.mEventAction = EventsManagerPagerActivity.ActionType.EDIT_EVENT;
             startActivityForResult(intent, CoreConstants.EDIT_EVENT_REQUEST);
-
+            getActivity().overridePendingTransition(R.anim.top_in, R.anim.nothing);
         }
         else if(id == R.id.events_action_QR_code){
             QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(mEvent.getObjectID(), getActivity());

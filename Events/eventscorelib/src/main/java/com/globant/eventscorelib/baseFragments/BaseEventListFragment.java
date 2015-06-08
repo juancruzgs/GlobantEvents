@@ -243,6 +243,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             if (id == R.id.action_profile) {
                 Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
                 startActivity(intentSubscriber);
+                getActivity().overridePendingTransition(R.anim.top_in, R.anim.nothing);
                 handled = true;
             } else {
                 if (id == R.id.action_checkin) {

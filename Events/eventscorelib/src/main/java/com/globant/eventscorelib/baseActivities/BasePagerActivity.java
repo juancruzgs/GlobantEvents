@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
-import android.view.ViewGroup;
 
 import com.ToxicBakery.viewpager.transforms.ZoomOutSlideTransformer;
 import com.globant.eventscorelib.R;
@@ -155,6 +154,6 @@ abstract public class BasePagerActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(R.anim.right_in, R.anim.left_out);
+        overridePendingTransition(R.anim.left_in, R.anim.right_out);
     }
 }

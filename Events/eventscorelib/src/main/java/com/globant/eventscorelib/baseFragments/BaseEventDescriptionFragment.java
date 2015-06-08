@@ -151,6 +151,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         Intent intent = new Intent(getActivity(), BaseSubscriberActivity.class);
         intent.putExtra(CoreConstants.FIELD_CHECK_IN, true);
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.right_in, R.anim.nothing);
     }
 
     @Override
