@@ -30,7 +30,9 @@ import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.PushNotifications;
+import com.globant.eventscorelib.utils.SharingIntent;
 import com.google.zxing.WriterException;
 
 import java.io.File;

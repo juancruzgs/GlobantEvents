@@ -138,4 +138,17 @@ public class CoreConstants {
     // Intents constants
     public static final String EVENTS_HISTORY = "eventHistory";
 
+    // Social Networks
+    public static final String FACEBOOK = "Facebook";
+    public static final String GMAIL = "Gmail";
+    public static final String WHATSAPP = "Whatsapp";
+    public static final String TWITTER = "Twitter";
+    public static final String APP_LINK_FACEBOOK = "https://fb.me/383624728506392";
+    public static final String TWITTER_PACKAGE = "com.twitter.android.composer.ComposerActivity";
+    public static final String WHATSAPP_PACKAGE ="com.whatsapp";
+    public static final String GMAIL_PACKAGE = "com.google.android.gm";
+    public static final String INTENT_TYPE = "text/plain";
+    public static final String GMAIL_CLASS =  "com.google.android.gm.ComposeActivityGmail";
+
+
 }

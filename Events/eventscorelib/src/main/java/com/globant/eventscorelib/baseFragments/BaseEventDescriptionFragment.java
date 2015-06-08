@@ -10,6 +10,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -29,8 +30,6 @@ import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.globant.eventscorelib.utils.SharingIntent;
 import com.globant.eventscorelib.utils.PushNotifications;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
 
 import java.util.Date;
@@ -129,13 +128,13 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         int flexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
         int fabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
         ScrollChangeCallbacks scrollChangeCallbacks = new ScrollChangeCallbacks(actionBarSize, flexibleSpaceImageHeight, toolbarColor, flexibleSpaceShowFabOffset,
-                fabMargin, mToolbar, mOverlayView, mEventTitle, mEventImage, mFab , false, getActivity());
+                fabMargin, mToolbar, mOverlayView, mEventTitle, mEventImage, mFab, false, getActivity());
         mScrollView.setScrollViewCallbacks(scrollChangeCallbacks);
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PushNotifications.subscribeToChannel("CH-"+mEvent.getObjectID());
+                PushNotifications.subscribeToChannel("CH-" + mEvent.getObjectID());
                 prepareBaseSubscriberActivity();
             }
         });
@@ -180,7 +179,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mEventFullDescription = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Full_Description);
         mOverlayView = rootView.findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
-        mFab = (ActionButton)rootView.findViewById(R.id.fab);
+        mFab = (ActionButton) rootView.findViewById(R.id.fab);
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_view_map_icon);
         changeIconColor();
     }
@@ -214,6 +213,23 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         } else {
             mMapIcon.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.action_share) {
+            String shortDescription = mEvent.getShortDescription() +
+                    " - " + CustomDateFormat.getCompleteDate(mEvent.getStartDate(), getActivity()) + " - " + mEvent.getCity() + ", " + mEvent.getCountry();
+            SharingIntent.showList(getActivity(), mEvent.getTitle(), shortDescription);
+            handled = true;
+        }
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
     }
 
 

@@ -24,12 +24,7 @@ public class ConvertImage {
         return bitmap;
     }
 
-    public static Uri getImageUri(Context context, Bitmap image) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), image, "Title", null);
-        return Uri.parse(path);
-    }
+
     public static byte[] convertBitmapImageToByteArray(Bitmap Photo) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);

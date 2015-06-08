@@ -244,7 +244,7 @@ public abstract class BaseService extends Service {
                                     result = mCloudDatabaseController.getEventHistory();
                                     break;
                                 case GET_EVENT:
-                                    result = mCloudDatabaseController.getEventWithSpeakers((String)arguments[0]);
+                                    result = mCloudDatabaseController.getEvent((String)arguments[0]);
                                     break;
                                 case REFRESH_SUBSCRIBERS:
                                     result = mCloudDatabaseController.refreshSubscribers((String)arguments[0], (Date)arguments[1]);
