@@ -20,6 +20,8 @@ import com.parse.ParseRelation;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,22 +41,6 @@ public class CloudDatabaseController extends DatabaseController {
 //        ParseObject databaseEvent = getDatabaseEvent(eventId);
 //        return createDomainEventFromDatabase(databaseEvent);
 //    }
-
-    public Event getEventWithSpeakers(String eventId) throws ParseException {
-        ParseObject databaseEvent = getDatabaseEvent(eventId);
-        ParseRelation relation = databaseEvent.getRelation(CoreConstants.FIELD_SPEAKERS);
-        ParseQuery relationQuery = relation.getQuery();
-        List<ParseObject> databaseSpeakersList = relationQuery.find();
-        List<Speaker> domainSpeakersList = new ArrayList<>();
-        for (ParseObject databaseSpeaker : databaseSpeakersList) {
-            Speaker domainSpeaker = createDomainSpeakerFromDatabase(databaseSpeaker);
-            domainSpeakersList.add(domainSpeaker);
-        }
-        Event domainEvent = createDomainEventFromDatabase(databaseEvent);
-        domainEvent.setSpeakers(domainSpeakersList);
-        return domainEvent;
-    }
-
 
     public List<Event> getEventHistory() throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
@@ -81,6 +67,7 @@ public class CloudDatabaseController extends DatabaseController {
 
     public String getSubscriberId(String subscriberEmail) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        query.selectKeys(Collections.singletonList(CoreConstants.FIELD_OBJECT_ID));
         query.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
         String objectId;
         try {
@@ -99,6 +86,7 @@ public class CloudDatabaseController extends DatabaseController {
         subscribersInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, subscriberId);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        query.selectKeys(Collections.singletonList(CoreConstants.FIELD_OBJECT_ID));
         query.whereMatchesQuery(CoreConstants.FIELD_EVENTS, eventsInnerQuery);
         query.whereMatchesQuery(CoreConstants.FIELD_SUBSCRIBERS, subscribersInnerQuery);
         try {
@@ -158,6 +146,8 @@ public class CloudDatabaseController extends DatabaseController {
         innerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, eventId);
 
         ParseQuery<ParseObject> eventsToSubscribersQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
+        eventsToSubscribersQuery.selectKeys(Arrays.asList(CoreConstants.FIELD_SUBSCRIBERS, CoreConstants.FIELD_ACCEPTED,
+                CoreConstants.FIELD_CHECK_IN));
         eventsToSubscribersQuery.whereMatchesQuery(CoreConstants.FIELD_EVENTS, innerQuery);
         eventsToSubscribersQuery.include(CoreConstants.FIELD_SUBSCRIBERS);
 
