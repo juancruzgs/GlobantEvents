@@ -37,6 +37,10 @@ public class CloudDatabaseController extends DatabaseController {
     protected void queryFromLocalDatastore(ParseQuery query) {
     }
 
+    public Event getEvent(String eventId) throws ParseException {
+        ParseObject databaseEvent = getDatabaseEvent(eventId);
+        return createDomainEventFromDatabase(databaseEvent);
+    }
 
     public List<Event> getEventHistory() throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
@@ -179,16 +183,16 @@ public class CloudDatabaseController extends DatabaseController {
 
     public void updateEvent(Event domainEvent) throws ParseException {
         List<Speaker> oldSpeakerList = getEventSpeakers(domainEvent.getObjectID());
-        List<String>IdListToRemove = new ArrayList<>();
-        if (oldSpeakerList != null && !oldSpeakerList.isEmpty()){
-            for (Speaker speaker: oldSpeakerList)
+        List<String> IdListToRemove = new ArrayList<>();
+        if (oldSpeakerList != null && !oldSpeakerList.isEmpty()) {
+            for (Speaker speaker : oldSpeakerList)
                 IdListToRemove.add(speaker.getObjectID());
         }
 
         List<Speaker> newSpeakerList = domainEvent.getSpeakers();
-        List<String>   IdListToAdd = new ArrayList<>();
-        if (newSpeakerList != null && !newSpeakerList.isEmpty()){
-            for (Speaker speaker: newSpeakerList){
+        List<String> IdListToAdd = new ArrayList<>();
+        if (newSpeakerList != null && !newSpeakerList.isEmpty()) {
+            for (Speaker speaker : newSpeakerList) {
                 IdListToAdd.add(createSpeaker(speaker));
             }
         }
@@ -200,7 +204,7 @@ public class CloudDatabaseController extends DatabaseController {
             ParseRelation<ParseObject> relation = event.getRelation(CoreConstants.FIELD_SPEAKERS);
 
             if (!IdListToRemove.isEmpty())
-                for (String speakerId : IdListToRemove){
+                for (String speakerId : IdListToRemove) {
                     relation.remove(speakersQuery.get(speakerId));
                     (speakersQuery.get(speakerId)).delete();
                 }
@@ -246,11 +250,11 @@ public class CloudDatabaseController extends DatabaseController {
         ParseObject event = eventsQuery.get(domainEvent.getObjectID());
 
         List<Speaker> speakers = domainEvent.getSpeakers();
-        List<String>IdList = new ArrayList<>();
-        if (speakers != null && !speakers.isEmpty()){
-            for (Speaker speaker: speakers)
-              IdList.add(speaker.getObjectID());
-            deleteEventSpeakers(domainEvent.getObjectID(),IdList);
+        List<String> IdList = new ArrayList<>();
+        if (speakers != null && !speakers.isEmpty()) {
+            for (Speaker speaker : speakers)
+                IdList.add(speaker.getObjectID());
+            deleteEventSpeakers(domainEvent.getObjectID(), IdList);
         }
         event.delete();
     }
