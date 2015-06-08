@@ -245,9 +245,11 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                     getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
             if (eventArray.has(mEvent.getObjectID())) {
                 mButtonAddToCalendar.setText("Remove from calendar");
+                mAddedToCalendar = true;
             }
             else {
                 mButtonAddToCalendar.setText("Add to calendar");
+                mAddedToCalendar = false;
             }
         }
         catch (JSONException e) {
@@ -315,7 +317,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
 
                 setCalendarButtonText();
 
-                mAddedToCalendar = true;
+                //mAddedToCalendar = true;
             } catch (JSONException e) {
                 Logger.e("Error trying to get this event's calendar id", e);
                 mButtonAddToCalendar.setEnabled(false);
@@ -333,7 +335,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
 
                 setCalendarButtonText();
 
-                mAddedToCalendar = false;
+                //mAddedToCalendar = false;
             } catch (JSONException e) {
                 Logger.e("Error trying to get this event's calendar id", e);
                 mButtonAddToCalendar.setEnabled(false);

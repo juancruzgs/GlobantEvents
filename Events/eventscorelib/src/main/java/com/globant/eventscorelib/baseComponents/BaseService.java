@@ -22,8 +22,13 @@ import com.globant.eventscorelib.controllers.SelectiveDatabaseController;
 import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.JSONSharedPreferences;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.ParseException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -141,6 +146,22 @@ public abstract class BaseService extends Service {
 
     protected abstract String getTwitterCallbackURL();
 
+    protected void updateEvent(Event event) throws ParseException {
+        mCloudDatabaseController.updateEvent(event);
+        try {
+            JSONObject eventsArray = JSONSharedPreferences.loadJSONObject(this,
+                    getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+            if (eventsArray.has(event.getObjectID())) {
+                JSONObject eventObject = eventsArray.getJSONObject(event.getObjectID());
+                updateEventInCalendar(eventObject.getInt("calendarSelfId"), eventObject.getLong("calendarEventId"),
+                        event);
+            }
+        }
+        catch (JSONException e) {
+            Logger.e("Problems trying to find local info about this event", e);
+        }
+    }
+
     protected long addEventToCalendar(Event event) {
         ContentResolver contentResolver = getContentResolver();
 
@@ -175,6 +196,33 @@ public abstract class BaseService extends Service {
         deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
 
         return getContentResolver().delete(deleteUri, null, null);
+    }
+
+    protected long updateEventInCalendar(Integer calendarID, Long eventID, Event event) {
+        ContentResolver contentResolver = getContentResolver();
+
+        long calID = calendarID;
+        long startMillis = 0;
+        long endMillis = 0;
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.setTime(event.getStartDate());
+        startMillis = beginTime.getTimeInMillis();
+        Calendar endTime = Calendar.getInstance();
+        endTime.setTime(event.getEndDate());
+        endMillis = endTime.getTimeInMillis();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CalendarContract.Events.DTSTART, startMillis);
+        contentValues.put(CalendarContract.Events.DTEND, endMillis);
+        contentValues.put(CalendarContract.Events.TITLE, event.getTitle());
+        contentValues.put(CalendarContract.Events.DESCRIPTION, event.getShortDescription());
+        contentValues.put(CalendarContract.Events.CALENDAR_ID, calID);
+        // TODO: Get the right timezone. List in TimeZone.getAvailableIDs(). Format: Continent/City
+        contentValues.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+        Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+        int rows = contentResolver.update(uri, contentValues, null, null);
+
+        return rows;
     }
 
     private void startCountdown() {
@@ -216,7 +264,8 @@ public abstract class BaseService extends Service {
         EVENT_LIST, EVENTS_LIST_REFRESH, EVENT_DETAIL, EVENT_CREATE, EVENT_UPDATE, EVENT_DELETE, POSITION_COORDINATES, POSITION_ADDRESS,
         TWEET_POST, GET_TWITTER_USER, TWITTER_LOADER, TWITTER_LOADER_RESPONSE, TWEETS_LIST, SUBSCRIBER_CHECKIN, EVENT_SPEAKERS,
         PARTICIPANT_LIST, SUBSCRIBER_EXISTS, SUBSCRIBER_CREATE, EVENTS_TO_SUBSCRIBER_CREATE, IS_SUBSCRIBED, SUBSCRIBER_UPDATE, SET_ACCEPTED,
-        GET_EVENT_HISTORY, GET_EVENT, REFRESH_SUBSCRIBERS, ADD_EVENT_TO_CALENDAR, GET_CALENDARS, REMOVE_EVENT_FROM_CALENDAR}
+        GET_EVENT_HISTORY, GET_EVENT, REFRESH_SUBSCRIBERS, ADD_EVENT_TO_CALENDAR, GET_CALENDARS, REMOVE_EVENT_FROM_CALENDAR,
+        UPDATE_EVENT_IN_CALENDAR}
 
     private HashMap<String, ActionWrapper> currentSubscribers = new HashMap<>();
 
@@ -270,7 +319,7 @@ public abstract class BaseService extends Service {
                                     mCloudDatabaseController.createEvent((Event) arguments[0]);
                                     break;
                                 case EVENT_UPDATE:
-                                    mCloudDatabaseController.updateEvent((Event) arguments[0]);
+                                    updateEvent((Event) arguments[0]);
                                     break;
                                 case EVENT_DELETE:
                                     mCloudDatabaseController.deleteEvent((Event) arguments[0]);
@@ -360,6 +409,11 @@ public abstract class BaseService extends Service {
                                     break;
                                 case REMOVE_EVENT_FROM_CALENDAR:
                                     result = removeEventFromCalendar((Integer)arguments[0], (Long)arguments[1]);
+                                    break;
+                                case UPDATE_EVENT_IN_CALENDAR:
+                                    result = updateEventInCalendar((Integer)arguments[0], (Long)arguments[1],
+                                            (Event)arguments[2]);
+                                    break;
                             }
 
 //                            if (!cancelKeys.contains(bindingKey)) {

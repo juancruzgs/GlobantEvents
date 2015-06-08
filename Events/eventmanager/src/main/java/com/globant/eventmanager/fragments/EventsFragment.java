@@ -833,16 +833,21 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                             mService.executeAction(BaseService.ACTIONS.EVENT_CREATE, getBindingKey(), mEvent);
                             break;
                         case EDIT_EVENT:
+/*
                             try {
                                 JSONObject eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
                                         getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
                                 if (eventsArray.has(mEvent.getObjectID())) {
-                                    // TODO: Update the date info in the Calendar event
+                                    JSONObject eventObject = eventsArray.getJSONObject(mEvent.getObjectID());
+                                    mService.executeAction(BaseService.ACTIONS.UPDATE_EVENT_IN_CALENDAR, getBindingKey(),
+                                            eventObject.getInt("calendarSelfId"), eventObject.getLong("calendarEventId"),
+                                            mEvent);
                                 }
                             }
                             catch (JSONException e) {
                                 Logger.e("Problems trying to find local info about this event", e);
                             }
+*/
                             mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, getBindingKey(), mEvent);
                             break;
                     }
