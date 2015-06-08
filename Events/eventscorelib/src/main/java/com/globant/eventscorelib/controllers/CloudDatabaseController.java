@@ -42,6 +42,22 @@ public class CloudDatabaseController extends DatabaseController {
 //        return createDomainEventFromDatabase(databaseEvent);
 //    }
 
+    public Event getEventWithSpeakers(String eventId) throws ParseException {
+        ParseObject databaseEvent = getDatabaseEvent(eventId);
+        ParseRelation<ParseObject> relation = databaseEvent.getRelation(CoreConstants.FIELD_SPEAKERS);
+        ParseQuery relationQuery = relation.getQuery();
+        List<ParseObject> databaseSpeakersList = relationQuery.find();
+        List<Speaker> domainSpeakersList = new ArrayList<>();
+        for (ParseObject databaseSpeaker : databaseSpeakersList) {
+            Speaker domainSpeaker = createDomainSpeakerFromDatabase(databaseSpeaker);
+            domainSpeakersList.add(domainSpeaker);
+        }
+        Event domainEvent = createDomainEventFromDatabase(databaseEvent);
+        domainEvent.setSpeakers(domainSpeakersList);
+        return domainEvent;
+    }
+
+
     public List<Event> getEventHistory() throws ParseException {
         ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         eventsQuery.orderByDescending(CoreConstants.FIELD_START_DATE);
