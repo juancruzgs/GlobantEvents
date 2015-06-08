@@ -39,7 +39,6 @@ public abstract class DatabaseController {
             pinObjectInBackground(databaseEvent);
             ParseRelation relation = databaseEvent.getRelation(CoreConstants.FIELD_SPEAKERS);
             ParseQuery relationQuery = relation.getQuery();
-            relationQuery.selectKeys(Arrays.asList(CoreConstants.FIELD_NAME, CoreConstants.FIELD_LAST_NAME));
             queryFromLocalDatastore(relationQuery);
             List<ParseObject> databaseSpeakersList = relationQuery.find();
             List<Speaker> domainSpeakersList = new ArrayList<>();
