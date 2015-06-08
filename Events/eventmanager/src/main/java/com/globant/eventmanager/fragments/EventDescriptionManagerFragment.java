@@ -27,7 +27,9 @@ import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.utils.QRCodeEncoder;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.PushNotifications;
+import com.globant.eventscorelib.utils.SharingIntent;
 import com.google.zxing.WriterException;
 
 import java.io.File;

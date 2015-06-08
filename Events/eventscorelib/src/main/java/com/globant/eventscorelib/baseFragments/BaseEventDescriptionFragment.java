@@ -30,8 +30,6 @@ import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.globant.eventscorelib.utils.SharingIntent;
 import com.globant.eventscorelib.utils.PushNotifications;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
 
 import java.util.Date;
@@ -130,7 +128,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         int flexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
         int fabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
         ScrollChangeCallbacks scrollChangeCallbacks = new ScrollChangeCallbacks(actionBarSize, flexibleSpaceImageHeight, toolbarColor, flexibleSpaceShowFabOffset,
-                fabMargin, mToolbar, mOverlayView, mEventTitle, mEventImage, mFab , false, getActivity());
+                fabMargin, mToolbar, mOverlayView, mEventTitle, mEventImage, mFab, false, getActivity());
         mScrollView.setScrollViewCallbacks(scrollChangeCallbacks);
 
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -181,7 +179,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mEventFullDescription = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Full_Description);
         mOverlayView = rootView.findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
-        mFab = (ActionButton)rootView.findViewById(R.id.fab);
+        mFab = (ActionButton) rootView.findViewById(R.id.fab);
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_view_map_icon);
         changeIconColor();
     }
@@ -225,15 +223,15 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         if (id == R.id.action_share) {
             String shortDescription = mEvent.getShortDescription() +
                     " - " + CustomDateFormat.getCompleteDate(mEvent.getStartDate(), getActivity()) + " - " + mEvent.getCity() + ", " + mEvent.getCountry();
-            SharingIntent.showList(getActivity(), this, mEvent.getTitle(), shortDescription);
+            SharingIntent.showList(getActivity(), mEvent.getTitle(), shortDescription);
             handled = true;
         }
-
         if (!handled) {
             handled = super.onOptionsItemSelected(item);
         }
         return handled;
     }
+
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {

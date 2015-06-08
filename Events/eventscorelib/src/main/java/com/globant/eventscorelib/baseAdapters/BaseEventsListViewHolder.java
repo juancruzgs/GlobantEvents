@@ -19,7 +19,7 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.SharingIntent;
 
-public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
+public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder {
     private final View mViewGroup;
     private final View mSeparator;
     private final ImageView mImageEvent;
@@ -58,18 +58,14 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
                 fragment.getActivity().overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
             }
         });
-
         mEventShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String shortDescription = mShortDescriptionEvent.getText().toString() +
                         " - " + mEventDate.getText().toString() + " - " + mLocationEvent.getText().toString();
-                Bitmap photo = ((BitmapDrawable)mImageEvent.getDrawable()).getBitmap();
-                SharingIntent.showList(context, fragment, mEventTitle.getText().toString(), shortDescription);
-              //  Uri imageUri = ConvertImage.getImageUri(context, photo);
-              //  SharingIntent.shareViaFacebook(fragment, mEventTitle.getText().toString(), shortDescription, imageUri);
+                SharingIntent.showList(context, mEventTitle.getText().toString(), shortDescription);
             }
-       });
+        });
     }
 
     public void hideSpeakersLayout() {
@@ -91,7 +87,7 @@ public abstract class BaseEventsListViewHolder extends RecyclerView.ViewHolder{
         speakerIcon.setImageDrawable(drawableToApply);
         speakerIcon.setImageDrawable(itemView.getResources().getDrawable(R.mipmap.ic_speaker));
     }
-    
+
     public View getViewGroup() {
         return mViewGroup;
     }
