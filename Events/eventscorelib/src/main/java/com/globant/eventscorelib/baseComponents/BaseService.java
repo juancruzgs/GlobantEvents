@@ -221,7 +221,7 @@ public abstract class BaseService extends Service {
                                     break;
                                 case SET_ACCEPTED:
                                     //Object[] objects = (Object[]) arguments;
-                                    mCloudDatabaseController.setAccepted((String) arguments[0], (List<Subscriber>) arguments[1]);
+                                    mCloudDatabaseController.setAccepted((String) arguments[0], (List<String>) arguments[1]);
                                     break;
                                 case SUBSCRIBER_UPDATE:
                                     result = mCloudDatabaseController.updateSubscriber((Subscriber) arguments[0]);

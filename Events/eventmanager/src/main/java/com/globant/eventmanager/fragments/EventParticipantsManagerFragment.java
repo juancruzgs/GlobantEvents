@@ -266,10 +266,15 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     public void onStop() {
         if ((mSubscribers != null) && (mAcceptedSubscribers.size() > 0))
         {
-            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mAcceptedSubscribers);
+            List<String> subscribersId = new ArrayList<>();
             for (Subscriber subscriber: mAcceptedSubscribers){
-                PushNotifications.sendNotificationToSubscriber(getActivity(),"You are a participant now",
-                        mEvent.getObjectID(),subscriber.getObjectID());
+                subscribersId.add(subscriber.getObjectID());
+            }
+            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), subscribersId);
+            //TODO Check onFinishAction() before doing this
+            for (Subscriber subscriber: mAcceptedSubscribers){
+                PushNotifications.sendNotificationToSubscriber(getActivity(), "You are a participant now",
+                        mEvent.getObjectID(), subscriber.getObjectID());
             }
         }
         super.onStop();
