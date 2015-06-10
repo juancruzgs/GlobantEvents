@@ -82,7 +82,8 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     protected void showHint() {
-        if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
+        if ((!SharedPreferencesController.isHintParticipantsShowed(this.getActivity()))
+        && (mSubscribers.size() > 0 )){
             Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
             SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
         }
