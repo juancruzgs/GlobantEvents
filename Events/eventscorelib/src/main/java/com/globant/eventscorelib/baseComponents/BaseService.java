@@ -56,10 +56,10 @@ public abstract class BaseService extends Service {
         mNCalendar = NCalendar;
     }
 
-    class MyCalendar {
+    class CalendarInfo {
         public String name;
         public String id;
-        public MyCalendar(String _name, String _id) {
+        public CalendarInfo(String _name, String _id) {
             name = _name;
             id = _id;
         }
@@ -68,7 +68,9 @@ public abstract class BaseService extends Service {
             return name;
         }
     }
-    private MyCalendar mCalendars[];
+
+    private CalendarInfo mCalendars[];
+
     private void getCalendars() {
         String[] l_projection = new String[]{
                 CalendarContract.Calendars._ID,
@@ -85,7 +87,7 @@ public abstract class BaseService extends Service {
         //CursorLoader loader = new CursorLoader(this, l_calendars, l_projection, "selected=1", null, null);   //active calendars
         Cursor l_managedCursor = loader.loadInBackground();
         if (l_managedCursor.moveToFirst()) {
-            mCalendars = new MyCalendar[l_managedCursor.getCount()];
+            mCalendars = new CalendarInfo[l_managedCursor.getCount()];
             String l_calName;
             String l_calId;
             int l_cnt = 0;
@@ -94,7 +96,7 @@ public abstract class BaseService extends Service {
             do {
                 l_calName = l_managedCursor.getString(l_nameCol);
                 l_calId = l_managedCursor.getString(l_idCol);
-                mCalendars[l_cnt] = new MyCalendar(l_calName, l_calId);
+                mCalendars[l_cnt] = new CalendarInfo(l_calName, l_calId);
                 ++l_cnt;
             } while (l_managedCursor.moveToNext());
         }
