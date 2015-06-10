@@ -61,10 +61,10 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
         return getActivity();
     }
 
-    @Override
-    public String getBindingKey() {
-        return EventParticipantsManagerFragment.class.getSimpleName();
-    }
+//    @Override
+//    public String getBindingKey() {
+//        return EventParticipantsManagerFragment.class.getSimpleName();
+//    }
 
     @Override
     protected void initializeAcceptedSubscribers() {
