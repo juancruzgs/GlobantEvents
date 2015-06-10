@@ -103,6 +103,9 @@ public class EventListClientFragment extends BaseEventListFragment implements Ba
                     if (channels.contains(getString(R.string.prefix_participants) + event.getObjectID())){
                         PushNotifications.unsubscribeToChannel(getString(R.string.prefix_participants) + event.getObjectID());
                     }
+                    if (channels.contains(getString(R.string.prefix_checkin) + event.getObjectID())){
+                        PushNotifications.unsubscribeToChannel(getString(R.string.prefix_checkin) + event.getObjectID());
+                    }
                     if (channels.contains(getString(R.string.prefix_subscriber) + event.getObjectID())){
                         PushNotifications.unsubscribeToChannel(getString(R.string.prefix_subscriber) + event.getObjectID());
                         for(String channel : channels){
