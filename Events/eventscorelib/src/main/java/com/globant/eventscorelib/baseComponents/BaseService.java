@@ -201,7 +201,7 @@ public abstract class BaseService extends Service {
     protected long updateEventInCalendar(Integer calendarID, Long eventID, Event event) {
         ContentResolver contentResolver = getContentResolver();
 
-        long calID = calendarID;
+        long calID = Long.parseLong(mCalendars[mNCalendar].id);
         long startMillis = 0;
         long endMillis = 0;
         Calendar beginTime = Calendar.getInstance();
