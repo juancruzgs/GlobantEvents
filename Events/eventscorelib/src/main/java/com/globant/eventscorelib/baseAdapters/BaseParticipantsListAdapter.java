@@ -21,15 +21,13 @@ import java.util.List;
  */
 public abstract class BaseParticipantsListAdapter extends RecyclerView.Adapter<BaseParticipantListViewHolder>{
 
-    private Context mContext;
     private List<Subscriber> mSubscribers;
     private CropCircleTransformation mTransformation;
 
 
     public BaseParticipantsListAdapter(Context context, List<Subscriber> subscribers) {
-        mContext = context;
         mSubscribers = subscribers;
-        mTransformation = new CropCircleTransformation(mContext);
+        mTransformation = new CropCircleTransformation(context);
     }
 
     protected abstract BaseParticipantListViewHolder getViewHolder(View view);
@@ -57,19 +55,10 @@ public abstract class BaseParticipantsListAdapter extends RecyclerView.Adapter<B
         }
         String location = subscriber.getCity() + ", " + subscriber.getCountry();
         holder.getTextViewLocation().setText(location);
-        Bitmap subscriberPicture = getSubscriberImage(subscriber);
+        Bitmap subscriberPicture = subscriber.getPicture();
         Bitmap circularImage = mTransformation.transform(subscriberPicture);
         holder.getImageViewParticipantLeft().setImageBitmap(circularImage);
     }
-
-    public Bitmap getSubscriberImage(Subscriber subscriber) {
-        Bitmap subscriberPicture;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inMutable = true;
-        subscriberPicture = BitmapFactory.decodeByteArray(subscriber.getPicture(), 0, subscriber.getPicture().length, options);
-        return subscriberPicture;
-    }
-
 
     @Override
     public int getItemCount() {

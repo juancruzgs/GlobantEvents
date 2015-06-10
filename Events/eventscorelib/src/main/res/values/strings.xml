@@ -3,7 +3,7 @@
 
     <string name="app_name">Events Core Lib</string>
     <string name="title_activity_events_stream">Events</string>
-    <string name="title_activity_event_detail">Event</string>
+    <string name="title_activity_event_detail">Edition</string>
     <string name="title_activity_map">Map</string>
     <string name="title_fragment_events_stream">Stream</string>
     <string name="loading">Loading…</string>
@@ -131,7 +131,8 @@
     <string name="preference_participant_hint_showed">preference_participant_hint_showed</string>
     <string name="no_tweet_steam">No tweets yet, be the first!</string>
     <string name="text_view_no_participants">No subscribers registered yet.</string>
-    <string name="facebook_app_id">383225715212960</string>
+    <string name="facebook_app_id_client">383225715212960</string>
+    <string name="facebook_app_id_manager">449604988548513</string>
     <string name="action_history">History</string>
     <string name="action_share">Share</string>
     <string name="menu_button_notifications">Notifications</string>
@@ -152,4 +153,6 @@
     <string name="notification_event_title">Notification Event</string>
     <string name="notification_broadcast_title">Broadcast Notification</string>
     <string name="preference_time">preference_time</string>
+    <string name="dialog_share_via">Share via</string>
+    <string name="check_out_event">Check out this event!</string>
 </resources>

@@ -8,11 +8,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -25,7 +24,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,15 +35,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
@@ -54,15 +50,16 @@ import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
+import com.globant.eventscorelib.utils.PushNotifications;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
 
 import java.io.FileNotFoundException;
@@ -204,7 +201,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         if (event.getEventLogo()!= null){
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mPhotoEvent.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+            mPhotoEvent.setImageBitmap(mEvent.getEventLogo());
         }else {
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
             mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
@@ -228,7 +225,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             mEvent.setAddress(mEditTextAddress.getText().toString());
             mEvent.setPublic(mSpinnerPublic.getSelectedItemPosition() == 0);
             mEvent.setCountry(mEditTextCountry.getText().toString());
-            mEvent.setEventLogo(ConvertImage.convertDrawableToByteArray(mPhotoEvent.getDrawable()));
+            mEvent.setEventLogo(((BitmapDrawable)mPhotoEvent.getDrawable()).getBitmap());
             mEvent.setIcon(null);
             mEvent.setCoordinates(mLatLng);
 
@@ -579,8 +576,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
                         options.inJustDecodeBounds = false;
 
-                        if (options.outHeight >= 1000 && options.outWidth >= 1000){
-                            options.inSampleSize = calculateInSampleSize(options, mPhotoEvent.getWidth(), mPhotoEvent.getHeight());
+                        if (options.outHeight >= 700 && options.outWidth >= 700){
+                            options.inSampleSize = calculateInSampleSize(options, 700, 700);
                             bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
                         }else
                         {
@@ -591,7 +588,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         if (bitmap != null) {
                             mPhotoEvent.setImageBitmap(bitmap);
                             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            mEvent.setEventLogo(ConvertImage.convertBitmapImageToByteArray(bitmap));
+                            mEvent.setEventLogo(bitmap);
                         }else
                         {
                             mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
@@ -692,6 +689,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BaseEventListFragment.mIsDataSetChanged = false;
         mBindingKey = this.getClass().getSimpleName();
         setHasOptionsMenu(true);
     }
@@ -805,16 +803,23 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             handled = true;
         }else {
             if (id == R.id.events_action_delete) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(getString(R.string.alert_message_delete_event_title))
-                        .setMessage(getString(R.string.alert_message_delete_event))
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
+                MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                        .title(getString(R.string.alert_message_delete_event_title)).content(getString(R.string.alert_message_delete_event))
+                        .positiveText(android.R.string.yes)
+                        .negativeText(android.R.string.no)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
                                 mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, getBindingKey(), mEvent);
-                            }})
-                        .setNegativeButton(android.R.string.no, null).show();
+                            }
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                super.onNegative(dialog);
+                            }
+                        }).build();
+                materialDialog.show();
                 handled = true;
             }
         }
@@ -1010,7 +1015,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         switch (theAction){
             case EVENT_CREATE:
-                BaseEventDetailPagerActivity.getInstance().setEvent(mEvent);
                 Toast.makeText(getActivity(),getResources().getString(R.string.event_created),Toast.LENGTH_SHORT).show();
                 break;
             case EVENT_UPDATE:
@@ -1022,10 +1026,13 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                 break;
         }
 
+        BaseEventListFragment.mIsDataSetChanged = true;
         EventsManagerPagerActivity.Finish(Activity.RESULT_OK, theAction);
     }
 
     @Override
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-        showErrorOverlay();}
+        BaseEventListFragment.mIsDataSetChanged = false;
+        showErrorOverlay();
+    }
 }

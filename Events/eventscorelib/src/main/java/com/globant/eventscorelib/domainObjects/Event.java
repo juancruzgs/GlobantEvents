@@ -1,5 +1,6 @@
 package com.globant.eventscorelib.domainObjects;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -25,8 +26,8 @@ public class Event extends BaseObject implements Parcelable {
     private Date mStartDate;
     private Date mEndDate;
     private boolean mPublic;
-    private byte[] mIcon;
-    private byte[] mEventLogo;
+    private Bitmap mIcon;
+    private Bitmap mEventLogo;
 
     private LatLng mCoordinates;
     private List<Speaker> mSpeakers;
@@ -143,19 +144,19 @@ public class Event extends BaseObject implements Parcelable {
         mPublic = aPublic;
     }
 
-    public byte[] getIcon() {
+    public Bitmap getIcon() {
         return mIcon;
     }
 
-    public void setIcon(byte[] icon) {
+    public void setIcon(Bitmap icon) {
         mIcon = icon;
     }
 
-    public byte[] getEventLogo() {
+    public Bitmap getEventLogo() {
         return mEventLogo;
     }
 
-    public void setEventLogo(byte[] eventLogo) {
+    public void setEventLogo(Bitmap eventLogo) {
         mEventLogo = eventLogo;
     }
 
@@ -221,23 +222,15 @@ public class Event extends BaseObject implements Parcelable {
         mCategory = in.readString();
         mLanguage = in.readString();
         mHashtag = in.readString();
-        int sizeEventLogo = in.readInt();
-        if (sizeEventLogo != 0) {
-            mEventLogo = new byte[sizeEventLogo];
-            in.readByteArray(mEventLogo);
-        }
-        int sizeIcon = in.readInt();
-        if (sizeIcon != 0) {
-            mIcon = new byte[sizeIcon];
-            in.readByteArray(mIcon);
-        }
+        mEventLogo = in.readParcelable(null);
+        mIcon = in.readParcelable(null);
         mPublic = (in.readInt() == 1);
         mStartDate = (Date) in.readSerializable();
         mEndDate = (Date) in.readSerializable();
-        mSpeakers = new ArrayList<>();
-        in.readTypedList(mSpeakers, Speaker.CREATOR);
-        mSubscribers = new ArrayList<>();
-        in.readTypedList(mSubscribers, Subscriber.CREATOR);
+//        mSpeakers = new ArrayList<>();
+//        in.readTypedList(mSpeakers, Speaker.CREATOR);
+//        mSubscribers = new ArrayList<>();
+//        in.readTypedList(mSubscribers, Subscriber.CREATOR);
     }
 
     @Override
@@ -254,22 +247,12 @@ public class Event extends BaseObject implements Parcelable {
         dest.writeString(mCategory);
         dest.writeString(mLanguage);
         dest.writeString(mHashtag);
-        if (mEventLogo != null) {
-            dest.writeInt(mEventLogo.length);
-            dest.writeByteArray(mEventLogo);
-        } else {
-            dest.writeInt(0);
-        }
-        if (mIcon != null) {
-            dest.writeInt(mIcon.length);
-            dest.writeByteArray(mIcon);
-        } else {
-            dest.writeInt(0);
-        }
+        dest.writeParcelable(mEventLogo, flags);
+        dest.writeParcelable(mIcon, flags);
         dest.writeInt(mPublic ? 1 : 0);
         dest.writeSerializable(mStartDate);
         dest.writeSerializable(mEndDate);
-        dest.writeTypedList(mSpeakers);
-        dest.writeTypedList(mSubscribers);
+//        dest.writeTypedList(mSpeakers);
+//        dest.writeTypedList(mSubscribers);
     }
 }

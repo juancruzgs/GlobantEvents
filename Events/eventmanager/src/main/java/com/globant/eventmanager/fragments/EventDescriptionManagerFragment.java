@@ -30,7 +30,9 @@ import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.PushNotifications;
+import com.globant.eventscorelib.utils.SharingIntent;
 import com.google.zxing.WriterException;
 
 import java.io.File;
@@ -53,7 +55,7 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
             intent.putExtra(CoreConstants.FIELD_EVENTS,mEvent);
             EventsManagerPagerActivity.mEventAction = EventsManagerPagerActivity.ActionType.EDIT_EVENT;
             startActivityForResult(intent, CoreConstants.EDIT_EVENT_REQUEST);
-
+            getActivity().overridePendingTransition(R.anim.top_in, R.anim.nothing);
         }
         else if(id == R.id.events_action_QR_code){
             QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(mEvent.getObjectID(), getActivity());
@@ -166,6 +168,7 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK){
             if(requestCode == CoreConstants.EDIT_EVENT_REQUEST){
                 if (data != null && data.hasExtra(CoreConstants.SAVE_INSTANCE_EVENT_ACTION)){
@@ -175,8 +178,7 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
 
                     switch (action){
                         case EVENT_CREATE:
-                            mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
-                            loadEventDescription();
+                            getActivity().finish();
                             break;
                         case EVENT_UPDATE:
                             mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
@@ -189,6 +191,5 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
                 }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

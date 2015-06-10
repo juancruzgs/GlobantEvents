@@ -4,6 +4,7 @@ package com.globant.eventscorelib.baseFragments;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,6 +58,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     private static final String KEY_WAITING = "KEY_WAITING";
     private boolean mWaitingForList = false;
+    public static boolean mIsDataSetChanged = false;
 
     public void updateEventList(List<Event> eventsList) {
         mEventList = eventsList;
@@ -113,9 +115,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             mWaitingForList = savedInstanceState.getBoolean(KEY_WAITING, false);
         }
     }
-
-
-
 
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -245,6 +244,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             if (id == R.id.action_profile) {
                 Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
                 startActivity(intentSubscriber);
+                getActivity().overridePendingTransition(R.anim.top_in, R.anim.nothing);
                 handled = true;
             } else {
                 if (id == R.id.action_checkin) {
@@ -302,9 +302,24 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     @Override
+    public void onResume() {
+        if (mService != null && mIsDataSetChanged){
+            mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, mBindingKey, getIsGlober());
+            BaseEventListFragment.mIsDataSetChanged = false;
+            mSwipeRefreshLayout.setRefreshing(true);
+        }
+        super.onResume();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
+        if(data!= null && data.hasExtra(CoreConstants.FIELD_EVENTS)){
+            mEventList.add((Event) data.getParcelableExtra(CoreConstants.FIELD_EVENTS));
+        }
+
         if (scanResult != null) {
             showProgressOverlay();
             mEventId = scanResult.getContents();

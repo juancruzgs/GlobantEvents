@@ -61,10 +61,10 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
         return getActivity();
     }
 
-    @Override
-    public String getBindingKey() {
-        return EventParticipantsManagerFragment.class.getSimpleName();
-    }
+//    @Override
+//    public String getBindingKey() {
+//        return EventParticipantsManagerFragment.class.getSimpleName();
+//    }
 
     @Override
     protected void initializeAcceptedSubscribers() {
@@ -82,7 +82,8 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     protected void showHint() {
-        if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
+        if ((!SharedPreferencesController.isHintParticipantsShowed(this.getActivity()))
+        && (mSubscribers.size() > 0 )){
             Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
             SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
         }
@@ -266,10 +267,15 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     public void onStop() {
         if ((mSubscribers != null) && (mAcceptedSubscribers.size() > 0))
         {
-            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mAcceptedSubscribers);
+            List<String> subscribersId = new ArrayList<>();
             for (Subscriber subscriber: mAcceptedSubscribers){
-                PushNotifications.sendNotificationToSubscriber(getActivity(),"You are a participant now",
-                        mEvent.getObjectID(),subscriber.getObjectID());
+                subscribersId.add(subscriber.getObjectID());
+            }
+            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), subscribersId);
+            //TODO Check onFinishAction() before doing this
+            for (Subscriber subscriber: mAcceptedSubscribers){
+                PushNotifications.sendNotificationToSubscriber(getActivity(), "You are a participant now",
+                        mEvent.getObjectID(), subscriber.getObjectID());
             }
         }
         super.onStop();

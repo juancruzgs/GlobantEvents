@@ -99,11 +99,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
     Subscriber mSubscriber;
     String mEventId;
-    
+
     private SensorManager sensorManager;
     private Sensor senAcelerometer;
     private long lastUpdate = 0;
-    private float last_x,last_y,last_z;
+    private float last_x, last_y, last_z;
     private static final int N_SHAKES = 3;
     private static final int SHAKE_THRESHOLD = 2500;
     private static final int ONE_SHAKE_TIME_MILLIS = 80;
@@ -137,6 +137,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mDoneClicked = false;
         return rootView;
     }
+
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
@@ -145,14 +146,14 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false")))
                     doneClick();
             }
-                Bitmap bitmapToSave=savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
-                mPhotoProfile.setImageBitmap(bitmapToSave);
-                mPhotoTaken=Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
+            Bitmap bitmapToSave = savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
+            mPhotoProfile.setImageBitmap(bitmapToSave);
+            mPhotoTaken = Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
 //            if (mPhotoTaken){
 //                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
 
 
-             }
+        }
 
     }
 
@@ -294,7 +295,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         if (value != null) {
             byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
             mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
-            mPhotoTaken=true;
+            mPhotoTaken = true;
 //            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
         }
 
@@ -355,7 +356,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 // get the cropped bitmap
                 mPhoto = extras.getParcelable(CoreConstants.DATA);
                 mPhotoProfile.setImageBitmap(mPhoto);
-                mPhotoTaken=true;
+                mPhotoTaken = true;
 //                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
             }
         }
@@ -391,7 +392,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, 360);
         // indicate output X and Y
         cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, 720);
-        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY,360);
+        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY, 360);
         // retrieve data on return
         cropIntent.putExtra(CoreConstants.EXTRA_RETURN_DATA, true);
         // start the activity - we handle returning in onActivityResult
@@ -432,7 +433,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 saveSubscriberObject();
                 SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
                 if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
-                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();}
+                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
+                }
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
 
             } else if (!(mPhotoTaken)) {
@@ -496,8 +498,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
 
-
-    public void tintAllGrey(){
+    public void tintAllGrey() {
         mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
         tintGrey();
         mDrawableToApply = getResources().getDrawable(R.mipmap.ic_last_name);
@@ -515,11 +516,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
     }
 
-
-
-
-
-
     private void saveSubscriberObject() {
         mSubscriber.setName(mEditTextFirstName.getText().toString());
         mSubscriber.setLastName(mEditTextLastName.getText().toString());
@@ -533,8 +529,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         } else {
             mSubscriber.setTwitterUser(null);
         }
-        Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
-        mSubscriber.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
+        mSubscriber.setPicture(((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap());
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
 
     }
@@ -549,9 +544,10 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         super.onPause();
         //sensorManager.unregisterListener(this);
     }
+
     @Override
     public String getBindingKey() {
-        return this.getClass().getSimpleName() ;//+ new Date().toString();
+        return this.getClass().getSimpleName();//+ new Date().toString();
     }
 
     @Override
@@ -571,42 +567,39 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         switch (theAction) {
             case SUBSCRIBER_EXISTS:
-                    if (result.equals("")) {
+                if (result.equals("")) {
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
-                    } else {
-                        mSubscriber.setObjectID((String) result);
-                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);
-                    }
+                } else {
+                    mSubscriber.setObjectID((String) result);
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);
+                }
                 break;
             case IS_SUBSCRIBED:
                 if ((Boolean) result) {
-                     hideUtilsAndShowContentOverlay();
                     Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 } else {
-                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),mSubscriber, mEventId);
+                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(), mSubscriber, mEventId);
                 }
                 break;
             case SUBSCRIBER_CREATE:
-                 mSubscriber.setObjectID((String)result);
-                 mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(),result, mEventId);
+                mSubscriber.setObjectID((String) result);
+                mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
                 break;
             case EVENTS_TO_SUBSCRIBER_CREATE:
-                hideUtilsAndShowContentOverlay();
                 Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
                 PushNotifications.subscribeToChannel("SUB-" + mEventId);
                 PushNotifications.subscribeToChannel("SUB-" + mEventId + "-" + mSubscriber.getObjectID());
                 getActivity().finish();
                 break;
             case SUBSCRIBER_UPDATE:
-               if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
-                   mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(),result, mEventId);}
-                else {
-                   hideUtilsAndShowContentOverlay();
-                   Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
-                   getActivity().finish();
-                   break;
-               }
+                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                    break;
+                }
         }
 
     }

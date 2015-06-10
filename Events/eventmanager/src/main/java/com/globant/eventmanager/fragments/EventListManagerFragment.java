@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -59,7 +58,6 @@ public class EventListManagerFragment extends BaseEventListFragment {
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateEventView(inflater, container, savedInstanceState);
-        prepareRecyclerView();
         wireUpFAB(rootView);
         return rootView;
     }
@@ -112,32 +110,14 @@ public class EventListManagerFragment extends BaseEventListFragment {
         return handled;
     }
 
-    private void prepareRecyclerView() {
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if ((newState == RecyclerView.SCROLL_STATE_DRAGGING) || (newState == RecyclerView.SCROLL_STATE_SETTLING)) {
-                    mActionButton.hide();
-                } else {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        mActionButton.show();
-                    }
-                }
-            }
-        });
-    }
-
     private void wireUpFAB(View rootView) {
         mActionButton = (ActionButton) rootView.findViewById(R.id.action_button);
-        mActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_RIGHT);
-        mActionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
         mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
+                getActivity().overridePendingTransition(R.anim.right_bottom_in, R.anim.nothing);
             }
         });
     }

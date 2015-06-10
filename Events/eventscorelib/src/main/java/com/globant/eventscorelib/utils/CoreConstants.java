@@ -19,6 +19,7 @@ public class CoreConstants {
     public static final String SPEAKERS_TABLE = "Speakers";
     public static final String SUBSCRIBERS_TABLE = "Subscribers";
 
+    public static final String FIELD_OBJECT_ID = "objectId";
     public static final String FIELD_UPDATED_AT = "updatedAt";
     public static final String FIELD_CREATED_AT = "createdAt";
     public static final String FIELD_TITLE = "title";
@@ -133,8 +134,22 @@ public class CoreConstants {
     public static final int MAP_MANAGER_REQUEST = 1000;
     public static final int PICTURE_SELECTION_REQUEST = 1001;
     public static final int EDIT_EVENT_REQUEST = 1002;
+    public static final int CREATE_EVENT_REQUEST = 1003;
 
     // Intents constants
     public static final String EVENTS_HISTORY = "eventHistory";
+
+    // Social Networks
+    public static final String FACEBOOK = "Facebook";
+    public static final String GMAIL = "Gmail";
+    public static final String WHATSAPP = "Whatsapp";
+    public static final String TWITTER = "Twitter";
+    public static final String APP_LINK_FACEBOOK = "https://fb.me/383624728506392";
+    public static final String TWITTER_PACKAGE = "com.twitter.android.composer.ComposerActivity";
+    public static final String WHATSAPP_PACKAGE ="com.whatsapp";
+    public static final String GMAIL_PACKAGE = "com.google.android.gm";
+    public static final String INTENT_TYPE = "text/plain";
+    public static final String GMAIL_CLASS =  "com.google.android.gm.ComposeActivityGmail";
+
 
 }
