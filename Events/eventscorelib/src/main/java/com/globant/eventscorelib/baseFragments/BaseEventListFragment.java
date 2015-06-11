@@ -39,6 +39,7 @@ import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.BaseEventListActionListener;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.PushNotifications;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nineoldandroids.view.ViewHelper;
@@ -326,6 +327,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             if (mService != null) {
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey,
                         mEventId, mSubscriberMail);
+                PushNotifications.unsubscribeToChannel(getString(R.string.prefix_participants) + mEventId);
+                PushNotifications.subscribeToChannel(getString(R.string.prefix_checkin) + mEventId);
             }
             //Else do the action when the service is available }
         }

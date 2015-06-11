@@ -97,16 +97,19 @@ public class EventListClientFragment extends BaseEventListFragment implements Ba
             List<String> channels = PushNotifications.getSuscribedChannelsList();
             for (Event event: events){
                 if (mNow.compareTo(event.getEndDate()) > 0){
-                    if (channels.contains("CH-" + event.getObjectID())){
-                        PushNotifications.unsubscribeToChannel("CH-" + event.getObjectID());
+                    if (channels.contains(getString(R.string.prefix_channel) + event.getObjectID())){
+                        PushNotifications.unsubscribeToChannel(getString(R.string.prefix_channel) + event.getObjectID());
                     }
-                    if (channels.contains("PAR-" + event.getObjectID())){
-                        PushNotifications.unsubscribeToChannel("PAR-" + event.getObjectID());
+                    if (channels.contains(getString(R.string.prefix_participants) + event.getObjectID())){
+                        PushNotifications.unsubscribeToChannel(getString(R.string.prefix_participants) + event.getObjectID());
                     }
-                    if (channels.contains("SUB-" + event.getObjectID())){
-                        PushNotifications.unsubscribeToChannel("SUB-" + event.getObjectID());
+                    if (channels.contains(getString(R.string.prefix_checkin) + event.getObjectID())){
+                        PushNotifications.unsubscribeToChannel(getString(R.string.prefix_checkin) + event.getObjectID());
+                    }
+                    if (channels.contains(getString(R.string.prefix_subscriber) + event.getObjectID())){
+                        PushNotifications.unsubscribeToChannel(getString(R.string.prefix_subscriber) + event.getObjectID());
                         for(String channel : channels){
-                            if (channel.contains("SUB-" + event.getObjectID())){
+                            if (channel.contains(getString(R.string.prefix_subscriber) + event.getObjectID())){
                                 PushNotifications.unsubscribeToChannel(channel);
                             }
                         }

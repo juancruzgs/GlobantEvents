@@ -147,6 +147,7 @@
     <string name="prefix_subscriber">SUB-</string>
     <string name="prefix_participants">PAR-</string>
     <string name="prefix_channel">CH-</string>
+    <string name="prefix_checkin">CI-</string>
     <string name="query_attribute_channel">channels</string>
     <string name="subs_to_part_title">Hello!</string>
     <string name="notification_event_title">Notification Event</string>
