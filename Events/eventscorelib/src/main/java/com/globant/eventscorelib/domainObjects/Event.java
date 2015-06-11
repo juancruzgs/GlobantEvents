@@ -27,6 +27,7 @@ public class Event extends BaseObject implements Parcelable {
     private boolean mPublic;
     private byte[] mIcon;
     private byte[] mEventLogo;
+    private Date mUpdatedAt;
 
     private LatLng mCoordinates;
     private List<Speaker> mSpeakers;
@@ -185,6 +186,14 @@ public class Event extends BaseObject implements Parcelable {
         mCountry = country;
     }
 
+    public Date getUpdatedAt() {
+        return mUpdatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        mUpdatedAt = updatedAt;
+    }
+
     public List<Subscriber> getSubscribers() {
         return mSubscribers;
     }
@@ -251,6 +260,7 @@ public class Event extends BaseObject implements Parcelable {
         mSubscribers = new ArrayList<>();
         in.readTypedList(mSubscribers, Subscriber.CREATOR);
         //mCalendarID = (Long)in.readValue(Long.class.getClassLoader());
+        mUpdatedAt = (Date) in.readSerializable();
     }
 
     @Override
@@ -285,5 +295,6 @@ public class Event extends BaseObject implements Parcelable {
         dest.writeTypedList(mSpeakers);
         dest.writeTypedList(mSubscribers);
         //dest.writeValue(mCalendarID);
+        dest.writeSerializable(mUpdatedAt);
     }
 }

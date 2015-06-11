@@ -87,6 +87,8 @@ public abstract class DatabaseController {
             domainEvent.setCalendarID(databaseEvent.getLong(CoreConstants.FIELD_CALENDAR_ID));
         }
 */
+        domainEvent.setUpdatedAt(databaseEvent.getDate(CoreConstants.FIELD_UPDATED_AT));
+
         return domainEvent;
     }
 

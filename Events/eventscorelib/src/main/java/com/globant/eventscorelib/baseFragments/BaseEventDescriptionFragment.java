@@ -311,6 +311,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 JSONObject calendarData = new JSONObject();
                 calendarData.put("calendarSelfId", mService.getNCalendar());
                 calendarData.put("calendarEventId", result);
+                calendarData.put("eventLastUpdate", mEvent.getUpdatedAt());
                 eventsArray.put(mEvent.getObjectID(), calendarData);
                 JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
                         JSONSharedPreferences.KEY_CALENDAR, eventsArray);
