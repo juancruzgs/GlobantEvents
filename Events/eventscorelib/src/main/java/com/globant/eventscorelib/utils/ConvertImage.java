@@ -1,13 +1,10 @@
 package com.globant.eventscorelib.utils;
 
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
+import android.os.Build;
 
 import java.io.ByteArrayOutputStream;
 
@@ -39,7 +36,34 @@ public class ConvertImage {
         return BitmapFactory.decodeByteArray(image, 0, image.length, options);
     }
 
-    private static int calculateInSampleSize(
+    public static Intent performCrop(Uri picUri) {
+        // take care of exceptions
+        // call the standard crop action intent (the user device may not
+        // support it)
+        Intent cropIntent = new Intent(CoreConstants.IMAGE_CROP);
+        // indicate image type and Uri
+        cropIntent.setDataAndType(picUri, CoreConstants.URI_NAME);
+        // set crop properties
+        cropIntent.putExtra(CoreConstants.EXTRA_CROP, CoreConstants.EXTRA_TRUE);
+        // indicate aspect of desired crop
+        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTX, 720);
+        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, 360);
+        // indicate output X and Y
+        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, 720);
+        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY, 360);
+        // retrieve data on return
+        cropIntent.putExtra(CoreConstants.EXTRA_RETURN_DATA, true);
+        // Fix a problem with the java.lang.SecurityException: Permission Denial: grantUriPermission
+        cropIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        cropIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        if (Build.VERSION.SDK_INT >= 19)
+            cropIntent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+
+        return cropIntent;
+    }
+
+    public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
