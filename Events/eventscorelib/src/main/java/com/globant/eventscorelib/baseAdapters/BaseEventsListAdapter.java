@@ -38,8 +38,10 @@ public abstract class BaseEventsListAdapter extends RecyclerView.Adapter<BaseEve
                 mBitmapList.add(BitmapFactory.decodeResource(context.getResources(), R.mipmap.placeholderredux));
             }
         }
-        if (!eventList.get(eventList.size() - 1).getTitle().equals(CoreConstants.KEY_LAYOUT_PLACEHOLDER)) {
-            eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
+        if (eventList.size() != 0) {
+            if (!eventList.get(eventList.size() - 1).getTitle().equals(CoreConstants.KEY_LAYOUT_PLACEHOLDER)) {
+                eventList.add(new Event(CoreConstants.KEY_LAYOUT_PLACEHOLDER));
+            }
         }
         mEventList = eventList;
     }

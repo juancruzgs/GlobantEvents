@@ -38,16 +38,7 @@ import com.software.shell.fab.ActionButton;
  */
 public class BaseSpeakerFragment extends BaseFragment {
 
-    public static final String EXTRA_CROP = "crop";
-    public static final String EXTRA_TRUE = "true";
-    public static final String EXTRA_ASPECTX = "aspectX";
-    public static final String EXTRA_ASPECTY = "aspectY";
-    public static final String EXTRA_OUTPUTX = "outputX";
-    public static final String EXTRA_OUTPUTY= "outputY";
-    public static final String EXTRA_RETURN_DATA= "return-data";
     public static final String DATA= "data";
-    public static final String IMAGE_CROP = "com.android.camera.action.CROP";
-    public static final String URI_NAME = "image/*";
     public static final String EDITED_SPEAKER = "editedSpeaker";
     public static final String POSITION = "position";
     public static final String DELETED_SPEAKER = "deletedSpeaker";
