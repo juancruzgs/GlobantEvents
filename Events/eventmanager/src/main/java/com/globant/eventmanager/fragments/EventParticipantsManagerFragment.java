@@ -62,12 +62,11 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     }
 
     @Override
-    protected void setViewButtonsAddDeclineAllVisibility(List<Subscriber> subscribers) {
-        if (subscribers.size() < 1) {
+    protected void setViewButtonsAddDeclineAllVisibility(Boolean areThereSubscribers) {
+        if (!areThereSubscribers){
             mViewButtonsAddDeclineAll.setVisibility(View.INVISIBLE);
         }
     }
-
 
 //    @Override
 //    public String getBindingKey() {
