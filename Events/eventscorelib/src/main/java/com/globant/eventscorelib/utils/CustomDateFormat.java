@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.globant.eventscorelib.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -25,4 +26,13 @@ public class CustomDateFormat {
         return  dateFormat.format(date);
     }
 
+    public static Date parseCompleteDate(String dateString, Context context) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(context.getString(R.string.simple_date_format_complete_date), Locale.US);
+        try {
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            Logger.e("Problems parsing date", e);
+            return null;
+        }
+    }
 }

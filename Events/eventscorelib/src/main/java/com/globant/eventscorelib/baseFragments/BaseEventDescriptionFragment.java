@@ -219,7 +219,8 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                                 getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
                         JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
                         mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, getBindingKey(),
-                                calendarData.getInt("calendarSelfId"), calendarData.getLong("calendarEventId"));
+                                calendarData.getInt(CoreConstants.CALENDAR_SELF_ID),
+                                calendarData.getLong(CoreConstants.CALENDAR_EVENT_ID));
                     }
                     catch (JSONException e) {
                         Logger.e("Problems with the internal event info while trying to remove the event", e);
@@ -240,6 +241,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     }
 
     private void setCalendarButtonText() {
+        // TODO: Pass this button stuff through somebody with better UI ideas
         try {
             JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
                     getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
@@ -309,9 +311,10 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                         getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
 
                 JSONObject calendarData = new JSONObject();
-                calendarData.put("calendarSelfId", mService.getNCalendar());
-                calendarData.put("calendarEventId", result);
-                calendarData.put("eventLastUpdate", mEvent.getUpdatedAt());
+                calendarData.put(CoreConstants.CALENDAR_SELF_ID, mService.getNCalendar());
+                calendarData.put(CoreConstants.CALENDAR_EVENT_ID, result);
+                calendarData.put(CoreConstants.CALENDAR_EVENT_LAST_UPDATE,
+                        CustomDateFormat.getCompleteDate(mEvent.getUpdatedAt(), getActivity()));
                 eventsArray.put(mEvent.getObjectID(), calendarData);
                 JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
                         JSONSharedPreferences.KEY_CALENDAR, eventsArray);

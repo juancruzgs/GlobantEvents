@@ -22,6 +22,7 @@ import com.globant.eventscorelib.controllers.SelectiveDatabaseController;
 import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
+import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.JSONSharedPreferences;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
@@ -155,8 +156,8 @@ public abstract class BaseService extends Service {
                     getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
             if (eventsArray.has(event.getObjectID())) {
                 JSONObject eventObject = eventsArray.getJSONObject(event.getObjectID());
-                updateEventInCalendar(eventObject.getInt("calendarSelfId"), eventObject.getLong("calendarEventId"),
-                        event);
+                updateEventInCalendar(eventObject.getInt(CoreConstants.CALENDAR_SELF_ID),
+                        eventObject.getLong(CoreConstants.CALENDAR_EVENT_ID), event);
             }
         }
         catch (JSONException e) {

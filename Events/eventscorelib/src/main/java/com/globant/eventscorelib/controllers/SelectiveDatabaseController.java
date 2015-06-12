@@ -40,27 +40,7 @@ public class SelectiveDatabaseController {
             }
             Date cloudDatabaseDate = getDatabaseDate(true);
             if (cloudDatabaseDate.compareTo(localDatabaseDate) > 0) {
-                // TODO: I suppose that, if there is an error with the local database, there are no events in the Calendar
-                List<Event> events = mCloudDatabaseController.getEvents(isGlober);
-                // TODO: Get the list of "calendared" events
-                try {
-                    JSONObject eventArray = JSONSharedPreferences.loadJSONObject(BaseApplication.getInstance(),
-                            BaseApplication.getInstance().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
-
-                    for (Event event : events) {
-                        String eventId = event.getObjectID();
-                        JSONObject eventJSON = eventArray.getJSONObject(eventId);
-                        Date lastUpdateDb = event.getUpdatedAt();
-                        Date lastUpdateCal = (Date) eventJSON.get("eventLastUpdate");
-                        if (lastUpdateCal.before(lastUpdateDb)) {
-                            // TODO: Force update every one, or try to check somehow which ones changed
-                        }
-                    }
-                }
-                catch (JSONException e) {
-                    Logger.e("Problems with the internal event info while trying to update the event", e);
-                }
-                return events;
+                return mCloudDatabaseController.getEvents(isGlober);
             } else {
                 return mLocalDatabaseController.getEvents(isGlober);
             }

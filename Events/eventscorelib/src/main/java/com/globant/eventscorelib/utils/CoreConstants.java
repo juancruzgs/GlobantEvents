@@ -137,4 +137,9 @@ public class CoreConstants {
     // Intents constants
     public static final String EVENTS_HISTORY = "eventHistory";
 
+    // Calendar event information
+    public static final String CALENDAR_SELF_ID = "calendarSelfId";
+    public static final String CALENDAR_EVENT_ID = "calendarEventId";
+    public static final String CALENDAR_EVENT_LAST_UPDATE = "eventLastUpdate";
+
 }

@@ -38,10 +38,20 @@ import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.BaseEventListActionListener;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.CustomDateFormat;
+import com.globant.eventscorelib.utils.JSONSharedPreferences;
+import com.globant.eventscorelib.utils.Logger;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nineoldandroids.view.ViewHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, GetEventInformation {
@@ -68,6 +78,38 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         hideUtilsAndShowContentOverlay();
         ((BaseEventListActivity)getActivity()).setEventList(mEventList);
         scrollTo(CoreConstants.SCROLL_TOP);
+
+        // TODO: Get the list of "calendared" events
+        try {
+            JSONObject eventArray = JSONSharedPreferences.loadJSONObject(BaseApplication.getInstance(),
+                    BaseApplication.getInstance().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+
+            for (Event event : eventsList) {
+                String eventId = event.getObjectID();
+                if (eventArray.has(eventId)) {
+                    JSONObject eventJSON = eventArray.getJSONObject(eventId);
+                    Date lastUpdateDb = event.getUpdatedAt();
+                    // TODO: Use other kind of date type (this is "unparseable" according to the dateFormat.parse)
+                    String lastUpdateCalStr = (String) eventJSON.get(CoreConstants.CALENDAR_EVENT_LAST_UPDATE);
+                    // Thu Jun 11 15:37:48 GMT-03:00 2015
+                    //DateFormat dateFormat = DateFormat.getDateTimeInstance();
+                    //Date lastUpdateCal = dateFormat.parse(lastUpdateCalStr);
+                    Date lastUpdateCal = CustomDateFormat.parseCompleteDate(lastUpdateCalStr, getActivity());
+                    if (lastUpdateCal.before(lastUpdateDb)) {
+                        // TODO: Force update every one, or try to check somehow which ones changed
+                        mService.executeAction(BaseService.ACTIONS.UPDATE_EVENT_IN_CALENDAR, mActionListener.getBindingKey(),
+                                eventJSON.getInt(CoreConstants.CALENDAR_SELF_ID),
+                                eventJSON.getLong(CoreConstants.CALENDAR_EVENT_ID), event);
+                    }
+                }
+            }
+        }
+        catch (JSONException e) {
+            Logger.e("Problems with the internal event info while trying to update the event", e);
+        }
+        catch (NullPointerException e) {
+            Logger.e("Problems getting the calendar event's last update date", e);
+        }
 
         mWaitingForList = false;
     }
