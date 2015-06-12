@@ -151,4 +151,6 @@
     <string name="notification_event_title">Notification Event</string>
     <string name="notification_broadcast_title">Broadcast Notification</string>
     <string name="title_activity_base_calendar_list">BaseCalendarListActivity</string>
+    <string name="button_add_to_calendar">ADD TO CALENDAR</string>
+    <string name="button_remove_from_calendar">REMOVE FROM CALENDAR</string>
 </resources>

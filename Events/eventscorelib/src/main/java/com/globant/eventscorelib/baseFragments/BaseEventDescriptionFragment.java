@@ -65,7 +65,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     protected Event mEvent;
     private String mBindingKey;
 
-    private AppCompatButton mButtonAddToCalendar;
+    private AppCompatTextView mButtonAddToCalendar;
     private boolean mAddedToCalendar = false;
 
     public final static String KEY_CALENDAR_LIST = "KEY_CALENDAR_LIST";
@@ -206,7 +206,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_view_map_icon);
         changeIconColor();
 
-        mButtonAddToCalendar = (AppCompatButton) rootView.findViewById(R.id.button_add_to_calendar);
+        mButtonAddToCalendar = (AppCompatTextView) rootView.findViewById(R.id.button_add_to_calendar);
         mButtonAddToCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,11 +246,11 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
                     getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
             if (eventArray.has(mEvent.getObjectID())) {
-                mButtonAddToCalendar.setText("Remove from calendar");
+                mButtonAddToCalendar.setText(getString(R.string.button_remove_from_calendar));
                 mAddedToCalendar = true;
             }
             else {
-                mButtonAddToCalendar.setText("Add to calendar");
+                mButtonAddToCalendar.setText(getString(R.string.button_add_to_calendar));
                 mAddedToCalendar = false;
             }
         }
