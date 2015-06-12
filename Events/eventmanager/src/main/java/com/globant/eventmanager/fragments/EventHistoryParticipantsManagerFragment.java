@@ -9,6 +9,12 @@ import com.globant.eventscorelib.domainObjects.Subscriber;
 import java.util.List;
 
 public class EventHistoryParticipantsManagerFragment extends BaseParticipantsFragment {
+
+    @Override
+    protected void setViewButtonsAddDeclineAllVisibility(Boolean areThereSubscribers) {
+
+    }
+
     @Override
     protected void initializeAcceptedSubscribers() {
 
