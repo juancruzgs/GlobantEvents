@@ -10,6 +10,11 @@ import java.util.List;
 
 public class EventHistoryParticipantsManagerFragment extends BaseParticipantsFragment {
     @Override
+    protected void setViewButtonsAddDeclineAllVisibility(List<Subscriber> subscribers) {
+
+    }
+
+    @Override
     protected void initializeAcceptedSubscribers() {
 
     }

@@ -87,6 +87,7 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
                     mRefreshDate = new Date();
                     hideUtilsAndShowContentOverlay();
                     initializeAcceptedSubscribers();
+                    setViewButtonsAddDeclineAllVisibility(mSubscribers);
                     break;
                 case REFRESH_SUBSCRIBERS:
                     for (Subscriber subscriber : (List<Subscriber>) result) {
@@ -106,6 +107,8 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
             }
         }
     }
+
+    protected abstract void setViewButtonsAddDeclineAllVisibility(List<Subscriber> subscribers);
 
     protected abstract void initializeAcceptedSubscribers();
 
