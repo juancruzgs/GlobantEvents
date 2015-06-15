@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,7 +16,9 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
@@ -348,9 +352,24 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     }
 
     private void prepareBaseCalendarListActivity(Object result) {
+/*
         Intent intent = new Intent(getActivity(), BaseCalendarListActivity.class);
         intent.putStringArrayListExtra(KEY_CALENDAR_LIST, new ArrayList<>(Arrays.asList((String[]) result)));
         startActivityForResult(intent, BaseCalendarListActivity.CODE_CALENDAR);
+*/
+
+        new MaterialDialog.Builder(getActivity())
+                .title("Choose calendar")
+                .titleColorRes(R.color.globant_green_dark)
+                .items((CharSequence[]) result)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                        mService.setNCalendar(i);
+                        mService.executeAction(BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR, getBindingKey(), mEvent);
+                    }
+                })
+                .show();
     }
 
     @Override

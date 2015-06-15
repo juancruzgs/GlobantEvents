@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.globant.eventscorelib.R;
+import com.globant.eventscorelib.baseFragments.BaseCalendarListFragment;
 
 public class BaseCalendarListActivity extends BaseActivity {
 
@@ -16,6 +17,11 @@ public class BaseCalendarListActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_calendar_list);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new BaseCalendarListFragment())
+                    .commit();
+        }
     }
 
 

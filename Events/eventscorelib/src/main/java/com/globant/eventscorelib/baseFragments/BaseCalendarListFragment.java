@@ -52,6 +52,13 @@ public class BaseCalendarListFragment extends BaseFragment {
             }
         });
 
+        rootView.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+
         return rootView;
     }
 
