@@ -66,12 +66,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         } else {
             showErrorOverlay();
         }
-        mSwipeRefreshLayout.setRefreshing(false);
         hideUtilsAndShowContentOverlay();
-        ((BaseEventListActivity)getActivity()).setEventList(mEventList);
+        ((BaseEventListActivity) getActivity()).setEventList(mEventList);
         scrollTo(CoreConstants.SCROLL_TOP);
 
         mWaitingForList = false;
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public void updateEventListFail() {
@@ -137,8 +137,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, mBindingKey, getIsGlober());
-                mSwipeRefreshLayout.setRefreshing(true);
+                refreshEventList();
             }
         });
     }
@@ -156,7 +155,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         }
         RecyclerView.LayoutManager layoutManager;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            layoutManager = new StaggeredGridLayoutManager(2,1);
+            layoutManager = new StaggeredGridLayoutManager(2, 1);
             mCurrentLayoutManagerType = LayoutManagerType.STAGGEREDGRID_LAYOUT_MANAGER;
         } else {
             layoutManager = new LinearLayoutManager(getActivity());
@@ -193,7 +192,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 // Set translation movement
                 cardY = cardView.getY();
                 int speed = 2;
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     speed = 7;
                 }
                 movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * speed), -(childHeight * ((Math.round(height / childHeight)) - 1)), 10);
@@ -224,43 +223,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_event_list_fragment, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        boolean handled = false;
-
-        if (id == R.id.action_credits) {
-            Intent intentCredits = new Intent(getActivity(), BaseCreditsActivity.class);
-            startActivity(intentCredits);
-            handled = true;
-        } else {
-            if (id == R.id.action_profile) {
-                Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
-                startActivity(intentSubscriber);
-                getActivity().overridePendingTransition(R.anim.top_in, R.anim.nothing);
-                handled = true;
-            } else {
-                if (id == R.id.action_checkin) {
-                    IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(this);
-                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-                    intentIntegrator.initiateScan();
-                    handled = true;
-                }
-            }
-        }
-
-        if (!handled) {
-            handled = super.onOptionsItemSelected(item);
-        }
-        return handled;
-    }
-
     public void postCheckinTweet(Event event) {
         if (BaseApplication.getInstance().getSharedPreferencesController().isAlreadyTwitterLogged()) {
             String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
@@ -277,13 +239,13 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mActionListener = mService.getActionListener(mBindingKey);
         if (mActionListener == null) {
             mActionListener = new BaseEventListActionListener();
-            ((BaseEventListActionListener)mActionListener).setActivity((BaseActivity) getActivity());
-            ((BaseEventListActionListener)mActionListener).setBindingKey(mBindingKey);
+            ((BaseEventListActionListener) mActionListener).setActivity((BaseActivity) getActivity());
+            ((BaseEventListActionListener) mActionListener).setBindingKey(mBindingKey);
             mService.subscribeActor(mActionListener);
         }
 
-        ((BaseEventListActionListener)mActionListener).setFragment(this);
-        mEventList = ((BaseEventListActivity)getActivity()).getEventList();
+        ((BaseEventListActionListener) mActionListener).setFragment(this);
+        mEventList = ((BaseEventListActivity) getActivity()).getEventList();
         if (mEventList == null) {
             if (!mWaitingForList) {
                 boolean isOnline = ((BaseActivity) getActivity()).isOnline();
@@ -302,12 +264,16 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     @Override
     public void onResume() {
-        if (mService != null && mIsDataSetChanged){
-            mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, mBindingKey, getIsGlober());
-            BaseEventListFragment.mIsDataSetChanged = false;
+        if (mService != null && mIsDataSetChanged) {
             mSwipeRefreshLayout.setRefreshing(true);
+            refreshEventList();
+            BaseEventListFragment.mIsDataSetChanged = false;
         }
         super.onResume();
+    }
+
+    private void refreshEventList() {
+        mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, mBindingKey, getIsGlober());
     }
 
     @Override
@@ -315,7 +281,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
-        if(data!= null && data.hasExtra(CoreConstants.FIELD_EVENTS)){
+        if (data != null && data.hasExtra(CoreConstants.FIELD_EVENTS)) {
             mEventList.add((Event) data.getParcelableExtra(CoreConstants.FIELD_EVENTS));
         }
 
@@ -357,5 +323,46 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_event_list_fragment, menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.action_credits) {
+            Intent intentCredits = new Intent(getActivity(), BaseCreditsActivity.class);
+            startActivity(intentCredits);
+            handled = true;
+        } else {
+            if (id == R.id.action_profile) {
+                Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
+                startActivity(intentSubscriber);
+                getActivity().overridePendingTransition(R.anim.top_in, R.anim.nothing);
+                handled = true;
+            } else {
+                if (id == R.id.action_checkin) {
+                    IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(this);
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                    intentIntegrator.initiateScan();
+                    handled = true;
+                } else {
+                    if (id == R.id.menu_refresh){
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        refreshEventList();
+                        handled = true;
+                    }
+                }
+            }
+        }
+
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
+    }
 }

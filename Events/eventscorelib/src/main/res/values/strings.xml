@@ -154,4 +154,5 @@
     <string name="preference_time">preference_time</string>
     <string name="dialog_share_via">Share via</string>
     <string name="check_out_event">Check out this event!</string>
+    <string name="menu_refresh">Refresh</string>
 </resources>

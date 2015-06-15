@@ -41,7 +41,7 @@ public final class QRCodeEncoder {
     }
 
     private void getDimension(Context context) {
-        WindowManager manager = (WindowManager) context.getSystemService(context.WINDOW_SERVICE);
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
