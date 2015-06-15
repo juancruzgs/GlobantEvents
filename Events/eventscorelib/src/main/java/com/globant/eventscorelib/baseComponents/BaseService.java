@@ -417,8 +417,9 @@ public abstract class BaseService extends Service {
                                     result = removeEventFromCalendar(/*(Integer)arguments[0],*/ (Long)arguments[0]);
                                     break;
                                 case UPDATE_EVENT_IN_CALENDAR:
-                                    result = updateEventInCalendar(/*(Integer)arguments[0],*/ (Long)arguments[0],
-                                            (Event)arguments[1]);
+                                    setNCalendar((Integer)arguments[0]);
+                                    result = updateEventInCalendar(/*(Integer)arguments[0],*/ (Long)arguments[1],
+                                            (Event)arguments[2]);
                                     break;
                             }
 

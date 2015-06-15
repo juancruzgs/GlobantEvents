@@ -98,7 +98,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                     if (lastUpdateCal.before(lastUpdateDb)) {
                         // TODO: Force update every one, or try to check somehow which ones changed
                         mService.executeAction(BaseService.ACTIONS.UPDATE_EVENT_IN_CALENDAR, mActionListener.getBindingKey(),
-                                /*eventJSON.getInt(CoreConstants.CALENDAR_SELF_ID),*/
+                                eventJSON.getInt(CoreConstants.CALENDAR_SELF_ID),
                                 eventJSON.getLong(CoreConstants.CALENDAR_EVENT_ID), event);
                     }
                 }
