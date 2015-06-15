@@ -3,20 +3,15 @@ package com.globant.eventmanager.fragments;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
@@ -56,18 +51,15 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
-import com.globant.eventscorelib.utils.PushNotifications;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
 import com.software.shell.fab.ActionButton;
 
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -537,28 +529,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         return getResources().getString(R.string.title_activity_event_detail);
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -567,40 +537,29 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             case CoreConstants.PICTURE_SELECTION_REQUEST:
                 if (resultCode == Activity.RESULT_OK){
                     Uri targetUri = data.getData();
-                    Bitmap bitmap;
 
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inJustDecodeBounds = true;
+                    Intent cropIntent = ConvertImage.performCrop(targetUri);
+                    startActivityForResult(cropIntent, CoreConstants.PICTURE_CROP_SELECTION_REQUEST);
+                }
+                break;
+            case CoreConstants.PICTURE_CROP_SELECTION_REQUEST:
 
-                    try {
-                        BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
-                        options.inJustDecodeBounds = false;
+                if (resultCode == Activity.RESULT_OK){
+                    Bundle extras = data.getExtras();
 
-                        if (options.outHeight >= 700 && options.outWidth >= 700){
-                            options.inSampleSize = calculateInSampleSize(options, 700, 700);
-                            bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
-                        }else
-                        {
-                            options.inSampleSize = 1;
-                            bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri), null, options);
-                        }
+                    if (extras != null){
+                        Bitmap mPhoto = extras.getParcelable(CoreConstants.DATA);
 
-                        if (bitmap != null) {
-                            mPhotoEvent.setImageBitmap(bitmap);
+                        if (mPhoto != null) {
+                            mPhotoEvent.setImageBitmap(mPhoto);
                             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            mEvent.setEventLogo(bitmap);
+                            mEvent.setEventLogo(mPhoto);
                         }else
                         {
                             mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
                             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
                             mEvent.setEventLogo(null);
                         }
-
-                    } catch (Exception e) {
-                        mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
-                        mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
-                        mEvent.setEventLogo(null);
-                        e.printStackTrace();
                     }
                 }
                 break;
@@ -634,8 +593,16 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), CoreConstants.PICTURE_SELECTION_REQUEST);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                if (Build.VERSION.SDK_INT < 19){
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                } else {
+                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                }
+
+                startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
             }
         });
 
@@ -719,28 +686,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         boolean handled = false;
-
-       // mEvent = new Event(); //TODO: erase after test
-/* */
-        if (EventsManagerPagerActivity.mEventAction == EventsManagerPagerActivity.ActionType.CREATE_EVENT) {
-            mEvent.setTitle("Apero Urbano");
-            mEvent.setShortDescription("Picnic, cerveza y comida!");
-            mEvent.setFullDescription("evento realizado el ultimo viernes de cada mes para integrar la ciudad en diferentes actividades.");
-            mEvent.setAddress("Parque de la presidenta");
-            mEvent.setCity("Medellin");
-            mEvent.setCountry("Colombia");
-            mEvent.setAdditionalInfo("-");
-            mEvent.setHashtag("#Apero");
-            mEvent.setCategory("Social");
-            mEvent.setPublic(true);
-            mEvent.setLanguage("Spanglish");
-            Calendar fecha = Calendar.getInstance();
-            fecha.set(fecha.get(Calendar.YEAR)+1, fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH),fecha.get(Calendar.HOUR_OF_DAY),30);
-            mEvent.setStartDate(fecha.getTime());
-            fecha.set(fecha.get(Calendar.YEAR), fecha.get(Calendar.MONTH), fecha.get(Calendar.DAY_OF_MONTH) + 1, fecha.get(Calendar.HOUR_OF_DAY), 30);
-            mEvent.setEndDate(fecha.getTime());
-            populateInfo(mEvent);
-        }
 
         if (id == com.globant.eventmanager.R.id.events_action_done) {
             Boolean savePreferences;

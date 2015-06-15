@@ -349,8 +349,11 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CAMERA_CAPTURE) {
                 File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
-                performCrop(Uri.fromFile(file));
-            } else if (requestCode == CROP_PIC) {
+
+                Intent cropIntent = ConvertImage.performCrop(Uri.fromFile(file));
+                startActivityForResult(cropIntent, CoreConstants.PICTURE_CROP_SELECTION_REQUEST);
+
+            } else if (requestCode == CoreConstants.PICTURE_CROP_SELECTION_REQUEST) {
                 // get the returned data
                 Bundle extras = data.getExtras();
                 // get the cropped bitmap
@@ -376,27 +379,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
             }
         });
-    }
-
-    private void performCrop(Uri picUri) {
-        // take care of exceptions
-        // call the standard crop action intent (the user device may not
-        // support it)
-        Intent cropIntent = new Intent(CoreConstants.IMAGE_CROP);
-        // indicate image type and Uri
-        cropIntent.setDataAndType(picUri, CoreConstants.URI_NAME);
-        // set crop properties
-        cropIntent.putExtra(CoreConstants.EXTRA_CROP, CoreConstants.EXTRA_TRUE);
-        // indicate aspect of desired crop
-        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTX, 720);
-        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, 360);
-        // indicate output X and Y
-        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, 720);
-        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY, 360);
-        // retrieve data on return
-        cropIntent.putExtra(CoreConstants.EXTRA_RETURN_DATA, true);
-        // start the activity - we handle returning in onActivityResult
-        startActivityForResult(cropIntent, CROP_PIC);
     }
 
     @Override

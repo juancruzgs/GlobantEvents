@@ -36,11 +36,13 @@ public class BaseTweetListAdapter extends RecyclerView.Adapter<BaseTweetListView
 
     @Override
     public void onBindViewHolder(BaseTweetListViewHolder holder, int position) {
+
         CropCircleTransformation transformation = new CropCircleTransformation(mContext);
         holder.getTweetText().setText(mTweetsList.get(position).getText());
         holder.getUserName().setText(mTweetsList.get(position).getUser().getName());
         Picasso.with(mContext).load(mTweetsList.get(position).getUser()
                 .getOriginalProfileImageURL()).transform(transformation).into(holder.getUserPicture());
+
         Linkify.addLinks(holder.getTweetText(), Linkify.ALL);
     }
 
