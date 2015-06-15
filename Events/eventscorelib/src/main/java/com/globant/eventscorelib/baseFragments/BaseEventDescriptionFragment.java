@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,13 +13,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
-import com.globant.eventscorelib.baseActivities.BaseCalendarListActivity;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
@@ -35,19 +30,11 @@ import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.JSONSharedPreferences;
 import com.globant.eventscorelib.utils.Logger;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
-import com.globant.eventscorelib.utils.SharingIntent;
 import com.globant.eventscorelib.utils.PushNotifications;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 
 public abstract class BaseEventDescriptionFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
@@ -71,8 +58,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
 
     private AppCompatTextView mButtonAddToCalendar;
     private boolean mAddedToCalendar = false;
-
-    public final static String KEY_CALENDAR_LIST = "KEY_CALENDAR_LIST";
 
     public BaseEventDescriptionFragment() {
     }
@@ -177,12 +162,6 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BaseCalendarListActivity.CODE_CALENDAR) {
-            if (resultCode == Activity.RESULT_OK) {
-                mService.setNCalendar(data.getIntExtra(BaseCalendarListActivity.KEY_CALENDAR_POS, -1));
-                mService.executeAction(BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR, getBindingKey(), mEvent);
-            }
-        }
 //        if (requestCode == 0) {
 //            if (resultCode == Activity.RESULT_OK) {
 //                showProgressOverlay();
@@ -223,7 +202,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                                 getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
                         JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
                         mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, getBindingKey(),
-                                calendarData.getInt(CoreConstants.CALENDAR_SELF_ID),
+                                /*calendarData.getInt(CoreConstants.CALENDAR_SELF_ID),*/
                                 calendarData.getLong(CoreConstants.CALENDAR_EVENT_ID));
                     }
                     catch (JSONException e) {
@@ -306,7 +285,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         hideUtilsAndShowContentOverlay();
         if (theAction == BaseService.ACTIONS.GET_CALENDARS) {
-            prepareBaseCalendarListActivity(result);
+            showCalendarList(result);
         }
         if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
             JSONObject eventsArray;
@@ -351,13 +330,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         }
     }
 
-    private void prepareBaseCalendarListActivity(Object result) {
-/*
-        Intent intent = new Intent(getActivity(), BaseCalendarListActivity.class);
-        intent.putStringArrayListExtra(KEY_CALENDAR_LIST, new ArrayList<>(Arrays.asList((String[]) result)));
-        startActivityForResult(intent, BaseCalendarListActivity.CODE_CALENDAR);
-*/
-
+    private void showCalendarList(Object result) {
         new MaterialDialog.Builder(getActivity())
                 .title("Choose calendar")
                 .titleColorRes(R.color.globant_green_dark)

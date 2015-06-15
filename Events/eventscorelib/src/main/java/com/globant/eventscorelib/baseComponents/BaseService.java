@@ -156,7 +156,7 @@ public abstract class BaseService extends Service {
                     getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
             if (eventsArray.has(event.getObjectID())) {
                 JSONObject eventObject = eventsArray.getJSONObject(event.getObjectID());
-                updateEventInCalendar(eventObject.getInt(CoreConstants.CALENDAR_SELF_ID),
+                updateEventInCalendar(/*eventObject.getInt(CoreConstants.CALENDAR_SELF_ID),*/
                         eventObject.getLong(CoreConstants.CALENDAR_EVENT_ID), event);
             }
         }
@@ -169,8 +169,8 @@ public abstract class BaseService extends Service {
         ContentResolver contentResolver = getContentResolver();
 
         long calID = Long.parseLong(mCalendars[mNCalendar].id);
-        long startMillis = 0;
-        long endMillis = 0;
+        long startMillis;
+        long endMillis;
         Calendar beginTime = Calendar.getInstance();
         beginTime.setTime(event.getStartDate());
         startMillis = beginTime.getTimeInMillis();
@@ -192,21 +192,21 @@ public abstract class BaseService extends Service {
         return Long.parseLong(uri.getLastPathSegment());
     }
 
-    protected long removeEventFromCalendar(Integer calendarID, Long eventID) {
-        ContentResolver cr = getContentResolver();
-        ContentValues values = new ContentValues();
-        Uri deleteUri = null;
-        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+    protected long removeEventFromCalendar(/*Integer calendarID,*/ Long eventID) {
+        //ContentResolver cr = getContentResolver();
+        //ContentValues values = new ContentValues();
+        //Uri deleteUri = null;
+        Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
 
         return getContentResolver().delete(deleteUri, null, null);
     }
 
-    protected long updateEventInCalendar(Integer calendarID, Long eventID, Event event) {
+    protected long updateEventInCalendar(/*Integer calendarID,*/ Long eventID, Event event) {
         ContentResolver contentResolver = getContentResolver();
 
         long calID = Long.parseLong(mCalendars[mNCalendar].id);
-        long startMillis = 0;
-        long endMillis = 0;
+        long startMillis;
+        long endMillis;
         Calendar beginTime = Calendar.getInstance();
         beginTime.setTime(event.getStartDate());
         startMillis = beginTime.getTimeInMillis();
@@ -414,11 +414,11 @@ public abstract class BaseService extends Service {
                                     result = calendarNames;
                                     break;
                                 case REMOVE_EVENT_FROM_CALENDAR:
-                                    result = removeEventFromCalendar((Integer)arguments[0], (Long)arguments[1]);
+                                    result = removeEventFromCalendar(/*(Integer)arguments[0],*/ (Long)arguments[0]);
                                     break;
                                 case UPDATE_EVENT_IN_CALENDAR:
-                                    result = updateEventInCalendar((Integer)arguments[0], (Long)arguments[1],
-                                            (Event)arguments[2]);
+                                    result = updateEventInCalendar(/*(Integer)arguments[0],*/ (Long)arguments[0],
+                                            (Event)arguments[1]);
                                     break;
                             }
 

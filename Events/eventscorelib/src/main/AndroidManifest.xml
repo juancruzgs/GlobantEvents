@@ -37,10 +37,6 @@
             android:name=".baseActivities.BaseEventListActivity"
             android:launchMode="singleTop">
         </activity>
-        <activity
-            android:name=".baseActivities.BaseCalendarListActivity"
-            android:label="@string/title_activity_base_calendar_list" >
-        </activity>
 
     </application>
 
