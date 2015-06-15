@@ -144,7 +144,7 @@ public abstract class BaseService extends Service {
             }
         };
 
-        getCalendars();
+        //getCalendars();
     }
 
     protected abstract String getTwitterCallbackURL();
@@ -305,6 +305,9 @@ public abstract class BaseService extends Service {
     }
 
     public void executeAction(final ACTIONS theAction, final String bindingKey, final Object ... arguments) {
+        if (theAction == ACTIONS.GET_CALENDARS) {
+            getCalendars();
+        }
         Runnable r = new Runnable() {
             @Override
             public void run() {
