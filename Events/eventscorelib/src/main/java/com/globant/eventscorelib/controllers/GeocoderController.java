@@ -21,7 +21,7 @@ public class GeocoderController {
         mGeocoder = new Geocoder(context);
     }
 
-    public LatLng getCoordinatesFromAddress(String addressString){
+    public LatLng getCoordinatesFromAddress(String addressString) {
         List<Address> addresses;
         try {
             addresses = mGeocoder.getFromLocationName(addressString, CoreConstants.MAX_GEOCODER_RESULTS);
@@ -33,15 +33,15 @@ public class GeocoderController {
         }
     }
 
-    public  Address getAddressFromCoordinates(LatLng latLng){
+    public Address getAddressFromCoordinates(LatLng latLng) {
         List<Address> addresses;
         try {
             addresses = mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, CoreConstants.MAX_GEOCODER_RESULTS);
-            if(!addresses.isEmpty())
-            return addresses.get(CoreConstants.ZERO);
-            else return null;
+            if (!addresses.isEmpty())
+                return addresses.get(CoreConstants.ZERO);
+            else
+                return null;
         } catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }
