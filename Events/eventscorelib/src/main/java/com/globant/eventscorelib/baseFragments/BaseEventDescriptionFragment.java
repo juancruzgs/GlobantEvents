@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
@@ -27,12 +28,14 @@ import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
+import com.globant.eventscorelib.utils.JSONSharedPreferences;
+import com.globant.eventscorelib.utils.Logger;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
-import com.globant.eventscorelib.utils.SharingIntent;
 import com.globant.eventscorelib.utils.PushNotifications;
 import com.software.shell.fab.ActionButton;
 
-import java.util.Date;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public abstract class BaseEventDescriptionFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
@@ -53,6 +56,9 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     protected ActionButton mFab;
     protected Event mEvent;
     private String mBindingKey;
+
+    private AppCompatTextView mButtonAddToCalendar;
+    private boolean mAddedToCalendar = false;
 
     public BaseEventDescriptionFragment() {
     }
@@ -76,7 +82,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+        mBindingKey = this.getClass().getSimpleName(); // + new Date().toString();
     }
 
     @Override
@@ -89,6 +95,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             loadEventDescription();
         }
         initializeViewParameters();
+        setCalendarButtonText();
         setHasOptionsMenu(true);
         setRetainInstance(true);
         return rootView;
@@ -182,6 +189,59 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mFab = (ActionButton) rootView.findViewById(R.id.fab);
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_view_map_icon);
         changeIconColor();
+
+        mButtonAddToCalendar = (AppCompatTextView) rootView.findViewById(R.id.button_add_to_calendar);
+        mButtonAddToCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mAddedToCalendar) {
+                    mService.executeAction(BaseService.ACTIONS.GET_CALENDARS, mBindingKey);
+                }
+                else {
+                    try {
+                        JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                                getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+                        JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
+                        mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, getBindingKey(),
+                                /*calendarData.getInt(CoreConstants.CALENDAR_SELF_ID),*/
+                                calendarData.getLong(CoreConstants.CALENDAR_EVENT_ID));
+                    }
+                    catch (JSONException e) {
+                        Logger.e("Problems with the internal event info while trying to remove the event", e);
+                    }
+                }
+            }
+        });
+
+        rootView.findViewById(R.id.button_emergency_shared_preferences_killer).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        JSONSharedPreferences.remove(getActivity(), getActivity().getApplicationInfo().name,
+                                JSONSharedPreferences.KEY_CALENDAR);
+                    }
+                }
+        );
+    }
+
+    private void setCalendarButtonText() {
+        // TODO: Pass this button stuff through somebody with better UI ideas
+        try {
+            JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                    getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+            if (eventArray.has(mEvent.getObjectID())) {
+                mButtonAddToCalendar.setText(getString(R.string.button_remove_from_calendar));
+                mAddedToCalendar = true;
+            }
+            else {
+                mButtonAddToCalendar.setText(getString(R.string.button_add_to_calendar));
+                mAddedToCalendar = false;
+            }
+        }
+        catch (JSONException e) {
+            Logger.e("Problems trying to get the event local info", e);
+            mButtonAddToCalendar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -198,6 +258,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         }
         mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
         mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
+        setCalendarButtonText();
         mEventAddress.setText(mEvent.getAddress());
         mEventCity.setText(mEvent.getCity());
         mEventCountry.setText(mEvent.getCountry());
@@ -241,6 +302,65 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         hideUtilsAndShowContentOverlay();
+        if (theAction == BaseService.ACTIONS.GET_CALENDARS) {
+            showCalendarList(result);
+        }
+        if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
+            JSONObject eventsArray;
+            try {
+                eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                        getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+
+                JSONObject calendarData = new JSONObject();
+                calendarData.put(CoreConstants.CALENDAR_SELF_ID, mService.getNCalendar());
+                calendarData.put(CoreConstants.CALENDAR_EVENT_ID, result);
+                calendarData.put(CoreConstants.CALENDAR_EVENT_LAST_UPDATE,
+                        CustomDateFormat.getCompleteDate(mEvent.getUpdatedAt(), getActivity()));
+                eventsArray.put(mEvent.getObjectID(), calendarData);
+                JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
+                        JSONSharedPreferences.KEY_CALENDAR, eventsArray);
+
+                setCalendarButtonText();
+
+                //mAddedToCalendar = true;
+            } catch (JSONException e) {
+                Logger.e("Error trying to get this event's calendar id", e);
+                mButtonAddToCalendar.setEnabled(false);
+            }
+        }
+        if (theAction == BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR) {
+            JSONObject eventsArray;
+            try {
+                eventsArray = JSONSharedPreferences.loadJSONObject(getActivity(),
+                        getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+
+                eventsArray.remove(mEvent.getObjectID());
+                JSONSharedPreferences.saveJSONObject(getActivity(), getActivity().getApplicationInfo().name,
+                        JSONSharedPreferences.KEY_CALENDAR, eventsArray);
+
+                setCalendarButtonText();
+
+                //mAddedToCalendar = false;
+            } catch (JSONException e) {
+                Logger.e("Error trying to get this event's calendar id", e);
+                mButtonAddToCalendar.setEnabled(false);
+            }
+        }
+    }
+
+    private void showCalendarList(Object result) {
+        new MaterialDialog.Builder(getActivity())
+                .title("Choose calendar")
+                .titleColorRes(R.color.globant_green_dark)
+                .items((CharSequence[]) result)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                        mService.setNCalendar(i);
+                        mService.executeAction(BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR, getBindingKey(), mEvent);
+                    }
+                })
+                .show();
     }
 
     @Override

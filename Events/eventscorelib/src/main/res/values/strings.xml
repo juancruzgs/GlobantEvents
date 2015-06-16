@@ -156,4 +156,8 @@
     <string name="dialog_share_via">Share via</string>
     <string name="check_out_event">Check out this event!</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="title_activity_base_calendar_list">Calendars</string>
+    <string name="button_add_to_calendar">ADD TO CALENDAR</string>
+    <string name="button_remove_from_calendar">REMOVE FROM CALENDAR</string>
+    <string name="button_cancel">Cancel</string>
 </resources>

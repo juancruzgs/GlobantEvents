@@ -54,6 +54,7 @@ public class CoreConstants {
     public static final String FIELD_SUBSCRIBERS = "subscribers";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_LAST_NAME = "last_name";
+    public static final String FIELD_CALENDAR_ID = "calendar_id";
 
     //QR Encoder
     public static final int WHITE = 0xFFFFFFFF;
@@ -151,5 +152,10 @@ public class CoreConstants {
     public static final String INTENT_TYPE = "text/plain";
     public static final String GMAIL_CLASS =  "com.google.android.gm.ComposeActivityGmail";
 
+
+    // Calendar event information
+    public static final String CALENDAR_SELF_ID = "calendarSelfId";
+    public static final String CALENDAR_EVENT_ID = "calendarEventId";
+    public static final String CALENDAR_EVENT_LAST_UPDATE = "eventLastUpdate";
 
 }
