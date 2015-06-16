@@ -32,6 +32,7 @@ import com.globant.eventscorelib.utils.JSONSharedPreferences;
 import com.globant.eventscorelib.utils.Logger;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.globant.eventscorelib.utils.PushNotifications;
+import com.globant.eventscorelib.utils.SharingIntent;
 import com.software.shell.fab.ActionButton;
 
 import org.json.JSONException;
