@@ -692,24 +692,19 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             if (savePreferences) {
                 if (mStartDate.compareTo(mEndDate) != -1) {
                     Toast.makeText(getActivity(), R.string.error_message_dates, Toast.LENGTH_LONG).show();
-
-                    ImageView iconToChange = mIconEndDate;
-                    Drawable mDrawableToApplyChanges = getResources().getDrawable(R.mipmap.ic_event_end_date);
+                    Drawable drawableToApply;
+                    ImageView iconToChange;
 
                     mErrorLabelLayoutEndDate.setError(getString(R.string.error_message_change_dates));
-                    mDrawableToApplyChanges = DrawableCompat.wrap(mDrawableToApplyChanges);
-                    DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-                    mDrawableToApplyChanges = DrawableCompat.unwrap(mDrawableToApplyChanges);
-                    iconToChange.setImageDrawable(mDrawableToApplyChanges);
-
-                    iconToChange = mIconEndTime;
-                    mDrawableToApplyChanges = getResources().getDrawable(R.mipmap.ic_end_time);
+                    iconToChange = mIconEndDate;
+                    drawableToApply = getResources().getDrawable(R.mipmap.ic_event_end_date);
+                    tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
 
                     mErrorLabelLayoutEndTime.setError("");
-                    mDrawableToApplyChanges = DrawableCompat.wrap(mDrawableToApplyChanges);
-                    DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-                    mDrawableToApplyChanges = DrawableCompat.unwrap(mDrawableToApplyChanges);
-                    iconToChange.setImageDrawable(mDrawableToApplyChanges);
+                    iconToChange = mIconEndTime;
+                    drawableToApply = getResources().getDrawable(R.mipmap.ic_end_time);
+                    tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
+
                 } else if (mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
                     Toast.makeText(getActivity(), getString(R.string.missing_photo), Toast.LENGTH_SHORT).show();
                 } else {
@@ -865,17 +860,11 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         getIconToTint(requiredField);
         if (requiredField.getText().toString().trim().length() == 0) {
             mErrorLabelLayout.setError(getString(R.string.field_required));
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
+            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
             return false;
         } else {
             mErrorLabelLayout.setError("");
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
+            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
             return true;
         }
     }
@@ -900,12 +889,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         Drawable drawable;
 
         for (ImageView imageView : Icons) {
-            drawable = DrawableCompat.wrap(imageView.getDrawable());
-            DrawableCompat.setTint(drawable, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
-            drawable = DrawableCompat.unwrap(drawable);
-            imageView.setImageDrawable(drawable);
+            tintIcon(imageView, imageView.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
         }
-
     }
 
     @Override
