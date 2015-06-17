@@ -26,10 +26,12 @@ import java.util.List;
 public class TwitterController {
 
     private RequestToken requestToken;
-    String mCallbackURL;
+    private String mCallbackURL;
+    private Context mContext;
 
-    public TwitterController(String callbackURL) {
+    public TwitterController(String callbackURL, Context context) {
         mCallbackURL = callbackURL;
+        mContext = context;
     }
 
     public boolean getLoginResponse(Uri uri) {
@@ -39,9 +41,8 @@ public class TwitterController {
             try {
                 Twitter twitter = getTwitter(false);
                 accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
-                BaseApplication.getInstance().getSharedPreferencesController()
-                        .setTwitterStatusResponse(accessToken.getToken(),
-                                accessToken.getTokenSecret());
+                SharedPreferencesController.setTwitterStatusResponse(accessToken.getToken(),
+                        accessToken.getTokenSecret(), mContext);
                 accessToken.getUserId();
                 return true;
             } catch (TwitterException e) {
@@ -78,17 +79,16 @@ public class TwitterController {
 
     }
 
-    public boolean loginToTwitter(Context context) {
+    public boolean loginToTwitter() {
         try {
             Twitter twitter = getTwitterNoTokens();
             if (twitter != null) {
-                if (!BaseApplication.getInstance().getSharedPreferencesController()
-                        .isAlreadyTwitterLogged()) {
+                if (!SharedPreferencesController.isAlreadyTwitterLogged(mContext)) {
                     requestToken = twitter.getOAuthRequestToken(mCallbackURL);
                     Intent intent = new Intent(Intent.ACTION_VIEW,
                             Uri.parse(requestToken.getAuthenticationURL()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                    mContext.startActivity(intent);
                 }
                 return true;
             } else {
@@ -99,8 +99,8 @@ public class TwitterController {
         }
     }
 
-    public List<Status> getTweetList(Context context, String hashtag) {
-        //context.getString(R.string.general_hashtag)
+    public List<Status> getTweetList(String hashtag) {
+        //mContext.getString(R.string.general_hashtag)
         Query query = new Query(hashtag); // TODO change the hashtag
         query.setCount(30);
         try {
@@ -147,10 +147,8 @@ public class TwitterController {
     }
 
     public AccessToken getAccessToken() {
-        String access_token = BaseApplication.getInstance()
-                .getSharedPreferencesController().getAccessToken();
-        String access_token_secret = BaseApplication.getInstance()
-                .getSharedPreferencesController().getAccessTokenSecret();
+        String access_token = SharedPreferencesController.getAccessToken(mContext);
+        String access_token_secret = SharedPreferencesController.getAccessTokenSecret(mContext);
         return new AccessToken(access_token, access_token_secret);
     }
 }

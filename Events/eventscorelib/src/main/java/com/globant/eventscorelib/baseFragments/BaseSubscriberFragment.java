@@ -291,7 +291,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mEditTextCountry.setText(SharedPreferencesController.getUserCountry(this.getActivity()));
         mCheckBoxEnglishKnowledge.setChecked(SharedPreferencesController.getUserEnglishKnowledge(this.getActivity()));
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-        String value = sharedPreferences.getString(this.getActivity().getString(R.string.preference_user_picture), null);
+        String value = sharedPreferences.getString(CoreConstants.PREFERENCE_USER_PICTURE, null);
         if (value != null) {
             byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
             mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));

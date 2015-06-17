@@ -135,7 +135,7 @@ public abstract class BaseService extends Service {
         mCloudDatabaseController = new CloudDatabaseController();
         mSelectiveDatabaseController  = new SelectiveDatabaseController(mLocalDatabaseController, mCloudDatabaseController);
         mGeocoderController = new GeocoderController(getBaseContext());
-        mTwitterController = new TwitterController(getTwitterCallbackURL());
+        mTwitterController = new TwitterController(getTwitterCallbackURL(), getBaseContext());
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -354,10 +354,10 @@ public abstract class BaseService extends Service {
                                     result = user;
                                     break;
                                 case TWEETS_LIST:
-                                    result = mTwitterController.getTweetList(getBaseContext(), (String) arguments[0]);
+                                    result = mTwitterController.getTweetList((String) arguments[0]);
                                     break;
                                 case TWITTER_LOADER:
-                                    result = mTwitterController.loginToTwitter(getBaseContext());
+                                    result = mTwitterController.loginToTwitter();
                                     break;
                                 case TWITTER_LOADER_RESPONSE:
                                     result = mTwitterController.getLoginResponse((Uri) arguments[0]);

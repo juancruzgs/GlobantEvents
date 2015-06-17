@@ -135,7 +135,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mRecyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.list_recycler_view);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);

@@ -158,4 +158,21 @@ public class CoreConstants {
     public static final String CALENDAR_EVENT_ID = "calendarEventId";
     public static final String CALENDAR_EVENT_LAST_UPDATE = "eventLastUpdate";
 
+    // SharedPreferences
+
+    public static final String PREFERENCE_NAME = "Globant";
+    public static final String PREFERENCE_USER_FIRST_NAME = "preference_user_first_name";
+    public static final String PREFERENCE_USER_LAST_NAME ="preference_user_last_name";
+    public static final String PREFERENCE_USER_EMAIL = "preference_user_email";
+    public static final String PREFERENCE_USER_OCCUPATION_NAME = "preference_user_occupation_name";
+    public static final String PREFERENCE_USER_PHONE = "preference_user_phone";
+    public static final String PREFERENCE_USER_COUNTRY = "preference_user_country";
+    public static final String PREFERENCE_USER_CITY="preference_user_city";
+    public static final String PREFERENCE_USER_ENGLISH_KNOWLEDGE = "preference_user_english_knowledge";
+    public static final String PREFERENCE_USER_PICTURE = "preference_user_picture";
+    public static final String PREFERENCE_USER_IS_GLOBER = "preference_user_is_glober";
+    public static final String PREFERENCE_USER_TWITTER = "preference_user_twitter";
+    public static final String PREFERENCE_PARTICIPANT_HINT_SHOWED = "preference_participant_hint_showed";
+    public static final String PREFERENCE_TIME = "preference_time";
+
 }

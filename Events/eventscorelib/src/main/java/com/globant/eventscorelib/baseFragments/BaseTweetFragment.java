@@ -4,6 +4,8 @@ package com.globant.eventscorelib.baseFragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseTweetActivity;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CropCircleTransformation;
 import com.globant.eventscorelib.R;
@@ -96,7 +99,10 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
 
     private void wireUpViews(View rootView) {
         mUserPicture = (ImageView) rootView.findViewById(R.id.imageView_user);
-        Picasso.with(getActivity()).load(R.mipmap.placeholder).transform(mCircleTransformation).into(mUserPicture);
+        BitmapDrawable twitterPicture = ((BitmapDrawable) getResources().getDrawable(R.mipmap.placeholder));
+        if (twitterPicture != null) {
+            mUserPicture.setImageBitmap(mCircleTransformation.transform(twitterPicture.getBitmap()));
+        }
         mUsername = (AppCompatTextView) rootView.findViewById(R.id.textView_username);
         mUserFullName = (AppCompatTextView) rootView.findViewById(R.id.textView_user_full_name);
         mTweetText = (AppCompatEditText) rootView.findViewById(R.id.textView_tweet);
@@ -126,8 +132,7 @@ public class BaseTweetFragment extends BaseFragment implements BaseService.Actio
 
     public void changeUserInformation(User user) {
         try {
-            if (BaseApplication.getInstance().getSharedPreferencesController()
-                    .isAlreadyTwitterLogged()) {
+            if (SharedPreferencesController.isAlreadyTwitterLogged(getActivity())) {
                 setUserInformation(user);
             } else {
                 mTweetText.setEnabled(false);
