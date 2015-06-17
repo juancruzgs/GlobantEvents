@@ -81,7 +81,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         ((BaseEventListActivity) getActivity()).setEventList(mEventList);
         scrollTo(CoreConstants.SCROLL_TOP);
 
-        // TODO: Get the list of "calendared" events
         try {
             JSONObject eventArray = JSONSharedPreferences.loadJSONObject(BaseApplication.getInstance(),
                     BaseApplication.getInstance().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
@@ -90,15 +89,18 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 String eventId = event.getObjectID();
                 if (eventArray.has(eventId)) {
                     JSONObject eventJSON = eventArray.getJSONObject(eventId);
+                    long calendarId = eventJSON.getInt(CoreConstants.CALENDAR_SELF_ID);
+                    if (!mService.existsCalendar(calendarId)) {
+                        JSONSharedPreferences.removeEvent(getActivity(), event);
+                    }
+
                     Date lastUpdateDb = event.getUpdatedAt();
-                    // TODO: Use other kind of date type (this is "unparseable" according to the dateFormat.parse)
                     String lastUpdateCalStr = (String) eventJSON.get(CoreConstants.CALENDAR_EVENT_LAST_UPDATE);
                     // Thu Jun 11 15:37:48 GMT-03:00 2015
                     //DateFormat dateFormat = DateFormat.getDateTimeInstance();
                     //Date lastUpdateCal = dateFormat.parse(lastUpdateCalStr);
                     Date lastUpdateCal = CustomDateFormat.parseCompleteDate(lastUpdateCalStr, getActivity());
                     if (lastUpdateCal.before(lastUpdateDb)) {
-                        // TODO: Force update every one, or try to check somehow which ones changed
                         mService.executeAction(BaseService.ACTIONS.UPDATE_EVENT_IN_CALENDAR, mActionListener.getBindingKey(),
                                 eventJSON.getInt(CoreConstants.CALENDAR_SELF_ID),
                                 eventJSON.getLong(CoreConstants.CALENDAR_EVENT_ID), event);
@@ -120,6 +122,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void updateEventListFail() {
         mSwipeRefreshLayout.setRefreshing(false);
         hideUtilsAndShowContentOverlay();
+    }
+
+    public void removeEventFromCalendar(String bindingKey, Long eventId) {
+        mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, bindingKey,
+                                /*calendarData.getInt(CoreConstants.CALENDAR_SELF_ID),*/
+                eventId);
     }
 
     protected enum LayoutManagerType {

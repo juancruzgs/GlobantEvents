@@ -59,6 +59,20 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
             case TWEET_POST:
                 mFragment.showCheckinOverlay();
                 break;
+            case UPDATE_EVENT_IN_CALENDAR:
+                BaseService.CalendarResponse response = (BaseService.CalendarResponse) result;
+                if (response.getRows() != -1) {
+                    JSONSharedPreferences.updateEvent(mActivity, response.getEvent());
+                }
+                else {
+                    JSONSharedPreferences.removeEvent(mActivity, response.getEvent());
+/*
+                    mFragment.removeEventFromCalendar(getBindingKey(),
+                            JSONSharedPreferences.getCalendarIdFromEventId(mActivity,
+                                    response.getEvent().getObjectID()));
+*/
+                }
+                break;
             default:
                 mFragment.hideUtilsAndShowContentOverlay();
                 break;

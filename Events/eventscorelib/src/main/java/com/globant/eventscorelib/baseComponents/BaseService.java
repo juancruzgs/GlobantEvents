@@ -47,13 +47,13 @@ import twitter4j.User;
  */
 public abstract class BaseService extends Service {
 
-    private int mNCalendar;
+    private long mNCalendar;
 
-    public int getNCalendar() {
+    public long getNCalendar() {
         return mNCalendar;
     }
 
-    public void setNCalendar(int NCalendar) {
+    public void setNCalendar(long NCalendar) {
         mNCalendar = NCalendar;
     }
 
@@ -147,6 +147,26 @@ public abstract class BaseService extends Service {
 
     protected abstract String getTwitterCallbackURL();
 
+    public boolean existsCalendar(long calendarId) {
+        getCalendars();
+
+        int pos = 0;
+        while (pos < mCalendars.length) {
+            if (Long.parseLong(mCalendars[pos].id) == calendarId) {
+                return true;
+            }
+            pos++;
+        }
+
+        return false;
+    }
+
+    public long getCalendarIdFromOrder(int order) {
+        getCalendars();
+
+        return Long.parseLong(mCalendars[order].id);
+    }
+
     protected void updateEvent(Event event) throws ParseException {
         mCloudDatabaseController.updateEvent(event);
         try {
@@ -154,8 +174,11 @@ public abstract class BaseService extends Service {
                     getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
             if (eventsArray.has(event.getObjectID())) {
                 JSONObject eventObject = eventsArray.getJSONObject(event.getObjectID());
-                updateEventInCalendar(/*eventObject.getInt(CoreConstants.CALENDAR_SELF_ID),*/
+                long rows = updateEventInCalendar(/*eventObject.getInt(CoreConstants.CALENDAR_SELF_ID),*/
                         eventObject.getLong(CoreConstants.CALENDAR_EVENT_ID), event);
+                if (rows == -1) {
+                    JSONSharedPreferences.removeEvent(this, event);
+                }
             }
         }
         catch (JSONException e) {
@@ -166,7 +189,7 @@ public abstract class BaseService extends Service {
     protected long addEventToCalendar(Event event) {
         ContentResolver contentResolver = getContentResolver();
 
-        long calID = Long.parseLong(mCalendars[mNCalendar].id);
+        long calID = mNCalendar;
         long startMillis;
         long endMillis;
         Calendar beginTime = Calendar.getInstance();
@@ -176,6 +199,7 @@ public abstract class BaseService extends Service {
         endTime.setTime(event.getEndDate());
         endMillis = endTime.getTimeInMillis();
 
+        // TODO: Add reminder
         ContentValues contentValues = new ContentValues();
         contentValues.put(CalendarContract.Events.DTSTART, startMillis);
         contentValues.put(CalendarContract.Events.DTEND, endMillis);
@@ -202,7 +226,10 @@ public abstract class BaseService extends Service {
     protected long updateEventInCalendar(/*Integer calendarID,*/ Long eventID, Event event) {
         ContentResolver contentResolver = getContentResolver();
 
-        long calID = Long.parseLong(mCalendars[mNCalendar].id);
+        if (mNCalendar > mCalendars.length-1) {
+            return -1;
+        }
+        long calID = mNCalendar;
         long startMillis;
         long endMillis;
         Calendar beginTime = Calendar.getInstance();
@@ -417,8 +444,9 @@ public abstract class BaseService extends Service {
                                     break;
                                 case UPDATE_EVENT_IN_CALENDAR:
                                     setNCalendar((Integer)arguments[0]);
-                                    result = updateEventInCalendar(/*(Integer)arguments[0],*/ (Long)arguments[1],
+                                    long rows = updateEventInCalendar(/*(Integer)arguments[0],*/ (Long)arguments[1],
                                             (Event)arguments[2]);
+                                    result = new CalendarResponse((Event)arguments[2], rows);
                                     break;
                             }
 
@@ -513,5 +541,31 @@ public abstract class BaseService extends Service {
     public void disengage(String key) {
         cachedElements.remove(key);
 //        cancelKeys.add(key);
+    }
+
+    public class CalendarResponse {
+        Event mEvent;
+        Long mRows;
+
+        public CalendarResponse(Event event, long rows) {
+            mEvent = event;
+            mRows = rows;
+        }
+
+        public Event getEvent() {
+            return mEvent;
+        }
+
+        public void setEvent(Event event) {
+            mEvent = event;
+        }
+
+        public Long getRows() {
+            return mRows;
+        }
+
+        public void setRows(Long rows) {
+            mRows = rows;
+        }
     }
 }
