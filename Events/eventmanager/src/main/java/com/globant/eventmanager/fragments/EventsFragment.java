@@ -328,14 +328,9 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     private void setUpSpinners() {
-
-        String[] categoryInfo = getResources().getStringArray(R.array.category_entries);
-        ArrayAdapter<String> category_adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, categoryInfo);
-        category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerCategory.setAdapter(category_adapter);
-        mSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        AdapterView.OnItemSelectedListener categoryListener = new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 switch (position) {
                     case 0:
                         mIconCategory.setImageResource(R.mipmap.ic_social);
@@ -347,27 +342,19 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         mIconCategory.setImageResource(R.mipmap.ic_technical);
                         break;
                 }
-                if (!mSpinnerCategory.isDirty())
-                    onViewFocusChange(mSpinnerCategory, true);
-                else
-                    onViewFocusChange(mSpinnerCategory, false);
-                mSpinnerCategory.setSelection(position);
+                onViewFocusChange(mSpinnerCategory, !mSpinnerCategory.isDirty());
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
-        });
-        mSpinnerCategory.setFocusableInTouchMode(true);
-        mSpinnerPublic.setFocusableInTouchMode(true);
-        String[] publicInfo = getResources().getStringArray(R.array.public_entries);
-        ArrayAdapter<String> public_adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, publicInfo);
-        public_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerPublic.setAdapter(public_adapter);
-        mSpinnerPublic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        };
+        prepareSpinner(mSpinnerCategory, getResources().getStringArray(R.array.category_entries), categoryListener);
+
+        AdapterView.OnItemSelectedListener publicListener = new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSpinnerPublic.setSelection(position);
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 switch (position) {
                     case 0:
                         mIconPublic.setImageResource(R.mipmap.ic_public);
@@ -376,29 +363,28 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         mIconPublic.setImageResource(R.mipmap.ic_private);
                         break;
                 }
-                if (!mSpinnerPublic.isDirty())
-                    onViewFocusChange(mSpinnerPublic, true);
-                else
-                    onViewFocusChange(mSpinnerPublic, false);
+                onViewFocusChange(mSpinnerPublic, !mSpinnerPublic.isDirty());
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });
-        mSpinnerCategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        };
+        prepareSpinner(mSpinnerPublic, getResources().getStringArray(R.array.public_entries), publicListener);
+    }
+
+    private void prepareSpinner(final AppCompatSpinner spinner, String[] info, AdapterView.OnItemSelectedListener listener) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, info);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(listener);
+        spinner.setFocusableInTouchMode(true);
+        spinner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 onViewFocusChange(v, hasFocus);
-                if (hasFocus && mSpinnerCategory.isDirty()) mSpinnerCategory.performClick();
-            }
-        });
-        mSpinnerPublic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onViewFocusChange(v, hasFocus);
-                if (hasFocus && mSpinnerPublic.isDirty()) mSpinnerPublic.performClick();
+                if (hasFocus && spinner.isDirty()) spinner.performClick();
             }
         });
     }
@@ -434,14 +420,29 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mEndDatePicker.setTitle(R.string.edit_text_end_date_hint);
         mEndDatePicker.setIcon(R.mipmap.ic_event_end_date);
 
-        mEditTextStartDate.setOnTouchListener(new View.OnTouchListener() {
+        mEditTextStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mEditTextStartDate.requestFocus();
+            public void onClick(View view) {
+//                mEditTextStartDate.requestFocus();
                 mStartDatePicker.show();
-                return false;
             }
         });
+        mEditTextStartDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    mStartDatePicker.show();
+                }
+            }
+        });
+//        mEditTextStartDate.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                mEditTextStartDate.requestFocus();
+//                mStartDatePicker.show();
+//                return false;
+//            }
+//        });
         mEditTextEndDate.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
