@@ -199,7 +199,6 @@ public abstract class BaseService extends Service {
         endTime.setTime(event.getEndDate());
         endMillis = endTime.getTimeInMillis();
 
-        // TODO: Add reminder
         ContentValues contentValues = new ContentValues();
         contentValues.put(CalendarContract.Events.DTSTART, startMillis);
         contentValues.put(CalendarContract.Events.DTEND, endMillis);
@@ -211,7 +210,15 @@ public abstract class BaseService extends Service {
         Uri uri = contentResolver.insert(CalendarContract.Events.CONTENT_URI, contentValues);
 
         // get the event ID that is the last element in the Uri
-        return Long.parseLong(uri.getLastPathSegment());
+        long eventID = Long.parseLong(uri.getLastPathSegment());
+
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Reminders.MINUTES, 1440);
+        values.put(CalendarContract.Reminders.EVENT_ID, eventID);
+        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+        uri = contentResolver.insert(CalendarContract.Reminders.CONTENT_URI, values);
+
+        return eventID;
     }
 
     protected long removeEventFromCalendar(/*Integer calendarID,*/ Long eventID) {
