@@ -145,24 +145,21 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
     @Override
     public View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         wireUpViews(rootView);
         setUpSpinners();
         prepareImageButton();
         setOnFocusListeners();
         setDateTimeField();
-
         mEvent = EventsManagerPagerActivity.getInstance().getEvent();
         populateInfo(mEvent);
-
         hideUtilsAndShowContentOverlay();
         setHasOptionsMenu(true);
         setRetainInstance(true);
         return rootView;
     }
 
-    private void populateInfo(Event event){
+    private void populateInfo(Event event) {
         mEventTitle.setText(event.getTitle());
         mEditTextTitle.setText(event.getTitle());
         mEditTextFullDescription.setText(event.getFullDescription());
@@ -170,18 +167,18 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mEditTextAdditionalInfo.setText(event.getAdditionalInfo());
         String[] category = getResources().getStringArray(R.array.category_entries);
         int CategoryIndex = Arrays.asList(category).indexOf(event.getCategory());
-        if (CategoryIndex>=0){
+        if (CategoryIndex >= 0) {
             mSpinnerCategory.setSelection(CategoryIndex);
         }
         mSpinnerPublic.setSelection(event.isPublic() ? 0 : 1);
         mEditTextHashtag.setText(event.getHashtag());
         mEditTextLanguage.setText(event.getLanguage());
-        if(event.getStartDate() != null) {
+        if (event.getStartDate() != null) {
             mEditTextStartDate.setText(dateFormatter.format(event.getStartDate()));
             mEditTextStartTime.setText(TimeFormatter.format(event.getStartDate()));
             mStartDate.setTime(event.getStartDate());
         }
-        if(event.getEndDate() != null) {
+        if (event.getEndDate() != null) {
             mEditTextEndDate.setText(dateFormatter.format(event.getEndDate()));
             mEditTextEndTime.setText(TimeFormatter.format(event.getEndDate()));
             mEndDate.setTime(event.getEndDate());
@@ -191,10 +188,10 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mEditTextCity.setText(event.getCity());
         mLatLng = event.getCoordinates();
 
-        if (event.getEventLogo()!= null){
+        if (event.getEventLogo() != null) {
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
             mPhotoEvent.setImageBitmap(mEvent.getEventLogo());
-        }else {
+        } else {
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
             mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
         }
@@ -208,19 +205,18 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             mEvent.setAdditionalInfo(mEditTextAdditionalInfo.getText().toString());
             mEvent.setHashtag(mEditTextHashtag.getText().toString());
             mEvent.setLanguage(mEditTextLanguage.getText().toString());
-            if(!mEditTextEndDate.getText().toString().isEmpty())
-            mEvent.setEndDate(mEndDate.getTime());
-            if(!mEditTextStartDate.getText().toString().isEmpty())
+            if (!mEditTextEndDate.getText().toString().isEmpty())
+                mEvent.setEndDate(mEndDate.getTime());
+            if (!mEditTextStartDate.getText().toString().isEmpty())
                 mEvent.setStartDate(mStartDate.getTime());
             mEvent.setCategory(mSpinnerCategory.getSelectedItem().toString());
             mEvent.setCity(mEditTextCity.getText().toString());
             mEvent.setAddress(mEditTextAddress.getText().toString());
             mEvent.setPublic(mSpinnerPublic.getSelectedItemPosition() == 0);
             mEvent.setCountry(mEditTextCountry.getText().toString());
-            mEvent.setEventLogo(((BitmapDrawable)mPhotoEvent.getDrawable()).getBitmap());
+            mEvent.setEventLogo(((BitmapDrawable) mPhotoEvent.getDrawable()).getBitmap());
             mEvent.setIcon(null);
             mEvent.setCoordinates(mLatLng);
-
         }
     }
 
@@ -240,7 +236,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mEditTextCity.setOnFocusChangeListener(editTextFocus);
     }
 
-    private View.OnFocusChangeListener editTextFocus =  new View.OnFocusChangeListener() {
+    private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             onViewFocusChange(v, hasFocus);
@@ -253,67 +249,66 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         //onFocus
         if (gainFocus) {
-            mDrawableToApply= DrawableCompat.wrap(mDrawableToApply);
+            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
             DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.ambar));
-            mDrawableToApply= DrawableCompat.unwrap(mDrawableToApply);
+            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
             mIconToChange.setImageDrawable(mDrawableToApply);
             mErrorLabelLayout.clearError();
         }
         //onBlur
         else {
-            mDrawableToApply= DrawableCompat.wrap(mDrawableToApply);
+            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
             DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
-            mDrawableToApply= DrawableCompat.unwrap(mDrawableToApply);
+            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
             mIconToChange.setImageDrawable(mDrawableToApply);
         }
     }
 
     private void wireUpViews(View rootView) {
-
         mToolbar = rootView.findViewById(R.id.events_toolbar);
         mOverlayView = rootView.findViewById(R.id.events_overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.event_scroll);
         mEventTitle = (AppCompatTextView) rootView.findViewById(R.id.title);
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_button_map);
 
-        mEditTextTitle =(AppCompatEditText)rootView.findViewById(R.id.edit_text_title);
-        mEditTextFullDescription =(AppCompatEditText)rootView.findViewById(R.id.edit_text_full_description);
-        mEditTextShortDescription =(AppCompatEditText)rootView.findViewById(R.id.edit_text_short_description);
-        mEditTextAdditionalInfo =(AppCompatEditText)rootView.findViewById(R.id.edit_text_additional_info);
-        mSpinnerCategory =(AppCompatSpinner)rootView.findViewById(R.id.category_spinner);
-        mSpinnerPublic =(AppCompatSpinner)rootView.findViewById(R.id.public_spinner);
-        mEditTextHashtag =(AppCompatEditText)rootView.findViewById(R.id.edit_text_hashtag);
-        mEditTextLanguage =(AppCompatEditText)rootView.findViewById(R.id.edit_text_language);
-        mEditTextStartDate =(AppCompatEditText)rootView.findViewById(R.id.edit_text_start_date);
+        mEditTextTitle = (AppCompatEditText) rootView.findViewById(R.id.edit_text_title);
+        mEditTextFullDescription = (AppCompatEditText) rootView.findViewById(R.id.edit_text_full_description);
+        mEditTextShortDescription = (AppCompatEditText) rootView.findViewById(R.id.edit_text_short_description);
+        mEditTextAdditionalInfo = (AppCompatEditText) rootView.findViewById(R.id.edit_text_additional_info);
+        mSpinnerCategory = (AppCompatSpinner) rootView.findViewById(R.id.category_spinner);
+        mSpinnerPublic = (AppCompatSpinner) rootView.findViewById(R.id.public_spinner);
+        mEditTextHashtag = (AppCompatEditText) rootView.findViewById(R.id.edit_text_hashtag);
+        mEditTextLanguage = (AppCompatEditText) rootView.findViewById(R.id.edit_text_language);
+        mEditTextStartDate = (AppCompatEditText) rootView.findViewById(R.id.edit_text_start_date);
         mEditTextStartDate.setInputType(InputType.TYPE_NULL);
-        mEditTextStartTime =(AppCompatEditText)rootView.findViewById(R.id.edit_text_start_time);
+        mEditTextStartTime = (AppCompatEditText) rootView.findViewById(R.id.edit_text_start_time);
         mEditTextStartTime.setInputType(InputType.TYPE_NULL);
-        mEditTextEndDate =(AppCompatEditText)rootView.findViewById(R.id.edit_text_end_date);
+        mEditTextEndDate = (AppCompatEditText) rootView.findViewById(R.id.edit_text_end_date);
         mEditTextEndDate.setInputType(InputType.TYPE_NULL);
-        mEditTextEndTime =(AppCompatEditText)rootView.findViewById(R.id.edit_text_end_time);
+        mEditTextEndTime = (AppCompatEditText) rootView.findViewById(R.id.edit_text_end_time);
         mEditTextEndTime.setInputType(InputType.TYPE_NULL);
-        mEditTextAddress =(AppCompatEditText)rootView.findViewById(R.id.edit_text_address);
-        mEditTextCountry=(AppCompatEditText)rootView.findViewById(R.id.edit_text_country);
-        mEditTextCity=(AppCompatEditText)rootView.findViewById(R.id.edit_text_city);
+        mEditTextAddress = (AppCompatEditText) rootView.findViewById(R.id.edit_text_address);
+        mEditTextCountry = (AppCompatEditText) rootView.findViewById(R.id.edit_text_country);
+        mEditTextCity = (AppCompatEditText) rootView.findViewById(R.id.edit_text_city);
 
-        mFloatingActionButtonPhoto=(ActionButton)rootView.findViewById(R.id.event_fab);
+        mFloatingActionButtonPhoto = (ActionButton) rootView.findViewById(R.id.event_fab);
 
-        mPhotoEvent =(ImageView)rootView.findViewById(R.id.event_header);
-        mIconTitle =(ImageView)rootView.findViewById(R.id.icon_title);
-        mIconFullDescription =(ImageView)rootView.findViewById(R.id.icon_full_description);
-        mIconShortDescription =(ImageView)rootView.findViewById(R.id.icon_short_description);
-        mIconAdditionalInfo =(ImageView)rootView.findViewById(R.id.icon_additional_info);
-        mIconCategory =(ImageView)rootView.findViewById(R.id.icon_category);
-        mIconPublic =(ImageView)rootView.findViewById(R.id.icon_public);
-        mIconHashtag =(ImageView)rootView.findViewById(R.id.icon_hashtag);
-        mIconLanguage =(ImageView)rootView.findViewById(R.id.icon_language);
-        mIconStartDate =(ImageView)rootView.findViewById(R.id.icon_start_date);
-        mIconEndDate =(ImageView)rootView.findViewById(R.id.icon_end_date);
-        mIconStartTime =(ImageView)rootView.findViewById(R.id.icon_start_time);
-        mIconEndTime =(ImageView)rootView.findViewById(R.id.icon_end_time);
-        mIconAddress =(ImageView)rootView.findViewById(R.id.icon_address);
-        mIconCountry=(ImageView)rootView.findViewById(R.id.icon_country);
-        mIconCity=(ImageView)rootView.findViewById(R.id.icon_city);
+        mPhotoEvent = (ImageView) rootView.findViewById(R.id.event_header);
+        mIconTitle = (ImageView) rootView.findViewById(R.id.icon_title);
+        mIconFullDescription = (ImageView) rootView.findViewById(R.id.icon_full_description);
+        mIconShortDescription = (ImageView) rootView.findViewById(R.id.icon_short_description);
+        mIconAdditionalInfo = (ImageView) rootView.findViewById(R.id.icon_additional_info);
+        mIconCategory = (ImageView) rootView.findViewById(R.id.icon_category);
+        mIconPublic = (ImageView) rootView.findViewById(R.id.icon_public);
+        mIconHashtag = (ImageView) rootView.findViewById(R.id.icon_hashtag);
+        mIconLanguage = (ImageView) rootView.findViewById(R.id.icon_language);
+        mIconStartDate = (ImageView) rootView.findViewById(R.id.icon_start_date);
+        mIconEndDate = (ImageView) rootView.findViewById(R.id.icon_end_date);
+        mIconStartTime = (ImageView) rootView.findViewById(R.id.icon_start_time);
+        mIconEndTime = (ImageView) rootView.findViewById(R.id.icon_end_time);
+        mIconAddress = (ImageView) rootView.findViewById(R.id.icon_address);
+        mIconCountry = (ImageView) rootView.findViewById(R.id.icon_country);
+        mIconCity = (ImageView) rootView.findViewById(R.id.icon_city);
 
         mErrorLabelLayoutTitle = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_title);
         mErrorLabelLayoutFullDescription = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_full_description);
@@ -332,16 +327,16 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
     }
 
-    private void setUpSpinners(){
+    private void setUpSpinners() {
 
         String[] categoryInfo = getResources().getStringArray(R.array.category_entries);
-        ArrayAdapter<String> category_adapter = new ArrayAdapter<>(getActivity(),  R.layout.simple_spinner_item, categoryInfo);
+        ArrayAdapter<String> category_adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, categoryInfo);
         category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerCategory.setAdapter(category_adapter);
         mSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position){
+                switch (position) {
                     case 0:
                         mIconCategory.setImageResource(R.mipmap.ic_social);
                         break;
@@ -353,9 +348,9 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         break;
                 }
                 if (!mSpinnerCategory.isDirty())
-                onViewFocusChange(mSpinnerCategory, true);
+                    onViewFocusChange(mSpinnerCategory, true);
                 else
-                onViewFocusChange(mSpinnerCategory, false);
+                    onViewFocusChange(mSpinnerCategory, false);
                 mSpinnerCategory.setSelection(position);
             }
 
@@ -365,10 +360,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         });
         mSpinnerCategory.setFocusableInTouchMode(true);
         mSpinnerPublic.setFocusableInTouchMode(true);
-
         String[] publicInfo = getResources().getStringArray(R.array.public_entries);
         ArrayAdapter<String> public_adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, publicInfo);
-
         public_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerPublic.setAdapter(public_adapter);
         mSpinnerPublic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -394,20 +387,20 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
             }
         });
-            mSpinnerCategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    onViewFocusChange(v, hasFocus);
-                    if (hasFocus && mSpinnerCategory.isDirty()) mSpinnerCategory.performClick();
-                }
-            });
-            mSpinnerPublic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    onViewFocusChange(v, hasFocus);
-                    if(hasFocus && mSpinnerPublic.isDirty()) mSpinnerPublic.performClick();
-                }
-            });
+        mSpinnerCategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onViewFocusChange(v, hasFocus);
+                if (hasFocus && mSpinnerCategory.isDirty()) mSpinnerCategory.performClick();
+            }
+        });
+        mSpinnerPublic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onViewFocusChange(v, hasFocus);
+                if (hasFocus && mSpinnerPublic.isDirty()) mSpinnerPublic.performClick();
+            }
+        });
     }
 
     private void setDateTimeField() {
@@ -425,7 +418,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                 mEditTextStartDate.setText(dateFormatter.format(mStartDate.getTime()));
             }
 
-        },mStartDate.get(Calendar.YEAR), mStartDate.get(Calendar.MONTH), mStartDate.get(Calendar.DAY_OF_MONTH));
+        }, mStartDate.get(Calendar.YEAR), mStartDate.get(Calendar.MONTH), mStartDate.get(Calendar.DAY_OF_MONTH));
 
         mEndDatePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
 
@@ -434,7 +427,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                 mEditTextEndDate.setText(dateFormatter.format(mEndDate.getTime()));
             }
 
-        },mEndDate.get(Calendar.YEAR), mEndDate.get(Calendar.MONTH), mEndDate.get(Calendar.DAY_OF_MONTH));
+        }, mEndDate.get(Calendar.YEAR), mEndDate.get(Calendar.MONTH), mEndDate.get(Calendar.DAY_OF_MONTH));
 
         mStartDatePicker.setTitle(R.string.edit_text_start_date_hint);
         mStartDatePicker.setIcon(R.mipmap.ic_event_start_date);
@@ -464,17 +457,17 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         int EndHour = mEndDate.get(Calendar.HOUR_OF_DAY);
         int EndMinute = mEndDate.get(Calendar.MINUTE);
 
-         mStartTimePicker = new TimePickerDialog(getActivity(),
+        mStartTimePicker = new TimePickerDialog(getActivity(),
                 new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-                    mStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    mStartDate.set(Calendar.MINUTE,minute);
+                        mStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        mStartDate.set(Calendar.MINUTE, minute);
 
-                    mEditTextStartTime.setText(TimeFormatter.format(mStartDate.getTime()));
-                }
-               },
+                        mEditTextStartTime.setText(TimeFormatter.format(mStartDate.getTime()));
+                    }
+                },
                 startHour, StartMinute,
                 DateFormat.is24HourFormat(getActivity()));
 
@@ -483,15 +476,15 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         mEndTimePicker = new TimePickerDialog(getActivity(),
                 new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-                    mEndDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    mEndDate.set(Calendar.MINUTE,minute);
+                        mEndDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        mEndDate.set(Calendar.MINUTE, minute);
 
-                    mEditTextEndTime.setText(TimeFormatter.format(mEndDate.getTime()));
-                }
-               },
+                        mEditTextEndTime.setText(TimeFormatter.format(mEndDate.getTime()));
+                    }
+                },
                 EndHour, EndMinute,
                 DateFormat.is24HourFormat(getActivity()));
 
@@ -532,30 +525,24 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode){
+        switch (requestCode) {
             case CoreConstants.PICTURE_SELECTION_REQUEST:
-                if (resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     Uri targetUri = data.getData();
-
                     Intent cropIntent = ConvertImage.performCrop(targetUri);
                     startActivityForResult(cropIntent, CoreConstants.PICTURE_CROP_SELECTION_REQUEST);
                 }
                 break;
             case CoreConstants.PICTURE_CROP_SELECTION_REQUEST:
-
-                if (resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     Bundle extras = data.getExtras();
-
-                    if (extras != null){
+                    if (extras != null) {
                         Bitmap mPhoto = extras.getParcelable(CoreConstants.DATA);
-
                         if (mPhoto != null) {
                             mPhotoEvent.setImageBitmap(mPhoto);
                             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
                             mEvent.setEventLogo(mPhoto);
-                        }else
-                        {
+                        } else {
                             mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
                             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
                             mEvent.setEventLogo(null);
@@ -566,11 +553,12 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             case CoreConstants.MAP_MANAGER_REQUEST:
                 if (resultCode == Activity.RESULT_OK) {
                     Address address = data.getExtras().getParcelable(CoreConstants.MAP_ADDRESS_INTENT);
-                    if (address != null){
+                    if (address != null) {
                         mEditTextCity.setText(address.getLocality());
                         mEditTextCountry.setText(address.getCountryName());
-                        if(address.getMaxAddressLineIndex()>0)mEditTextAddress.setText(address.getAddressLine(0));
-                        mLatLng = new LatLng(address.getLatitude(),address.getLongitude());
+                        if (address.getMaxAddressLineIndex() > 0)
+                            mEditTextAddress.setText(address.getAddressLine(0));
+                        mLatLng = new LatLng(address.getLatitude(), address.getLongitude());
                     }
                 }
                 break;
@@ -595,7 +583,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                 intent.setType("image/*");
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                if (Build.VERSION.SDK_INT < 19){
+                if (Build.VERSION.SDK_INT < 19) {
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                 } else {
                     intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
@@ -628,17 +616,17 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         int flexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
         int fabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
 
-        switch (EventsManagerPagerActivity.mEventAction){
+        switch (EventsManagerPagerActivity.mEventAction) {
             case CREATE_EVENT:
-                ((BaseActivity)getActivity()).changeFragmentTitle(getString(R.string.title_activity_create_events));
+                ((BaseActivity) getActivity()).changeFragmentTitle(getString(R.string.title_activity_create_events));
                 break;
             case EDIT_EVENT:
-                ((BaseActivity)getActivity()).changeFragmentTitle(getString(R.string.menu_button_update));
+                ((BaseActivity) getActivity()).changeFragmentTitle(getString(R.string.menu_button_update));
                 break;
         }
 
         ScrollChangeCallbacks scrollChangeCallbacks = new ScrollChangeCallbacks(actionBarSize, flexibleSpaceImageHeight, toolbarColor, flexibleSpaceShowFabOffset,
-                fabMargin, mToolbar, mOverlayView, mEventTitle, mPhotoEvent, mFloatingActionButtonPhoto , false, getActivity());
+                fabMargin, mToolbar, mOverlayView, mEventTitle, mPhotoEvent, mFloatingActionButtonPhoto, false, getActivity());
         mScrollView.setScrollViewCallbacks(scrollChangeCallbacks);
 
         ViewHelper.setScaleX(mFloatingActionButtonPhoto, 0);
@@ -672,9 +660,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_events, menu);
-
         MenuItem item = menu.findItem(com.globant.eventmanager.R.id.events_action_delete);
-
         if (EventsManagerPagerActivity.mEventAction == EventsManagerPagerActivity.ActionType.EDIT_EVENT) {
             item.setVisible(true);
         } else {
@@ -689,7 +675,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         if (id == com.globant.eventmanager.R.id.events_action_done) {
             Boolean savePreferences;
-            savePreferences  = tintRequiredIconsAndShowError(mEditTextTitle);
+            savePreferences = tintRequiredIconsAndShowError(mEditTextTitle);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextFullDescription);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextShortDescription);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextHashtag);
@@ -702,31 +688,30 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             savePreferences &= tintRequiredIconsAndShowError(mEditTextCountry);
             savePreferences &= tintRequiredIconsAndShowError(mEditTextCity);
 
-            if (savePreferences){
-                if(mStartDate.compareTo(mEndDate) != -1){
-                    Toast.makeText(getActivity(),R.string.error_message_dates,Toast.LENGTH_LONG).show();
+            if (savePreferences) {
+                if (mStartDate.compareTo(mEndDate) != -1) {
+                    Toast.makeText(getActivity(), R.string.error_message_dates, Toast.LENGTH_LONG).show();
 
-                    ImageView iconToChange= mIconEndDate;
-                    Drawable mDrawableToApplyChanges=getResources().getDrawable(R.mipmap.ic_event_end_date);
+                    ImageView iconToChange = mIconEndDate;
+                    Drawable mDrawableToApplyChanges = getResources().getDrawable(R.mipmap.ic_event_end_date);
 
                     mErrorLabelLayoutEndDate.setError(getString(R.string.error_message_change_dates));
-                    mDrawableToApplyChanges= DrawableCompat.wrap(mDrawableToApplyChanges);
+                    mDrawableToApplyChanges = DrawableCompat.wrap(mDrawableToApplyChanges);
                     DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-                    mDrawableToApplyChanges= DrawableCompat.unwrap(mDrawableToApplyChanges);
+                    mDrawableToApplyChanges = DrawableCompat.unwrap(mDrawableToApplyChanges);
                     iconToChange.setImageDrawable(mDrawableToApplyChanges);
 
-                    iconToChange= mIconEndTime;
-                    mDrawableToApplyChanges=getResources().getDrawable(R.mipmap.ic_end_time);
+                    iconToChange = mIconEndTime;
+                    mDrawableToApplyChanges = getResources().getDrawable(R.mipmap.ic_end_time);
 
                     mErrorLabelLayoutEndTime.setError("");
-                    mDrawableToApplyChanges= DrawableCompat.wrap(mDrawableToApplyChanges);
+                    mDrawableToApplyChanges = DrawableCompat.wrap(mDrawableToApplyChanges);
                     DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-                    mDrawableToApplyChanges= DrawableCompat.unwrap(mDrawableToApplyChanges);
+                    mDrawableToApplyChanges = DrawableCompat.unwrap(mDrawableToApplyChanges);
                     iconToChange.setImageDrawable(mDrawableToApplyChanges);
-                }
-                else if(mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
-                    Toast.makeText(getActivity(),getString(R.string.missing_photo),Toast.LENGTH_SHORT).show();
-                }else{
+                } else if (mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
+                    Toast.makeText(getActivity(), getString(R.string.missing_photo), Toast.LENGTH_SHORT).show();
+                } else {
                     retrieveInfo();
 
                     switch (EventsManagerPagerActivity.mEventAction) {
@@ -740,13 +725,12 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
                     tintAllIconsGrey();
                 }
-            }
-            else {
-                Toast.makeText(getActivity(),getString(R.string.missing_fields),Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.missing_fields), Toast.LENGTH_SHORT).show();
             }
 
             handled = true;
-        }else {
+        } else {
             if (id == R.id.events_action_delete) {
                 MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
                         .title(getString(R.string.alert_message_delete_event_title)).content(getString(R.string.alert_message_delete_event))
@@ -770,7 +754,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         }
 
         if (!handled) {
-            handled =  super.onOptionsItemSelected(item);
+            handled = super.onOptionsItemSelected(item);
         }
 
         return handled;
@@ -779,130 +763,124 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     private void getIconToTint(View view) {
         int id = view.getId();
         //noinspection SimplifiableIfStatement
-        if (id == (R.id.edit_text_title)) {
-            mIconToChange = mIconTitle;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_title);
-            mErrorLabelLayout = mErrorLabelLayoutTitle;
+        switch (id) {
+            case R.id.edit_text_title:
+                mIconToChange = mIconTitle;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_title);
+                mErrorLabelLayout = mErrorLabelLayoutTitle;
+                break;
+            case R.id.edit_text_full_description:
+                mIconToChange = mIconFullDescription;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_description);
+                mErrorLabelLayout = mErrorLabelLayoutFullDescription;
+                break;
+            case R.id.edit_text_short_description:
+                mIconToChange = mIconShortDescription;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_short_description);
+                mErrorLabelLayout = mErrorLabelLayoutShortDescription;
+                break;
+            case R.id.edit_text_additional_info:
+                mIconToChange = mIconAdditionalInfo;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_additional_info);
+                mErrorLabelLayout = mErrorLabelLayoutAdditionalInfo;
+                break;
+            case R.id.category_spinner:
+                mIconToChange = mIconCategory;
+                switch (((Spinner) view).getSelectedItemPosition()) {
+                    case 0:
+                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_social);
+                        break;
+                    case 1:
+                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_informative);
+                        break;
+                    case 2:
+                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_technical);
+                        break;
+                }
 
-        }
-        else if (id== (R.id.edit_text_full_description)){
-            mIconToChange= mIconFullDescription;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_description);
-            mErrorLabelLayout= mErrorLabelLayoutFullDescription;
-
-        }
-        else if (id== (R.id.edit_text_short_description)){
-            mIconToChange= mIconShortDescription;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_short_description);
-            mErrorLabelLayout= mErrorLabelLayoutShortDescription;
-
-        }
-        else if (id== (R.id.edit_text_additional_info)){
-            mIconToChange= mIconAdditionalInfo;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_additional_info);
-            mErrorLabelLayout= mErrorLabelLayoutAdditionalInfo;
-        }
-        else if (id== (R.id.category_spinner)){
-            mIconToChange= mIconCategory;
-            switch (((Spinner)view).getSelectedItemPosition()){
-                case 0:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_social);
-                    break;
-                case 1:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_informative);
-                    break;
-                case 2:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_technical);
-                    break;
-            }
-
-            mErrorLabelLayout= mErrorLabelLayoutCategory;
-        }
-        else if (id== (R.id.public_spinner)){
-            mIconToChange= mIconPublic;
-            switch (((Spinner)view).getSelectedItemPosition()){
-                case 0:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_public);
-                    break;
-                case 1:
-                    mDrawableToApply=getResources().getDrawable(R.mipmap.ic_private);
-                    break;
-            }
-            mErrorLabelLayout= mErrorLabelLayoutPublic;
-        }
-        else if (id== (R.id.edit_text_hashtag)){
-            mIconToChange= mIconHashtag;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_hashtag);
-            mErrorLabelLayout= mErrorLabelLayoutHashtag;
-        }
-        else if (id== (R.id.edit_text_language)){
-            mIconToChange= mIconLanguage;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_language);
-            mErrorLabelLayout=mErrorLabelLayoutLanguage;
-        }
-        else if (id== (R.id.edit_text_start_date)){
-            mIconToChange= mIconStartDate;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_event_start_date);
-            mErrorLabelLayout= mErrorLabelLayoutStartDate;
-        }
-        else if (id== (R.id.edit_text_start_time)){
-            mIconToChange= mIconStartTime;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_start_time);
-            mErrorLabelLayout= mErrorLabelLayoutStartTime;
-        }
-        else if (id== (R.id.edit_text_end_date)){
-            mIconToChange= mIconEndDate;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_event_end_date);
-            mErrorLabelLayout= mErrorLabelLayoutEndDate;
-        }
-        else if (id== (R.id.edit_text_end_time)){
-            mIconToChange= mIconEndTime;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_end_time);
-            mErrorLabelLayout= mErrorLabelLayoutEndTime;
-        }
-        else if (id== (R.id.edit_text_address)){
-            mIconToChange= mIconAddress;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_location);
-            mErrorLabelLayout=mErrorLabelLayoutAddress;
-        }
-        else if (id== (com.globant.eventscorelib.R.id.edit_text_country)){
-            mIconToChange=mIconCountry;
-            mDrawableToApply=getResources().getDrawable(com.globant.eventscorelib.R.mipmap.ic_country);
-            mErrorLabelLayout=mErrorLabelLayoutCountry;
-        }
-        else if (id== (com.globant.eventscorelib.R.id.edit_text_city)){
-            mIconToChange=mIconCity;
-            mDrawableToApply=getResources().getDrawable(R.mipmap.ic_city);
-            mErrorLabelLayout=mErrorLabelLayoutCity;
+                mErrorLabelLayout = mErrorLabelLayoutCategory;
+                break;
+            case R.id.public_spinner:
+                mIconToChange = mIconPublic;
+                switch (((Spinner) view).getSelectedItemPosition()) {
+                    case 0:
+                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_public);
+                        break;
+                    case 1:
+                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_private);
+                        break;
+                }
+                mErrorLabelLayout = mErrorLabelLayoutPublic;
+                break;
+            case R.id.edit_text_hashtag:
+                mIconToChange = mIconHashtag;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_hashtag);
+                mErrorLabelLayout = mErrorLabelLayoutHashtag;
+                break;
+            case R.id.edit_text_language:
+                mIconToChange = mIconLanguage;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_language);
+                mErrorLabelLayout = mErrorLabelLayoutLanguage;
+                break;
+            case R.id.edit_text_start_date:
+                mIconToChange = mIconStartDate;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_start_date);
+                mErrorLabelLayout = mErrorLabelLayoutStartDate;
+                break;
+            case R.id.edit_text_start_time:
+                mIconToChange = mIconStartTime;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_start_time);
+                mErrorLabelLayout = mErrorLabelLayoutStartTime;
+                break;
+            case R.id.edit_text_end_date:
+                mIconToChange = mIconEndDate;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_end_date);
+                mErrorLabelLayout = mErrorLabelLayoutEndDate;
+                break;
+            case R.id.edit_text_end_time:
+                mIconToChange = mIconEndTime;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_end_time);
+                mErrorLabelLayout = mErrorLabelLayoutEndTime;
+                break;
+            case R.id.edit_text_address:
+                mIconToChange = mIconAddress;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_location);
+                mErrorLabelLayout = mErrorLabelLayoutAddress;
+                break;
+            case R.id.edit_text_country:
+                mIconToChange = mIconCountry;
+                mDrawableToApply = getResources().getDrawable(com.globant.eventscorelib.R.mipmap.ic_country);
+                mErrorLabelLayout = mErrorLabelLayoutCountry;
+                break;
+            case R.id.edit_text_city:
+                mIconToChange = mIconCity;
+                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_city);
+                mErrorLabelLayout = mErrorLabelLayoutCity;
+                break;
         }
     }
 
-    private Boolean tintRequiredIconsAndShowError(EditText requiredField){
-
+    private Boolean tintRequiredIconsAndShowError(EditText requiredField) {
         getIconToTint(requiredField);
-
         if (requiredField.getText().toString().trim().length() == 0) {
             mErrorLabelLayout.setError(getString(R.string.field_required));
-            mDrawableToApply= DrawableCompat.wrap(mDrawableToApply);
+            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
             DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-            mDrawableToApply= DrawableCompat.unwrap(mDrawableToApply);
+            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
             mIconToChange.setImageDrawable(mDrawableToApply);
             return false;
-        }
-        else{
+        } else {
             mErrorLabelLayout.setError("");
-            mDrawableToApply= DrawableCompat.wrap(mDrawableToApply);
+            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
             DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
-            mDrawableToApply= DrawableCompat.unwrap(mDrawableToApply);
+            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
             mIconToChange.setImageDrawable(mDrawableToApply);
             return true;
         }
     }
 
-    private void tintAllIconsGrey(){
-
+    private void tintAllIconsGrey() {
         List<ImageView> Icons = new ArrayList<>();
-
         Icons.add(mIconTitle);
         Icons.add(mIconFullDescription);
         Icons.add(mIconShortDescription);
@@ -918,10 +896,9 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         Icons.add(mIconAddress);
         Icons.add(mIconCountry);
         Icons.add(mIconCity);
-
         Drawable drawable;
 
-        for (ImageView imageView:Icons){
+        for (ImageView imageView : Icons) {
             drawable = DrawableCompat.wrap(imageView.getDrawable());
             DrawableCompat.setTint(drawable, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
             drawable = DrawableCompat.unwrap(drawable);
@@ -930,7 +907,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
     }
 
-    // BasePagerActivity.FragmentLifecycle implementation
     @Override
     public void onPauseFragment() {
 
@@ -940,37 +916,40 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     public void onResumeFragment() {
     }
 
-    // BaseService.ActionListener implementation
     @Override
     public BaseService.ActionListener getActionListener() {
         return this;
     }
 
     @Override
-    public Activity getBindingActivity() {return getActivity();}
+    public Activity getBindingActivity() {
+        return getActivity();
+    }
 
     @Override
-    public String getBindingKey() {return mBindingKey;}
+    public String getBindingKey() {
+        return mBindingKey;
+    }
 
     @Override
-    public void onStartAction(BaseService.ACTIONS theAction) {showProgressOverlay();}
+    public void onStartAction(BaseService.ACTIONS theAction) {
+        showProgressOverlay();
+    }
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-
-        switch (theAction){
+        switch (theAction) {
             case EVENT_CREATE:
-                Toast.makeText(getActivity(),getResources().getString(R.string.event_created),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.event_created), Toast.LENGTH_SHORT).show();
                 break;
             case EVENT_UPDATE:
                 BaseEventDetailPagerActivity.getInstance().setEvent(mEvent);
-                Toast.makeText(getActivity(),getResources().getString(R.string.event_updated),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.event_updated), Toast.LENGTH_SHORT).show();
                 break;
             case EVENT_DELETE:
-                Toast.makeText(getActivity(),getResources().getString(R.string.event_deleted),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.event_deleted), Toast.LENGTH_SHORT).show();
                 break;
         }
-
         BaseEventListFragment.mIsDataSetChanged = true;
         EventsManagerPagerActivity.Finish(Activity.RESULT_OK, theAction);
     }
