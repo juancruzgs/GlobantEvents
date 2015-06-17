@@ -221,6 +221,13 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     private void setOnFocusListeners() {
+        View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                onViewFocusChange(view, hasFocus);
+            }
+        };
+
         mEditTextTitle.setOnFocusChangeListener(editTextFocus);
         mEditTextFullDescription.setOnFocusChangeListener(editTextFocus);
         mEditTextShortDescription.setOnFocusChangeListener(editTextFocus);
@@ -236,32 +243,25 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mEditTextCity.setOnFocusChangeListener(editTextFocus);
     }
 
-    private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            onViewFocusChange(v, hasFocus);
-        }
-    };
-
     public void onViewFocusChange(View view, boolean gainFocus) {
-
         getIconToTint(view);
 
         //onFocus
         if (gainFocus) {
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.ambar));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
+            tintIcon(mIconToChange, mDrawableToApply,getResources().getColor(com.globant.eventscorelib.R.color.ambar));
             mErrorLabelLayout.clearError();
         }
         //onBlur
         else {
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
+            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
         }
+    }
+
+    private void tintIcon(ImageView imageView, Drawable drawable, int color){
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, color);
+        drawable = DrawableCompat.unwrap(drawable);
+        imageView.setImageDrawable(drawable);
     }
 
     private void wireUpViews(View rootView) {
