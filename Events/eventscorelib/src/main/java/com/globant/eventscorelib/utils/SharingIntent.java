@@ -16,6 +16,8 @@ import com.facebook.share.widget.ShareDialog;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseAdapters.SocialNetworksAdapter;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 
@@ -41,6 +43,21 @@ public class SharingIntent {
                 context.startActivity(sharingIntent);
                 break;
             }
+            else {
+                String tweetUrl =String.format(CoreConstants.TWITTER_URL,
+                                urlEncode(context.getString(R.string.check_out_event) + "\n" + description));
+                Intent sharingIntentViaWeb  = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetUrl));
+                context.startActivity(sharingIntentViaWeb);
+            }
+        }
+    }
+
+    private static String urlEncode(String s) {
+        try {
+            return URLEncoder.encode(s, CoreConstants.CODIFICATION);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(CoreConstants.CODIFICATION_EXCEPTION + s);
         }
     }
 

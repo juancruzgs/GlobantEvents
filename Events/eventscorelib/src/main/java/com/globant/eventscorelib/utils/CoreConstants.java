@@ -151,6 +151,9 @@ public class CoreConstants {
     public static final String GMAIL_PACKAGE = "com.google.android.gm";
     public static final String INTENT_TYPE = "text/plain";
     public static final String GMAIL_CLASS =  "com.google.android.gm.ComposeActivityGmail";
+    public static final String TWITTER_URL = "https://twitter.com/intent/tweet?text=%s&url";
+    public static final String CODIFICATION = "UTF-8";
+    public static final String CODIFICATION_EXCEPTION = "URLEncoder.encode() failed for ";
 
 
     // Calendar event information
