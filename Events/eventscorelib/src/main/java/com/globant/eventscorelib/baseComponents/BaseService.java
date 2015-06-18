@@ -19,11 +19,11 @@ import com.globant.eventscorelib.controllers.CloudDatabaseController;
 import com.globant.eventscorelib.controllers.GeocoderController;
 import com.globant.eventscorelib.controllers.LocalDatabaseController;
 import com.globant.eventscorelib.controllers.SelectiveDatabaseController;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.controllers.TwitterController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
-import com.globant.eventscorelib.utils.JSONSharedPreferences;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
@@ -170,14 +170,14 @@ public abstract class BaseService extends Service {
     protected void updateEvent(Event event) throws ParseException {
         mCloudDatabaseController.updateEvent(event);
         try {
-            JSONObject eventsArray = JSONSharedPreferences.loadJSONObject(this,
-                    getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+            JSONObject eventsArray = SharedPreferencesController.loadJSONObject(this,
+                    getApplicationInfo().name, SharedPreferencesController.KEY_CALENDAR);
             if (eventsArray.has(event.getObjectID())) {
                 JSONObject eventObject = eventsArray.getJSONObject(event.getObjectID());
                 long rows = updateEventInCalendar(/*eventObject.getInt(CoreConstants.CALENDAR_SELF_ID),*/
                         eventObject.getLong(CoreConstants.CALENDAR_EVENT_ID), event);
                 if (rows == -1) {
-                    JSONSharedPreferences.removeEvent(this, event);
+                    SharedPreferencesController.removeEventJsonInfo(this, event);
                 }
             }
         }

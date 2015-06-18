@@ -4,9 +4,7 @@ package com.globant.eventscorelib.baseFragments;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -17,11 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.share.Sharer;
-import com.facebook.share.widget.ShareDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -41,7 +34,6 @@ import com.globant.eventscorelib.utils.BaseEventListActionListener;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.PushNotifications;
 import com.globant.eventscorelib.utils.CustomDateFormat;
-import com.globant.eventscorelib.utils.JSONSharedPreferences;
 import com.globant.eventscorelib.utils.Logger;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -50,9 +42,6 @@ import com.nineoldandroids.view.ViewHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -82,8 +71,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         scrollTo(CoreConstants.SCROLL_TOP);
 
         try {
-            JSONObject eventArray = JSONSharedPreferences.loadJSONObject(BaseApplication.getInstance(),
-                    BaseApplication.getInstance().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+            JSONObject eventArray = SharedPreferencesController.loadJSONObject(BaseApplication.getInstance(),
+                    BaseApplication.getInstance().getApplicationInfo().name, SharedPreferencesController.KEY_CALENDAR);
 
             for (Event event : eventsList) {
                 String eventId = event.getObjectID();
@@ -91,7 +80,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                     JSONObject eventJSON = eventArray.getJSONObject(eventId);
                     long calendarId = eventJSON.getInt(CoreConstants.CALENDAR_SELF_ID);
                     if (!mService.existsCalendar(calendarId)) {
-                        JSONSharedPreferences.removeEvent(getActivity(), event);
+                        SharedPreferencesController.removeEventJsonInfo(getActivity(), event);
                     }
 
                     Date lastUpdateDb = event.getUpdatedAt();

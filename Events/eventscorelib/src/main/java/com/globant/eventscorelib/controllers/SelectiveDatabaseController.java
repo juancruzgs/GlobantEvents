@@ -1,20 +1,12 @@
 package com.globant.eventscorelib.controllers;
 
-import com.globant.eventscorelib.baseComponents.BaseApplication;
-import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.CoreConstants;
-import com.globant.eventscorelib.utils.JSONSharedPreferences;
-import com.globant.eventscorelib.utils.Logger;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 /**

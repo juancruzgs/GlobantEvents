@@ -24,11 +24,10 @@ import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
-import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
-import com.globant.eventscorelib.utils.JSONSharedPreferences;
 import com.globant.eventscorelib.utils.Logger;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
 import com.globant.eventscorelib.utils.PushNotifications;
@@ -200,8 +199,8 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 }
                 else {
                     try {
-                        JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
-                                getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+                        JSONObject eventArray = SharedPreferencesController.loadJSONObject(getActivity(),
+                                getActivity().getApplicationInfo().name, SharedPreferencesController.KEY_CALENDAR);
                         JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
                         mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, getBindingKey(),
                                 /*calendarData.getInt(CoreConstants.CALENDAR_SELF_ID),*/
@@ -218,8 +217,8 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        JSONSharedPreferences.remove(getActivity(), getActivity().getApplicationInfo().name,
-                                JSONSharedPreferences.KEY_CALENDAR);
+                        SharedPreferencesController.removeJSON(getActivity(), getActivity().getApplicationInfo().name,
+                                SharedPreferencesController.KEY_CALENDAR);
                     }
                 }
         );
@@ -227,8 +226,8 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
 
     private void setCalendarButtonText() {
         try {
-            JSONObject eventArray = JSONSharedPreferences.loadJSONObject(getActivity(),
-                    getActivity().getApplicationInfo().name, JSONSharedPreferences.KEY_CALENDAR);
+            JSONObject eventArray = SharedPreferencesController.loadJSONObject(getActivity(),
+                    getActivity().getApplicationInfo().name, SharedPreferencesController.KEY_CALENDAR);
             if (eventArray.has(mEvent.getObjectID())) {
                 mButtonAddToCalendar.setText(getString(R.string.button_remove_from_calendar));
                 mAddedToCalendar = true;
@@ -306,7 +305,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             showCalendarList(result);
         }
         if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
-            if (JSONSharedPreferences.addEvent(getActivity(), mService.getNCalendar(), (Long) result, mEvent)) {
+            if (SharedPreferencesController.addEventJsonInfo(getActivity(), mService.getNCalendar(), (Long) result, mEvent)) {
                 setCalendarButtonText();
             }
             else {
@@ -314,7 +313,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             }
         }
         if (theAction == BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR) {
-            if (JSONSharedPreferences.removeEvent(getActivity(), mEvent)) {
+            if (SharedPreferencesController.removeEventJsonInfo(getActivity(), mEvent)) {
                 setCalendarButtonText();
             }
             else {

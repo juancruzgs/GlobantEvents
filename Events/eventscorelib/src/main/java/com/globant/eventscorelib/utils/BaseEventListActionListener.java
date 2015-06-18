@@ -7,6 +7,7 @@ import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 
 import java.util.List;
@@ -62,10 +63,10 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
             case UPDATE_EVENT_IN_CALENDAR:
                 BaseService.CalendarResponse response = (BaseService.CalendarResponse) result;
                 if (response.getRows() != -1) {
-                    JSONSharedPreferences.updateEvent(mActivity, response.getEvent());
+                    SharedPreferencesController.updateEventJsonInfo(mActivity, response.getEvent());
                 }
                 else {
-                    JSONSharedPreferences.removeEvent(mActivity, response.getEvent());
+                    SharedPreferencesController.removeEventJsonInfo(mActivity, response.getEvent());
 /*
                     mFragment.removeEventFromCalendar(getBindingKey(),
                             JSONSharedPreferences.getCalendarIdFromEventId(mActivity,

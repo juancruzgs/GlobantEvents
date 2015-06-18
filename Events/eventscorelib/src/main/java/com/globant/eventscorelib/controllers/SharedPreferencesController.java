@@ -4,9 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 
+import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.CustomDateFormat;
+import com.globant.eventscorelib.utils.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SharedPreferencesController {
 
@@ -144,6 +151,124 @@ public class SharedPreferencesController {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(CoreConstants.PREFERENCE_TIME, time);
         editor.apply();
+    }
+
+    // JSON part: From StackOverflow user Mostafa (Nov 27 - Dec 15 2011) (added by Ariel Cattaneo)
+
+    public final static String KEY_CALENDAR = "KEY_CALENDAR";
+    private static final String PREFIX = "json";
+
+    public static void saveJSONObject(Context c, String prefName, String key, JSONObject object) {
+        SharedPreferences settings = c.getSharedPreferences(prefName, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(PREFIX +key, object.toString());
+        editor.apply();
+    }
+
+    public static void saveJSONArray(Context c, String prefName, String key, JSONArray array) {
+        SharedPreferences settings = c.getSharedPreferences(prefName, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(PREFIX +key, array.toString());
+        editor.apply();
+    }
+
+    public static JSONObject loadJSONObject(Context c, String prefName, String key) throws JSONException {
+        SharedPreferences settings = c.getSharedPreferences(prefName, 0);
+        return new JSONObject(settings.getString(PREFIX +key, "{}"));
+    }
+
+    public static JSONArray loadJSONArray(Context c, String prefName, String key) throws JSONException {
+        SharedPreferences settings = c.getSharedPreferences(prefName, 0);
+        return new JSONArray(settings.getString(PREFIX +key, "[]"));
+    }
+
+    public static void removeJSON(Context c, String prefName, String key) {
+        SharedPreferences settings = c.getSharedPreferences(prefName, 0);
+        if (settings.contains(PREFIX +key)) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.remove(PREFIX +key);
+            editor.apply();
+        }
+    }
+
+    public static boolean addEventJsonInfo(Context context, long nCalendar, long eventId, Event event) {
+        JSONObject eventsArray;
+        try {
+            eventsArray = loadJSONObject(context,
+                    context.getApplicationInfo().name, KEY_CALENDAR);
+
+            JSONObject calendarData = new JSONObject();
+            calendarData.put(CoreConstants.CALENDAR_SELF_ID, nCalendar);
+            calendarData.put(CoreConstants.CALENDAR_EVENT_ID, eventId);
+            calendarData.put(CoreConstants.CALENDAR_EVENT_LAST_UPDATE,
+                    CustomDateFormat.getCompleteDate(event.getUpdatedAt(), context));
+            eventsArray.put(event.getObjectID(), calendarData);
+            saveJSONObject(context, context.getApplicationInfo().name,
+                    KEY_CALENDAR, eventsArray);
+
+            return true;
+
+            //mAddedToCalendar = true;
+        } catch (JSONException e) {
+            Logger.e("Error trying to get this event's calendar id", e);
+            return false;
+        }
+    }
+
+    public static boolean removeEventJsonInfo(Context context, Event event) {
+        JSONObject eventsArray;
+        try {
+            eventsArray = loadJSONObject(context,
+                    context.getApplicationInfo().name, KEY_CALENDAR);
+
+            eventsArray.remove(event.getObjectID());
+            saveJSONObject(context, context.getApplicationInfo().name,
+                    KEY_CALENDAR, eventsArray);
+
+            return true;
+        } catch (JSONException e) {
+            Logger.e("Error trying to get this event's calendar id", e);
+            return false;
+        }
+    }
+
+    public static boolean updateEventJsonInfo(Context context, Event event) {
+        JSONObject eventsArray;
+        try {
+            eventsArray = loadJSONObject(context,
+                    context.getApplicationInfo().name, KEY_CALENDAR);
+
+            JSONObject calendarData = eventsArray.getJSONObject(event.getObjectID());
+            calendarData.put(CoreConstants.CALENDAR_EVENT_LAST_UPDATE,
+                    CustomDateFormat.getCompleteDate(event.getUpdatedAt(), context));
+            eventsArray.put(event.getObjectID(), calendarData);
+            saveJSONObject(context, context.getApplicationInfo().name,
+                    KEY_CALENDAR, eventsArray);
+
+            return true;
+        } catch (JSONException e) {
+            Logger.e("Error trying to get this event's calendar id", e);
+            return false;
+        }
+    }
+
+    public static Long getCalendarIdFromEventId(Context context, String eventId) {
+        JSONObject eventsArray;
+        try {
+            eventsArray = loadJSONObject(context,
+                    context.getApplicationInfo().name, KEY_CALENDAR);
+            if (eventsArray.has(eventId)) {
+                JSONObject calendarData = eventsArray.getJSONObject(eventId);
+                return calendarData.getLong(CoreConstants.CALENDAR_EVENT_ID);
+            }
+            else {
+                return null;
+            }
+        }
+        catch (Exception e) {
+            Logger.e("Error trying to get the calendar id", e);
+            return null;
+        }
     }
 }
 
