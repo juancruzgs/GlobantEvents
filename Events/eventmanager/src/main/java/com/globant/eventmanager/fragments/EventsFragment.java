@@ -111,13 +111,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     private ImageView mIconAddress;
     private ImageView mIconCountry;
     private ImageView mIconCity;
-//    private ImageView mIconToChange;
-//    private Drawable mDrawableToApply;
 
-//    private TimePickerDialog mStartTimePicker;
-//    private TimePickerDialog mEndTimePicker;
-//    private DatePickerDialog mStartDatePicker;
-//    private DatePickerDialog mEndDatePicker;
     private SimpleDateFormat mDateFormatter;
     private SimpleDateFormat mTimeFormatter;
     private Calendar mStartDate;
@@ -138,7 +132,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     ErrorLabelLayout mErrorLabelLayoutAddress;
     ErrorLabelLayout mErrorLabelLayoutCity;
     ErrorLabelLayout mErrorLabelLayoutCountry;
-//    ErrorLabelLayout mErrorLabelLayout;
 
     public EventsFragment() {
         // Required empty public constructor
@@ -191,7 +184,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         if (event.getEventLogo() != null) {
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mPhotoEvent.setImageBitmap(mEvent.getEventLogo());
+            mPhotoEvent.setImageBitmap(event.getEventLogo());
         } else {
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
             mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
@@ -728,7 +721,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         int id = view.getId();
         TintInformation tintInformation = null;
         Drawable drawable = null;
-        //noinspection SimplifiableIfStatement
+
         switch (id) {
             case R.id.edit_text_title:
                 tintInformation = new TintInformation(mIconTitle, getResources().getDrawable(R.mipmap.ic_event_title), mErrorLabelLayoutTitle);
@@ -800,7 +793,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
     private Boolean tintRequiredIconsAndShowError(EditText requiredField) {
         TintInformation tintInformation = getIconToTint(requiredField);
-        if (requiredField.getText().toString().trim().length() == 0) {
+        if (requiredField.getText().toString().isEmpty()) {
             tintInformation.getErrorLabelLayout().setError(getString(R.string.field_required));
             tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.red_error));
             return false;
