@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.utils.TintInformation;
 import com.globant.eventscorelib.utils.easterEggs.BaseEasterEgg;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
@@ -63,7 +64,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private AppCompatEditText mEditTextCountry;
     private AppCompatEditText mEditTextCity;
     private AppCompatCheckBox mCheckBoxEnglishKnowledge;
-    private String mHintToReturn;
+    //    private String mHintToReturn;
     private ImageView mIconOccupation;
     private ImageView mIconLastName;
     private ImageView mIconCountry;
@@ -158,6 +159,25 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
     private void setOnFocusListeners() {
+        View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
+            public void onFocusChange(View view, boolean gainFocus) {
+                getIconToTint(view);
+//                AppCompatEditText editTextToChangeHint = (AppCompatEditText) view;
+                //onFocus
+                if (gainFocus) {
+                    tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.ambar));
+                    mErrorLabelLayout.clearError();
+//                    editTextToChangeHint.setHint("");
+                }
+                //onBlur
+                else {
+                    tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
+//                    mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
+//                    editTextToChangeHint.setHint(mHintToReturn);
+                }
+            }
+        };
+
         mEditTextFirstName.setOnFocusChangeListener(editTextFocus);
         mEditTextLastName.setOnFocusChangeListener(editTextFocus);
         mEditTextCountry.setOnFocusChangeListener(editTextFocus);
@@ -166,93 +186,55 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mEditTextPhone.setOnFocusChangeListener(editTextFocus);
         mEditTextEmail.setOnFocusChangeListener(editTextFocus);
         mEditTextOccupation.setOnFocusChangeListener(editTextFocus);
-        mCheckBoxEnglishKnowledge.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language_ambar));
-                if (mIconToChange != null) {
-                    tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
-                }
-            }
-        });
+//        mCheckBoxEnglishKnowledge.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language_ambar));
+//                if (mIconToChange != null) {
+//                    tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
+//                }
+//            }
+//        });
     }
 
-    private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
-        public void onFocusChange(View view, boolean gainFocus) {
-            getIconToTint(view);
-            AppCompatEditText editTextToChangeHint = (AppCompatEditText) view;
-            //onFocus
-            if (gainFocus) {
-                tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.ambar));
-                mErrorLabelLayout.clearError();
-                editTextToChangeHint.setHint("");
-            }
-            //onBlur
-            else {
-                tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
-                mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
-                editTextToChangeHint.setHint(mHintToReturn);
-            }
-        }
-    };
-
-    private void getIconToTint(View view) {
+    private TintInformation getIconToTint(View view) {
         int id = view.getId();
-        //noinspection SimplifiableIfStatement
-        if (id == (R.id.edit_text_first_name)) {
-            mIconToChange = mIconFirstName;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
-            mErrorLabelLayout = mErrorLabelLayoutFirstName;
-            mHintToReturn = getResources().getString(R.string.edit_text_first_name_hint);
+        TintInformation tintInformation = null;
 
-        } else if (id == (R.id.edit_text_last_name)) {
-            mIconToChange = mIconLastName;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_last_name);
-            mErrorLabelLayout = mErrorLabelLayoutLastName;
-            mHintToReturn = getResources().getString(R.string.edit_text_last_name_hint);
+        if (id == R.id.edit_text_first_name) {
+            tintInformation = new TintInformation(mIconFirstName, getResources().getDrawable(R.mipmap.ic_first_name), mErrorLabelLayoutFirstName);
 
+//            mHintToReturn = getResources().getString(R.string.edit_text_first_name_hint);
+        } else if (id == R.id.edit_text_last_name) {
+            tintInformation = new TintInformation(mIconLastName, getResources().getDrawable(R.mipmap.ic_last_name), mErrorLabelLayoutLastName);
 
-        } else if (id == (R.id.edit_text_phone)) {
-            mIconToChange = mIconPhone;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_phone);
-            mErrorLabelLayout = mErrorLabelLayoutPhone;
-            mHintToReturn = getResources().getString(R.string.edit_text_phone_hint);
+//            mHintToReturn = getResources().getString(R.string.edit_text_last_name_hint);
+        } else if (id == R.id.edit_text_phone) {
+            tintInformation = new TintInformation(mIconPhone, getResources().getDrawable(R.mipmap.ic_phone), mErrorLabelLayoutPhone);
 
-        } else if (id == (R.id.edit_text_occupation)) {
-            mIconToChange = mIconOccupation;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_occupation);
-            mErrorLabelLayout = mErrorLabelLayoutOccupation;
-            mHintToReturn = getResources().getString(R.string.edit_text_occupation_hint);
+//            mHintToReturn = getResources().getString(R.string.edit_text_phone_hint);
+        } else if (id == R.id.edit_text_occupation) {
+            tintInformation = new TintInformation(mIconOccupation, getResources().getDrawable(R.mipmap.ic_occupation), mErrorLabelLayoutOccupation);
 
+//            mHintToReturn = getResources().getString(R.string.edit_text_occupation_hint);
+        } else if (id == R.id.edit_text_email) {
+            tintInformation = new TintInformation(mIconEmail, getResources().getDrawable(R.mipmap.ic_email), mErrorLabelLayoutEmail);
 
-        } else if (id == (R.id.edit_text_email)) {
-            mIconToChange = mIconEmail;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_email);
-            mErrorLabelLayout = mErrorLabelLayoutEmail;
-            mHintToReturn = getResources().getString(R.string.edit_text_email_hint);
+//            mHintToReturn = getResources().getString(R.string.edit_text_email_hint);
+        } else if (id == R.id.edit_text_country) {
+            tintInformation = new TintInformation(mIconCountry, getResources().getDrawable(R.mipmap.ic_country), mErrorLabelLayoutCountry);
 
+//            mHintToReturn = getResources().getString(R.string.edit_text_country_hint);
+        } else if (id == R.id.edit_text_city) {
+            tintInformation = new TintInformation(mIconCity, getResources().getDrawable(R.mipmap.ic_city), mErrorLabelLayoutCity);
 
-        } else if (id == (R.id.edit_text_country)) {
-            mIconToChange = mIconCountry;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_country);
-            mErrorLabelLayout = mErrorLabelLayoutCountry;
-            mHintToReturn = getResources().getString(R.string.edit_text_country_hint);
+//            mHintToReturn = getResources().getString(R.string.edit_text_city_hint);
+        } else if (id == R.id.edit_text_twitter) {
+            tintInformation = new TintInformation(mIconTwitter, getResources().getDrawable(R.mipmap.ic_twitter1), mErrorLabelLayoutTwitter);
 
-
-        } else if (id == (R.id.edit_text_city)) {
-            mIconToChange = mIconCity;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_city);
-            mErrorLabelLayout = mErrorLabelLayoutCity;
-            mHintToReturn = getResources().getString(R.string.edit_text_city_hint);
-
-
-        } else if (id == (R.id.edit_text_twitter)) {
-            mIconToChange = mIconTwitter;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_twitter1);
-            mErrorLabelLayout = mErrorLabelLayoutTwitter;
-            mHintToReturn = getResources().getString(R.string.edit_text_twitter_hint);
-
+//            mHintToReturn = getResources().getString(R.string.edit_text_twitter_hint);
         }
+        return tintInformation;
     }
 
 
@@ -551,7 +533,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
     }
 
-    private void tintIcon(ImageView imageView, Drawable drawable, int color){
+    private void tintIcon(ImageView imageView, Drawable drawable, int color) {
         drawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(drawable, color);
         drawable = DrawableCompat.unwrap(drawable);

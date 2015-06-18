@@ -52,6 +52,7 @@ import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
+import com.globant.eventscorelib.utils.TintInformation;
 import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
 import com.software.shell.fab.ActionButton;
@@ -858,29 +859,5 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         BaseEventListFragment.mIsDataSetChanged = false;
         showErrorOverlay();
-    }
-
-    private class TintInformation{
-        private ImageView mImageView;
-        private Drawable mDrawable;
-        private ErrorLabelLayout mErrorLabelLayout;
-
-        public TintInformation(ImageView imageView, Drawable drawable, ErrorLabelLayout errorLabelLayout) {
-            mImageView = imageView;
-            mDrawable = drawable;
-            mErrorLabelLayout = errorLabelLayout;
-        }
-
-        public ImageView getImageView() {
-            return mImageView;
-        }
-
-        public Drawable getDrawable() {
-            return mDrawable;
-        }
-
-        public ErrorLabelLayout getErrorLabelLayout() {
-            return mErrorLabelLayout;
-        }
     }
 }
