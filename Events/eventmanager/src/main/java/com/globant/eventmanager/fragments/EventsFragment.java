@@ -1,6 +1,7 @@
 package com.globant.eventmanager.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -113,12 +114,12 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     private ImageView mIconToChange;
     private Drawable mDrawableToApply;
 
-    private TimePickerDialog mStartTimePicker;
-    private TimePickerDialog mEndTimePicker;
-    private DatePickerDialog mStartDatePicker;
-    private DatePickerDialog mEndDatePicker;
-    private SimpleDateFormat dateFormatter;
-    private SimpleDateFormat TimeFormatter;
+//    private TimePickerDialog mStartTimePicker;
+//    private TimePickerDialog mEndTimePicker;
+//    private DatePickerDialog mStartDatePicker;
+//    private DatePickerDialog mEndDatePicker;
+    private SimpleDateFormat mDateFormatter;
+    private SimpleDateFormat mTimeFormatter;
     private Calendar mStartDate;
     private Calendar mEndDate;
 
@@ -174,13 +175,13 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mEditTextHashtag.setText(event.getHashtag());
         mEditTextLanguage.setText(event.getLanguage());
         if (event.getStartDate() != null) {
-            mEditTextStartDate.setText(dateFormatter.format(event.getStartDate()));
-            mEditTextStartTime.setText(TimeFormatter.format(event.getStartDate()));
+            mEditTextStartDate.setText(mDateFormatter.format(event.getStartDate()));
+            mEditTextStartTime.setText(mTimeFormatter.format(event.getStartDate()));
             mStartDate.setTime(event.getStartDate());
         }
         if (event.getEndDate() != null) {
-            mEditTextEndDate.setText(dateFormatter.format(event.getEndDate()));
-            mEditTextEndTime.setText(TimeFormatter.format(event.getEndDate()));
+            mEditTextEndDate.setText(mDateFormatter.format(event.getEndDate()));
+            mEditTextEndTime.setText(mTimeFormatter.format(event.getEndDate()));
             mEndDate.setTime(event.getEndDate());
         }
         mEditTextAddress.setText(event.getAddress());
@@ -389,127 +390,88 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         });
     }
 
+    private DatePickerDialog getDatePickerDialog(final Calendar date, final AppCompatEditText editText, final SimpleDateFormat dateFormatter){
+        return new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date.set(year, monthOfYear, dayOfMonth);
+                editText.setText(dateFormatter.format(date.getTime()));
+            }
+
+        }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
+    }
+
+    private TimePickerDialog getTimePickerDialog(final Calendar date, final AppCompatEditText editText, final SimpleDateFormat timeFormatter,
+                                                 int hour, int minute){
+        return new TimePickerDialog(getActivity(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        date.set(Calendar.MINUTE, minute);
+
+                        editText.setText(timeFormatter.format(date.getTime()));
+                    }
+                },
+                hour, minute,
+                DateFormat.is24HourFormat(getActivity()));
+    }
+
+    private View.OnTouchListener getEditTextTouchListener(final AlertDialog dialog){
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                view.requestFocus();
+                dialog.show();
+                return false;
+            }
+        };
+    }
+
     private void setDateTimeField() {
         // date pickers
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-        TimeFormatter = new SimpleDateFormat("hh:mm a", Locale.US);
+        mDateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        mTimeFormatter = new SimpleDateFormat("hh:mm a", Locale.US);
 
         mStartDate = Calendar.getInstance();
         mEndDate = Calendar.getInstance();
 
-        mStartDatePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+        final DatePickerDialog startDatePicker =  getDatePickerDialog(mStartDate, mEditTextStartDate, mDateFormatter);
+        final DatePickerDialog endDatePicker = getDatePickerDialog(mEndDate, mEditTextEndDate, mDateFormatter);
+        startDatePicker.setTitle(R.string.edit_text_start_date_hint);
+        startDatePicker.setIcon(R.mipmap.ic_event_start_date);
+        endDatePicker.setTitle(R.string.edit_text_end_date_hint);
+        endDatePicker.setIcon(R.mipmap.ic_event_end_date);
 
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mStartDate.set(year, monthOfYear, dayOfMonth);
-                mEditTextStartDate.setText(dateFormatter.format(mStartDate.getTime()));
-            }
-
-        }, mStartDate.get(Calendar.YEAR), mStartDate.get(Calendar.MONTH), mStartDate.get(Calendar.DAY_OF_MONTH));
-
-        mEndDatePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mEndDate.set(year, monthOfYear, dayOfMonth);
-                mEditTextEndDate.setText(dateFormatter.format(mEndDate.getTime()));
-            }
-
-        }, mEndDate.get(Calendar.YEAR), mEndDate.get(Calendar.MONTH), mEndDate.get(Calendar.DAY_OF_MONTH));
-
-        mStartDatePicker.setTitle(R.string.edit_text_start_date_hint);
-        mStartDatePicker.setIcon(R.mipmap.ic_event_start_date);
-        mEndDatePicker.setTitle(R.string.edit_text_end_date_hint);
-        mEndDatePicker.setIcon(R.mipmap.ic_event_end_date);
-
-        mEditTextStartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                mEditTextStartDate.requestFocus();
-                mStartDatePicker.show();
-            }
-        });
-        mEditTextStartDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    mStartDatePicker.show();
-                }
-            }
-        });
-//        mEditTextStartDate.setOnTouchListener(new View.OnTouchListener() {
+//        mEditTextStartDate.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                mEditTextStartDate.requestFocus();
-//                mStartDatePicker.show();
-//                return false;
+//            public void onClick(View view) {
+////                mEditTextStartDate.requestFocus();
+//                startDatePicker.show();
 //            }
 //        });
-        mEditTextEndDate.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mEditTextEndDate.requestFocus();
-                mEndDatePicker.show();
-                return false;
-            }
-        });
+//        mEditTextStartDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean hasFocus) {
+//                if (hasFocus) {
+//                    startDatePicker.show();
+//                }
+//            }
+//        });
+        mEditTextStartDate.setOnTouchListener(getEditTextTouchListener(startDatePicker));
+        mEditTextEndDate.setOnTouchListener(getEditTextTouchListener(endDatePicker));
 
-        // time pickers
-        int startHour = mStartDate.get(Calendar.HOUR_OF_DAY);
-        int StartMinute = mStartDate.get(Calendar.MINUTE);
-        int EndHour = mEndDate.get(Calendar.HOUR_OF_DAY);
-        int EndMinute = mEndDate.get(Calendar.MINUTE);
+        final TimePickerDialog startTimePicker = getTimePickerDialog(mStartDate, mEditTextStartDate, mTimeFormatter,
+                mStartDate.get(Calendar.HOUR_OF_DAY), mStartDate.get(Calendar.MINUTE));
+        final TimePickerDialog endTimePicker = getTimePickerDialog(mEndDate, mEditTextEndTime, mTimeFormatter,
+                mEndDate.get(Calendar.HOUR_OF_DAY), mEndDate.get(Calendar.MINUTE));
+        startTimePicker.setTitle(R.string.edit_text_start_time_hint);
+        startTimePicker.setIcon(R.mipmap.ic_start_time);
+        endTimePicker.setTitle(R.string.edit_text_end_time_hint);
+        endTimePicker.setIcon(R.mipmap.ic_end_time);
 
-        mStartTimePicker = new TimePickerDialog(getActivity(),
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                        mStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        mStartDate.set(Calendar.MINUTE, minute);
-
-                        mEditTextStartTime.setText(TimeFormatter.format(mStartDate.getTime()));
-                    }
-                },
-                startHour, StartMinute,
-                DateFormat.is24HourFormat(getActivity()));
-
-        mStartTimePicker.setTitle(R.string.edit_text_start_time_hint);
-        mStartTimePicker.setIcon(R.mipmap.ic_start_time);
-
-        mEndTimePicker = new TimePickerDialog(getActivity(),
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                        mEndDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        mEndDate.set(Calendar.MINUTE, minute);
-
-                        mEditTextEndTime.setText(TimeFormatter.format(mEndDate.getTime()));
-                    }
-                },
-                EndHour, EndMinute,
-                DateFormat.is24HourFormat(getActivity()));
-
-        mEndTimePicker.setTitle(R.string.edit_text_end_time_hint);
-        mEndTimePicker.setIcon(R.mipmap.ic_end_time);
-
-        mEditTextEndTime.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mEditTextEndTime.requestFocus();
-                mEndTimePicker.show();
-                return false;
-            }
-        });
-
-        mEditTextStartTime.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mEditTextStartTime.requestFocus();
-                mStartTimePicker.show();
-                return false;
-            }
-        });
-
+        mEditTextStartTime.setOnTouchListener(getEditTextTouchListener(startTimePicker));
+        mEditTextEndTime.setOnTouchListener(getEditTextTouchListener(endTimePicker));
     }
 
     @Override
@@ -567,7 +529,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     protected void prepareImageButton() {
-
         mMapIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -691,20 +652,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
             if (savePreferences) {
                 if (mStartDate.compareTo(mEndDate) != -1) {
-                    Toast.makeText(getActivity(), R.string.error_message_dates, Toast.LENGTH_LONG).show();
-                    Drawable drawableToApply;
-                    ImageView iconToChange;
-
-                    mErrorLabelLayoutEndDate.setError(getString(R.string.error_message_change_dates));
-                    iconToChange = mIconEndDate;
-                    drawableToApply = getResources().getDrawable(R.mipmap.ic_event_end_date);
-                    tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-
-                    mErrorLabelLayoutEndTime.setError("");
-                    iconToChange = mIconEndTime;
-                    drawableToApply = getResources().getDrawable(R.mipmap.ic_end_time);
-                    tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-
+                    showDateError();
                 } else if (mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
                     Toast.makeText(getActivity(), getString(R.string.missing_photo), Toast.LENGTH_SHORT).show();
                 } else {
@@ -728,23 +676,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             handled = true;
         } else {
             if (id == R.id.events_action_delete) {
-                MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
-                        .title(getString(R.string.alert_message_delete_event_title)).content(getString(R.string.alert_message_delete_event))
-                        .positiveText(android.R.string.yes)
-                        .negativeText(android.R.string.no)
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                super.onPositive(dialog);
-                                mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, getBindingKey(), mEvent);
-                            }
-
-                            @Override
-                            public void onNegative(MaterialDialog dialog) {
-                                super.onNegative(dialog);
-                            }
-                        }).build();
-                materialDialog.show();
+                showDeleteConfirmationDialog();
                 handled = true;
             }
         }
@@ -754,6 +686,42 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         }
 
         return handled;
+    }
+
+    private void showDeleteConfirmationDialog() {
+        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                .title(getString(R.string.alert_message_delete_event_title)).content(getString(R.string.alert_message_delete_event))
+                .positiveText(android.R.string.yes)
+                .negativeText(android.R.string.no)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, getBindingKey(), mEvent);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                    }
+                }).build();
+        materialDialog.show();
+    }
+
+    private void showDateError() {
+        Toast.makeText(getActivity(), R.string.error_message_dates, Toast.LENGTH_LONG).show();
+        Drawable drawableToApply;
+        ImageView iconToChange;
+
+        mErrorLabelLayoutEndDate.setError(getString(R.string.error_message_change_dates));
+        iconToChange = mIconEndDate;
+        drawableToApply = getResources().getDrawable(R.mipmap.ic_event_end_date);
+        tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
+
+        mErrorLabelLayoutEndTime.setError("");
+        iconToChange = mIconEndTime;
+        drawableToApply = getResources().getDrawable(R.mipmap.ic_end_time);
+        tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
     }
 
     private void getIconToTint(View view) {
@@ -886,7 +854,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         Icons.add(mIconAddress);
         Icons.add(mIconCountry);
         Icons.add(mIconCity);
-        Drawable drawable;
 
         for (ImageView imageView : Icons) {
             tintIcon(imageView, imageView.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
@@ -895,7 +862,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
     @Override
     public void onPauseFragment() {
-
     }
 
     @Override
