@@ -24,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -228,10 +227,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mEditTextAdditionalInfo.setOnFocusChangeListener(editTextFocus);
         mEditTextHashtag.setOnFocusChangeListener(editTextFocus);
         mEditTextLanguage.setOnFocusChangeListener(editTextFocus);
-        mEditTextStartDate.setOnFocusChangeListener(editTextFocus);
-        mEditTextStartTime.setOnFocusChangeListener(editTextFocus);
-        mEditTextEndDate.setOnFocusChangeListener(editTextFocus);
-        mEditTextEndTime.setOnFocusChangeListener(editTextFocus);
         mEditTextAddress.setOnFocusChangeListener(editTextFocus);
         mEditTextCountry.setOnFocusChangeListener(editTextFocus);
         mEditTextCity.setOnFocusChangeListener(editTextFocus);
@@ -376,8 +371,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         spinner.setFocusableInTouchMode(true);
         spinner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onViewFocusChange(v, hasFocus);
+            public void onFocusChange(View view, boolean hasFocus) {
+                onViewFocusChange(view, hasFocus);
                 if (hasFocus && spinner.isDirty()) spinner.performClick();
             }
         });
@@ -410,13 +405,14 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                 DateFormat.is24HourFormat(getActivity()));
     }
 
-    private View.OnTouchListener getEditTextTouchListener(final AlertDialog dialog){
-        return new View.OnTouchListener() {
+    private View.OnFocusChangeListener getDateEditTextFocusListener(final AlertDialog dialog){
+        return new View.OnFocusChangeListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                view.requestFocus();
-                dialog.show();
-                return false;
+            public void onFocusChange(View view, boolean hasFocus) {
+                onViewFocusChange(view, hasFocus);
+                if (hasFocus) {
+                    dialog.show();
+                }
             }
         };
     }
@@ -436,23 +432,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         endDatePicker.setTitle(R.string.edit_text_end_date_hint);
         endDatePicker.setIcon(R.mipmap.ic_event_end_date);
 
-//        mEditTextStartDate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                mEditTextStartDate.requestFocus();
-//                startDatePicker.show();
-//            }
-//        });
-//        mEditTextStartDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean hasFocus) {
-//                if (hasFocus) {
-//                    startDatePicker.show();
-//                }
-//            }
-//        });
-        mEditTextStartDate.setOnTouchListener(getEditTextTouchListener(startDatePicker));
-        mEditTextEndDate.setOnTouchListener(getEditTextTouchListener(endDatePicker));
+        mEditTextStartDate.setOnFocusChangeListener(getDateEditTextFocusListener(startDatePicker));
+        mEditTextEndDate.setOnFocusChangeListener(getDateEditTextFocusListener(endDatePicker));
 
         final TimePickerDialog startTimePicker = getTimePickerDialog(mStartDate, mEditTextStartDate, mTimeFormatter,
                 mStartDate.get(Calendar.HOUR_OF_DAY), mStartDate.get(Calendar.MINUTE));
@@ -463,8 +444,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         endTimePicker.setTitle(R.string.edit_text_end_time_hint);
         endTimePicker.setIcon(R.mipmap.ic_end_time);
 
-        mEditTextStartTime.setOnTouchListener(getEditTextTouchListener(startTimePicker));
-        mEditTextEndTime.setOnTouchListener(getEditTextTouchListener(endTimePicker));
+        mEditTextStartTime.setOnFocusChangeListener(getDateEditTextFocusListener(startTimePicker));
+        mEditTextEndTime.setOnFocusChangeListener(getDateEditTextFocusListener(endTimePicker));
     }
 
     @Override
