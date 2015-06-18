@@ -220,7 +220,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             mEvent.setEventLogo(((BitmapDrawable)mPhotoEvent.getDrawable()).getBitmap());
             mEvent.setIcon(null);
             mEvent.setCoordinates(mLatLng);
-
         }
     }
 
@@ -269,7 +268,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     private void wireUpViews(View rootView) {
-
         mToolbar = rootView.findViewById(R.id.events_toolbar);
         mOverlayView = rootView.findViewById(R.id.events_overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.event_scroll);
