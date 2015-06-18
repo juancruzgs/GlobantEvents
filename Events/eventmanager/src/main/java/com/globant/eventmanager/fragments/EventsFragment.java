@@ -1,6 +1,7 @@
 package com.globant.eventmanager.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -23,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -110,15 +110,9 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     private ImageView mIconAddress;
     private ImageView mIconCountry;
     private ImageView mIconCity;
-    private ImageView mIconToChange;
-    private Drawable mDrawableToApply;
 
-    private TimePickerDialog mStartTimePicker;
-    private TimePickerDialog mEndTimePicker;
-    private DatePickerDialog mStartDatePicker;
-    private DatePickerDialog mEndDatePicker;
-    private SimpleDateFormat dateFormatter;
-    private SimpleDateFormat TimeFormatter;
+    private SimpleDateFormat mDateFormatter;
+    private SimpleDateFormat mTimeFormatter;
     private Calendar mStartDate;
     private Calendar mEndDate;
 
@@ -137,7 +131,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     ErrorLabelLayout mErrorLabelLayoutAddress;
     ErrorLabelLayout mErrorLabelLayoutCity;
     ErrorLabelLayout mErrorLabelLayoutCountry;
-    ErrorLabelLayout mErrorLabelLayout;
 
     public EventsFragment() {
         // Required empty public constructor
@@ -174,13 +167,13 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mEditTextHashtag.setText(event.getHashtag());
         mEditTextLanguage.setText(event.getLanguage());
         if (event.getStartDate() != null) {
-            mEditTextStartDate.setText(dateFormatter.format(event.getStartDate()));
-            mEditTextStartTime.setText(TimeFormatter.format(event.getStartDate()));
+            mEditTextStartDate.setText(mDateFormatter.format(event.getStartDate()));
+            mEditTextStartTime.setText(mTimeFormatter.format(event.getStartDate()));
             mStartDate.setTime(event.getStartDate());
         }
         if (event.getEndDate() != null) {
-            mEditTextEndDate.setText(dateFormatter.format(event.getEndDate()));
-            mEditTextEndTime.setText(TimeFormatter.format(event.getEndDate()));
+            mEditTextEndDate.setText(mDateFormatter.format(event.getEndDate()));
+            mEditTextEndTime.setText(mTimeFormatter.format(event.getEndDate()));
             mEndDate.setTime(event.getEndDate());
         }
         mEditTextAddress.setText(event.getAddress());
@@ -190,7 +183,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
         if (event.getEventLogo() != null) {
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mPhotoEvent.setImageBitmap(mEvent.getEventLogo());
+            mPhotoEvent.setImageBitmap(event.getEventLogo());
         } else {
             mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
             mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
@@ -221,47 +214,43 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     private void setOnFocusListeners() {
+        View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                onViewFocusChange(view, hasFocus);
+            }
+        };
+
         mEditTextTitle.setOnFocusChangeListener(editTextFocus);
         mEditTextFullDescription.setOnFocusChangeListener(editTextFocus);
         mEditTextShortDescription.setOnFocusChangeListener(editTextFocus);
         mEditTextAdditionalInfo.setOnFocusChangeListener(editTextFocus);
         mEditTextHashtag.setOnFocusChangeListener(editTextFocus);
         mEditTextLanguage.setOnFocusChangeListener(editTextFocus);
-        mEditTextStartDate.setOnFocusChangeListener(editTextFocus);
-        mEditTextStartTime.setOnFocusChangeListener(editTextFocus);
-        mEditTextEndDate.setOnFocusChangeListener(editTextFocus);
-        mEditTextEndTime.setOnFocusChangeListener(editTextFocus);
         mEditTextAddress.setOnFocusChangeListener(editTextFocus);
         mEditTextCountry.setOnFocusChangeListener(editTextFocus);
         mEditTextCity.setOnFocusChangeListener(editTextFocus);
     }
 
-    private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            onViewFocusChange(v, hasFocus);
-        }
-    };
-
     public void onViewFocusChange(View view, boolean gainFocus) {
-
-        getIconToTint(view);
+        TintInformation tintInformation = getIconToTint(view);
 
         //onFocus
         if (gainFocus) {
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.ambar));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
-            mErrorLabelLayout.clearError();
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.ambar));
+            tintInformation.getErrorLabelLayout().clearError();
         }
         //onBlur
         else {
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
         }
+    }
+
+    private void tintIcon(ImageView imageView, Drawable drawable, int color){
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, color);
+        drawable = DrawableCompat.unwrap(drawable);
+        imageView.setImageDrawable(drawable);
     }
 
     private void wireUpViews(View rootView) {
@@ -328,14 +317,9 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     private void setUpSpinners() {
-
-        String[] categoryInfo = getResources().getStringArray(R.array.category_entries);
-        ArrayAdapter<String> category_adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, categoryInfo);
-        category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerCategory.setAdapter(category_adapter);
-        mSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        AdapterView.OnItemSelectedListener categoryListener = new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 switch (position) {
                     case 0:
                         mIconCategory.setImageResource(R.mipmap.ic_social);
@@ -347,27 +331,19 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         mIconCategory.setImageResource(R.mipmap.ic_technical);
                         break;
                 }
-                if (!mSpinnerCategory.isDirty())
-                    onViewFocusChange(mSpinnerCategory, true);
-                else
-                    onViewFocusChange(mSpinnerCategory, false);
-                mSpinnerCategory.setSelection(position);
+                onViewFocusChange(mSpinnerCategory, !mSpinnerCategory.isDirty());
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
-        });
-        mSpinnerCategory.setFocusableInTouchMode(true);
-        mSpinnerPublic.setFocusableInTouchMode(true);
-        String[] publicInfo = getResources().getStringArray(R.array.public_entries);
-        ArrayAdapter<String> public_adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, publicInfo);
-        public_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerPublic.setAdapter(public_adapter);
-        mSpinnerPublic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        };
+        prepareSpinner(mSpinnerCategory, getResources().getStringArray(R.array.category_entries), categoryListener);
+
+        AdapterView.OnItemSelectedListener publicListener = new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSpinnerPublic.setSelection(position);
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 switch (position) {
                     case 0:
                         mIconPublic.setImageResource(R.mipmap.ic_public);
@@ -376,139 +352,100 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
                         mIconPublic.setImageResource(R.mipmap.ic_private);
                         break;
                 }
-                if (!mSpinnerPublic.isDirty())
-                    onViewFocusChange(mSpinnerPublic, true);
-                else
-                    onViewFocusChange(mSpinnerPublic, false);
+                onViewFocusChange(mSpinnerPublic, !mSpinnerPublic.isDirty());
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });
-        mSpinnerCategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        };
+        prepareSpinner(mSpinnerPublic, getResources().getStringArray(R.array.public_entries), publicListener);
+    }
+
+    private void prepareSpinner(final AppCompatSpinner spinner, String[] info, AdapterView.OnItemSelectedListener listener) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, info);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(listener);
+        spinner.setFocusableInTouchMode(true);
+        spinner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onViewFocusChange(v, hasFocus);
-                if (hasFocus && mSpinnerCategory.isDirty()) mSpinnerCategory.performClick();
-            }
-        });
-        mSpinnerPublic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                onViewFocusChange(v, hasFocus);
-                if (hasFocus && mSpinnerPublic.isDirty()) mSpinnerPublic.performClick();
+            public void onFocusChange(View view, boolean hasFocus) {
+                onViewFocusChange(view, hasFocus);
+                if (hasFocus && spinner.isDirty()) spinner.performClick();
             }
         });
     }
 
+    private DatePickerDialog getDatePickerDialog(final Calendar date, final AppCompatEditText editText, final SimpleDateFormat dateFormatter){
+        return new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date.set(year, monthOfYear, dayOfMonth);
+                editText.setText(dateFormatter.format(date.getTime()));
+            }
+
+        }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
+    }
+
+    private TimePickerDialog getTimePickerDialog(final Calendar date, final AppCompatEditText editText, final SimpleDateFormat timeFormatter,
+                                                 int hour, int minute){
+        return new TimePickerDialog(getActivity(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        date.set(Calendar.MINUTE, minute);
+
+                        editText.setText(timeFormatter.format(date.getTime()));
+                    }
+                },
+                hour, minute,
+                DateFormat.is24HourFormat(getActivity()));
+    }
+
+    private View.OnFocusChangeListener getDateEditTextFocusListener(final AlertDialog dialog){
+        return new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                onViewFocusChange(view, hasFocus);
+                if (hasFocus) {
+                    dialog.show();
+                }
+            }
+        };
+    }
+
     private void setDateTimeField() {
         // date pickers
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-        TimeFormatter = new SimpleDateFormat("hh:mm a", Locale.US);
+        mDateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        mTimeFormatter = new SimpleDateFormat("hh:mm a", Locale.US);
 
         mStartDate = Calendar.getInstance();
         mEndDate = Calendar.getInstance();
 
-        mStartDatePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+        final DatePickerDialog startDatePicker =  getDatePickerDialog(mStartDate, mEditTextStartDate, mDateFormatter);
+        final DatePickerDialog endDatePicker = getDatePickerDialog(mEndDate, mEditTextEndDate, mDateFormatter);
+        startDatePicker.setTitle(R.string.edit_text_start_date_hint);
+        startDatePicker.setIcon(R.mipmap.ic_event_start_date);
+        endDatePicker.setTitle(R.string.edit_text_end_date_hint);
+        endDatePicker.setIcon(R.mipmap.ic_event_end_date);
 
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mStartDate.set(year, monthOfYear, dayOfMonth);
-                mEditTextStartDate.setText(dateFormatter.format(mStartDate.getTime()));
-            }
+        mEditTextStartDate.setOnFocusChangeListener(getDateEditTextFocusListener(startDatePicker));
+        mEditTextEndDate.setOnFocusChangeListener(getDateEditTextFocusListener(endDatePicker));
 
-        }, mStartDate.get(Calendar.YEAR), mStartDate.get(Calendar.MONTH), mStartDate.get(Calendar.DAY_OF_MONTH));
+        final TimePickerDialog startTimePicker = getTimePickerDialog(mStartDate, mEditTextStartDate, mTimeFormatter,
+                mStartDate.get(Calendar.HOUR_OF_DAY), mStartDate.get(Calendar.MINUTE));
+        final TimePickerDialog endTimePicker = getTimePickerDialog(mEndDate, mEditTextEndTime, mTimeFormatter,
+                mEndDate.get(Calendar.HOUR_OF_DAY), mEndDate.get(Calendar.MINUTE));
+        startTimePicker.setTitle(R.string.edit_text_start_time_hint);
+        startTimePicker.setIcon(R.mipmap.ic_start_time);
+        endTimePicker.setTitle(R.string.edit_text_end_time_hint);
+        endTimePicker.setIcon(R.mipmap.ic_end_time);
 
-        mEndDatePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mEndDate.set(year, monthOfYear, dayOfMonth);
-                mEditTextEndDate.setText(dateFormatter.format(mEndDate.getTime()));
-            }
-
-        }, mEndDate.get(Calendar.YEAR), mEndDate.get(Calendar.MONTH), mEndDate.get(Calendar.DAY_OF_MONTH));
-
-        mStartDatePicker.setTitle(R.string.edit_text_start_date_hint);
-        mStartDatePicker.setIcon(R.mipmap.ic_event_start_date);
-        mEndDatePicker.setTitle(R.string.edit_text_end_date_hint);
-        mEndDatePicker.setIcon(R.mipmap.ic_event_end_date);
-
-        mEditTextStartDate.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mEditTextStartDate.requestFocus();
-                mStartDatePicker.show();
-                return false;
-            }
-        });
-        mEditTextEndDate.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mEditTextEndDate.requestFocus();
-                mEndDatePicker.show();
-                return false;
-            }
-        });
-
-        // time pickers
-        int startHour = mStartDate.get(Calendar.HOUR_OF_DAY);
-        int StartMinute = mStartDate.get(Calendar.MINUTE);
-        int EndHour = mEndDate.get(Calendar.HOUR_OF_DAY);
-        int EndMinute = mEndDate.get(Calendar.MINUTE);
-
-        mStartTimePicker = new TimePickerDialog(getActivity(),
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                        mStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        mStartDate.set(Calendar.MINUTE, minute);
-
-                        mEditTextStartTime.setText(TimeFormatter.format(mStartDate.getTime()));
-                    }
-                },
-                startHour, StartMinute,
-                DateFormat.is24HourFormat(getActivity()));
-
-        mStartTimePicker.setTitle(R.string.edit_text_start_time_hint);
-        mStartTimePicker.setIcon(R.mipmap.ic_start_time);
-
-        mEndTimePicker = new TimePickerDialog(getActivity(),
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                        mEndDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        mEndDate.set(Calendar.MINUTE, minute);
-
-                        mEditTextEndTime.setText(TimeFormatter.format(mEndDate.getTime()));
-                    }
-                },
-                EndHour, EndMinute,
-                DateFormat.is24HourFormat(getActivity()));
-
-        mEndTimePicker.setTitle(R.string.edit_text_end_time_hint);
-        mEndTimePicker.setIcon(R.mipmap.ic_end_time);
-
-        mEditTextEndTime.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mEditTextEndTime.requestFocus();
-                mEndTimePicker.show();
-                return false;
-            }
-        });
-
-        mEditTextStartTime.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mEditTextStartTime.requestFocus();
-                mStartTimePicker.show();
-                return false;
-            }
-        });
-
+        mEditTextStartTime.setOnFocusChangeListener(getDateEditTextFocusListener(startTimePicker));
+        mEditTextEndTime.setOnFocusChangeListener(getDateEditTextFocusListener(endTimePicker));
     }
 
     @Override
@@ -566,7 +503,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     protected void prepareImageButton() {
-
         mMapIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -690,25 +626,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
 
             if (savePreferences) {
                 if (mStartDate.compareTo(mEndDate) != -1) {
-                    Toast.makeText(getActivity(), R.string.error_message_dates, Toast.LENGTH_LONG).show();
-
-                    ImageView iconToChange = mIconEndDate;
-                    Drawable mDrawableToApplyChanges = getResources().getDrawable(R.mipmap.ic_event_end_date);
-
-                    mErrorLabelLayoutEndDate.setError(getString(R.string.error_message_change_dates));
-                    mDrawableToApplyChanges = DrawableCompat.wrap(mDrawableToApplyChanges);
-                    DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-                    mDrawableToApplyChanges = DrawableCompat.unwrap(mDrawableToApplyChanges);
-                    iconToChange.setImageDrawable(mDrawableToApplyChanges);
-
-                    iconToChange = mIconEndTime;
-                    mDrawableToApplyChanges = getResources().getDrawable(R.mipmap.ic_end_time);
-
-                    mErrorLabelLayoutEndTime.setError("");
-                    mDrawableToApplyChanges = DrawableCompat.wrap(mDrawableToApplyChanges);
-                    DrawableCompat.setTint(mDrawableToApplyChanges, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-                    mDrawableToApplyChanges = DrawableCompat.unwrap(mDrawableToApplyChanges);
-                    iconToChange.setImageDrawable(mDrawableToApplyChanges);
+                    showDateError();
                 } else if (mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
                     Toast.makeText(getActivity(), getString(R.string.missing_photo), Toast.LENGTH_SHORT).show();
                 } else {
@@ -732,23 +650,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
             handled = true;
         } else {
             if (id == R.id.events_action_delete) {
-                MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
-                        .title(getString(R.string.alert_message_delete_event_title)).content(getString(R.string.alert_message_delete_event))
-                        .positiveText(android.R.string.yes)
-                        .negativeText(android.R.string.no)
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                super.onPositive(dialog);
-                                mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, getBindingKey(), mEvent);
-                            }
-
-                            @Override
-                            public void onNegative(MaterialDialog dialog) {
-                                super.onNegative(dialog);
-                            }
-                        }).build();
-                materialDialog.show();
+                showDeleteConfirmationDialog();
                 handled = true;
             }
         }
@@ -760,121 +662,125 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         return handled;
     }
 
-    private void getIconToTint(View view) {
+    private void showDeleteConfirmationDialog() {
+        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                .title(getString(R.string.alert_message_delete_event_title)).content(getString(R.string.alert_message_delete_event))
+                .positiveText(android.R.string.yes)
+                .negativeText(android.R.string.no)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        mService.executeAction(BaseService.ACTIONS.EVENT_DELETE, getBindingKey(), mEvent);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                    }
+                }).build();
+        materialDialog.show();
+    }
+
+    private void showDateError() {
+        Toast.makeText(getActivity(), R.string.error_message_dates, Toast.LENGTH_LONG).show();
+        Drawable drawableToApply;
+        ImageView iconToChange;
+
+        mErrorLabelLayoutEndDate.setError(getString(R.string.error_message_change_dates));
+        iconToChange = mIconEndDate;
+        drawableToApply = getResources().getDrawable(R.mipmap.ic_event_end_date);
+        tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
+
+        mErrorLabelLayoutEndTime.setError("");
+        iconToChange = mIconEndTime;
+        drawableToApply = getResources().getDrawable(R.mipmap.ic_end_time);
+        tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
+    }
+
+    private TintInformation getIconToTint(View view) {
         int id = view.getId();
-        //noinspection SimplifiableIfStatement
+        TintInformation tintInformation = null;
+        Drawable drawable = null;
+
         switch (id) {
             case R.id.edit_text_title:
-                mIconToChange = mIconTitle;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_title);
-                mErrorLabelLayout = mErrorLabelLayoutTitle;
+                tintInformation = new TintInformation(mIconTitle, getResources().getDrawable(R.mipmap.ic_event_title), mErrorLabelLayoutTitle);
                 break;
             case R.id.edit_text_full_description:
-                mIconToChange = mIconFullDescription;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_description);
-                mErrorLabelLayout = mErrorLabelLayoutFullDescription;
+                tintInformation = new TintInformation(mIconFullDescription, getResources().getDrawable(R.mipmap.ic_description), mErrorLabelLayoutFullDescription);
                 break;
             case R.id.edit_text_short_description:
-                mIconToChange = mIconShortDescription;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_short_description);
-                mErrorLabelLayout = mErrorLabelLayoutShortDescription;
+                tintInformation = new TintInformation(mIconShortDescription, getResources().getDrawable(R.mipmap.ic_short_description), mErrorLabelLayoutShortDescription);
                 break;
             case R.id.edit_text_additional_info:
-                mIconToChange = mIconAdditionalInfo;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_additional_info);
-                mErrorLabelLayout = mErrorLabelLayoutAdditionalInfo;
+                tintInformation = new TintInformation(mIconAdditionalInfo, getResources().getDrawable(R.mipmap.ic_additional_info), mErrorLabelLayoutAdditionalInfo);
                 break;
             case R.id.category_spinner:
-                mIconToChange = mIconCategory;
                 switch (((Spinner) view).getSelectedItemPosition()) {
                     case 0:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_social);
+                        drawable = getResources().getDrawable(R.mipmap.ic_social);
                         break;
                     case 1:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_informative);
+                        drawable = getResources().getDrawable(R.mipmap.ic_informative);
                         break;
                     case 2:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_technical);
+                        drawable = getResources().getDrawable(R.mipmap.ic_technical);
                         break;
                 }
-
-                mErrorLabelLayout = mErrorLabelLayoutCategory;
+                tintInformation = new TintInformation(mIconCategory, drawable, mErrorLabelLayoutCategory);
                 break;
             case R.id.public_spinner:
-                mIconToChange = mIconPublic;
                 switch (((Spinner) view).getSelectedItemPosition()) {
                     case 0:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_public);
+                        drawable = getResources().getDrawable(R.mipmap.ic_public);
                         break;
                     case 1:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_private);
+                        drawable = getResources().getDrawable(R.mipmap.ic_private);
                         break;
                 }
-                mErrorLabelLayout = mErrorLabelLayoutPublic;
+                tintInformation = new TintInformation(mIconPublic, drawable, mErrorLabelLayoutPublic);
                 break;
             case R.id.edit_text_hashtag:
-                mIconToChange = mIconHashtag;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_hashtag);
-                mErrorLabelLayout = mErrorLabelLayoutHashtag;
+                tintInformation = new TintInformation(mIconHashtag, getResources().getDrawable(R.mipmap.ic_hashtag), mErrorLabelLayoutHashtag);
                 break;
             case R.id.edit_text_language:
-                mIconToChange = mIconLanguage;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_language);
-                mErrorLabelLayout = mErrorLabelLayoutLanguage;
+                tintInformation = new TintInformation(mIconLanguage, getResources().getDrawable(R.mipmap.ic_language), mErrorLabelLayoutLanguage);
                 break;
             case R.id.edit_text_start_date:
-                mIconToChange = mIconStartDate;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_start_date);
-                mErrorLabelLayout = mErrorLabelLayoutStartDate;
+                tintInformation = new TintInformation(mIconStartDate, getResources().getDrawable(R.mipmap.ic_event_start_date), mErrorLabelLayoutStartDate);
                 break;
             case R.id.edit_text_start_time:
-                mIconToChange = mIconStartTime;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_start_time);
-                mErrorLabelLayout = mErrorLabelLayoutStartTime;
+                tintInformation = new TintInformation(mIconStartTime, getResources().getDrawable(R.mipmap.ic_start_time), mErrorLabelLayoutStartTime);
                 break;
             case R.id.edit_text_end_date:
-                mIconToChange = mIconEndDate;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_end_date);
-                mErrorLabelLayout = mErrorLabelLayoutEndDate;
+                tintInformation = new TintInformation(mIconEndDate, getResources().getDrawable(R.mipmap.ic_event_end_date), mErrorLabelLayoutEndDate);
                 break;
             case R.id.edit_text_end_time:
-                mIconToChange = mIconEndTime;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_end_time);
-                mErrorLabelLayout = mErrorLabelLayoutEndTime;
+                tintInformation = new TintInformation(mIconEndTime, getResources().getDrawable(R.mipmap.ic_end_time), mErrorLabelLayoutEndTime);
                 break;
             case R.id.edit_text_address:
-                mIconToChange = mIconAddress;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_location);
-                mErrorLabelLayout = mErrorLabelLayoutAddress;
+                tintInformation = new TintInformation(mIconAddress, getResources().getDrawable(R.mipmap.ic_location), mErrorLabelLayoutAddress);
                 break;
             case R.id.edit_text_country:
-                mIconToChange = mIconCountry;
-                mDrawableToApply = getResources().getDrawable(com.globant.eventscorelib.R.mipmap.ic_country);
-                mErrorLabelLayout = mErrorLabelLayoutCountry;
+                tintInformation = new TintInformation(mIconCountry, getResources().getDrawable(R.mipmap.ic_country), mErrorLabelLayoutCountry);
                 break;
             case R.id.edit_text_city:
-                mIconToChange = mIconCity;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_city);
-                mErrorLabelLayout = mErrorLabelLayoutCity;
+                tintInformation = new TintInformation(mIconCity, getResources().getDrawable(R.mipmap.ic_city), mErrorLabelLayoutCity);
                 break;
         }
+        return tintInformation;
     }
 
     private Boolean tintRequiredIconsAndShowError(EditText requiredField) {
-        getIconToTint(requiredField);
-        if (requiredField.getText().toString().trim().length() == 0) {
-            mErrorLabelLayout.setError(getString(R.string.field_required));
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
+        TintInformation tintInformation = getIconToTint(requiredField);
+        if (requiredField.getText().toString().isEmpty()) {
+            tintInformation.getErrorLabelLayout().setError(getString(R.string.field_required));
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.red_error));
             return false;
         } else {
-            mErrorLabelLayout.setError("");
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
+            tintInformation.getErrorLabelLayout().setError("");
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
             return true;
         }
     }
@@ -896,20 +802,14 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         Icons.add(mIconAddress);
         Icons.add(mIconCountry);
         Icons.add(mIconCity);
-        Drawable drawable;
 
         for (ImageView imageView : Icons) {
-            drawable = DrawableCompat.wrap(imageView.getDrawable());
-            DrawableCompat.setTint(drawable, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
-            drawable = DrawableCompat.unwrap(drawable);
-            imageView.setImageDrawable(drawable);
+            tintIcon(imageView, imageView.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
         }
-
     }
 
     @Override
     public void onPauseFragment() {
-
     }
 
     @Override
@@ -958,5 +858,29 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         BaseEventListFragment.mIsDataSetChanged = false;
         showErrorOverlay();
+    }
+
+    private class TintInformation{
+        private ImageView mImageView;
+        private Drawable mDrawable;
+        private ErrorLabelLayout mErrorLabelLayout;
+
+        public TintInformation(ImageView imageView, Drawable drawable, ErrorLabelLayout errorLabelLayout) {
+            mImageView = imageView;
+            mDrawable = drawable;
+            mErrorLabelLayout = errorLabelLayout;
+        }
+
+        public ImageView getImageView() {
+            return mImageView;
+        }
+
+        public Drawable getDrawable() {
+            return mDrawable;
+        }
+
+        public ErrorLabelLayout getErrorLabelLayout() {
+            return mErrorLabelLayout;
+        }
     }
 }
