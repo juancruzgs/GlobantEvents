@@ -111,8 +111,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     private ImageView mIconAddress;
     private ImageView mIconCountry;
     private ImageView mIconCity;
-    private ImageView mIconToChange;
-    private Drawable mDrawableToApply;
+//    private ImageView mIconToChange;
+//    private Drawable mDrawableToApply;
 
 //    private TimePickerDialog mStartTimePicker;
 //    private TimePickerDialog mEndTimePicker;
@@ -138,7 +138,7 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     ErrorLabelLayout mErrorLabelLayoutAddress;
     ErrorLabelLayout mErrorLabelLayoutCity;
     ErrorLabelLayout mErrorLabelLayoutCountry;
-    ErrorLabelLayout mErrorLabelLayout;
+//    ErrorLabelLayout mErrorLabelLayout;
 
     public EventsFragment() {
         // Required empty public constructor
@@ -245,16 +245,16 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     public void onViewFocusChange(View view, boolean gainFocus) {
-        getIconToTint(view);
+        TintInformation tintInformation = getIconToTint(view);
 
         //onFocus
         if (gainFocus) {
-            tintIcon(mIconToChange, mDrawableToApply,getResources().getColor(com.globant.eventscorelib.R.color.ambar));
-            mErrorLabelLayout.clearError();
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.ambar));
+            tintInformation.getErrorLabelLayout().clearError();
         }
         //onBlur
         else {
-            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
         }
     }
 
@@ -724,115 +724,89 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
     }
 
-    private void getIconToTint(View view) {
+    private TintInformation getIconToTint(View view) {
         int id = view.getId();
+        TintInformation tintInformation = null;
+        Drawable drawable = null;
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.edit_text_title:
-                mIconToChange = mIconTitle;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_title);
-                mErrorLabelLayout = mErrorLabelLayoutTitle;
+                tintInformation = new TintInformation(mIconTitle, getResources().getDrawable(R.mipmap.ic_event_title), mErrorLabelLayoutTitle);
                 break;
             case R.id.edit_text_full_description:
-                mIconToChange = mIconFullDescription;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_description);
-                mErrorLabelLayout = mErrorLabelLayoutFullDescription;
+                tintInformation = new TintInformation(mIconFullDescription, getResources().getDrawable(R.mipmap.ic_description), mErrorLabelLayoutFullDescription);
                 break;
             case R.id.edit_text_short_description:
-                mIconToChange = mIconShortDescription;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_short_description);
-                mErrorLabelLayout = mErrorLabelLayoutShortDescription;
+                tintInformation = new TintInformation(mIconShortDescription, getResources().getDrawable(R.mipmap.ic_short_description), mErrorLabelLayoutShortDescription);
                 break;
             case R.id.edit_text_additional_info:
-                mIconToChange = mIconAdditionalInfo;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_additional_info);
-                mErrorLabelLayout = mErrorLabelLayoutAdditionalInfo;
+                tintInformation = new TintInformation(mIconAdditionalInfo, getResources().getDrawable(R.mipmap.ic_additional_info), mErrorLabelLayoutAdditionalInfo);
                 break;
             case R.id.category_spinner:
-                mIconToChange = mIconCategory;
                 switch (((Spinner) view).getSelectedItemPosition()) {
                     case 0:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_social);
+                        drawable = getResources().getDrawable(R.mipmap.ic_social);
                         break;
                     case 1:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_informative);
+                        drawable = getResources().getDrawable(R.mipmap.ic_informative);
                         break;
                     case 2:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_technical);
+                        drawable = getResources().getDrawable(R.mipmap.ic_technical);
                         break;
                 }
-
-                mErrorLabelLayout = mErrorLabelLayoutCategory;
+                tintInformation = new TintInformation(mIconCategory, drawable, mErrorLabelLayoutCategory);
                 break;
             case R.id.public_spinner:
-                mIconToChange = mIconPublic;
                 switch (((Spinner) view).getSelectedItemPosition()) {
                     case 0:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_public);
+                        drawable = getResources().getDrawable(R.mipmap.ic_public);
                         break;
                     case 1:
-                        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_private);
+                        drawable = getResources().getDrawable(R.mipmap.ic_private);
                         break;
                 }
-                mErrorLabelLayout = mErrorLabelLayoutPublic;
+                tintInformation = new TintInformation(mIconPublic, drawable, mErrorLabelLayoutPublic);
                 break;
             case R.id.edit_text_hashtag:
-                mIconToChange = mIconHashtag;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_hashtag);
-                mErrorLabelLayout = mErrorLabelLayoutHashtag;
+                tintInformation = new TintInformation(mIconHashtag, getResources().getDrawable(R.mipmap.ic_hashtag), mErrorLabelLayoutHashtag);
                 break;
             case R.id.edit_text_language:
-                mIconToChange = mIconLanguage;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_language);
-                mErrorLabelLayout = mErrorLabelLayoutLanguage;
+                tintInformation = new TintInformation(mIconLanguage, getResources().getDrawable(R.mipmap.ic_language), mErrorLabelLayoutLanguage);
                 break;
             case R.id.edit_text_start_date:
-                mIconToChange = mIconStartDate;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_start_date);
-                mErrorLabelLayout = mErrorLabelLayoutStartDate;
+                tintInformation = new TintInformation(mIconStartDate, getResources().getDrawable(R.mipmap.ic_event_start_date), mErrorLabelLayoutStartDate);
                 break;
             case R.id.edit_text_start_time:
-                mIconToChange = mIconStartTime;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_start_time);
-                mErrorLabelLayout = mErrorLabelLayoutStartTime;
+                tintInformation = new TintInformation(mIconStartTime, getResources().getDrawable(R.mipmap.ic_start_time), mErrorLabelLayoutStartTime);
                 break;
             case R.id.edit_text_end_date:
-                mIconToChange = mIconEndDate;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_event_end_date);
-                mErrorLabelLayout = mErrorLabelLayoutEndDate;
+                tintInformation = new TintInformation(mIconEndDate, getResources().getDrawable(R.mipmap.ic_event_end_date), mErrorLabelLayoutEndDate);
                 break;
             case R.id.edit_text_end_time:
-                mIconToChange = mIconEndTime;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_end_time);
-                mErrorLabelLayout = mErrorLabelLayoutEndTime;
+                tintInformation = new TintInformation(mIconEndTime, getResources().getDrawable(R.mipmap.ic_end_time), mErrorLabelLayoutEndTime);
                 break;
             case R.id.edit_text_address:
-                mIconToChange = mIconAddress;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_location);
-                mErrorLabelLayout = mErrorLabelLayoutAddress;
+                tintInformation = new TintInformation(mIconAddress, getResources().getDrawable(R.mipmap.ic_location), mErrorLabelLayoutAddress);
                 break;
             case R.id.edit_text_country:
-                mIconToChange = mIconCountry;
-                mDrawableToApply = getResources().getDrawable(com.globant.eventscorelib.R.mipmap.ic_country);
-                mErrorLabelLayout = mErrorLabelLayoutCountry;
+                tintInformation = new TintInformation(mIconCountry, getResources().getDrawable(R.mipmap.ic_country), mErrorLabelLayoutCountry);
                 break;
             case R.id.edit_text_city:
-                mIconToChange = mIconCity;
-                mDrawableToApply = getResources().getDrawable(R.mipmap.ic_city);
-                mErrorLabelLayout = mErrorLabelLayoutCity;
+                tintInformation = new TintInformation(mIconCity, getResources().getDrawable(R.mipmap.ic_city), mErrorLabelLayoutCity);
                 break;
         }
+        return tintInformation;
     }
 
     private Boolean tintRequiredIconsAndShowError(EditText requiredField) {
-        getIconToTint(requiredField);
+        TintInformation tintInformation = getIconToTint(requiredField);
         if (requiredField.getText().toString().trim().length() == 0) {
-            mErrorLabelLayout.setError(getString(R.string.field_required));
-            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
+            tintInformation.getErrorLabelLayout().setError(getString(R.string.field_required));
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.red_error));
             return false;
         } else {
-            mErrorLabelLayout.setError("");
-            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
+            tintInformation.getErrorLabelLayout().setError("");
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
             return true;
         }
     }
@@ -910,5 +884,29 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         BaseEventListFragment.mIsDataSetChanged = false;
         showErrorOverlay();
+    }
+
+    private class TintInformation{
+        private ImageView mImageView;
+        private Drawable mDrawable;
+        private ErrorLabelLayout mErrorLabelLayout;
+
+        public TintInformation(ImageView imageView, Drawable drawable, ErrorLabelLayout errorLabelLayout) {
+            mImageView = imageView;
+            mDrawable = drawable;
+            mErrorLabelLayout = errorLabelLayout;
+        }
+
+        public ImageView getImageView() {
+            return mImageView;
+        }
+
+        public Drawable getDrawable() {
+            return mDrawable;
+        }
+
+        public ErrorLabelLayout getErrorLabelLayout() {
+            return mErrorLabelLayout;
+        }
     }
 }
