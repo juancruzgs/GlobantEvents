@@ -10,7 +10,7 @@ import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 
 public class BaseSubscriberActivity extends BaseActivity {
 
-    BaseSubscriberFragment mBaseSubscriberFragment;
+//    BaseSubscriberFragment mBaseSubscriberFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,19 +18,16 @@ public class BaseSubscriberActivity extends BaseActivity {
         setContentView(R.layout.activity_subscriber);
         prepareToolbar();
         if (savedInstanceState == null) {
-            mBaseSubscriberFragment = new BaseSubscriberFragment();
+//            mBaseSubscriberFragment = new BaseSubscriberFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, mBaseSubscriberFragment)
+                    .add(R.id.container, new BaseSubscriberFragment())
                     .commit();
+//        } else {
+//            //Restore the fragment's instance
+//             mBaseSubscriberFragment= (BaseSubscriberFragment)getSupportFragmentManager().getFragment(
+//                    savedInstanceState, "mContent");
+//        }
         }
-        if (savedInstanceState != null) {
-            //Restore the fragment's instance
-             mBaseSubscriberFragment= (BaseSubscriberFragment)getSupportFragmentManager().getFragment(
-                    savedInstanceState, "mContent");
-
-        }
-
-
     }
 
     private void prepareToolbar() {
@@ -41,31 +38,27 @@ public class BaseSubscriberActivity extends BaseActivity {
         }
     }
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        mBaseSubscriberFragment.tintAllGrey();
+//        mBaseSubscriberFragment.tintAllGrey();
         finish();
         overridePendingTransition(R.anim.nothing, R.anim.top_out);
-
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, "mContent", mBaseSubscriberFragment);
-
+//        getSupportFragmentManager().putFragment(outState, "mContent", mBaseSubscriberFragment);
     }
 
     @Override
     protected boolean usesEgg() {
         return true;
     }
+
     @Override
     protected BaseEasterEggsBasket.EASTEREGGS whichEgg() {
         return BaseEasterEggsBasket.EASTEREGGS.HANDSHAKE;
     }
 }
-
-

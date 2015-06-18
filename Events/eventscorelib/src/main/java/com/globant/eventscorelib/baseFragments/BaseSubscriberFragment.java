@@ -8,8 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -54,68 +52,63 @@ import java.util.regex.Pattern;
 public class BaseSubscriberFragment extends BaseFragment implements BaseService.ActionListener,
         BaseEasterEgg.EasterEggListener {
 
+    private ImageView mPhotoProfile;
+    private ActionButton mFloatingActionButtonPhoto;
+    private AppCompatEditText mEditTextFirstName;
+    private AppCompatEditText mEditTextLastName;
+    private AppCompatEditText mEditTextPhone;
+    private AppCompatEditText mEditTextOccupation;
+    private AppCompatEditText mEditTextEmail;
+    private AppCompatEditText mEditTextTwitter;
+    private AppCompatEditText mEditTextCountry;
+    private AppCompatEditText mEditTextCity;
+    private AppCompatCheckBox mCheckBoxEnglishKnowledge;
+    private String mHintToReturn;
+    private ImageView mIconOccupation;
+    private ImageView mIconLastName;
+    private ImageView mIconCountry;
+    private ImageView mIconCity;
+    private ImageView mIconTwitter;
+    private ImageView mIconPhone;
+    private ImageView mIconEmail;
+    private ImageView mIconEnglishKnowledge;
+    private ImageView mIconFirstName;
+    private ImageView mIconToChange;
+    private Drawable mDrawableToApply;
+    private final int CAMERA_CAPTURE = 1;
+    //    final int CROP_PIC = 2;
+    private ErrorLabelLayout mErrorLabelLayoutFirstName;
+    private ErrorLabelLayout mErrorLabelLayoutLastName;
+    private ErrorLabelLayout mErrorLabelLayoutEmail;
+    private ErrorLabelLayout mErrorLabelLayoutPhone;
+    private ErrorLabelLayout mErrorLabelLayoutOccupation;
+    private ErrorLabelLayout mErrorLabelLayoutCity;
+    private ErrorLabelLayout mErrorLabelLayoutCountry;
+    private ErrorLabelLayout mErrorLabelLayoutTwitter;
+    private ErrorLabelLayout mErrorLabelLayout;
+    private final Pattern emailPattern = Patterns.EMAIL_ADDRESS;
+    private Boolean mSavePreferences;
+    private LinearLayout mLayoutToFocus;
+    private Boolean mDoneClicked;
+    private Boolean mPhotoTaken;
 
-    Bitmap mPhoto;
-    ImageView mPhotoProfile;
-    ActionButton mFloatingActionButtonPhoto;
-    AppCompatEditText mEditTextFirstName;
-    AppCompatEditText mEditTextLastName;
-    AppCompatEditText mEditTextPhone;
-    AppCompatEditText mEditTextOccupation;
-    AppCompatEditText mEditTextEmail;
-    AppCompatEditText mEditTextTwitter;
-    AppCompatEditText mEditTextCountry;
-    AppCompatEditText mEditTextCity;
-    AppCompatEditText mEditTextToChangeHint;
-    AppCompatCheckBox mCheckBoxEnglishKnowledge;
-    String mHintToReturn;
-    ImageView mIconOccupation;
-    ImageView mIconLastName;
-    ImageView mIconCountry;
-    ImageView mIconCity;
-    ImageView mIconTwitter;
-    ImageView mIconPhone;
-    ImageView mIconEmail;
-    ImageView mIconEnglishKnowledge;
-    ImageView mIconFirstName;
-    ImageView mIconToChange;
-    Drawable mDrawableToApply;
-    final int CAMERA_CAPTURE = 1;
-    final int CROP_PIC = 2;
-    ErrorLabelLayout mErrorLabelLayoutFirstName;
-    ErrorLabelLayout mErrorLabelLayoutLastName;
-    ErrorLabelLayout mErrorLabelLayoutEmail;
-    ErrorLabelLayout mErrorLabelLayoutPhone;
-    ErrorLabelLayout mErrorLabelLayoutOccupation;
-    ErrorLabelLayout mErrorLabelLayoutCity;
-    ErrorLabelLayout mErrorLabelLayoutCountry;
-    ErrorLabelLayout mErrorLabelLayoutTwitter;
-    ErrorLabelLayout mErrorLabelLayout;
-    final Pattern emailPattern = Patterns.EMAIL_ADDRESS;
-    Boolean mSavePreferences;
-    LinearLayout mLayoutToFocus;
-    Boolean mDoneClicked;
-    Boolean mPhotoTaken;
+    private Subscriber mSubscriber;
+    private String mEventId;
 
-    Subscriber mSubscriber;
-    String mEventId;
-
-    private SensorManager sensorManager;
-    private Sensor senAcelerometer;
-    private long lastUpdate = 0;
-    private float last_x, last_y, last_z;
-    private static final int N_SHAKES = 3;
-    private static final int SHAKE_THRESHOLD = 2500;
-    private static final int ONE_SHAKE_TIME_MILLIS = 80;
+    //    private SensorManager sensorManager;
+//    private Sensor senAcelerometer;
+//    private long lastUpdate = 0;
+//    private float last_x, last_y, last_z;
+//    private static final int N_SHAKES = 3;
+//    private static final int SHAKE_THRESHOLD = 2500;
+//    private static final int ONE_SHAKE_TIME_MILLIS = 80;
     private static final String HANDSHAKE_MESSAGE = "Glober detected";
-    private int mShakes = 0;
-    private boolean globerDetected = false;
-
+    //    private int mShakes = 0;
+    private boolean mGloberDetected = false;
 
     public BaseSubscriberFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public BaseService.ActionListener getActionListener() {
@@ -142,19 +135,16 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            {
-                if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false")))
-                    doneClick();
+            if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false"))) {
+                doneClick();
             }
+
             Bitmap bitmapToSave = savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
             mPhotoProfile.setImageBitmap(bitmapToSave);
             mPhotoTaken = Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
 //            if (mPhotoTaken){
 //                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
-
-
         }
-
     }
 
     @Override
@@ -190,9 +180,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
     private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
         public void onFocusChange(View view, boolean gainFocus) {
-
             getIconToTint(view);
-            mEditTextToChangeHint = (AppCompatEditText) view;
+            AppCompatEditText editTextToChangeHint = (AppCompatEditText) view;
             //onFocus
             if (gainFocus) {
                 mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
@@ -200,14 +189,14 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
                 mIconToChange.setImageDrawable(mDrawableToApply);
                 mErrorLabelLayout.clearError();
-                mEditTextToChangeHint.setHint("");
+                editTextToChangeHint.setHint("");
             }
             //onBlur
             else {
                 tintGrey();
                 mIconToChange.setImageDrawable(mDrawableToApply);
                 mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
-                mEditTextToChangeHint.setHint(mHintToReturn);
+                editTextToChangeHint.setHint(mHintToReturn);
             }
         }
     };
@@ -215,7 +204,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private void getIconToTint(View view) {
         int id = view.getId();
         //noinspection SimplifiableIfStatement
-
         if (id == (R.id.edit_text_first_name)) {
             mIconToChange = mIconFirstName;
             mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
@@ -298,7 +286,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             mPhotoTaken = true;
 //            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
         }
-
     }
 
     public void wireUpViews(View rootView) {
@@ -357,8 +344,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                 // get the returned data
                 Bundle extras = data.getExtras();
                 // get the cropped bitmap
-                mPhoto = extras.getParcelable(CoreConstants.DATA);
-                mPhotoProfile.setImageBitmap(mPhoto);
+                Bitmap photo = extras.getParcelable(CoreConstants.DATA);
+                mPhotoProfile.setImageBitmap(photo);
                 mPhotoTaken = true;
 //                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
             }
@@ -366,7 +353,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
     private void prepareImageButton() {
-
         mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -376,7 +362,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     /*put uri as extra in intent object*/
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
                 startActivityForResult(cameraIntent, CAMERA_CAPTURE);
-
             }
         });
     }
@@ -386,7 +371,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        if (!globerDetected) {
+        if (!mGloberDetected) {
             subscribeEggListener(this);
 //            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
 //            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -398,7 +383,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_subscriber, menu);
-
     }
 
     @Override
@@ -430,7 +414,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             return true;
         }
 
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -444,7 +427,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         tintRequiredIconsAndShowError(mEditTextOccupation);
         tintRequiredIconsAndShowError(mEditTextCity);
         tintRequiredIconsAndShowError(mEditTextCountry);
-
     }
 
     private void tintRequiredIconsAndShowError(EditText requiredField) {
@@ -479,7 +461,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
     }
 
-
     public void tintAllGrey() {
         mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
         tintGrey();
@@ -495,7 +476,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         tintGrey();
         mDrawableToApply = getResources().getDrawable(R.mipmap.ic_occupation);
         tintGrey();
-
     }
 
     private void saveSubscriberObject() {
@@ -513,7 +493,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         }
         mSubscriber.setPicture(((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap());
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
-
     }
 
     @Override
@@ -535,9 +514,9 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     @Override
     public void onResume() {
         super.onResume();
-        if (!globerDetected) {
-            //sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        }
+//        if (!mGloberDetected) {
+//            //sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+//        }
     }
 
     @Override
@@ -583,7 +562,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                     break;
                 }
         }
-
     }
 
     @Override
@@ -594,13 +572,14 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     @Override
     public void onEasterEgg() {
         // TODO: The glober have just been detected
-        globerDetected = true;
+        mGloberDetected = true;
         Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        tintAllGrey();
         unsubscribeEggListener(this);
+        super.onDestroy();
     }
 }
