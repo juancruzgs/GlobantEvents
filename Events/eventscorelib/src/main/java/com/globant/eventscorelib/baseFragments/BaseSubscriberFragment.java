@@ -171,8 +171,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language_ambar));
                 if (mIconToChange != null) {
-                    tintGrey();
-                    mIconToChange.setImageDrawable(mDrawableToApply);
+                    tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
                 }
             }
         });
@@ -184,17 +183,13 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             AppCompatEditText editTextToChangeHint = (AppCompatEditText) view;
             //onFocus
             if (gainFocus) {
-                mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-                DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.ambar));
-                mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-                mIconToChange.setImageDrawable(mDrawableToApply);
+                tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.ambar));
                 mErrorLabelLayout.clearError();
                 editTextToChangeHint.setHint("");
             }
             //onBlur
             else {
-                tintGrey();
-                mIconToChange.setImageDrawable(mDrawableToApply);
+                tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
                 mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
                 editTextToChangeHint.setHint(mHintToReturn);
             }
@@ -433,49 +428,29 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         getIconToTint(requiredField);
         if (requiredField.getText().toString().trim().length() == 0) {
             mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
+            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.red_error));
             mSavePreferences = false;
         } else {
-            tintGrey();
-            mIconToChange.setImageDrawable(mDrawableToApply);
+            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
         }
 
         if (requiredField == mEditTextEmail) {
             if ((!emailPattern.matcher(mEditTextEmail.getText().toString()).matches()) && (!(requiredField.getText().toString().trim().length() == 0))) {
                 mErrorLabelLayout.setError(getResources().getString(R.string.email_required));
-                mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-                DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
-                mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-                mIconToChange.setImageDrawable(mDrawableToApply);
+                tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.red_error));
                 mSavePreferences = false;
             }
         }
     }
 
-    private void tintGrey() {
-        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-        DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.grey_icon));
-        mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-    }
-
-    public void tintAllGrey() {
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_last_name);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_phone);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_email);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_country);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_city);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_occupation);
-        tintGrey();
+    public void tintAllIconsGrey() {
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_first_name), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_last_name), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_phone), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_email), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_country), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_city), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_occupation), getResources().getColor(R.color.grey_icon));
     }
 
     private void saveSubscriberObject() {
@@ -576,9 +551,18 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
     }
 
+    private void tintIcon(ImageView imageView, Drawable drawable, int color){
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, color);
+        drawable = DrawableCompat.unwrap(drawable);
+        if (imageView != null) {
+            imageView.setImageDrawable(drawable);
+        }
+    }
+
     @Override
     public void onDestroy() {
-        tintAllGrey();
+        tintAllIconsGrey();
         unsubscribeEggListener(this);
         super.onDestroy();
     }

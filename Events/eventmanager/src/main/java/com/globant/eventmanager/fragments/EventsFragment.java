@@ -786,24 +786,24 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     private void tintAllIconsGrey() {
-        List<ImageView> Icons = new ArrayList<>();
-        Icons.add(mIconTitle);
-        Icons.add(mIconFullDescription);
-        Icons.add(mIconShortDescription);
-        Icons.add(mIconAdditionalInfo);
-        Icons.add(mIconCategory);
-        Icons.add(mIconPublic);
-        Icons.add(mIconHashtag);
-        Icons.add(mIconLanguage);
-        Icons.add(mIconStartDate);
-        Icons.add(mIconEndDate);
-        Icons.add(mIconStartTime);
-        Icons.add(mIconEndTime);
-        Icons.add(mIconAddress);
-        Icons.add(mIconCountry);
-        Icons.add(mIconCity);
+        List<ImageView> icons = new ArrayList<>();
+        icons.add(mIconTitle);
+        icons.add(mIconFullDescription);
+        icons.add(mIconShortDescription);
+        icons.add(mIconAdditionalInfo);
+        icons.add(mIconCategory);
+        icons.add(mIconPublic);
+        icons.add(mIconHashtag);
+        icons.add(mIconLanguage);
+        icons.add(mIconStartDate);
+        icons.add(mIconEndDate);
+        icons.add(mIconStartTime);
+        icons.add(mIconEndTime);
+        icons.add(mIconAddress);
+        icons.add(mIconCountry);
+        icons.add(mIconCity);
 
-        for (ImageView imageView : Icons) {
+        for (ImageView imageView : icons) {
             tintIcon(imageView, imageView.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
         }
     }
