@@ -24,7 +24,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -112,122 +111,32 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
+        if (!mGloberDetected) {
+            subscribeEggListener(this);
+//            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+//            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
     public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                   Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_subscriber, container, false);
         wireUpViews(rootView);
         prepareImageButton();
+        setOnFocusListeners();
         mPhotoTaken = false;
         mSubscriber = new Subscriber();
-        checkPreferences();
-        setOnFocusListeners();
+        populateInfo();
         hideUtilsAndShowContentOverlay();
         mDoneClicked = false;
         return rootView;
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false"))) {
-                doneClick();
-            }
-
-            Bitmap bitmapToSave = savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
-            mPhotoProfile.setImageBitmap(bitmapToSave);
-            mPhotoTaken = Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
-//            if (mPhotoTaken){
-//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(CoreConstants.DONE_CLICKED, mDoneClicked.toString());
-        outState.putString(CoreConstants.PHOTO_TAKEN, mPhotoTaken.toString());
-        BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
-        Bitmap bitmapToSave = drawable.getBitmap();
-        outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
-    }
-
-    private void setOnFocusListeners() {
-        View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
-            public void onFocusChange(View view, boolean gainFocus) {
-                TintInformation tintInformation = getIconToTint(view);
-                //onFocus
-                if (gainFocus) {
-                    tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.ambar));
-                    tintInformation.getErrorLabelLayout().clearError();
-                }
-                //onBlur
-                else {
-                    tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.grey_icon));
-                }
-            }
-        };
-
-        mEditTextFirstName.setOnFocusChangeListener(editTextFocus);
-        mEditTextLastName.setOnFocusChangeListener(editTextFocus);
-        mEditTextCountry.setOnFocusChangeListener(editTextFocus);
-        mEditTextCity.setOnFocusChangeListener(editTextFocus);
-        mEditTextTwitter.setOnFocusChangeListener(editTextFocus);
-        mEditTextPhone.setOnFocusChangeListener(editTextFocus);
-        mEditTextEmail.setOnFocusChangeListener(editTextFocus);
-        mEditTextOccupation.setOnFocusChangeListener(editTextFocus);
-    }
-
-    private TintInformation getIconToTint(View view) {
-        int id = view.getId();
-        TintInformation tintInformation = null;
-
-        if (id == R.id.edit_text_first_name) {
-            tintInformation = new TintInformation(mIconFirstName, getResources().getDrawable(R.mipmap.ic_first_name), mErrorLabelLayoutFirstName);
-        } else if (id == R.id.edit_text_last_name) {
-            tintInformation = new TintInformation(mIconLastName, getResources().getDrawable(R.mipmap.ic_last_name), mErrorLabelLayoutLastName);
-        } else if (id == R.id.edit_text_phone) {
-            tintInformation = new TintInformation(mIconPhone, getResources().getDrawable(R.mipmap.ic_phone), mErrorLabelLayoutPhone);
-        } else if (id == R.id.edit_text_occupation) {
-            tintInformation = new TintInformation(mIconOccupation, getResources().getDrawable(R.mipmap.ic_occupation), mErrorLabelLayoutOccupation);
-        } else if (id == R.id.edit_text_email) {
-            tintInformation = new TintInformation(mIconEmail, getResources().getDrawable(R.mipmap.ic_email), mErrorLabelLayoutEmail);
-        } else if (id == R.id.edit_text_country) {
-            tintInformation = new TintInformation(mIconCountry, getResources().getDrawable(R.mipmap.ic_country), mErrorLabelLayoutCountry);
-        } else if (id == R.id.edit_text_city) {
-            tintInformation = new TintInformation(mIconCity, getResources().getDrawable(R.mipmap.ic_city), mErrorLabelLayoutCity);
-        } else if (id == R.id.edit_text_twitter) {
-            tintInformation = new TintInformation(mIconTwitter, getResources().getDrawable(R.mipmap.ic_twitter1), mErrorLabelLayoutTwitter);
-        }
-        return tintInformation;
-    }
-
-    private void checkPreferences() {
-        File f = new File(CoreConstants.SHARED_PREF_ROOT + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_DIR + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_FILE);
-        if (f.exists()) {
-            retrieveSubscriberPreferences();
-        }
-    }
-
-    private void retrieveSubscriberPreferences() {
-        mEditTextFirstName.setText(SharedPreferencesController.getUserFirstName(this.getActivity()));
-        mEditTextLastName.setText(SharedPreferencesController.getUserLastName(this.getActivity()));
-        mEditTextPhone.setText(SharedPreferencesController.getUserPhone(this.getActivity()));
-        mEditTextEmail.setText(SharedPreferencesController.getUserEmail(this.getActivity()));
-        mEditTextOccupation.setText(SharedPreferencesController.getUserOccupation(this.getActivity()));
-        mEditTextTwitter.setText(SharedPreferencesController.getUserTwitter(this.getActivity()));
-        mEditTextCity.setText(SharedPreferencesController.getUserCity(this.getActivity()));
-        mEditTextCountry.setText(SharedPreferencesController.getUserCountry(this.getActivity()));
-        mCheckBoxEnglishKnowledge.setChecked(SharedPreferencesController.getUserEnglishKnowledge(this.getActivity()));
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-        String value = sharedPreferences.getString(CoreConstants.PREFERENCE_USER_PICTURE, null);
-        if (value != null) {
-            byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
-            mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
-            mPhotoTaken = true;
-//            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
-        }
     }
 
     public void wireUpViews(View rootView) {
@@ -266,33 +175,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mLayoutToFocus = (LinearLayout) rootView.findViewById(R.id.autoFocusable);
     }
 
-    @Override
-    public String getTitle() {
-        return getString(R.string.title_fragment_subscriber);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == CAMERA_CAPTURE) {
-                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
-
-                Intent cropIntent = ConvertImage.performCrop(Uri.fromFile(file));
-                startActivityForResult(cropIntent, CoreConstants.PICTURE_CROP_SELECTION_REQUEST);
-
-            } else if (requestCode == CoreConstants.PICTURE_CROP_SELECTION_REQUEST) {
-                // get the returned data
-                Bundle extras = data.getExtras();
-                // get the cropped bitmap
-                Bitmap photo = extras.getParcelable(CoreConstants.DATA);
-                mPhotoProfile.setImageBitmap(photo);
-                mPhotoTaken = true;
-//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
-            }
-        }
-    }
-
     private void prepareImageButton() {
         mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -307,55 +189,57 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         });
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
-        if (!mGloberDetected) {
-            subscribeEggListener(this);
-//            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-//            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-//            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_subscriber, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        mLayoutToFocus.requestFocus();
-        int id = item.getItemId();
-
-        if (id == R.id.action_done) {
-            doneClick();
-            if ((mSavePreferences) && (mPhotoTaken)) {
-                saveSubscriberObject();
-                SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
-                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
-                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
+    private void setOnFocusListeners() {
+        View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
+            public void onFocusChange(View view, boolean gainFocus) {
+                TintInformation tintInformation = getIconToTint(view);
+                //onFocus
+                if (gainFocus) {
+                    tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.ambar));
+                    tintInformation.getErrorLabelLayout().clearError();
                 }
-                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
-
-            } else if (!(mPhotoTaken)) {
-                Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getActivity(), getResources().getString(R.string.missing_fields),
-                        Toast.LENGTH_SHORT).show();
+                //onBlur
+                else {
+                    tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.grey_icon));
+                }
             }
-            mLayoutToFocus.requestFocus();
-            return true;
-        }
+        };
 
-        return super.onOptionsItemSelected(item);
+        mEditTextFirstName.setOnFocusChangeListener(editTextFocus);
+        mEditTextLastName.setOnFocusChangeListener(editTextFocus);
+        mEditTextCountry.setOnFocusChangeListener(editTextFocus);
+        mEditTextCity.setOnFocusChangeListener(editTextFocus);
+        mEditTextTwitter.setOnFocusChangeListener(editTextFocus);
+        mEditTextPhone.setOnFocusChangeListener(editTextFocus);
+        mEditTextEmail.setOnFocusChangeListener(editTextFocus);
+        mEditTextOccupation.setOnFocusChangeListener(editTextFocus);
+    }
+
+    private void populateInfo() {
+        File f = new File(CoreConstants.SHARED_PREF_ROOT + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_DIR + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_FILE);
+        if (f.exists()) {
+            retrieveSubscriberPreferences();
+        }
+    }
+
+    private void retrieveSubscriberPreferences() {
+        mEditTextFirstName.setText(SharedPreferencesController.getUserFirstName(this.getActivity()));
+        mEditTextLastName.setText(SharedPreferencesController.getUserLastName(this.getActivity()));
+        mEditTextPhone.setText(SharedPreferencesController.getUserPhone(this.getActivity()));
+        mEditTextEmail.setText(SharedPreferencesController.getUserEmail(this.getActivity()));
+        mEditTextOccupation.setText(SharedPreferencesController.getUserOccupation(this.getActivity()));
+        mEditTextTwitter.setText(SharedPreferencesController.getUserTwitter(this.getActivity()));
+        mEditTextCity.setText(SharedPreferencesController.getUserCity(this.getActivity()));
+        mEditTextCountry.setText(SharedPreferencesController.getUserCountry(this.getActivity()));
+        mCheckBoxEnglishKnowledge.setChecked(SharedPreferencesController.getUserEnglishKnowledge(this.getActivity()));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        String value = sharedPreferences.getString(CoreConstants.PREFERENCE_USER_PICTURE, null);
+        if (value != null) {
+            byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
+            mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
+            mPhotoTaken = true;
+//            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
+        }
     }
 
     public void doneClick() {
@@ -368,6 +252,39 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         tintRequiredIconsAndShowError(mEditTextOccupation);
         tintRequiredIconsAndShowError(mEditTextCity);
         tintRequiredIconsAndShowError(mEditTextCountry);
+    }
+
+    private void tintIcon(ImageView imageView, Drawable drawable, int color) {
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, color);
+        drawable = DrawableCompat.unwrap(drawable);
+        if (imageView != null) {
+            imageView.setImageDrawable(drawable);
+        }
+    }
+
+    private TintInformation getIconToTint(View view) {
+        int id = view.getId();
+        TintInformation tintInformation = null;
+
+        if (id == R.id.edit_text_first_name) {
+            tintInformation = new TintInformation(mIconFirstName, getResources().getDrawable(R.mipmap.ic_first_name), mErrorLabelLayoutFirstName);
+        } else if (id == R.id.edit_text_last_name) {
+            tintInformation = new TintInformation(mIconLastName, getResources().getDrawable(R.mipmap.ic_last_name), mErrorLabelLayoutLastName);
+        } else if (id == R.id.edit_text_phone) {
+            tintInformation = new TintInformation(mIconPhone, getResources().getDrawable(R.mipmap.ic_phone), mErrorLabelLayoutPhone);
+        } else if (id == R.id.edit_text_occupation) {
+            tintInformation = new TintInformation(mIconOccupation, getResources().getDrawable(R.mipmap.ic_occupation), mErrorLabelLayoutOccupation);
+        } else if (id == R.id.edit_text_email) {
+            tintInformation = new TintInformation(mIconEmail, getResources().getDrawable(R.mipmap.ic_email), mErrorLabelLayoutEmail);
+        } else if (id == R.id.edit_text_country) {
+            tintInformation = new TintInformation(mIconCountry, getResources().getDrawable(R.mipmap.ic_country), mErrorLabelLayoutCountry);
+        } else if (id == R.id.edit_text_city) {
+            tintInformation = new TintInformation(mIconCity, getResources().getDrawable(R.mipmap.ic_city), mErrorLabelLayoutCity);
+        } else if (id == R.id.edit_text_twitter) {
+            tintInformation = new TintInformation(mIconTwitter, getResources().getDrawable(R.mipmap.ic_twitter1), mErrorLabelLayoutTwitter);
+        }
+        return tintInformation;
     }
 
     private void tintRequiredIconsAndShowError(EditText requiredField) {
@@ -414,6 +331,97 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         }
         mSubscriber.setPicture(((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap());
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
+    }
+
+    @Override
+    public String getTitle() {
+        return getString(R.string.title_fragment_subscriber);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CAMERA_CAPTURE) {
+                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
+
+                Intent cropIntent = ConvertImage.performCrop(Uri.fromFile(file));
+                startActivityForResult(cropIntent, CoreConstants.PICTURE_CROP_SELECTION_REQUEST);
+
+            } else if (requestCode == CoreConstants.PICTURE_CROP_SELECTION_REQUEST) {
+                // get the returned data
+                Bundle extras = data.getExtras();
+                // get the cropped bitmap
+                Bitmap photo = extras.getParcelable(CoreConstants.DATA);
+                mPhotoProfile.setImageBitmap(photo);
+                mPhotoTaken = true;
+//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
+            }
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_subscriber, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        mLayoutToFocus.requestFocus();
+        int id = item.getItemId();
+
+        if (id == R.id.action_done) {
+            doneClick();
+            if ((mSavePreferences) && (mPhotoTaken)) {
+                saveSubscriberObject();
+                SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
+                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+                    mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
+                }
+                mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
+
+            } else if (!(mPhotoTaken)) {
+                Toast.makeText(getActivity(), getResources().getString(R.string.missing_photo),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), getResources().getString(R.string.missing_fields),
+                        Toast.LENGTH_SHORT).show();
+            }
+            mLayoutToFocus.requestFocus();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false"))) {
+                doneClick();
+            }
+
+            Bitmap bitmapToSave = savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
+            mPhotoProfile.setImageBitmap(bitmapToSave);
+            mPhotoTaken = Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
+//            if (mPhotoTaken){
+//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CoreConstants.DONE_CLICKED, mDoneClicked.toString());
+        outState.putString(CoreConstants.PHOTO_TAKEN, mPhotoTaken.toString());
+        BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
+        Bitmap bitmapToSave = drawable.getBitmap();
+        outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
     }
 
     @Override
@@ -495,15 +503,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         // TODO: The glober have just been detected
         mGloberDetected = true;
         Toast.makeText(getActivity(), HANDSHAKE_MESSAGE, Toast.LENGTH_SHORT).show();
-    }
-
-    private void tintIcon(ImageView imageView, Drawable drawable, int color) {
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, color);
-        drawable = DrawableCompat.unwrap(drawable);
-        if (imageView != null) {
-            imageView.setImageDrawable(drawable);
-        }
     }
 
     @Override
