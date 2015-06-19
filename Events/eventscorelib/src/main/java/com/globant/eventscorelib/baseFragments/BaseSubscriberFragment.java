@@ -64,7 +64,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private AppCompatEditText mEditTextCountry;
     private AppCompatEditText mEditTextCity;
     private AppCompatCheckBox mCheckBoxEnglishKnowledge;
-    //    private String mHintToReturn;
     private ImageView mIconOccupation;
     private ImageView mIconLastName;
     private ImageView mIconCountry;
@@ -72,12 +71,9 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private ImageView mIconTwitter;
     private ImageView mIconPhone;
     private ImageView mIconEmail;
-//    private ImageView mIconEnglishKnowledge;
     private ImageView mIconFirstName;
-    private ImageView mIconToChange;
-    private Drawable mDrawableToApply;
     private final int CAMERA_CAPTURE = 1;
-    //    final int CROP_PIC = 2;
+
     private ErrorLabelLayout mErrorLabelLayoutFirstName;
     private ErrorLabelLayout mErrorLabelLayoutLastName;
     private ErrorLabelLayout mErrorLabelLayoutEmail;
@@ -86,7 +82,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private ErrorLabelLayout mErrorLabelLayoutCity;
     private ErrorLabelLayout mErrorLabelLayoutCountry;
     private ErrorLabelLayout mErrorLabelLayoutTwitter;
-    private ErrorLabelLayout mErrorLabelLayout;
     private final Pattern emailPattern = Patterns.EMAIL_ADDRESS;
     private Boolean mSavePreferences;
     private LinearLayout mLayoutToFocus;
@@ -162,18 +157,14 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
             public void onFocusChange(View view, boolean gainFocus) {
                 TintInformation tintInformation = getIconToTint(view);
-//                AppCompatEditText editTextToChangeHint = (AppCompatEditText) view;
                 //onFocus
                 if (gainFocus) {
                     tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.ambar));
                     tintInformation.getErrorLabelLayout().clearError();
-//                    editTextToChangeHint.setHint("");
                 }
                 //onBlur
                 else {
                     tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.grey_icon));
-//                    mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
-//                    editTextToChangeHint.setHint(mHintToReturn);
                 }
             }
         };
@@ -186,15 +177,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mEditTextPhone.setOnFocusChangeListener(editTextFocus);
         mEditTextEmail.setOnFocusChangeListener(editTextFocus);
         mEditTextOccupation.setOnFocusChangeListener(editTextFocus);
-//        mCheckBoxEnglishKnowledge.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language_ambar));
-//                if (mIconToChange != null) {
-//                    tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
-//                }
-//            }
-//        });
     }
 
     private TintInformation getIconToTint(View view) {
@@ -203,40 +185,23 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
         if (id == R.id.edit_text_first_name) {
             tintInformation = new TintInformation(mIconFirstName, getResources().getDrawable(R.mipmap.ic_first_name), mErrorLabelLayoutFirstName);
-
-//            mHintToReturn = getResources().getString(R.string.edit_text_first_name_hint);
         } else if (id == R.id.edit_text_last_name) {
             tintInformation = new TintInformation(mIconLastName, getResources().getDrawable(R.mipmap.ic_last_name), mErrorLabelLayoutLastName);
-
-//            mHintToReturn = getResources().getString(R.string.edit_text_last_name_hint);
         } else if (id == R.id.edit_text_phone) {
             tintInformation = new TintInformation(mIconPhone, getResources().getDrawable(R.mipmap.ic_phone), mErrorLabelLayoutPhone);
-
-//            mHintToReturn = getResources().getString(R.string.edit_text_phone_hint);
         } else if (id == R.id.edit_text_occupation) {
             tintInformation = new TintInformation(mIconOccupation, getResources().getDrawable(R.mipmap.ic_occupation), mErrorLabelLayoutOccupation);
-
-//            mHintToReturn = getResources().getString(R.string.edit_text_occupation_hint);
         } else if (id == R.id.edit_text_email) {
             tintInformation = new TintInformation(mIconEmail, getResources().getDrawable(R.mipmap.ic_email), mErrorLabelLayoutEmail);
-
-//            mHintToReturn = getResources().getString(R.string.edit_text_email_hint);
         } else if (id == R.id.edit_text_country) {
             tintInformation = new TintInformation(mIconCountry, getResources().getDrawable(R.mipmap.ic_country), mErrorLabelLayoutCountry);
-
-//            mHintToReturn = getResources().getString(R.string.edit_text_country_hint);
         } else if (id == R.id.edit_text_city) {
             tintInformation = new TintInformation(mIconCity, getResources().getDrawable(R.mipmap.ic_city), mErrorLabelLayoutCity);
-
-//            mHintToReturn = getResources().getString(R.string.edit_text_city_hint);
         } else if (id == R.id.edit_text_twitter) {
             tintInformation = new TintInformation(mIconTwitter, getResources().getDrawable(R.mipmap.ic_twitter1), mErrorLabelLayoutTwitter);
-
-//            mHintToReturn = getResources().getString(R.string.edit_text_twitter_hint);
         }
         return tintInformation;
     }
-
 
     private void checkPreferences() {
         File f = new File(CoreConstants.SHARED_PREF_ROOT + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_DIR + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_FILE);
@@ -287,7 +252,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mIconEmail = (ImageView) rootView.findViewById(R.id.icon_email);
         mIconCountry = (ImageView) rootView.findViewById(R.id.icon_country);
         mIconCity = (ImageView) rootView.findViewById(R.id.icon_city);
-//        mIconEnglishKnowledge = (ImageView) rootView.findViewById(R.id.icon_language);
         mIconTwitter = (ImageView) rootView.findViewById(R.id.icon_twitter);
 
         mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
@@ -369,7 +333,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         // as you specify a parent activity in AndroidManifest.xml.
         mLayoutToFocus.requestFocus();
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
+
         if (id == R.id.action_done) {
             doneClick();
             if ((mSavePreferences) && (mPhotoTaken)) {

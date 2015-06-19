@@ -68,6 +68,8 @@ import java.util.Locale;
  * Created by david.burgos
  */
 public class EventsFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
+    //TODO Refactor with BaseSubscriberFragment. Create interfaces and inheritance, it has the same methods.
+    //TODO Refactor fragment_events and fragment_subscriber. Add <include>, it has the same structure.
 
     private Event mEvent;
     protected LatLng mLatLng;
