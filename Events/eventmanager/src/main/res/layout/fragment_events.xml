@@ -106,7 +106,7 @@
                                         android:background="#00000000"
                                         android:ems="10"
                                         android:hint="@string/edit_text_title_hint"
-                                        android:inputType="textShortMessage"
+                                        android:inputType="textCapSentences"
                                         android:paddingTop="15dp"/>
                                 </com.globant.eventscorelib.utils.ErrorLabelLayout>
                             </LinearLayout>
@@ -154,7 +154,7 @@
                                         android:background="#00000000"
                                         android:ems="10"
                                         android:hint="@string/edit_text_short_description_hint"
-                                        android:inputType="textShortMessage"
+                                        android:inputType="textCapSentences"
                                         android:paddingTop="15dp"/>
                                 </com.globant.eventscorelib.utils.ErrorLabelLayout>
                             </LinearLayout>
@@ -201,7 +201,7 @@
                                         android:background="#00000000"
                                         android:ems="10"
                                         android:hint="@string/edit_text_full_description_hint"
-                                        android:inputType="textShortMessage"
+                                        android:inputType="textCapSentences"
                                         android:paddingTop="15dp"/>
                                 </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
@@ -260,7 +260,7 @@
                                         android:background="#00000000"
                                         android:ems="10"
                                         android:hint="@string/texView_Add_Info_Title"
-                                        android:inputType="textShortMessage"
+                                        android:inputType="textCapSentences"
                                         android:paddingTop="15dp"/>
                                 </com.globant.eventscorelib.utils.ErrorLabelLayout>
                             </LinearLayout>
@@ -307,7 +307,7 @@
                                         android:background="#00000000"
                                         android:ems="10"
                                         android:hint="@string/text_view_hashtag"
-                                        android:inputType="textCapWords"
+                                        android:inputType="textCapSentences"
                                         android:paddingTop="15dp"/>
                                 </com.globant.eventscorelib.utils.ErrorLabelLayout>
                             </LinearLayout>
@@ -443,7 +443,7 @@
                                         android:background="#00000000"
                                         android:ems="10"
                                         android:hint="@string/textView_Event_Language_Title"
-                                        android:inputType="textMultiLine"
+                                        android:inputType="textCapSentences"
                                         android:paddingTop="15dp"/>
                                 </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
@@ -663,7 +663,7 @@
                                         android:background="#00000000"
                                         android:ems="10"
                                         android:hint="@string/textView_Event_Address_Title"
-                                        android:inputType="textPersonName"
+                                        android:inputType="textCapSentences"
                                         android:paddingTop="15dp"/>
                                 </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
@@ -722,7 +722,7 @@
                                         android:background="#00000000"
                                         android:ems="10"
                                         android:hint="@string/edit_text_country_hint"
-                                        android:inputType="textPersonName"
+                                        android:inputType="textCapSentences"
                                         android:paddingTop="15dp"/>
                                 </com.globant.eventscorelib.utils.ErrorLabelLayout>
 
@@ -771,7 +771,7 @@
                                         android:background="#00000000"
                                         android:ems="10"
                                         android:hint="@string/edit_text_city_hint"
-                                        android:inputType="textPersonName"
+                                        android:inputType="textCapSentences"
                                         android:paddingTop="15dp"/>
                                 </com.globant.eventscorelib.utils.ErrorLabelLayout>
 

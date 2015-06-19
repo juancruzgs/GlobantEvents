@@ -72,7 +72,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private ImageView mIconTwitter;
     private ImageView mIconPhone;
     private ImageView mIconEmail;
-    private ImageView mIconEnglishKnowledge;
+//    private ImageView mIconEnglishKnowledge;
     private ImageView mIconFirstName;
     private ImageView mIconToChange;
     private Drawable mDrawableToApply;
@@ -161,17 +161,17 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private void setOnFocusListeners() {
         View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
             public void onFocusChange(View view, boolean gainFocus) {
-                getIconToTint(view);
+                TintInformation tintInformation = getIconToTint(view);
 //                AppCompatEditText editTextToChangeHint = (AppCompatEditText) view;
                 //onFocus
                 if (gainFocus) {
-                    tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.ambar));
-                    mErrorLabelLayout.clearError();
+                    tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.ambar));
+                    tintInformation.getErrorLabelLayout().clearError();
 //                    editTextToChangeHint.setHint("");
                 }
                 //onBlur
                 else {
-                    tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
+                    tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.grey_icon));
 //                    mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
 //                    editTextToChangeHint.setHint(mHintToReturn);
                 }
@@ -287,7 +287,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mIconEmail = (ImageView) rootView.findViewById(R.id.icon_email);
         mIconCountry = (ImageView) rootView.findViewById(R.id.icon_country);
         mIconCity = (ImageView) rootView.findViewById(R.id.icon_city);
-        mIconEnglishKnowledge = (ImageView) rootView.findViewById(R.id.icon_language);
+//        mIconEnglishKnowledge = (ImageView) rootView.findViewById(R.id.icon_language);
         mIconTwitter = (ImageView) rootView.findViewById(R.id.icon_twitter);
 
         mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
@@ -407,19 +407,19 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
     private void tintRequiredIconsAndShowError(EditText requiredField) {
-        getIconToTint(requiredField);
-        if (requiredField.getText().toString().trim().length() == 0) {
-            mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
-            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.red_error));
+        TintInformation tintInformation = getIconToTint(requiredField);
+        if (requiredField.getText().toString().isEmpty()) {
+            tintInformation.getErrorLabelLayout().setError(getResources().getString(R.string.field_required));
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.red_error));
             mSavePreferences = false;
         } else {
-            tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.grey_icon));
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.grey_icon));
         }
 
         if (requiredField == mEditTextEmail) {
-            if ((!emailPattern.matcher(mEditTextEmail.getText().toString()).matches()) && (!(requiredField.getText().toString().trim().length() == 0))) {
-                mErrorLabelLayout.setError(getResources().getString(R.string.email_required));
-                tintIcon(mIconToChange, mDrawableToApply, getResources().getColor(R.color.red_error));
+            if ((!emailPattern.matcher(mEditTextEmail.getText().toString()).matches()) && (!(requiredField.getText().toString().isEmpty()))) {
+                tintInformation.getErrorLabelLayout().setError(getResources().getString(R.string.email_required));
+                tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.red_error));
                 mSavePreferences = false;
             }
         }
