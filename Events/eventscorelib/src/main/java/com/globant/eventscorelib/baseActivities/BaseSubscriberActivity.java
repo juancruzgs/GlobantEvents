@@ -41,7 +41,7 @@ public class BaseSubscriberActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        mBaseSubscriberFragment.tintAllGrey();
+//        mBaseSubscriberFragment.tintAllIconsGrey();
         finish();
         overridePendingTransition(R.anim.nothing, R.anim.top_out);
     }

@@ -24,7 +24,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,6 +31,7 @@ import android.widget.Toast;
 
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.utils.TintInformation;
 import com.globant.eventscorelib.utils.easterEggs.BaseEasterEgg;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
@@ -63,7 +63,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private AppCompatEditText mEditTextCountry;
     private AppCompatEditText mEditTextCity;
     private AppCompatCheckBox mCheckBoxEnglishKnowledge;
-    private String mHintToReturn;
     private ImageView mIconOccupation;
     private ImageView mIconLastName;
     private ImageView mIconCountry;
@@ -71,12 +70,9 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private ImageView mIconTwitter;
     private ImageView mIconPhone;
     private ImageView mIconEmail;
-    private ImageView mIconEnglishKnowledge;
     private ImageView mIconFirstName;
-    private ImageView mIconToChange;
-    private Drawable mDrawableToApply;
     private final int CAMERA_CAPTURE = 1;
-    //    final int CROP_PIC = 2;
+
     private ErrorLabelLayout mErrorLabelLayoutFirstName;
     private ErrorLabelLayout mErrorLabelLayoutLastName;
     private ErrorLabelLayout mErrorLabelLayoutEmail;
@@ -85,7 +81,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private ErrorLabelLayout mErrorLabelLayoutCity;
     private ErrorLabelLayout mErrorLabelLayoutCountry;
     private ErrorLabelLayout mErrorLabelLayoutTwitter;
-    private ErrorLabelLayout mErrorLabelLayout;
     private final Pattern emailPattern = Patterns.EMAIL_ADDRESS;
     private Boolean mSavePreferences;
     private LinearLayout mLayoutToFocus;
@@ -116,48 +111,100 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
+        if (!mGloberDetected) {
+            subscribeEggListener(this);
+//            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+//            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
     public View onCreateEventView(LayoutInflater inflater, ViewGroup container,
                                   Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_subscriber, container, false);
         wireUpViews(rootView);
         prepareImageButton();
+        setOnFocusListeners();
         mPhotoTaken = false;
         mSubscriber = new Subscriber();
-        checkPreferences();
-        setOnFocusListeners();
+        populateInfo();
         hideUtilsAndShowContentOverlay();
         mDoneClicked = false;
         return rootView;
     }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false"))) {
-                doneClick();
-            }
+    public void wireUpViews(View rootView) {
+        mEditTextFirstName = (AppCompatEditText) rootView.findViewById(R.id.edit_text_first_name);
+        mEditTextLastName = (AppCompatEditText) rootView.findViewById(R.id.edit_text_last_name);
+        mEditTextPhone = (AppCompatEditText) rootView.findViewById(R.id.edit_text_phone);
+        mEditTextOccupation = (AppCompatEditText) rootView.findViewById(R.id.edit_text_occupation);
+        mEditTextTwitter = (AppCompatEditText) rootView.findViewById(R.id.edit_text_twitter);
+        mEditTextEmail = (AppCompatEditText) rootView.findViewById(R.id.edit_text_email);
+        mEditTextCountry = (AppCompatEditText) rootView.findViewById(R.id.edit_text_country);
+        mEditTextCity = (AppCompatEditText) rootView.findViewById(R.id.edit_text_city);
 
-            Bitmap bitmapToSave = savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
-            mPhotoProfile.setImageBitmap(bitmapToSave);
-            mPhotoTaken = Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
-//            if (mPhotoTaken){
-//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
-        }
+        mCheckBoxEnglishKnowledge = (AppCompatCheckBox) rootView.findViewById(R.id.check_box_english_knowledge);
+
+        mFloatingActionButtonPhoto = (ActionButton) rootView.findViewById(R.id.fab);
+
+        mPhotoProfile = (ImageView) rootView.findViewById(R.id.header);
+        mIconFirstName = (ImageView) rootView.findViewById(R.id.icon_first_name);
+        mIconLastName = (ImageView) rootView.findViewById(R.id.icon_last_name);
+        mIconOccupation = (ImageView) rootView.findViewById(R.id.icon_occupation);
+        mIconPhone = (ImageView) rootView.findViewById(R.id.icon_phone);
+        mIconEmail = (ImageView) rootView.findViewById(R.id.icon_email);
+        mIconCountry = (ImageView) rootView.findViewById(R.id.icon_country);
+        mIconCity = (ImageView) rootView.findViewById(R.id.icon_city);
+        mIconTwitter = (ImageView) rootView.findViewById(R.id.icon_twitter);
+
+        mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
+        mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_last_name);
+        mErrorLabelLayoutPhone = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutPhone);
+        mErrorLabelLayoutEmail = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEmail);
+        mErrorLabelLayoutTwitter = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorTwitter);
+        mErrorLabelLayoutOccupation = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorOccupation);
+        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_city);
+        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
+
+        mLayoutToFocus = (LinearLayout) rootView.findViewById(R.id.autoFocusable);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(CoreConstants.DONE_CLICKED, mDoneClicked.toString());
-        outState.putString(CoreConstants.PHOTO_TAKEN, mPhotoTaken.toString());
-        BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
-        Bitmap bitmapToSave = drawable.getBitmap();
-        outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
+    private void prepareImageButton() {
+        mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cameraIntent = new Intent(CoreConstants.IMAGE_CAPTURE);
+    /*create instance of File with name img.jpg*/
+                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
+    /*put uri as extra in intent object*/
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+                startActivityForResult(cameraIntent, CAMERA_CAPTURE);
+            }
+        });
     }
 
     private void setOnFocusListeners() {
+        View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
+            public void onFocusChange(View view, boolean gainFocus) {
+                TintInformation tintInformation = getIconToTint(view);
+                //onFocus
+                if (gainFocus) {
+                    tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.ambar));
+                    tintInformation.getErrorLabelLayout().clearError();
+                }
+                //onBlur
+                else {
+                    tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.grey_icon));
+                }
+            }
+        };
+
         mEditTextFirstName.setOnFocusChangeListener(editTextFocus);
         mEditTextLastName.setOnFocusChangeListener(editTextFocus);
         mEditTextCountry.setOnFocusChangeListener(editTextFocus);
@@ -166,102 +213,9 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mEditTextPhone.setOnFocusChangeListener(editTextFocus);
         mEditTextEmail.setOnFocusChangeListener(editTextFocus);
         mEditTextOccupation.setOnFocusChangeListener(editTextFocus);
-        mCheckBoxEnglishKnowledge.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language_ambar));
-                if (mIconToChange != null) {
-                    tintGrey();
-                    mIconToChange.setImageDrawable(mDrawableToApply);
-                }
-            }
-        });
     }
 
-    private View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
-        public void onFocusChange(View view, boolean gainFocus) {
-            getIconToTint(view);
-            AppCompatEditText editTextToChangeHint = (AppCompatEditText) view;
-            //onFocus
-            if (gainFocus) {
-                mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-                DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.ambar));
-                mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-                mIconToChange.setImageDrawable(mDrawableToApply);
-                mErrorLabelLayout.clearError();
-                editTextToChangeHint.setHint("");
-            }
-            //onBlur
-            else {
-                tintGrey();
-                mIconToChange.setImageDrawable(mDrawableToApply);
-                mIconEnglishKnowledge.setImageDrawable(getResources().getDrawable(R.mipmap.ic_language));
-                editTextToChangeHint.setHint(mHintToReturn);
-            }
-        }
-    };
-
-    private void getIconToTint(View view) {
-        int id = view.getId();
-        //noinspection SimplifiableIfStatement
-        if (id == (R.id.edit_text_first_name)) {
-            mIconToChange = mIconFirstName;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
-            mErrorLabelLayout = mErrorLabelLayoutFirstName;
-            mHintToReturn = getResources().getString(R.string.edit_text_first_name_hint);
-
-        } else if (id == (R.id.edit_text_last_name)) {
-            mIconToChange = mIconLastName;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_last_name);
-            mErrorLabelLayout = mErrorLabelLayoutLastName;
-            mHintToReturn = getResources().getString(R.string.edit_text_last_name_hint);
-
-
-        } else if (id == (R.id.edit_text_phone)) {
-            mIconToChange = mIconPhone;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_phone);
-            mErrorLabelLayout = mErrorLabelLayoutPhone;
-            mHintToReturn = getResources().getString(R.string.edit_text_phone_hint);
-
-        } else if (id == (R.id.edit_text_occupation)) {
-            mIconToChange = mIconOccupation;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_occupation);
-            mErrorLabelLayout = mErrorLabelLayoutOccupation;
-            mHintToReturn = getResources().getString(R.string.edit_text_occupation_hint);
-
-
-        } else if (id == (R.id.edit_text_email)) {
-            mIconToChange = mIconEmail;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_email);
-            mErrorLabelLayout = mErrorLabelLayoutEmail;
-            mHintToReturn = getResources().getString(R.string.edit_text_email_hint);
-
-
-        } else if (id == (R.id.edit_text_country)) {
-            mIconToChange = mIconCountry;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_country);
-            mErrorLabelLayout = mErrorLabelLayoutCountry;
-            mHintToReturn = getResources().getString(R.string.edit_text_country_hint);
-
-
-        } else if (id == (R.id.edit_text_city)) {
-            mIconToChange = mIconCity;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_city);
-            mErrorLabelLayout = mErrorLabelLayoutCity;
-            mHintToReturn = getResources().getString(R.string.edit_text_city_hint);
-
-
-        } else if (id == (R.id.edit_text_twitter)) {
-            mIconToChange = mIconTwitter;
-            mDrawableToApply = getResources().getDrawable(R.mipmap.ic_twitter1);
-            mErrorLabelLayout = mErrorLabelLayoutTwitter;
-            mHintToReturn = getResources().getString(R.string.edit_text_twitter_hint);
-
-        }
-    }
-
-
-    private void checkPreferences() {
+    private void populateInfo() {
         File f = new File(CoreConstants.SHARED_PREF_ROOT + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_DIR + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_FILE);
         if (f.exists()) {
             retrieveSubscriberPreferences();
@@ -288,41 +242,95 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         }
     }
 
-    public void wireUpViews(View rootView) {
-        mEditTextFirstName = (AppCompatEditText) rootView.findViewById(R.id.edit_text_first_name);
-        mEditTextLastName = (AppCompatEditText) rootView.findViewById(R.id.edit_text_last_name);
-        mEditTextPhone = (AppCompatEditText) rootView.findViewById(R.id.edit_text_phone);
-        mEditTextOccupation = (AppCompatEditText) rootView.findViewById(R.id.edit_text_occupation);
-        mEditTextTwitter = (AppCompatEditText) rootView.findViewById(R.id.edit_text_twitter);
-        mEditTextEmail = (AppCompatEditText) rootView.findViewById(R.id.edit_text_email);
-        mEditTextCountry = (AppCompatEditText) rootView.findViewById(R.id.edit_text_country);
-        mEditTextCity = (AppCompatEditText) rootView.findViewById(R.id.edit_text_city);
+    public void doneClick() {
+        mSavePreferences = true;
+        mDoneClicked = true;
+        tintRequiredIconsAndShowError(mEditTextFirstName);
+        tintRequiredIconsAndShowError(mEditTextLastName);
+        tintRequiredIconsAndShowError(mEditTextPhone);
+        tintRequiredIconsAndShowError(mEditTextEmail);
+        tintRequiredIconsAndShowError(mEditTextOccupation);
+        tintRequiredIconsAndShowError(mEditTextCity);
+        tintRequiredIconsAndShowError(mEditTextCountry);
+    }
 
-        mCheckBoxEnglishKnowledge = (AppCompatCheckBox) rootView.findViewById(R.id.check_box_english_knowledge);
+    private void tintIcon(ImageView imageView, Drawable drawable, int color) {
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, color);
+        drawable = DrawableCompat.unwrap(drawable);
+        if (imageView != null) {
+            imageView.setImageDrawable(drawable);
+        }
+    }
 
-        mFloatingActionButtonPhoto = (ActionButton) rootView.findViewById(R.id.fab);
+    private TintInformation getIconToTint(View view) {
+        int id = view.getId();
+        TintInformation tintInformation = null;
 
-        mPhotoProfile = (ImageView) rootView.findViewById(R.id.header);
-        mIconFirstName = (ImageView) rootView.findViewById(R.id.icon_first_name);
-        mIconLastName = (ImageView) rootView.findViewById(R.id.icon_last_name);
-        mIconOccupation = (ImageView) rootView.findViewById(R.id.icon_occupation);
-        mIconPhone = (ImageView) rootView.findViewById(R.id.icon_phone);
-        mIconEmail = (ImageView) rootView.findViewById(R.id.icon_email);
-        mIconCountry = (ImageView) rootView.findViewById(R.id.icon_country);
-        mIconCity = (ImageView) rootView.findViewById(R.id.icon_city);
-        mIconEnglishKnowledge = (ImageView) rootView.findViewById(R.id.icon_language);
-        mIconTwitter = (ImageView) rootView.findViewById(R.id.icon_twitter);
+        if (id == R.id.edit_text_first_name) {
+            tintInformation = new TintInformation(mIconFirstName, getResources().getDrawable(R.mipmap.ic_first_name), mErrorLabelLayoutFirstName);
+        } else if (id == R.id.edit_text_last_name) {
+            tintInformation = new TintInformation(mIconLastName, getResources().getDrawable(R.mipmap.ic_last_name), mErrorLabelLayoutLastName);
+        } else if (id == R.id.edit_text_phone) {
+            tintInformation = new TintInformation(mIconPhone, getResources().getDrawable(R.mipmap.ic_phone), mErrorLabelLayoutPhone);
+        } else if (id == R.id.edit_text_occupation) {
+            tintInformation = new TintInformation(mIconOccupation, getResources().getDrawable(R.mipmap.ic_occupation), mErrorLabelLayoutOccupation);
+        } else if (id == R.id.edit_text_email) {
+            tintInformation = new TintInformation(mIconEmail, getResources().getDrawable(R.mipmap.ic_email), mErrorLabelLayoutEmail);
+        } else if (id == R.id.edit_text_country) {
+            tintInformation = new TintInformation(mIconCountry, getResources().getDrawable(R.mipmap.ic_country), mErrorLabelLayoutCountry);
+        } else if (id == R.id.edit_text_city) {
+            tintInformation = new TintInformation(mIconCity, getResources().getDrawable(R.mipmap.ic_city), mErrorLabelLayoutCity);
+        } else if (id == R.id.edit_text_twitter) {
+            tintInformation = new TintInformation(mIconTwitter, getResources().getDrawable(R.mipmap.ic_twitter1), mErrorLabelLayoutTwitter);
+        }
+        return tintInformation;
+    }
 
-        mErrorLabelLayoutFirstName = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutFirstName);
-        mErrorLabelLayoutLastName = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_layout_last_name);
-        mErrorLabelLayoutPhone = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutPhone);
-        mErrorLabelLayoutEmail = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorLayoutEmail);
-        mErrorLabelLayoutTwitter = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorTwitter);
-        mErrorLabelLayoutOccupation = (ErrorLabelLayout) rootView.findViewById(R.id.nameErrorOccupation);
-        mErrorLabelLayoutCity = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_city);
-        mErrorLabelLayoutCountry = (ErrorLabelLayout) rootView.findViewById(R.id.name_error_country);
+    private void tintRequiredIconsAndShowError(EditText requiredField) {
+        TintInformation tintInformation = getIconToTint(requiredField);
+        if (requiredField.getText().toString().isEmpty()) {
+            tintInformation.getErrorLabelLayout().setError(getResources().getString(R.string.field_required));
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.red_error));
+            mSavePreferences = false;
+        } else {
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.grey_icon));
+        }
 
-        mLayoutToFocus = (LinearLayout) rootView.findViewById(R.id.autoFocusable);
+        if (requiredField == mEditTextEmail) {
+            if ((!emailPattern.matcher(mEditTextEmail.getText().toString()).matches()) && (!(requiredField.getText().toString().isEmpty()))) {
+                tintInformation.getErrorLabelLayout().setError(getResources().getString(R.string.email_required));
+                tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(R.color.red_error));
+                mSavePreferences = false;
+            }
+        }
+    }
+
+    public void tintAllIconsGrey() {
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_first_name), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_last_name), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_phone), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_email), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_country), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_city), getResources().getColor(R.color.grey_icon));
+        tintIcon(null, getResources().getDrawable(R.mipmap.ic_occupation), getResources().getColor(R.color.grey_icon));
+    }
+
+    private void saveSubscriberObject() {
+        mSubscriber.setName(mEditTextFirstName.getText().toString());
+        mSubscriber.setLastName(mEditTextLastName.getText().toString());
+        mSubscriber.setPhone(mEditTextPhone.getText().toString());
+        mSubscriber.setOccupation(mEditTextOccupation.getText().toString());
+        mSubscriber.setEmail(mEditTextEmail.getText().toString());
+        mSubscriber.setCountry(mEditTextCountry.getText().toString());
+        mSubscriber.setCity(mEditTextCity.getText().toString());
+        if (!mEditTextTwitter.getText().toString().isEmpty()) {
+            mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
+        } else {
+            mSubscriber.setTwitterUser(null);
+        }
+        mSubscriber.setPicture(((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap());
+        mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
     }
 
     @Override
@@ -352,33 +360,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         }
     }
 
-    private void prepareImageButton() {
-        mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cameraIntent = new Intent(CoreConstants.IMAGE_CAPTURE);
-    /*create instance of File with name img.jpg*/
-                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
-    /*put uri as extra in intent object*/
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-                startActivityForResult(cameraIntent, CAMERA_CAPTURE);
-            }
-        });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
-        if (!mGloberDetected) {
-            subscribeEggListener(this);
-//            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-//            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-//            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -392,7 +373,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         // as you specify a parent activity in AndroidManifest.xml.
         mLayoutToFocus.requestFocus();
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
+
         if (id == R.id.action_done) {
             doneClick();
             if ((mSavePreferences) && (mPhotoTaken)) {
@@ -417,82 +398,30 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         return super.onOptionsItemSelected(item);
     }
 
-    public void doneClick() {
-        mSavePreferences = true;
-        mDoneClicked = true;
-        tintRequiredIconsAndShowError(mEditTextFirstName);
-        tintRequiredIconsAndShowError(mEditTextLastName);
-        tintRequiredIconsAndShowError(mEditTextPhone);
-        tintRequiredIconsAndShowError(mEditTextEmail);
-        tintRequiredIconsAndShowError(mEditTextOccupation);
-        tintRequiredIconsAndShowError(mEditTextCity);
-        tintRequiredIconsAndShowError(mEditTextCountry);
-    }
-
-    private void tintRequiredIconsAndShowError(EditText requiredField) {
-        getIconToTint(requiredField);
-        if (requiredField.getText().toString().trim().length() == 0) {
-            mErrorLabelLayout.setError(getResources().getString(R.string.field_required));
-            mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-            DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
-            mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-            mIconToChange.setImageDrawable(mDrawableToApply);
-            mSavePreferences = false;
-        } else {
-            tintGrey();
-            mIconToChange.setImageDrawable(mDrawableToApply);
-        }
-
-        if (requiredField == mEditTextEmail) {
-            if ((!emailPattern.matcher(mEditTextEmail.getText().toString()).matches()) && (!(requiredField.getText().toString().trim().length() == 0))) {
-                mErrorLabelLayout.setError(getResources().getString(R.string.email_required));
-                mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-                DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.red_error));
-                mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-                mIconToChange.setImageDrawable(mDrawableToApply);
-                mSavePreferences = false;
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (!(savedInstanceState.getString(CoreConstants.DONE_CLICKED).equals("false"))) {
+                doneClick();
             }
+
+            Bitmap bitmapToSave = savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
+            mPhotoProfile.setImageBitmap(bitmapToSave);
+            mPhotoTaken = Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
+//            if (mPhotoTaken){
+//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
         }
     }
 
-    private void tintGrey() {
-        mDrawableToApply = DrawableCompat.wrap(mDrawableToApply);
-        DrawableCompat.setTint(mDrawableToApply, getResources().getColor(R.color.grey_icon));
-        mDrawableToApply = DrawableCompat.unwrap(mDrawableToApply);
-    }
-
-    public void tintAllGrey() {
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_first_name);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_last_name);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_phone);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_email);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_country);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_city);
-        tintGrey();
-        mDrawableToApply = getResources().getDrawable(R.mipmap.ic_occupation);
-        tintGrey();
-    }
-
-    private void saveSubscriberObject() {
-        mSubscriber.setName(mEditTextFirstName.getText().toString());
-        mSubscriber.setLastName(mEditTextLastName.getText().toString());
-        mSubscriber.setPhone(mEditTextPhone.getText().toString());
-        mSubscriber.setOccupation(mEditTextOccupation.getText().toString());
-        mSubscriber.setEmail(mEditTextEmail.getText().toString());
-        mSubscriber.setCountry(mEditTextCountry.getText().toString());
-        mSubscriber.setCity(mEditTextCity.getText().toString());
-        if (!mEditTextTwitter.getText().toString().isEmpty()) {
-            mSubscriber.setTwitterUser(mEditTextTwitter.getText().toString());
-        } else {
-            mSubscriber.setTwitterUser(null);
-        }
-        mSubscriber.setPicture(((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap());
-        mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CoreConstants.DONE_CLICKED, mDoneClicked.toString());
+        outState.putString(CoreConstants.PHOTO_TAKEN, mPhotoTaken.toString());
+        BitmapDrawable drawable = (BitmapDrawable) mPhotoProfile.getDrawable();
+        Bitmap bitmapToSave = drawable.getBitmap();
+        outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
     }
 
     @Override
@@ -578,7 +507,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
     @Override
     public void onDestroy() {
-        tintAllGrey();
+        tintAllIconsGrey();
         unsubscribeEggListener(this);
         super.onDestroy();
     }

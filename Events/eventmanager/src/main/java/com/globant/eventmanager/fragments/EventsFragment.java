@@ -52,6 +52,7 @@ import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
+import com.globant.eventscorelib.utils.TintInformation;
 import com.google.android.gms.maps.model.LatLng;
 import com.nineoldandroids.view.ViewHelper;
 import com.software.shell.fab.ActionButton;
@@ -67,6 +68,8 @@ import java.util.Locale;
  * Created by david.burgos
  */
 public class EventsFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
+    //TODO Refactor with BaseSubscriberFragment. Create interfaces and inheritance, it has the same methods.
+    //TODO Refactor fragment_events and fragment_subscriber. Add <include>, it has the same structure.
 
     private Event mEvent;
     protected LatLng mLatLng;
@@ -137,6 +140,14 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        BaseEventListFragment.mIsDataSetChanged = false;
+        mBindingKey = this.getClass().getSimpleName();
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         wireUpViews(rootView);
@@ -147,110 +158,8 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         mEvent = EventsManagerPagerActivity.getInstance().getEvent();
         populateInfo(mEvent);
         hideUtilsAndShowContentOverlay();
-        setHasOptionsMenu(true);
         setRetainInstance(true);
         return rootView;
-    }
-
-    private void populateInfo(Event event) {
-        mEventTitle.setText(event.getTitle());
-        mEditTextTitle.setText(event.getTitle());
-        mEditTextFullDescription.setText(event.getFullDescription());
-        mEditTextShortDescription.setText(event.getShortDescription());
-        mEditTextAdditionalInfo.setText(event.getAdditionalInfo());
-        String[] category = getResources().getStringArray(R.array.category_entries);
-        int CategoryIndex = Arrays.asList(category).indexOf(event.getCategory());
-        if (CategoryIndex >= 0) {
-            mSpinnerCategory.setSelection(CategoryIndex);
-        }
-        mSpinnerPublic.setSelection(event.isPublic() ? 0 : 1);
-        mEditTextHashtag.setText(event.getHashtag());
-        mEditTextLanguage.setText(event.getLanguage());
-        if (event.getStartDate() != null) {
-            mEditTextStartDate.setText(mDateFormatter.format(event.getStartDate()));
-            mEditTextStartTime.setText(mTimeFormatter.format(event.getStartDate()));
-            mStartDate.setTime(event.getStartDate());
-        }
-        if (event.getEndDate() != null) {
-            mEditTextEndDate.setText(mDateFormatter.format(event.getEndDate()));
-            mEditTextEndTime.setText(mTimeFormatter.format(event.getEndDate()));
-            mEndDate.setTime(event.getEndDate());
-        }
-        mEditTextAddress.setText(event.getAddress());
-        mEditTextCountry.setText(event.getCountry());
-        mEditTextCity.setText(event.getCity());
-        mLatLng = event.getCoordinates();
-
-        if (event.getEventLogo() != null) {
-            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mPhotoEvent.setImageBitmap(event.getEventLogo());
-        } else {
-            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
-            mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
-        }
-    }
-
-    private void retrieveInfo() {
-        if (mEvent != null) {
-            mEvent.setTitle(mEditTextTitle.getText().toString());
-            mEvent.setFullDescription(mEditTextFullDescription.getText().toString());
-            mEvent.setShortDescription(mEditTextShortDescription.getText().toString());
-            mEvent.setAdditionalInfo(mEditTextAdditionalInfo.getText().toString());
-            mEvent.setHashtag(mEditTextHashtag.getText().toString());
-            mEvent.setLanguage(mEditTextLanguage.getText().toString());
-            if (!mEditTextEndDate.getText().toString().isEmpty())
-                mEvent.setEndDate(mEndDate.getTime());
-            if (!mEditTextStartDate.getText().toString().isEmpty())
-                mEvent.setStartDate(mStartDate.getTime());
-            mEvent.setCategory(mSpinnerCategory.getSelectedItem().toString());
-            mEvent.setCity(mEditTextCity.getText().toString());
-            mEvent.setAddress(mEditTextAddress.getText().toString());
-            mEvent.setPublic(mSpinnerPublic.getSelectedItemPosition() == 0);
-            mEvent.setCountry(mEditTextCountry.getText().toString());
-            mEvent.setEventLogo(((BitmapDrawable) mPhotoEvent.getDrawable()).getBitmap());
-            mEvent.setIcon(null);
-            mEvent.setCoordinates(mLatLng);
-        }
-    }
-
-    private void setOnFocusListeners() {
-        View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                onViewFocusChange(view, hasFocus);
-            }
-        };
-
-        mEditTextTitle.setOnFocusChangeListener(editTextFocus);
-        mEditTextFullDescription.setOnFocusChangeListener(editTextFocus);
-        mEditTextShortDescription.setOnFocusChangeListener(editTextFocus);
-        mEditTextAdditionalInfo.setOnFocusChangeListener(editTextFocus);
-        mEditTextHashtag.setOnFocusChangeListener(editTextFocus);
-        mEditTextLanguage.setOnFocusChangeListener(editTextFocus);
-        mEditTextAddress.setOnFocusChangeListener(editTextFocus);
-        mEditTextCountry.setOnFocusChangeListener(editTextFocus);
-        mEditTextCity.setOnFocusChangeListener(editTextFocus);
-    }
-
-    public void onViewFocusChange(View view, boolean gainFocus) {
-        TintInformation tintInformation = getIconToTint(view);
-
-        //onFocus
-        if (gainFocus) {
-            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.ambar));
-            tintInformation.getErrorLabelLayout().clearError();
-        }
-        //onBlur
-        else {
-            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
-        }
-    }
-
-    private void tintIcon(ImageView imageView, Drawable drawable, int color){
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, color);
-        drawable = DrawableCompat.unwrap(drawable);
-        imageView.setImageDrawable(drawable);
     }
 
     private void wireUpViews(View rootView) {
@@ -378,130 +287,6 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         });
     }
 
-    private DatePickerDialog getDatePickerDialog(final Calendar date, final AppCompatEditText editText, final SimpleDateFormat dateFormatter){
-        return new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                date.set(year, monthOfYear, dayOfMonth);
-                editText.setText(dateFormatter.format(date.getTime()));
-            }
-
-        }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
-    }
-
-    private TimePickerDialog getTimePickerDialog(final Calendar date, final AppCompatEditText editText, final SimpleDateFormat timeFormatter,
-                                                 int hour, int minute){
-        return new TimePickerDialog(getActivity(),
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        date.set(Calendar.MINUTE, minute);
-
-                        editText.setText(timeFormatter.format(date.getTime()));
-                    }
-                },
-                hour, minute,
-                DateFormat.is24HourFormat(getActivity()));
-    }
-
-    private View.OnFocusChangeListener getDateEditTextFocusListener(final AlertDialog dialog){
-        return new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                onViewFocusChange(view, hasFocus);
-                if (hasFocus) {
-                    dialog.show();
-                }
-            }
-        };
-    }
-
-    private void setDateTimeField() {
-        // date pickers
-        mDateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-        mTimeFormatter = new SimpleDateFormat("hh:mm a", Locale.US);
-
-        mStartDate = Calendar.getInstance();
-        mEndDate = Calendar.getInstance();
-
-        final DatePickerDialog startDatePicker =  getDatePickerDialog(mStartDate, mEditTextStartDate, mDateFormatter);
-        final DatePickerDialog endDatePicker = getDatePickerDialog(mEndDate, mEditTextEndDate, mDateFormatter);
-        startDatePicker.setTitle(R.string.edit_text_start_date_hint);
-        startDatePicker.setIcon(R.mipmap.ic_event_start_date);
-        endDatePicker.setTitle(R.string.edit_text_end_date_hint);
-        endDatePicker.setIcon(R.mipmap.ic_event_end_date);
-
-        mEditTextStartDate.setOnFocusChangeListener(getDateEditTextFocusListener(startDatePicker));
-        mEditTextEndDate.setOnFocusChangeListener(getDateEditTextFocusListener(endDatePicker));
-
-        final TimePickerDialog startTimePicker = getTimePickerDialog(mStartDate, mEditTextStartDate, mTimeFormatter,
-                mStartDate.get(Calendar.HOUR_OF_DAY), mStartDate.get(Calendar.MINUTE));
-        final TimePickerDialog endTimePicker = getTimePickerDialog(mEndDate, mEditTextEndTime, mTimeFormatter,
-                mEndDate.get(Calendar.HOUR_OF_DAY), mEndDate.get(Calendar.MINUTE));
-        startTimePicker.setTitle(R.string.edit_text_start_time_hint);
-        startTimePicker.setIcon(R.mipmap.ic_start_time);
-        endTimePicker.setTitle(R.string.edit_text_end_time_hint);
-        endTimePicker.setIcon(R.mipmap.ic_end_time);
-
-        mEditTextStartTime.setOnFocusChangeListener(getDateEditTextFocusListener(startTimePicker));
-        mEditTextEndTime.setOnFocusChangeListener(getDateEditTextFocusListener(endTimePicker));
-    }
-
-    @Override
-    public void onDestroyView() {
-        tintAllIconsGrey();
-        super.onDestroyView();
-    }
-
-    @Override
-    public String getTitle() {
-        return getResources().getString(R.string.title_activity_event_detail);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case CoreConstants.PICTURE_SELECTION_REQUEST:
-                if (resultCode == Activity.RESULT_OK) {
-                    Uri targetUri = data.getData();
-                    Intent cropIntent = ConvertImage.performCrop(targetUri);
-                    startActivityForResult(cropIntent, CoreConstants.PICTURE_CROP_SELECTION_REQUEST);
-                }
-                break;
-            case CoreConstants.PICTURE_CROP_SELECTION_REQUEST:
-                if (resultCode == Activity.RESULT_OK) {
-                    Bundle extras = data.getExtras();
-                    if (extras != null) {
-                        Bitmap mPhoto = extras.getParcelable(CoreConstants.DATA);
-                        if (mPhoto != null) {
-                            mPhotoEvent.setImageBitmap(mPhoto);
-                            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            mEvent.setEventLogo(mPhoto);
-                        } else {
-                            mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
-                            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
-                            mEvent.setEventLogo(null);
-                        }
-                    }
-                }
-                break;
-            case CoreConstants.MAP_MANAGER_REQUEST:
-                if (resultCode == Activity.RESULT_OK) {
-                    Address address = data.getExtras().getParcelable(CoreConstants.MAP_ADDRESS_INTENT);
-                    if (address != null) {
-                        mEditTextCity.setText(address.getLocality());
-                        mEditTextCountry.setText(address.getCountryName());
-                        if (address.getMaxAddressLineIndex() > 0)
-                            mEditTextAddress.setText(address.getAddressLine(0));
-                        mLatLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    }
-                }
-                break;
-        }
-    }
-
     protected void prepareImageButton() {
         mMapIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -577,89 +362,168 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         });
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        BaseEventListFragment.mIsDataSetChanged = false;
-        mBindingKey = this.getClass().getSimpleName();
-        setHasOptionsMenu(true);
+    private void setOnFocusListeners() {
+        View.OnFocusChangeListener editTextFocus = new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                onViewFocusChange(view, hasFocus);
+            }
+        };
+
+        mEditTextTitle.setOnFocusChangeListener(editTextFocus);
+        mEditTextFullDescription.setOnFocusChangeListener(editTextFocus);
+        mEditTextShortDescription.setOnFocusChangeListener(editTextFocus);
+        mEditTextAdditionalInfo.setOnFocusChangeListener(editTextFocus);
+        mEditTextHashtag.setOnFocusChangeListener(editTextFocus);
+        mEditTextLanguage.setOnFocusChangeListener(editTextFocus);
+        mEditTextAddress.setOnFocusChangeListener(editTextFocus);
+        mEditTextCountry.setOnFocusChangeListener(editTextFocus);
+        mEditTextCity.setOnFocusChangeListener(editTextFocus);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        retrieveInfo();
-        EventsManagerPagerActivity.getInstance().setEvent(mEvent);
-        super.onSaveInstanceState(outState);
+    private void setDateTimeField() {
+        // date pickers
+        mDateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        mTimeFormatter = new SimpleDateFormat("hh:mm a", Locale.US);
+
+        mStartDate = Calendar.getInstance();
+        mEndDate = Calendar.getInstance();
+
+        final DatePickerDialog startDatePicker =  getDatePickerDialog(mStartDate, mEditTextStartDate, mDateFormatter);
+        final DatePickerDialog endDatePicker = getDatePickerDialog(mEndDate, mEditTextEndDate, mDateFormatter);
+        startDatePicker.setTitle(R.string.edit_text_start_date_hint);
+        startDatePicker.setIcon(R.mipmap.ic_event_start_date);
+        endDatePicker.setTitle(R.string.edit_text_end_date_hint);
+        endDatePicker.setIcon(R.mipmap.ic_event_end_date);
+
+        mEditTextStartDate.setOnFocusChangeListener(getDateEditTextFocusListener(startDatePicker));
+        mEditTextEndDate.setOnFocusChangeListener(getDateEditTextFocusListener(endDatePicker));
+
+        final TimePickerDialog startTimePicker = getTimePickerDialog(mStartDate, mEditTextStartDate, mTimeFormatter,
+                mStartDate.get(Calendar.HOUR_OF_DAY), mStartDate.get(Calendar.MINUTE));
+        final TimePickerDialog endTimePicker = getTimePickerDialog(mEndDate, mEditTextEndTime, mTimeFormatter,
+                mEndDate.get(Calendar.HOUR_OF_DAY), mEndDate.get(Calendar.MINUTE));
+        startTimePicker.setTitle(R.string.edit_text_start_time_hint);
+        startTimePicker.setIcon(R.mipmap.ic_start_time);
+        endTimePicker.setTitle(R.string.edit_text_end_time_hint);
+        endTimePicker.setIcon(R.mipmap.ic_end_time);
+
+        mEditTextStartTime.setOnFocusChangeListener(getDateEditTextFocusListener(startTimePicker));
+        mEditTextEndTime.setOnFocusChangeListener(getDateEditTextFocusListener(endTimePicker));
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_events, menu);
-        MenuItem item = menu.findItem(com.globant.eventmanager.R.id.events_action_delete);
-        if (EventsManagerPagerActivity.mEventAction == EventsManagerPagerActivity.ActionType.EDIT_EVENT) {
-            item.setVisible(true);
-        } else {
-            item.setVisible(false);
-        }
+    private DatePickerDialog getDatePickerDialog(final Calendar date, final AppCompatEditText editText, final SimpleDateFormat dateFormatter){
+        return new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date.set(year, monthOfYear, dayOfMonth);
+                editText.setText(dateFormatter.format(date.getTime()));
+            }
+
+        }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        boolean handled = false;
+    private TimePickerDialog getTimePickerDialog(final Calendar date, final AppCompatEditText editText, final SimpleDateFormat timeFormatter,
+                                                 int hour, int minute){
+        return new TimePickerDialog(getActivity(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        date.set(Calendar.MINUTE, minute);
 
-        if (id == com.globant.eventmanager.R.id.events_action_done) {
-            Boolean savePreferences;
-            savePreferences = tintRequiredIconsAndShowError(mEditTextTitle);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextFullDescription);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextShortDescription);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextHashtag);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextLanguage);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextStartDate);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextStartTime);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextEndDate);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextEndTime);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextAddress);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextCountry);
-            savePreferences &= tintRequiredIconsAndShowError(mEditTextCity);
-
-            if (savePreferences) {
-                if (mStartDate.compareTo(mEndDate) != -1) {
-                    showDateError();
-                } else if (mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
-                    Toast.makeText(getActivity(), getString(R.string.missing_photo), Toast.LENGTH_SHORT).show();
-                } else {
-                    retrieveInfo();
-
-                    switch (EventsManagerPagerActivity.mEventAction) {
-                        case CREATE_EVENT:
-                            mService.executeAction(BaseService.ACTIONS.EVENT_CREATE, getBindingKey(), mEvent);
-                            break;
-                        case EDIT_EVENT:
-                            mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, getBindingKey(), mEvent);
-                            break;
+                        editText.setText(timeFormatter.format(date.getTime()));
                     }
+                },
+                hour, minute,
+                DateFormat.is24HourFormat(getActivity()));
+    }
 
-                    tintAllIconsGrey();
+    private View.OnFocusChangeListener getDateEditTextFocusListener(final AlertDialog dialog){
+        return new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                onViewFocusChange(view, hasFocus);
+                if (hasFocus) {
+                    dialog.show();
                 }
-            } else {
-                Toast.makeText(getActivity(), getString(R.string.missing_fields), Toast.LENGTH_SHORT).show();
             }
+        };
+    }
 
-            handled = true;
+    public void onViewFocusChange(View view, boolean gainFocus) {
+        TintInformation tintInformation = getIconToTint(view);
+
+        //onFocus
+        if (gainFocus) {
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.ambar));
+            tintInformation.getErrorLabelLayout().clearError();
+        }
+        //onBlur
+        else {
+            tintIcon(tintInformation.getImageView(), tintInformation.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
+        }
+    }
+
+    private void populateInfo(Event event) {
+        mEventTitle.setText(event.getTitle());
+        mEditTextTitle.setText(event.getTitle());
+        mEditTextFullDescription.setText(event.getFullDescription());
+        mEditTextShortDescription.setText(event.getShortDescription());
+        mEditTextAdditionalInfo.setText(event.getAdditionalInfo());
+        String[] category = getResources().getStringArray(R.array.category_entries);
+        int CategoryIndex = Arrays.asList(category).indexOf(event.getCategory());
+        if (CategoryIndex >= 0) {
+            mSpinnerCategory.setSelection(CategoryIndex);
+        }
+        mSpinnerPublic.setSelection(event.isPublic() ? 0 : 1);
+        mEditTextHashtag.setText(event.getHashtag());
+        mEditTextLanguage.setText(event.getLanguage());
+        if (event.getStartDate() != null) {
+            mEditTextStartDate.setText(mDateFormatter.format(event.getStartDate()));
+            mEditTextStartTime.setText(mTimeFormatter.format(event.getStartDate()));
+            mStartDate.setTime(event.getStartDate());
+        }
+        if (event.getEndDate() != null) {
+            mEditTextEndDate.setText(mDateFormatter.format(event.getEndDate()));
+            mEditTextEndTime.setText(mTimeFormatter.format(event.getEndDate()));
+            mEndDate.setTime(event.getEndDate());
+        }
+        mEditTextAddress.setText(event.getAddress());
+        mEditTextCountry.setText(event.getCountry());
+        mEditTextCity.setText(event.getCity());
+        mLatLng = event.getCoordinates();
+
+        if (event.getEventLogo() != null) {
+            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mPhotoEvent.setImageBitmap(event.getEventLogo());
         } else {
-            if (id == R.id.events_action_delete) {
-                showDeleteConfirmationDialog();
-                handled = true;
-            }
+            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
+            mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
         }
+    }
 
-        if (!handled) {
-            handled = super.onOptionsItemSelected(item);
+    private void retrieveInfo() {
+        if (mEvent != null) {
+            mEvent.setTitle(mEditTextTitle.getText().toString());
+            mEvent.setFullDescription(mEditTextFullDescription.getText().toString());
+            mEvent.setShortDescription(mEditTextShortDescription.getText().toString());
+            mEvent.setAdditionalInfo(mEditTextAdditionalInfo.getText().toString());
+            mEvent.setHashtag(mEditTextHashtag.getText().toString());
+            mEvent.setLanguage(mEditTextLanguage.getText().toString());
+            if (!mEditTextEndDate.getText().toString().isEmpty())
+                mEvent.setEndDate(mEndDate.getTime());
+            if (!mEditTextStartDate.getText().toString().isEmpty())
+                mEvent.setStartDate(mStartDate.getTime());
+            mEvent.setCategory(mSpinnerCategory.getSelectedItem().toString());
+            mEvent.setCity(mEditTextCity.getText().toString());
+            mEvent.setAddress(mEditTextAddress.getText().toString());
+            mEvent.setPublic(mSpinnerPublic.getSelectedItemPosition() == 0);
+            mEvent.setCountry(mEditTextCountry.getText().toString());
+            mEvent.setEventLogo(((BitmapDrawable) mPhotoEvent.getDrawable()).getBitmap());
+            mEvent.setIcon(null);
+            mEvent.setCoordinates(mLatLng);
         }
-
-        return handled;
     }
 
     private void showDeleteConfirmationDialog() {
@@ -696,6 +560,13 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         iconToChange = mIconEndTime;
         drawableToApply = getResources().getDrawable(R.mipmap.ic_end_time);
         tintIcon(iconToChange, drawableToApply, getResources().getColor(com.globant.eventscorelib.R.color.red_error));
+    }
+
+    private void tintIcon(ImageView imageView, Drawable drawable, int color){
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, color);
+        drawable = DrawableCompat.unwrap(drawable);
+        imageView.setImageDrawable(drawable);
     }
 
     private TintInformation getIconToTint(View view) {
@@ -786,26 +657,139 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     }
 
     private void tintAllIconsGrey() {
-        List<ImageView> Icons = new ArrayList<>();
-        Icons.add(mIconTitle);
-        Icons.add(mIconFullDescription);
-        Icons.add(mIconShortDescription);
-        Icons.add(mIconAdditionalInfo);
-        Icons.add(mIconCategory);
-        Icons.add(mIconPublic);
-        Icons.add(mIconHashtag);
-        Icons.add(mIconLanguage);
-        Icons.add(mIconStartDate);
-        Icons.add(mIconEndDate);
-        Icons.add(mIconStartTime);
-        Icons.add(mIconEndTime);
-        Icons.add(mIconAddress);
-        Icons.add(mIconCountry);
-        Icons.add(mIconCity);
+        List<ImageView> icons = new ArrayList<>();
+        icons.add(mIconTitle);
+        icons.add(mIconFullDescription);
+        icons.add(mIconShortDescription);
+        icons.add(mIconAdditionalInfo);
+        icons.add(mIconCategory);
+        icons.add(mIconPublic);
+        icons.add(mIconHashtag);
+        icons.add(mIconLanguage);
+        icons.add(mIconStartDate);
+        icons.add(mIconEndDate);
+        icons.add(mIconStartTime);
+        icons.add(mIconEndTime);
+        icons.add(mIconAddress);
+        icons.add(mIconCountry);
+        icons.add(mIconCity);
 
-        for (ImageView imageView : Icons) {
+        for (ImageView imageView : icons) {
             tintIcon(imageView, imageView.getDrawable(), getResources().getColor(com.globant.eventscorelib.R.color.grey_icon));
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case CoreConstants.PICTURE_SELECTION_REQUEST:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri targetUri = data.getData();
+                    Intent cropIntent = ConvertImage.performCrop(targetUri);
+                    startActivityForResult(cropIntent, CoreConstants.PICTURE_CROP_SELECTION_REQUEST);
+                }
+                break;
+            case CoreConstants.PICTURE_CROP_SELECTION_REQUEST:
+                if (resultCode == Activity.RESULT_OK) {
+                    Bundle extras = data.getExtras();
+                    if (extras != null) {
+                        Bitmap mPhoto = extras.getParcelable(CoreConstants.DATA);
+                        if (mPhoto != null) {
+                            mPhotoEvent.setImageBitmap(mPhoto);
+                            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            mEvent.setEventLogo(mPhoto);
+                        } else {
+                            mPhotoEvent.setImageResource(R.mipmap.ic_insert_photo);
+                            mPhotoEvent.setScaleType(ImageView.ScaleType.CENTER);
+                            mEvent.setEventLogo(null);
+                        }
+                    }
+                }
+                break;
+            case CoreConstants.MAP_MANAGER_REQUEST:
+                if (resultCode == Activity.RESULT_OK) {
+                    Address address = data.getExtras().getParcelable(CoreConstants.MAP_ADDRESS_INTENT);
+                    if (address != null) {
+                        mEditTextCity.setText(address.getLocality());
+                        mEditTextCountry.setText(address.getCountryName());
+                        if (address.getMaxAddressLineIndex() > 0)
+                            mEditTextAddress.setText(address.getAddressLine(0));
+                        mLatLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_events, menu);
+        MenuItem item = menu.findItem(com.globant.eventmanager.R.id.events_action_delete);
+        if (EventsManagerPagerActivity.mEventAction == EventsManagerPagerActivity.ActionType.EDIT_EVENT) {
+            item.setVisible(true);
+        } else {
+            item.setVisible(false);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == com.globant.eventmanager.R.id.events_action_done) {
+            Boolean savePreferences;
+            savePreferences = tintRequiredIconsAndShowError(mEditTextTitle);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextFullDescription);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextShortDescription);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextHashtag);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextLanguage);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextStartDate);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextStartTime);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextEndDate);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextEndTime);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextAddress);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextCountry);
+            savePreferences &= tintRequiredIconsAndShowError(mEditTextCity);
+
+            if (savePreferences) {
+                if (mStartDate.compareTo(mEndDate) != -1) {
+                    showDateError();
+                } else if (mPhotoEvent.getScaleType() == ImageView.ScaleType.CENTER) {
+                    Toast.makeText(getActivity(), getString(R.string.missing_photo), Toast.LENGTH_SHORT).show();
+                } else {
+                    retrieveInfo();
+
+                    switch (EventsManagerPagerActivity.mEventAction) {
+                        case CREATE_EVENT:
+                            mService.executeAction(BaseService.ACTIONS.EVENT_CREATE, getBindingKey(), mEvent);
+                            break;
+                        case EDIT_EVENT:
+                            mService.executeAction(BaseService.ACTIONS.EVENT_UPDATE, getBindingKey(), mEvent);
+                            break;
+                    }
+
+                    tintAllIconsGrey();
+                }
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.missing_fields), Toast.LENGTH_SHORT).show();
+            }
+
+            handled = true;
+        } else {
+            if (id == R.id.events_action_delete) {
+                showDeleteConfirmationDialog();
+                handled = true;
+            }
+        }
+
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+
+        return handled;
     }
 
     @Override
@@ -819,6 +803,11 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
     @Override
     public BaseService.ActionListener getActionListener() {
         return this;
+    }
+
+    @Override
+    public String getTitle() {
+        return getResources().getString(R.string.title_activity_event_detail);
     }
 
     @Override
@@ -860,27 +849,16 @@ public class EventsFragment extends BaseFragment implements BaseService.ActionLi
         showErrorOverlay();
     }
 
-    private class TintInformation{
-        private ImageView mImageView;
-        private Drawable mDrawable;
-        private ErrorLabelLayout mErrorLabelLayout;
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        retrieveInfo();
+        EventsManagerPagerActivity.getInstance().setEvent(mEvent);
+        super.onSaveInstanceState(outState);
+    }
 
-        public TintInformation(ImageView imageView, Drawable drawable, ErrorLabelLayout errorLabelLayout) {
-            mImageView = imageView;
-            mDrawable = drawable;
-            mErrorLabelLayout = errorLabelLayout;
-        }
-
-        public ImageView getImageView() {
-            return mImageView;
-        }
-
-        public Drawable getDrawable() {
-            return mDrawable;
-        }
-
-        public ErrorLabelLayout getErrorLabelLayout() {
-            return mErrorLabelLayout;
-        }
+    @Override
+    public void onDestroyView() {
+        tintAllIconsGrey();
+        super.onDestroyView();
     }
 }
