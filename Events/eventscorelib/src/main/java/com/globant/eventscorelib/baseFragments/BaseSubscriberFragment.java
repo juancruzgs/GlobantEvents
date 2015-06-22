@@ -232,10 +232,10 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mEditTextCity.setText(SharedPreferencesController.getUserCity(this.getActivity()));
         mEditTextCountry.setText(SharedPreferencesController.getUserCountry(this.getActivity()));
         mCheckBoxEnglishKnowledge.setChecked(SharedPreferencesController.getUserEnglishKnowledge(this.getActivity()));
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-        String value = sharedPreferences.getString(CoreConstants.PREFERENCE_USER_PICTURE, null);
-        if (value != null) {
-            byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+//        String value = sharedPreferences.getString(CoreConstants.PREFERENCE_USER_PICTURE, null);
+        byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
+        if (preferencePhoto != null) {
             mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
             mPhotoTaken = true;
 //            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
