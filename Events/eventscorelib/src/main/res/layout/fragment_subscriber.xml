@@ -37,7 +37,7 @@
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#fff5f5f5"
+                android:background="#ffb4b4b4"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/placeholder"
                 app:layout_collapseMode="parallax"
