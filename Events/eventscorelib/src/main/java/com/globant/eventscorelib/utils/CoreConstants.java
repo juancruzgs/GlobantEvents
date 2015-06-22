@@ -164,6 +164,7 @@ public class CoreConstants {
     // SharedPreferences
 
     public static final String PREFERENCE_NAME = "Globant";
+    public static final String PREFERENCE_USER_ID = "preference_user_id";
     public static final String PREFERENCE_USER_FIRST_NAME = "preference_user_first_name";
     public static final String PREFERENCE_USER_LAST_NAME ="preference_user_last_name";
     public static final String PREFERENCE_USER_EMAIL = "preference_user_email";
@@ -177,5 +178,9 @@ public class CoreConstants {
     public static final String PREFERENCE_USER_TWITTER = "preference_user_twitter";
     public static final String PREFERENCE_PARTICIPANT_HINT_SHOWED = "preference_participant_hint_showed";
     public static final String PREFERENCE_TIME = "preference_time";
+
+    // Intents extra data
+
+    public static final String EXTRA_DATA_SUBSCRIBER = "extra_data_subscriber";
 
 }
