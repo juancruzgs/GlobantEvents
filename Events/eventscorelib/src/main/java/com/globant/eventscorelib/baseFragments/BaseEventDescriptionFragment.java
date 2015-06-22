@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
@@ -26,6 +28,7 @@ import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
+import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.Logger;
@@ -59,6 +62,10 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
 
     private AppCompatTextView mButtonAddToCalendar;
     private boolean mAddedToCalendar = false;
+
+    private final static int CODE_REQUEST_SUBSCRIBER = 1;
+
+    private Subscriber mSubscriber;
 
     public BaseEventDescriptionFragment() {
     }
@@ -140,8 +147,20 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PushNotifications.subscribeToChannel("CH-" + mEvent.getObjectID());
-                prepareBaseSubscriberActivity();
+                //String subscriberEmail = SharedPreferencesController.getUserEmail(getActivity());
+                mSubscriber = SharedPreferencesController.getSubscriberInformation(getActivity());
+                //if (subscriberEmail.isEmpty()) {
+                if (mSubscriber.getEmail() == null) {
+                    PushNotifications.subscribeToChannel("CH-" + mEvent.getObjectID());
+                    Toast.makeText(getActivity(), R.string.need_info_for_subscription, Toast.LENGTH_LONG)
+                            .show();
+                    prepareBaseSubscriberActivity();
+                } else
+
+                {
+                    checkPrevSubscription();
+                    //subscribeToEvent();
+                }
             }
         });
 
@@ -157,12 +176,46 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     private void prepareBaseSubscriberActivity() {
         Intent intent = new Intent(getActivity(), BaseSubscriberActivity.class);
         intent.putExtra(CoreConstants.FIELD_CHECK_IN, true);
-        startActivity(intent);
+        //startActivity(intent);
+        startActivityForResult(intent, CODE_REQUEST_SUBSCRIBER);
         getActivity().overridePendingTransition(R.anim.right_in, R.anim.nothing);
+    }
+
+    private void checkPrevSubscription() {
+        String subscriberId = SharedPreferencesController.getUserId(getActivity());
+        mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), subscriberId, mEvent.getObjectID());
+    }
+
+    private void subscribeToEvent() {
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.dialog_question_subscribe_event)
+                .titleColorRes(R.color.globant_green_dark)
+                .positiveText(R.string.yes)
+                .negativeText(R.string.no)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
+                                mSubscriber, mEvent.getObjectID());
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                    }
+                }).show();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CODE_REQUEST_SUBSCRIBER) {
+            if (resultCode == Activity.RESULT_OK) {
+                mSubscriber = data.getParcelableExtra(CoreConstants.EXTRA_DATA_SUBSCRIBER);
+                checkPrevSubscription();
+                //subscribeToEvent();
+            }
+        }
 //        if (requestCode == 0) {
 //            if (resultCode == Activity.RESULT_OK) {
 //                showProgressOverlay();
@@ -320,11 +373,19 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 mButtonAddToCalendar.setEnabled(false);
             }
         }
+        if (theAction == BaseService.ACTIONS.IS_SUBSCRIBED) {
+            if ((Boolean)result) {
+                Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
+            }
+            else {
+                subscribeToEvent();
+            }
+        }
     }
 
     private void showCalendarList(Object result) {
         new MaterialDialog.Builder(getActivity())
-                .title("Choose calendar")
+                .title(R.string.choose_calendar)
                 .titleColorRes(R.color.globant_green_dark)
                 .items((CharSequence[]) result)
                 .itemsCallback(new MaterialDialog.ListCallback() {

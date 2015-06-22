@@ -147,4 +147,9 @@
     <string name="button_add_to_calendar">ADD TO CALENDAR</string>
     <string name="button_remove_from_calendar">REMOVE FROM CALENDAR</string>
     <string name="button_cancel">Cancel</string>
+    <string name="need_info_for_subscription">Your info is needed for the subscription</string>
+    <string name="dialog_question_subscribe_event">Are you sure you want to subscribe to this event?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="choose_calendar">Choose calendar</string>
 </resources>
