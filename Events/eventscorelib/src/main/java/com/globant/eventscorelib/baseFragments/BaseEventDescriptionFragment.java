@@ -10,10 +10,12 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.globant.eventscorelib.R;
@@ -22,18 +24,18 @@ import com.globant.eventscorelib.baseActivities.BaseMapEventDescriptionActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
-import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.CustomDateFormat;
+import com.globant.eventscorelib.utils.Logger;
 import com.globant.eventscorelib.utils.ScrollChangeCallbacks;
-import com.globant.eventscorelib.utils.SharingIntent;
 import com.globant.eventscorelib.utils.PushNotifications;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
+import com.globant.eventscorelib.utils.SharingIntent;
 import com.software.shell.fab.ActionButton;
 
-import java.util.Date;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public abstract class BaseEventDescriptionFragment extends BaseFragment implements BaseService.ActionListener, BasePagerActivity.FragmentLifecycle {
 
@@ -54,6 +56,9 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     protected ActionButton mFab;
     protected Event mEvent;
     private String mBindingKey;
+
+    private AppCompatTextView mButtonAddToCalendar;
+    private boolean mAddedToCalendar = false;
 
     public BaseEventDescriptionFragment() {
     }
@@ -77,7 +82,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBindingKey = this.getClass().getSimpleName() + new Date().toString();
+        mBindingKey = this.getClass().getSimpleName(); // + new Date().toString();
     }
 
     @Override
@@ -90,6 +95,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
             loadEventDescription();
         }
         initializeViewParameters();
+        setCalendarButtonText();
         setHasOptionsMenu(true);
         setRetainInstance(true);
         return rootView;
@@ -129,13 +135,12 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         int flexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.flexible_space_show_fab_offset);
         int fabMargin = getResources().getDimensionPixelSize(com.globant.eventscorelib.R.dimen.activity_horizontal_margin);
         ScrollChangeCallbacks scrollChangeCallbacks = new ScrollChangeCallbacks(actionBarSize, flexibleSpaceImageHeight, toolbarColor, flexibleSpaceShowFabOffset,
-                fabMargin, mToolbar, mOverlayView, mEventTitle, mEventImage, mFab , false, getActivity());
+                fabMargin, mToolbar, mOverlayView, mEventTitle, mEventImage, mFab, false, getActivity());
         mScrollView.setScrollViewCallbacks(scrollChangeCallbacks);
-
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PushNotifications.subscribeToChannel("CH-"+mEvent.getObjectID());
+                PushNotifications.subscribeToChannel("CH-" + mEvent.getObjectID());
                 prepareBaseSubscriberActivity();
             }
         });
@@ -153,6 +158,7 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         Intent intent = new Intent(getActivity(), BaseSubscriberActivity.class);
         intent.putExtra(CoreConstants.FIELD_CHECK_IN, true);
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.right_in, R.anim.nothing);
     }
 
     @Override
@@ -180,9 +186,61 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         mEventFullDescription = (AppCompatTextView) rootView.findViewById(R.id.textView_Event_Full_Description);
         mOverlayView = rootView.findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
-        mFab = (ActionButton)rootView.findViewById(R.id.fab);
+        mFab = (ActionButton) rootView.findViewById(R.id.fab);
         mMapIcon = (ImageView) rootView.findViewById(R.id.image_view_map_icon);
         changeIconColor();
+
+        mButtonAddToCalendar = (AppCompatTextView) rootView.findViewById(R.id.button_add_to_calendar);
+        mButtonAddToCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mAddedToCalendar) {
+                    mService.executeAction(BaseService.ACTIONS.GET_CALENDARS, mBindingKey);
+                }
+                else {
+                    try {
+                        JSONObject eventArray = SharedPreferencesController.loadJSONObject(getActivity(),
+                                getActivity().getApplicationInfo().name, SharedPreferencesController.KEY_CALENDAR);
+                        JSONObject calendarData = eventArray.getJSONObject(mEvent.getObjectID());
+                        mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, getBindingKey(),
+                                /*calendarData.getInt(CoreConstants.CALENDAR_SELF_ID),*/
+                                calendarData.getLong(CoreConstants.CALENDAR_EVENT_ID));
+                    }
+                    catch (JSONException e) {
+                        Logger.e("Problems with the internal event info while trying to remove the event", e);
+                    }
+                }
+            }
+        });
+
+        rootView.findViewById(R.id.button_emergency_shared_preferences_killer).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SharedPreferencesController.removeJSON(getActivity(), getActivity().getApplicationInfo().name,
+                                SharedPreferencesController.KEY_CALENDAR);
+                    }
+                }
+        );
+    }
+
+    private void setCalendarButtonText() {
+        try {
+            JSONObject eventArray = SharedPreferencesController.loadJSONObject(getActivity(),
+                    getActivity().getApplicationInfo().name, SharedPreferencesController.KEY_CALENDAR);
+            if (eventArray.has(mEvent.getObjectID())) {
+                mButtonAddToCalendar.setText(getString(R.string.button_remove_from_calendar));
+                mAddedToCalendar = true;
+            }
+            else {
+                mButtonAddToCalendar.setText(getString(R.string.button_add_to_calendar));
+                mAddedToCalendar = false;
+            }
+        }
+        catch (JSONException e) {
+            Logger.e("Problems trying to get the event local info", e);
+            mButtonAddToCalendar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -190,15 +248,16 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         return "Description";
     }
 
-    private void loadEventDescription() {
+    protected void loadEventDescription() {
         mEventTitle.setText(mEvent.getTitle());
         if (mEvent.getEventLogo() != null) {
-            mEventImage.setImageBitmap(ConvertImage.convertByteToBitmap(mEvent.getEventLogo()));
+            mEventImage.setImageBitmap(mEvent.getEventLogo());
         } else {
             mEventImage.setImageResource(R.mipmap.placeholder);
         }
         mEventStartDate.setText(CustomDateFormat.getDate(mEvent.getStartDate(), getActivity()));
         mEventEndDate.setText(CustomDateFormat.getDate(mEvent.getEndDate(), getActivity()));
+        setCalendarButtonText();
         mEventAddress.setText(mEvent.getAddress());
         mEventCity.setText(mEvent.getCity());
         mEventCountry.setText(mEvent.getCountry());
@@ -216,6 +275,23 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.action_share) {
+            String shortDescription = mEvent.getShortDescription() +
+                    " - " + CustomDateFormat.getCompleteDate(mEvent.getStartDate(), getActivity()) + " - " + mEvent.getCity() + ", " + mEvent.getCountry();
+            SharingIntent.showList(getActivity(), mEvent.getTitle(), shortDescription);
+            handled = true;
+        }
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
+    }
+
 
     @Override
     public void onStartAction(BaseService.ACTIONS theAction) {
@@ -225,6 +301,40 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
         hideUtilsAndShowContentOverlay();
+        if (theAction == BaseService.ACTIONS.GET_CALENDARS) {
+            showCalendarList(result);
+        }
+        if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
+            if (SharedPreferencesController.addEventJsonInfo(getActivity(), mService.getNCalendar(), (Long) result, mEvent)) {
+                setCalendarButtonText();
+            }
+            else {
+                mButtonAddToCalendar.setEnabled(false);
+            }
+        }
+        if (theAction == BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR) {
+            if (SharedPreferencesController.removeEventJsonInfo(getActivity(), mEvent)) {
+                setCalendarButtonText();
+            }
+            else {
+                mButtonAddToCalendar.setEnabled(false);
+            }
+        }
+    }
+
+    private void showCalendarList(Object result) {
+        new MaterialDialog.Builder(getActivity())
+                .title("Choose calendar")
+                .titleColorRes(R.color.globant_green_dark)
+                .items((CharSequence[]) result)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                        mService.setNCalendar(mService.getCalendarIdFromOrder(i));
+                        mService.executeAction(BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR, getBindingKey(), mEvent);
+                    }
+                })
+                .show();
     }
 
     @Override

@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     tools:context="com.globant.eventmanager.fragments.EventsFragment">
 
+    <LinearLayout
+        android:id="@+id/autoFocusable"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <requestFocus/>
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/event_header"
         android:layout_width="match_parent"
@@ -33,8 +43,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <View
                 android:layout_width="match_parent"
@@ -42,746 +51,687 @@
                 android:background="@android:color/transparent"/>
 
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:id="@+id/body"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@color/grey_lighter"
                 android:orientation="vertical"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp">
+                android:paddingLeft="13dp"
+                android:paddingRight="13dp"
+                android:paddingTop="35dp">
 
-                <LinearLayout
-                    android:id="@+id/body"
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_descriptions"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="35dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    tools:visibility="gone">
 
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/card_view_descriptions"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        tools:visibility="gone">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
 
                         <LinearLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:orientation="vertical">
+                            android:id="@+id/layout_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal"
+                            android:paddingBottom="8dp">
 
-                            <LinearLayout
-                                android:id="@+id/layout_title"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal"
-                                android:paddingBottom="8dp">
+                            <ImageView
+                                android:id="@+id/icon_title"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_event_title"/>
 
-                                <ImageView
-                                    android:id="@+id/icon_title"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_event_title"/>
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_title"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
 
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_title"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_marginStart="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_title"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/edit_text_title_hint"
-                                        android:inputType="textShortMessage"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.25dp"
-                                android:layout_marginLeft="65dp"
-                                android:layout_marginStart="65dp"
-                                android:background="@color/grey">
-                            </View>
-
-                            <LinearLayout
-                                android:id="@+id/layout_short_description"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal"
-                                android:paddingBottom="8dp">
-
-                                <ImageView
-                                    android:id="@+id/icon_short_description"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_short_description"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_short_description"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_short_description"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/edit_text_short_description_hint"
-                                        android:inputType="textShortMessage"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.25dp"
-                                android:layout_marginLeft="65dp"
-                                android:layout_marginStart="65dp"
-                                android:background="@color/grey">
-                            </View>
-
-                            <LinearLayout
-                                android:id="@+id/last_name"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/icon_full_description"
-                                    android:layout_width="0dp"
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_title"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_description"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_full_description"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_full_description"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/edit_text_full_description_hint"
-                                        android:inputType="textShortMessage"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-
-                            </LinearLayout>
+                                    android:background="#00000000"
+                                    android:hint="@string/edit_text_title_hint"
+                                    android:inputType="textCapSentences"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
                         </LinearLayout>
-                    </android.support.v7.widget.CardView>
 
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/card_view_additional"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        tools:visibility="gone">
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.25dp"
+                            android:layout_marginLeft="65dp"
+                            android:layout_marginStart="65dp"
+                            android:background="@color/grey">
+                        </View>
 
                         <LinearLayout
+                            android:id="@+id/layout_short_description"
                             android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:orientation="vertical">
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal"
+                            android:paddingBottom="8dp">
 
-                            <LinearLayout
-                                android:id="@+id/layout_additional"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal"
-                                android:paddingBottom="8dp">
+                            <ImageView
+                                android:id="@+id/icon_short_description"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_short_description"/>
 
-                                <ImageView
-                                    android:id="@+id/icon_additional_info"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_additional_info"/>
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_short_description"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
 
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_additional_info"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_marginStart="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_additional_info"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/texView_Add_Info_Title"
-                                        android:inputType="textShortMessage"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.25dp"
-                                android:layout_marginLeft="65dp"
-                                android:background="@color/grey">
-                            </View>
-
-                            <LinearLayout
-                                android:id="@+id/layout_hashtag"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal"
-                                android:paddingBottom="8dp">
-
-                                <ImageView
-                                    android:id="@+id/icon_hashtag"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_hashtag"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_hashtag"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_hashtag"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/text_view_hashtag"
-                                        android:inputType="textCapWords"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.25dp"
-                                android:layout_marginLeft="65dp"
-                                android:background="@color/grey">
-                            </View>
-
-                            <LinearLayout
-                                android:id="@+id/category"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/icon_category"
-                                    android:layout_width="0dp"
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_short_description"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_category"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_category"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatSpinner
-                                        android:id="@+id/category_spinner"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:prompt="@string/edit_text_category_hint"
-                                        android:spinnerMode="dropdown"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.25dp"
-                                android:layout_marginLeft="65dp"
-                                android:background="@color/grey">
-                            </View>
-
-                            <LinearLayout
-                                android:id="@+id/is_public"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/icon_public"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_public"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_public"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatSpinner
-                                        android:id="@+id/public_spinner"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:prompt="@string/edit_text_public_hint"
-                                        android:spinnerMode="dropdown"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.25dp"
-                                android:layout_marginLeft="65dp"
-                                android:layout_marginStart="65dp"
-                                android:background="@color/grey">
-                            </View>
-
-                            <LinearLayout
-                                android:id="@+id/language"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/icon_language"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_language"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_language"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_language"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/textView_Event_Language_Title"
-                                        android:inputType="textMultiLine"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-
-                            </LinearLayout>
+                                    android:background="#00000000"
+                                    android:hint="@string/edit_text_short_description_hint"
+                                    android:inputType="textCapSentences"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
                         </LinearLayout>
-                    </android.support.v7.widget.CardView>
 
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/card_view_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp">
-
-                        <LinearLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:id="@+id/layout_start_date"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/icon_start_date"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.3"
-                                    android:src="@mipmap/ic_event_start_date"/>
-
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_start_date"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_start_date"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/edit_text_start_date_hint"
-                                        android:inputType="date"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-                                <ImageView
-                                    android:id="@+id/icon_start_time"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.3"
-                                    android:src="@mipmap/ic_start_time"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_start_time"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_start_time"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/edit_text_start_time_hint"
-                                        android:inputType="date"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.25dp"
-                                android:layout_marginLeft="65dp"
-                                android:background="@color/grey">
-                            </View>
-
-                            <LinearLayout
-                                android:id="@+id/layout_end_date_time"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/icon_end_date"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.3"
-                                    android:src="@mipmap/ic_event_end_date"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_end_date"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_end_date"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/edit_text_end_date_hint"
-                                        android:inputType="date"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-                                <ImageView
-                                    android:id="@+id/icon_end_time"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.3"
-                                    android:src="@mipmap/ic_end_time"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_layout_end_time"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_end_time"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/edit_text_end_time_hint"
-                                        android:inputType="date"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-                            </LinearLayout>
-
-                        </LinearLayout>
-                    </android.support.v7.widget.CardView>
-
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/card_view_location"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp">
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.25dp"
+                            android:layout_marginLeft="65dp"
+                            android:layout_marginStart="65dp"
+                            android:background="@color/grey">
+                        </View>
 
                         <LinearLayout
+                            android:id="@+id/layout_full_description"
                             android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:orientation="vertical">
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal">
 
-                            <LinearLayout
-                                android:id="@+id/layout_address"
-                                android:layout_width="fill_parent"
+                            <ImageView
+                                android:id="@+id/icon_full_description"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal">
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_description"/>
 
-                                <ImageView
-                                    android:id="@+id/icon_address"
-                                    android:layout_width="0dp"
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_full_description"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_full_description"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="1"
-                                    android:src="@mipmap/ic_location"
-                                    tools:ignore="contentDescription"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_address"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="8"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_address"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/textView_Event_Address_Title"
-                                        android:inputType="textPersonName"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-                                <FrameLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1.5">
-
-                                    <ImageView
-                                        android:id="@+id/image_button_map"
-                                        android:layout_width="40dp"
-                                        android:layout_height="fill_parent"
-                                        android:src="@mipmap/ic_map"/>
-                                </FrameLayout>
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.25dp"
-                                android:layout_marginLeft="65dp"
-                                android:background="@color/grey">
-                            </View>
-
-                            <LinearLayout
-                                android:id="@+id/country"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/icon_country"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@mipmap/ic_country"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_country"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_country"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/edit_text_country_hint"
-                                        android:inputType="textPersonName"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.25dp"
-                                android:layout_marginLeft="65dp"
-                                android:background="@color/grey">
-                            </View>
-
-                            <LinearLayout
-                                android:id="@+id/city"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_weight="0.1"
-                                android:minHeight="56dp"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/icon_city"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:focusableInTouchMode="false"
-                                    android:src="@mipmap/ic_city"/>
-
-                                <com.globant.eventscorelib.utils.ErrorLabelLayout
-                                    android:id="@+id/name_error_city"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_weight="0.9"
-                                    android:gravity="center_vertical">
-
-                                    <android.support.v7.widget.AppCompatEditText
-                                        android:id="@+id/edit_text_city"
-                                        style="@style/condensed_normal_small"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:background="#00000000"
-                                        android:ems="10"
-                                        android:hint="@string/edit_text_city_hint"
-                                        android:inputType="textPersonName"
-                                        android:paddingTop="15dp"/>
-                                </com.globant.eventscorelib.utils.ErrorLabelLayout>
-
-
-                            </LinearLayout>
+                                    android:background="#00000000"
+                                    android:hint="@string/edit_text_full_description_hint"
+                                    android:inputType="textCapSentences"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
                         </LinearLayout>
-                    </android.support.v7.widget.CardView>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
 
-                </LinearLayout>
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_additional"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    tools:visibility="gone">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <LinearLayout
+                            android:id="@+id/layout_additional"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal"
+                            android:paddingBottom="8dp">
+
+                            <ImageView
+                                android:id="@+id/icon_additional_info"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_additional_info"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_additional_info"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginStart="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_additional_info"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#00000000"
+                                    android:hint="@string/texView_Add_Info_Title"
+                                    android:inputType="textCapSentences"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.25dp"
+                            android:layout_marginLeft="65dp"
+                            android:layout_marginStart="65dp"
+                            android:background="@color/grey">
+                        </View>
+
+                        <LinearLayout
+                            android:id="@+id/layout_hashtag"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal"
+                            android:paddingBottom="8dp">
+
+                            <ImageView
+                                android:id="@+id/icon_hashtag"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_hashtag"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_hashtag"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_hashtag"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#00000000"
+                                    android:hint="@string/text_view_hashtag"
+                                    android:inputType="textCapSentences"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.25dp"
+                            android:layout_marginLeft="65dp"
+                            android:layout_marginStart="65dp"
+                            android:background="@color/grey">
+                        </View>
+
+                        <LinearLayout
+                            android:id="@+id/category"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/icon_category"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_category"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_category"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatSpinner
+                                    android:id="@+id/category_spinner"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:prompt="@string/edit_text_category_hint"
+                                    android:spinnerMode="dropdown"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.25dp"
+                            android:layout_marginLeft="65dp"
+                            android:layout_marginStart="65dp"
+                            android:background="@color/grey">
+                        </View>
+
+                        <LinearLayout
+                            android:id="@+id/is_public"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/icon_public"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_public"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_public"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatSpinner
+                                    android:id="@+id/public_spinner"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:prompt="@string/edit_text_public_hint"
+                                    android:spinnerMode="dropdown"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.25dp"
+                            android:layout_marginLeft="65dp"
+                            android:layout_marginStart="65dp"
+                            android:background="@color/grey">
+                        </View>
+
+                        <LinearLayout
+                            android:id="@+id/language"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/icon_language"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_language"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_language"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_language"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="#00000000"
+                                    android:hint="@string/textView_Event_Language_Title"
+                                    android:inputType="textCapSentences"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <LinearLayout
+                            android:id="@+id/layout_start_date"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/icon_start_date"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="3"
+                                android:src="@mipmap/ic_event_start_date"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_start_date"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_start_date"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="#00000000"
+                                    android:hint="@string/edit_text_start_date_hint"
+                                    android:inputType="date"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+
+                            <ImageView
+                                android:id="@+id/icon_start_time"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="3"
+                                android:src="@mipmap/ic_start_time"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_start_time"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_start_time"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="#00000000"
+                                    android:hint="@string/edit_text_start_time_hint"
+                                    android:inputType="date"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.25dp"
+                            android:layout_marginLeft="65dp"
+                            android:layout_marginStart="65dp"
+                            android:background="@color/grey">
+                        </View>
+
+                        <LinearLayout
+                            android:id="@+id/layout_end_date_time"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/icon_end_date"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="3"
+                                android:src="@mipmap/ic_event_end_date"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_end_date"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_end_date"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="#00000000"
+                                    android:hint="@string/edit_text_end_date_hint"
+                                    android:inputType="date"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+
+                            <ImageView
+                                android:id="@+id/icon_end_time"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="3"
+                                android:src="@mipmap/ic_end_time"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_layout_end_time"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_end_time"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="#00000000"
+                                    android:hint="@string/edit_text_end_time_hint"
+                                    android:inputType="date"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <LinearLayout
+                            android:id="@+id/layout_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/icon_address"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_location"
+                                tools:ignore="contentDescription"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_address"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="8"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_address"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="#00000000"
+                                    android:hint="@string/textView_Event_Address_Title"
+                                    android:inputType="textCapSentences"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+
+                            <ImageView
+                                android:id="@+id/image_button_map"
+                                android:layout_width="0dp"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1.5"
+                                android:src="@mipmap/ic_map"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.25dp"
+                            android:layout_marginLeft="65dp"
+                            android:layout_marginStart="65dp"
+                            android:background="@color/grey">
+                        </View>
+
+                        <LinearLayout
+                            android:id="@+id/country"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/icon_country"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_country"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_country"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_country"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="#00000000"
+                                    android:hint="@string/edit_text_country_hint"
+                                    android:inputType="textCapSentences"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.25dp"
+                            android:layout_marginLeft="65dp"
+                            android:layout_marginStart="65dp"
+                            android:background="@color/grey">
+                        </View>
+
+                        <LinearLayout
+                            android:id="@+id/city"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="56dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/icon_city"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:focusableInTouchMode="false"
+                                android:src="@mipmap/ic_city"/>
+
+                            <com.globant.eventscorelib.utils.ErrorLabelLayout
+                                android:id="@+id/name_error_city"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="9"
+                                android:gravity="center_vertical">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/edit_text_city"
+                                    style="@style/condensed_normal_small"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:background="#00000000"
+                                    android:hint="@string/edit_text_city_hint"
+                                    android:inputType="textCapSentences"
+                                    android:paddingTop="15dp"/>
+                            </com.globant.eventscorelib.utils.ErrorLabelLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
             </LinearLayout>
         </LinearLayout>
     </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>

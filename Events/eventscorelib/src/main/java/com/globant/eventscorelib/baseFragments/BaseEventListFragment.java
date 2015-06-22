@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -16,11 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.share.Sharer;
-import com.facebook.share.widget.ShareDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -38,10 +32,17 @@ import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.utils.BaseEventListActionListener;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.PushNotifications;
+import com.globant.eventscorelib.utils.CustomDateFormat;
+import com.globant.eventscorelib.utils.Logger;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nineoldandroids.view.ViewHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 import java.util.List;
 
 public abstract class BaseEventListFragment extends BaseFragment implements ObservableScrollViewCallbacks, GetEventInformation {
@@ -56,6 +57,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     private static final String KEY_WAITING = "KEY_WAITING";
     private boolean mWaitingForList = false;
+    public static boolean mIsDataSetChanged = false;
 
     public void updateEventList(List<Event> eventsList) {
         mEventList = eventsList;
@@ -64,17 +66,57 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         } else {
             showErrorOverlay();
         }
-        mSwipeRefreshLayout.setRefreshing(false);
         hideUtilsAndShowContentOverlay();
-        ((BaseEventListActivity)getActivity()).setEventList(mEventList);
+        ((BaseEventListActivity) getActivity()).setEventList(mEventList);
         scrollTo(CoreConstants.SCROLL_TOP);
 
+        try {
+            JSONObject eventArray = SharedPreferencesController.loadJSONObject(BaseApplication.getInstance(),
+                    BaseApplication.getInstance().getApplicationInfo().name, SharedPreferencesController.KEY_CALENDAR);
+
+            for (Event event : eventsList) {
+                String eventId = event.getObjectID();
+                if (eventArray.has(eventId)) {
+                    JSONObject eventJSON = eventArray.getJSONObject(eventId);
+                    long calendarId = eventJSON.getInt(CoreConstants.CALENDAR_SELF_ID);
+                    if (!mService.existsCalendar(calendarId)) {
+                        SharedPreferencesController.removeEventJsonInfo(getActivity(), event);
+                    }
+
+                    Date lastUpdateDb = event.getUpdatedAt();
+                    String lastUpdateCalStr = (String) eventJSON.get(CoreConstants.CALENDAR_EVENT_LAST_UPDATE);
+                    // Thu Jun 11 15:37:48 GMT-03:00 2015
+                    //DateFormat dateFormat = DateFormat.getDateTimeInstance();
+                    //Date lastUpdateCal = dateFormat.parse(lastUpdateCalStr);
+                    Date lastUpdateCal = CustomDateFormat.parseCompleteDate(lastUpdateCalStr, getActivity());
+                    if (lastUpdateCal.before(lastUpdateDb)) {
+                        mService.executeAction(BaseService.ACTIONS.UPDATE_EVENT_IN_CALENDAR, mActionListener.getBindingKey(),
+                                eventJSON.getInt(CoreConstants.CALENDAR_SELF_ID),
+                                eventJSON.getLong(CoreConstants.CALENDAR_EVENT_ID), event);
+                    }
+                }
+            }
+        }
+        catch (JSONException e) {
+            Logger.e("Problems with the internal event info while trying to update the event", e);
+        }
+        catch (NullPointerException e) {
+            Logger.e("Problems getting the calendar event's last update date", e);
+        }
+
         mWaitingForList = false;
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public void updateEventListFail() {
         mSwipeRefreshLayout.setRefreshing(false);
         hideUtilsAndShowContentOverlay();
+    }
+
+    public void removeEventFromCalendar(String bindingKey, Long eventId) {
+        mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, bindingKey,
+                                /*calendarData.getInt(CoreConstants.CALENDAR_SELF_ID),*/
+                eventId);
     }
 
     protected enum LayoutManagerType {
@@ -113,9 +155,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         }
     }
 
-
-
-
     @Override
     protected View onCreateEventView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(getFragmentLayout(), container, false);
@@ -138,8 +177,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, mBindingKey, getIsGlober());
-                mSwipeRefreshLayout.setRefreshing(true);
+                refreshEventList();
             }
         });
     }
@@ -157,7 +195,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         }
         RecyclerView.LayoutManager layoutManager;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            layoutManager = new StaggeredGridLayoutManager(2,1);
+            layoutManager = new StaggeredGridLayoutManager(2, 1);
             mCurrentLayoutManagerType = LayoutManagerType.STAGGEREDGRID_LAYOUT_MANAGER;
         } else {
             layoutManager = new LinearLayoutManager(getActivity());
@@ -194,7 +232,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
                 // Set translation movement
                 cardY = cardView.getY();
                 int speed = 2;
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     speed = 7;
                 }
                 movementY = ScrollUtils.getFloat((cardY - (childHeight * 3)) * (-z * speed), -(childHeight * ((Math.round(height / childHeight)) - 1)), 10);
@@ -225,44 +263,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_event_list_fragment, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        boolean handled = false;
-
-        if (id == R.id.action_credits) {
-            Intent intentCredits = new Intent(getActivity(), BaseCreditsActivity.class);
-            startActivity(intentCredits);
-            handled = true;
-        } else {
-            if (id == R.id.action_profile) {
-                Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
-                startActivity(intentSubscriber);
-                handled = true;
-            } else {
-                if (id == R.id.action_checkin) {
-                    IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(this);
-                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-                    intentIntegrator.initiateScan();
-                    handled = true;
-                }
-            }
-        }
-
-        if (!handled) {
-            handled = super.onOptionsItemSelected(item);
-        }
-        return handled;
-    }
-
     public void postCheckinTweet(Event event) {
-        if (BaseApplication.getInstance().getSharedPreferencesController().isAlreadyTwitterLogged()) {
+        if (SharedPreferencesController.isAlreadyTwitterLogged(getActivity())) {
             String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
             mService.executeAction(BaseService.ACTIONS.TWEET_POST, mBindingKey, tweet);
         } else {
@@ -277,13 +279,13 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         mActionListener = mService.getActionListener(mBindingKey);
         if (mActionListener == null) {
             mActionListener = new BaseEventListActionListener();
-            ((BaseEventListActionListener)mActionListener).setActivity((BaseActivity) getActivity());
-            ((BaseEventListActionListener)mActionListener).setBindingKey(mBindingKey);
+            ((BaseEventListActionListener) mActionListener).setActivity((BaseActivity) getActivity());
+            ((BaseEventListActionListener) mActionListener).setBindingKey(mBindingKey);
             mService.subscribeActor(mActionListener);
         }
 
-        ((BaseEventListActionListener)mActionListener).setFragment(this);
-        mEventList = ((BaseEventListActivity)getActivity()).getEventList();
+        ((BaseEventListActionListener) mActionListener).setFragment(this);
+        mEventList = ((BaseEventListActivity) getActivity()).getEventList();
         if (mEventList == null) {
             if (!mWaitingForList) {
                 boolean isOnline = ((BaseActivity) getActivity()).isOnline();
@@ -301,9 +303,28 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     @Override
+    public void onResume() {
+        if (mService != null && mIsDataSetChanged) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            refreshEventList();
+            BaseEventListFragment.mIsDataSetChanged = false;
+        }
+        super.onResume();
+    }
+
+    private void refreshEventList() {
+        mService.executeAction(BaseService.ACTIONS.EVENTS_LIST_REFRESH, mBindingKey, getIsGlober());
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
+        if (data != null && data.hasExtra(CoreConstants.FIELD_EVENTS)) {
+            mEventList.add((Event) data.getParcelableExtra(CoreConstants.FIELD_EVENTS));
+        }
+
         if (scanResult != null) {
             showProgressOverlay();
             mEventId = scanResult.getContents();
@@ -311,6 +332,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             if (mService != null) {
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey,
                         mEventId, mSubscriberMail);
+                PushNotifications.unsubscribeToChannel(getString(R.string.prefix_participants) + mEventId);
+                PushNotifications.subscribeToChannel(getString(R.string.prefix_checkin) + mEventId);
             }
             //Else do the action when the service is available }
         }
@@ -342,5 +365,46 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_event_list_fragment, menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.action_credits) {
+            Intent intentCredits = new Intent(getActivity(), BaseCreditsActivity.class);
+            startActivity(intentCredits);
+            handled = true;
+        } else {
+            if (id == R.id.action_profile) {
+                Intent intentSubscriber = new Intent(getActivity(), BaseSubscriberActivity.class);
+                startActivity(intentSubscriber);
+                getActivity().overridePendingTransition(R.anim.top_in, R.anim.nothing);
+                handled = true;
+            } else {
+                if (id == R.id.action_checkin) {
+                    IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(this);
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                    intentIntegrator.initiateScan();
+                    handled = true;
+                } else {
+                    if (id == R.id.menu_refresh){
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        refreshEventList();
+                        handled = true;
+                    }
+                }
+            }
+        }
+
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
+    }
 }

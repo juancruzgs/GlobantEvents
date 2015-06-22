@@ -19,25 +19,20 @@ import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.adapters.EventParticipantsListAdapterManager;
 import com.globant.eventmanager.adapters.ParticipantsListViewHolderManager;
-import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
 import com.globant.eventscorelib.baseAdapters.BaseParticipantsListAdapter;
 import com.globant.eventscorelib.baseComponents.BaseService;
-import com.globant.eventscorelib.baseFragments.BaseFragment;
 import com.globant.eventscorelib.baseFragments.BaseParticipantsFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
-import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.CoreConstants;
 import com.globant.eventscorelib.utils.PushNotifications;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class EventParticipantsManagerFragment extends BaseParticipantsFragment implements BasePagerActivity.FragmentLifecycle, BaseService.ActionListener, BasePagerActivity.OnPageScrollStateChangedCancelAnimation{
 
-    private static final String TAG = "EventParticipantsFragment";
     private List<Subscriber> mSubscribers;
     private List<Subscriber> mAcceptedSubscribers;
     protected LayoutManagerType mCurrentLayoutManagerType;
@@ -48,7 +43,6 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     private AppCompatTextView mTextViewAcceptAll;
     private AppCompatTextView mTextViewDeclineAll;
     private Boolean mLastVisibleItem = false;
-    private String mBindingKey;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
@@ -62,9 +56,16 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     }
 
     @Override
-    public String getBindingKey() {
-        return EventParticipantsManagerFragment.class.getSimpleName();
+    protected void setViewButtonsAddDeclineAllVisibility(Boolean areThereSubscribers) {
+        if (!areThereSubscribers){
+            mViewButtonsAddDeclineAll.setVisibility(View.INVISIBLE);
+        }
     }
+
+//    @Override
+//    public String getBindingKey() {
+//        return EventParticipantsManagerFragment.class.getSimpleName();
+//    }
 
     @Override
     protected void initializeAcceptedSubscribers() {
@@ -82,7 +83,8 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     @Override
     protected void showHint() {
-        if (!SharedPreferencesController.isHintParticipantsShowed(this.getActivity())){
+        if ((!SharedPreferencesController.isHintParticipantsShowed(this.getActivity()))
+        && (mSubscribers.size() > 0 )){
             Toast.makeText(this.getActivity(),R.string.toast_hint_participants_list, Toast.LENGTH_SHORT).show();
             SharedPreferencesController.setHintParticipantsShowed(true, this.getActivity());
         }
@@ -159,7 +161,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                     case R.id.text_view_accept_all:
                         for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
                             linearLayoutManager.findViewByPosition(i);
-                            ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
+                            ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForLayoutPosition(i);
                             if (current.getFrameLayoutRight().getVisibility() != View.VISIBLE){
                                 current.acceptAnimation();
                                 cont += 1;
@@ -180,7 +182,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
                     case R.id.text_view_decline_all:
                         for (int i = initPosition; i <= linearLayoutManager.findLastVisibleItemPosition(); i++){
                             linearLayoutManager.findViewByPosition(i);
-                            ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForPosition(i);
+                            ParticipantsListViewHolderManager current = (ParticipantsListViewHolderManager) mRecyclerView.findViewHolderForLayoutPosition(i);
                             if (current.getFrameLayoutLeft().getVisibility() != View.VISIBLE){
                                 current.declineAnimation();
                                 cont += 1;
@@ -211,7 +213,7 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
 
     private void setOnScrollListener() {
         mRecyclerView = getRecyclerView();
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -266,10 +268,15 @@ public class EventParticipantsManagerFragment extends BaseParticipantsFragment i
     public void onStop() {
         if ((mSubscribers != null) && (mAcceptedSubscribers.size() > 0))
         {
-            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), mAcceptedSubscribers);
+            List<String> subscribersId = new ArrayList<>();
             for (Subscriber subscriber: mAcceptedSubscribers){
-                PushNotifications.sendNotificationToSubscriber(getActivity(),"You are a participant now",
-                        mEvent.getObjectID(),subscriber.getObjectID());
+                subscribersId.add(subscriber.getObjectID());
+            }
+            mService.executeAction(BaseService.ACTIONS.SET_ACCEPTED, getBindingKey(), mEvent.getObjectID(), subscribersId);
+            //TODO Check onFinishAction() before doing this
+            for (Subscriber subscriber: mAcceptedSubscribers){
+                PushNotifications.sendNotificationToSubscriber(getActivity(), "You are a participant now",
+                        mEvent.getObjectID(), subscriber.getObjectID());
             }
         }
         super.onStop();

@@ -10,6 +10,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -104,6 +107,7 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mTextViewNoTweets = (AppCompatTextView)rootView.findViewById(R.id.text_view_no_tweets);
         setRecyclerViewLayoutManager();
         setRetainInstance(true);
+        setHasOptionsMenu(true);
         return rootView;
     }
 
@@ -117,18 +121,21 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                ((BaseEventDetailPagerActivity) getActivity()).setTweetList(null);
-                mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "#GameOfThrones"); // TODO: put the event hashtag
-                mSwipeRefreshLayout.setRefreshing(true);
+                refreshTweetList();
             }
         });
+    }
+
+    private void refreshTweetList() {
+        ((BaseEventDetailPagerActivity) getActivity()).setTweetList(null);
+        mService.executeAction(BaseService.ACTIONS.TWEETS_LIST, getBindingKey(), "#GameOfThrones"); // TODO: put the event hashtag
     }
 
     private void prepareRecyclerView(View rootView) {
         mRecyclerView = (ObservableRecyclerView) rootView.findViewById(R.id.list_recycler_view);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -190,5 +197,28 @@ public class BaseTwitterStreamFragment extends BaseFragment implements BaseServi
         else {
             setRecyclerViewAdapter();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_refresh, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.menu_refresh){
+            mSwipeRefreshLayout.setRefreshing(true);
+            refreshTweetList();
+            handled = true;
+        }
+
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
     }
 }

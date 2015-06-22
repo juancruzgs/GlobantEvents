@@ -7,7 +7,7 @@ import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;

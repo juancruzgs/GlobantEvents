@@ -7,6 +7,7 @@ import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
+import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
 
 import java.util.List;
@@ -58,6 +59,20 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
                 break;
             case TWEET_POST:
                 mFragment.showCheckinOverlay();
+                break;
+            case UPDATE_EVENT_IN_CALENDAR:
+                BaseService.CalendarResponse response = (BaseService.CalendarResponse) result;
+                if (response.getRows() != -1) {
+                    SharedPreferencesController.updateEventJsonInfo(mActivity, response.getEvent());
+                }
+                else {
+                    SharedPreferencesController.removeEventJsonInfo(mActivity, response.getEvent());
+/*
+                    mFragment.removeEventFromCalendar(getBindingKey(),
+                            JSONSharedPreferences.getCalendarIdFromEventId(mActivity,
+                                    response.getEvent().getObjectID()));
+*/
+                }
                 break;
             default:
                 mFragment.hideUtilsAndShowContentOverlay();

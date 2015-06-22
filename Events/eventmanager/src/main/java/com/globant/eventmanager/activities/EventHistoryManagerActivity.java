@@ -7,7 +7,7 @@ import com.globant.eventmanager.fragments.EventHistoryManagerFragment;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.List;

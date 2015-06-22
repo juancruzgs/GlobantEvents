@@ -25,4 +25,10 @@
         <item>Subscribers</item>
         <item>Paricipants</item>
     </string-array>
+    <string-array name="social_networks">
+        <item>Facebook</item>
+        <item>Whatsapp</item>
+        <item>Twitter</item>
+        <item>Gmail</item>
+    </string-array>
 </resources>

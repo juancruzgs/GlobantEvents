@@ -30,33 +30,32 @@ public class CropCircleTransformation implements Transformation {
 		float scale = (float)px/(float)size;
 		int aWidth = (int) (source_a.getWidth()*scale);
 		int aHeight = (int) (source_a.getHeight()*scale);
-		
 		Bitmap source = Bitmap.createScaledBitmap(source_a,aWidth, aHeight, false);
-//		source_a.recycle();
-
 		Bitmap output = Bitmap.createBitmap(px, px, Config.ARGB_8888);
 		Canvas canvas = new Canvas(output);
-
 		final int color = 0xffffffff;
 		final Paint paint = new Paint();
 		final Rect rect = new Rect(0, 0, px, px);
 		int difference = (size-px)/4;
 		final Rect rect_center = new Rect(-difference, -difference, px, px);
-
 		paint.setAntiAlias(true);
 		canvas.drawARGB(0, 0, 0, 0);
 		paint.setColor(color);
 		canvas.drawCircle(px / 2, px / 2, px / 2, paint);
 		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
 		canvas.drawBitmap(source, rect, rect, paint);
-
 //		if (output != source) {
 //			source.recycle();
 //		}
-		source_a.recycle();
-		source.recycle();
+//		source_a.recycle();
+//		source.recycle();
+//		return output;
+		if (output != source_a) {
+//			source_a.recycle();
+			source_a = output;
+		}
 
-		return output;
+		return source_a;
 	}
 
 	@Override

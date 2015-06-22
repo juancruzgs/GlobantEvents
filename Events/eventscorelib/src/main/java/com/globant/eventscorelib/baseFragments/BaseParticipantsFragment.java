@@ -7,6 +7,9 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -87,6 +90,7 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
                     mRefreshDate = new Date();
                     hideUtilsAndShowContentOverlay();
                     initializeAcceptedSubscribers();
+                    setViewButtonsAddDeclineAllVisibility(mSubscribers.size() > 0);
                     break;
                 case REFRESH_SUBSCRIBERS:
                     for (Subscriber subscriber : (List<Subscriber>) result) {
@@ -106,6 +110,8 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
             }
         }
     }
+
+    protected abstract void setViewButtonsAddDeclineAllVisibility(Boolean areThereSubscribers);
 
     protected abstract void initializeAcceptedSubscribers();
 
@@ -156,6 +162,7 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
         setRetainInstance(true);
         prepareSwipeRefreshLayout(rootView);
         wireUpViews(savedInstanceState, rootView);
+        setHasOptionsMenu(true);
         return rootView;
     }
 
@@ -181,14 +188,16 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                cancelAnimationOnRefresh();
-                String eventId = mEvent.getObjectID();
-                mService.executeAction(BaseService.ACTIONS.REFRESH_SUBSCRIBERS, getBindingKey(), eventId, mRefreshDate);
-                mSwipeRefreshLayout.setRefreshing(true);
+                refreshParticipantsList();
             }
         });
     }
 
+    private void refreshParticipantsList() {
+        cancelAnimationOnRefresh();
+        String eventId = mEvent.getObjectID();
+        mService.executeAction(BaseService.ACTIONS.REFRESH_SUBSCRIBERS, getBindingKey(), eventId, mRefreshDate);
+    }
 
     @Override
     public String getTitle() {
@@ -231,4 +240,26 @@ public abstract class BaseParticipantsFragment extends BaseFragment implements B
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_refresh, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+
+        if (id == R.id.menu_refresh){
+            mSwipeRefreshLayout.setRefreshing(true);
+            refreshParticipantsList();
+            handled = true;
+        }
+
+        if (!handled) {
+            handled = super.onOptionsItemSelected(item);
+        }
+        return handled;
+    }
 }

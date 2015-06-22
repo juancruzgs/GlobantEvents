@@ -2,15 +2,14 @@ package com.globant.eventscorelib.baseFragments;
 
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
@@ -38,16 +37,7 @@ import com.software.shell.fab.ActionButton;
  */
 public class BaseSpeakerFragment extends BaseFragment {
 
-    public static final String EXTRA_CROP = "crop";
-    public static final String EXTRA_TRUE = "true";
-    public static final String EXTRA_ASPECTX = "aspectX";
-    public static final String EXTRA_ASPECTY = "aspectY";
-    public static final String EXTRA_OUTPUTX = "outputX";
-    public static final String EXTRA_OUTPUTY= "outputY";
-    public static final String EXTRA_RETURN_DATA= "return-data";
     public static final String DATA= "data";
-    public static final String IMAGE_CROP = "com.android.camera.action.CROP";
-    public static final String URI_NAME = "image/*";
     public static final String EDITED_SPEAKER = "editedSpeaker";
     public static final String POSITION = "position";
     public static final String DELETED_SPEAKER = "deletedSpeaker";
@@ -55,8 +45,6 @@ public class BaseSpeakerFragment extends BaseFragment {
     public static final String EDIT_MODE= "EDIT_MODE";
     public static final String CREATE_MODE= "CREATE_MODE";
     public static final int RESULT_OK = 1;
-    public static final int GET_SPEAKER_IMAGE = 1;
-    public static final int CROP_PIC = 2;
     public static final String REQUIRED_FIELDS_MISSING = "Required fields missing!";
     public Speaker speakerEdit;
     public String fragmentMode = CREATE_MODE;
@@ -121,8 +109,7 @@ public class BaseSpeakerFragment extends BaseFragment {
                   mEditTextLastName.setText(speakerEdit.getLastName());
                   mEditTextTitle.setText(speakerEdit.getTitle());
                   mEditTextBiography.setText(speakerEdit.getBiography());
-                  Bitmap photo = BitmapFactory.decodeByteArray(speakerEdit.getPicture(), 0, speakerEdit.getPicture().length);
-                  mPhotoProfile.setImageBitmap(photo);
+                  mPhotoProfile.setImageBitmap(speakerEdit.getPicture());
                   fragmentMode= EDIT_MODE;
              }
             if (getActivity().getIntent().getExtras().getSerializable("eventId") != null)
@@ -142,7 +129,7 @@ public class BaseSpeakerFragment extends BaseFragment {
         inflater.inflate(R.menu.menu_base_speaker, menu);
         MenuItem item = menu.findItem(R.id.events_action_delete);
 
-        if (fragmentMode == EDIT_MODE) {
+        if (fragmentMode.equals(EDIT_MODE)) {
             item.setVisible(true);
         } else {
             item.setVisible(false);
@@ -158,10 +145,10 @@ public class BaseSpeakerFragment extends BaseFragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
             doneClick();
-            if(fragmentMode== EDIT_MODE)
+            if(fragmentMode.equals(EDIT_MODE))
                 mPhotoPicked=true;
 
-            if (mDoneClicked == true && mPhotoPicked ){
+            if (mDoneClicked && mPhotoPicked ){
                Intent resultIntent = new Intent();
                switch (fragmentMode)
                {
@@ -192,7 +179,7 @@ public class BaseSpeakerFragment extends BaseFragment {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            if (fragmentMode == EDIT_MODE) {
+                            if (fragmentMode.equals(EDIT_MODE)) {
                                 Intent resultIntent = new Intent();
                                 resultIntent.putExtra(DELETED_SPEAKER, fillSpeakerObject());
                                 resultIntent.putExtra(POSITION, position);
@@ -241,14 +228,13 @@ public class BaseSpeakerFragment extends BaseFragment {
     }
 
     private Speaker fillSpeakerObject() {
-        Speaker sp = new Speaker();
-        sp.setName(mEditTextFirstName.getText().toString());
-        sp.setLastName(mEditTextLastName.getText().toString());
-        sp.setTitle(mEditTextTitle.getText().toString());
-        sp.setBiography(mEditTextBiography.getText().toString());
-        Bitmap photo = ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
-        sp.setPicture(ConvertImage.convertBitmapImageToByteArray(photo));
-        return sp;
+        Speaker speaker = new Speaker();
+        speaker.setName(mEditTextFirstName.getText().toString());
+        speaker.setLastName(mEditTextLastName.getText().toString());
+        speaker.setTitle(mEditTextTitle.getText().toString());
+        speaker.setBiography(mEditTextBiography.getText().toString());
+        speaker.setPicture(((BitmapDrawable)mPhotoProfile.getDrawable()).getBitmap());
+        return speaker;
     }
 
     @Override
@@ -256,15 +242,16 @@ public class BaseSpeakerFragment extends BaseFragment {
         return "speaker";
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == GET_SPEAKER_IMAGE) {
-                //File file = new File(Environment.getExternalStorageDirectory() + File.separator + SHARED_PREF_IMG);
-                performCrop(data.getData());
-            } else if (requestCode == CROP_PIC) {
+            if (requestCode == CoreConstants.PICTURE_SELECTION_REQUEST) {
+
+                Intent cropIntent = ConvertImage.performCrop(data.getData());
+                startActivityForResult(cropIntent, CoreConstants.PICTURE_CROP_SELECTION_REQUEST);
+
+            } else if (requestCode == CoreConstants.PICTURE_CROP_SELECTION_REQUEST) {
                 // get the returned data
                 Bundle extras = data.getExtras();
                 // get the cropped bitmap
@@ -300,7 +287,7 @@ public class BaseSpeakerFragment extends BaseFragment {
             else {
                 tintGrey();
             }
-        };
+        }
     };
 
     private void getIconToTint(View view) {
@@ -367,34 +354,19 @@ public class BaseSpeakerFragment extends BaseFragment {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), GET_SPEAKER_IMAGE);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                if (Build.VERSION.SDK_INT < 19){
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                } else {
+                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                }
+
+                startActivityForResult(intent, CoreConstants.PICTURE_SELECTION_REQUEST);
             }
         });
     }
-
-    private void performCrop(Uri picUri) {
-        // take care of exceptions
-        // call the standard crop action intent (the user device may not
-        // support it)
-        Intent cropIntent = new Intent(CoreConstants.IMAGE_CROP);
-        // indicate image type and Uri
-        cropIntent.setDataAndType(picUri, CoreConstants.URI_NAME);
-        // set crop properties
-        cropIntent.putExtra(CoreConstants.EXTRA_CROP, CoreConstants.EXTRA_TRUE);
-        // indicate aspect of desired crop
-        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTX, 720);
-        cropIntent.putExtra(CoreConstants.EXTRA_ASPECTY, 360);
-        // indicate output X and Y
-        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTX, 720);
-        cropIntent.putExtra(CoreConstants.EXTRA_OUTPUTY,360);
-        // retrieve data on return
-        cropIntent.putExtra(CoreConstants.EXTRA_RETURN_DATA, true);
-        // start the activity - we handle returning in onActivityResult
-        startActivityForResult(cropIntent, CROP_PIC);
-    }
-
-
 
     private boolean tintRequiredIconsAndShowError(EditText requiredField){
          getIconToTint(requiredField);
@@ -411,6 +383,4 @@ public class BaseSpeakerFragment extends BaseFragment {
 
             }
     }
-
-
 }

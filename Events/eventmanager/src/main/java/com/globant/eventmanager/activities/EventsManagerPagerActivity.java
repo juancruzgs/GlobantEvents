@@ -1,17 +1,18 @@
 package com.globant.eventmanager.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.fragments.EventSpeakersList;
 import com.globant.eventmanager.fragments.EventsFragment;
 import com.globant.eventscorelib.baseActivities.BasePagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.controllers.CacheObjectsController;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
-import com.globant.eventscorelib.utils.BaseEasterEggsBasket;
+import com.globant.eventscorelib.utils.easterEggs.BaseEasterEggsBasket;
 import com.globant.eventscorelib.utils.CoreConstants;
 
 import java.util.ArrayList;
@@ -75,11 +76,18 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
     protected void onSaveInstanceState(Bundle outState) {
 /*        for (Fragment fragment : fragmentList){
             getSupportFragmentManager().putFragment(outState,fragment.getClass().getName(), fragment);
-        } Throws an exception (See the link https://code.google.com/p/android/issues/detail?id=77285)
+        } //Throws an exception (See the link https://code.google.com/p/android/issues/detail?id=77285)
 */
         outState.putParcelable(CoreConstants.SAVE_INSTANCE_CACHE_OBJECTS, mCacheObjectsController);
         outState.putInt(CoreConstants.SAVE_INSTANCE_EVENT_ACTION, EventsManagerPagerActivity.mEventAction.ordinal());
         super.onSaveInstanceState(outState);
+    }
+
+    public static void Finish(int result,BaseService.ACTIONS action){
+        Intent intent = new Intent();
+        intent.putExtra(CoreConstants.SAVE_INSTANCE_EVENT_ACTION,action.ordinal());
+        ourInstance.setResult(result, intent);
+        ourInstance.finish();
     }
 
     public static EventsManagerPagerActivity getInstance(){return ourInstance;}
@@ -126,6 +134,6 @@ public class EventsManagerPagerActivity extends BasePagerActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(R.anim.right_in, R.anim.left_out);
+        overridePendingTransition(R.anim.left_in, R.anim.right_out);
     }
 }

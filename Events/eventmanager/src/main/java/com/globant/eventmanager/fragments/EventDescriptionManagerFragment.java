@@ -1,5 +1,6 @@
 package com.globant.eventmanager.fragments;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,9 +26,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.globant.eventmanager.R;
 import com.globant.eventmanager.activities.EventsManagerPagerActivity;
 import com.globant.eventmanager.utils.QRCodeEncoder;
+import com.globant.eventscorelib.baseActivities.BaseEventDetailPagerActivity;
+import com.globant.eventscorelib.baseComponents.BaseService;
 import com.globant.eventscorelib.baseFragments.BaseEventDescriptionFragment;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.CustomDateFormat;
 import com.globant.eventscorelib.utils.PushNotifications;
+import com.globant.eventscorelib.utils.SharingIntent;
 import com.google.zxing.WriterException;
 
 import java.io.File;
@@ -49,8 +54,8 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
             Intent intent = new Intent(getActivity(), EventsManagerPagerActivity.class);
             intent.putExtra(CoreConstants.FIELD_EVENTS,mEvent);
             EventsManagerPagerActivity.mEventAction = EventsManagerPagerActivity.ActionType.EDIT_EVENT;
-            startActivity(intent);
-
+            startActivityForResult(intent, CoreConstants.EDIT_EVENT_REQUEST);
+            getActivity().overridePendingTransition(R.anim.top_in, R.anim.nothing);
         }
         else if(id == R.id.events_action_QR_code){
             QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(mEvent.getObjectID(), getActivity());
@@ -158,5 +163,33 @@ public class EventDescriptionManagerFragment extends BaseEventDescriptionFragmen
             e.printStackTrace();
         }
         return bmpUri;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK){
+            if(requestCode == CoreConstants.EDIT_EVENT_REQUEST){
+                if (data != null && data.hasExtra(CoreConstants.SAVE_INSTANCE_EVENT_ACTION)){
+
+                    int test = data.getIntExtra(CoreConstants.SAVE_INSTANCE_EVENT_ACTION, 0);
+                    BaseService.ACTIONS action = BaseService.ACTIONS.values()[test];
+
+                    switch (action){
+                        case EVENT_CREATE:
+                            getActivity().finish();
+                            break;
+                        case EVENT_UPDATE:
+                            mEvent = BaseEventDetailPagerActivity.getInstance().getEvent();
+                            loadEventDescription();
+                            break;
+                        case EVENT_DELETE:
+                            getActivity().finish();
+                            break;
+                    }
+                }
+            }
+        }
     }
 }

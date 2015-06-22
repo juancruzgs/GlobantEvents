@@ -19,6 +19,7 @@ public class CoreConstants {
     public static final String SPEAKERS_TABLE = "Speakers";
     public static final String SUBSCRIBERS_TABLE = "Subscribers";
 
+    public static final String FIELD_OBJECT_ID = "objectId";
     public static final String FIELD_UPDATED_AT = "updatedAt";
     public static final String FIELD_CREATED_AT = "createdAt";
     public static final String FIELD_TITLE = "title";
@@ -53,6 +54,7 @@ public class CoreConstants {
     public static final String FIELD_SUBSCRIBERS = "subscribers";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_LAST_NAME = "last_name";
+    public static final String FIELD_CALENDAR_ID = "calendar_id";
 
     //QR Encoder
     public static final int WHITE = 0xFFFFFFFF;
@@ -132,8 +134,48 @@ public class CoreConstants {
     // Intents request
     public static final int MAP_MANAGER_REQUEST = 1000;
     public static final int PICTURE_SELECTION_REQUEST = 1001;
+    public static final int PICTURE_CROP_SELECTION_REQUEST = 1002;
+    public static final int EDIT_EVENT_REQUEST = 1003;
 
     // Intents constants
     public static final String EVENTS_HISTORY = "eventHistory";
+
+    // Social Networks
+    public static final String FACEBOOK = "Facebook";
+    public static final String GMAIL = "Gmail";
+    public static final String WHATSAPP = "Whatsapp";
+    public static final String TWITTER = "Twitter";
+    public static final String APP_LINK_FACEBOOK = "https://fb.me/383624728506392";
+    public static final String TWITTER_PACKAGE = "com.twitter.android.composer.ComposerActivity";
+    public static final String WHATSAPP_PACKAGE ="com.whatsapp";
+    public static final String GMAIL_PACKAGE = "com.google.android.gm";
+    public static final String INTENT_TYPE = "text/plain";
+    public static final String GMAIL_CLASS =  "com.google.android.gm.ComposeActivityGmail";
+    public static final String TWITTER_URL = "https://twitter.com/intent/tweet?text=%s&url";
+    public static final String CODIFICATION = "UTF-8";
+    public static final String CODIFICATION_EXCEPTION = "URLEncoder.encode() failed for ";
+
+
+    // Calendar event information
+    public static final String CALENDAR_SELF_ID = "calendarSelfId";
+    public static final String CALENDAR_EVENT_ID = "calendarEventId";
+    public static final String CALENDAR_EVENT_LAST_UPDATE = "eventLastUpdate";
+
+    // SharedPreferences
+
+    public static final String PREFERENCE_NAME = "Globant";
+    public static final String PREFERENCE_USER_FIRST_NAME = "preference_user_first_name";
+    public static final String PREFERENCE_USER_LAST_NAME ="preference_user_last_name";
+    public static final String PREFERENCE_USER_EMAIL = "preference_user_email";
+    public static final String PREFERENCE_USER_OCCUPATION_NAME = "preference_user_occupation_name";
+    public static final String PREFERENCE_USER_PHONE = "preference_user_phone";
+    public static final String PREFERENCE_USER_COUNTRY = "preference_user_country";
+    public static final String PREFERENCE_USER_CITY="preference_user_city";
+    public static final String PREFERENCE_USER_ENGLISH_KNOWLEDGE = "preference_user_english_knowledge";
+    public static final String PREFERENCE_USER_PICTURE = "preference_user_picture";
+    public static final String PREFERENCE_USER_IS_GLOBER = "preference_user_is_glober";
+    public static final String PREFERENCE_USER_TWITTER = "preference_user_twitter";
+    public static final String PREFERENCE_PARTICIPANT_HINT_SHOWED = "preference_participant_hint_showed";
+    public static final String PREFERENCE_TIME = "preference_time";
 
 }
