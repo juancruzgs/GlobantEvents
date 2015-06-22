@@ -59,7 +59,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
     private Bitmap mPhoto;
     private ImageView mPhotoProfile;
-    private ActionButton mFloatingActionButtonPhoto;
+    private FloatingActionButton mFloatingActionButtonPhoto;
     private AppCompatEditText mEditTextFirstName;
     private AppCompatEditText mEditTextLastName;
     private AppCompatEditText mEditTextPhone;
