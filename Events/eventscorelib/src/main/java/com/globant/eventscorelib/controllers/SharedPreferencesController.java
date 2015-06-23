@@ -2,6 +2,8 @@ package com.globant.eventscorelib.controllers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import com.globant.eventscorelib.domainObjects.Event;
@@ -16,6 +18,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SharedPreferencesController {
+
+    public static String getUserId(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CoreConstants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(CoreConstants.PREFERENCE_USER_ID, null);
+    }
 
     public static String getUserFirstName(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CoreConstants.PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -65,6 +72,7 @@ public class SharedPreferencesController {
     public static void setSubscriberInformation(Subscriber subscriber, Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CoreConstants.PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(CoreConstants.PREFERENCE_USER_ID, subscriber.getObjectID());
         editor.putString(CoreConstants.PREFERENCE_USER_FIRST_NAME, subscriber.getName());
         editor.putString(CoreConstants.PREFERENCE_USER_LAST_NAME, subscriber.getLastName());
         editor.putString(CoreConstants.PREFERENCE_USER_EMAIL, subscriber.getEmail());
@@ -81,6 +89,34 @@ public class SharedPreferencesController {
         //TODO add field is public
 
         editor.apply();
+    }
+
+    public static Subscriber getSubscriberInformation(Context context) {
+        Subscriber subscriber = new Subscriber();
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CoreConstants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+
+        subscriber.setObjectID(sharedPreferences.getString(CoreConstants.PREFERENCE_USER_ID, null));
+        subscriber.setName(sharedPreferences.getString(CoreConstants.PREFERENCE_USER_FIRST_NAME, null));
+        subscriber.setLastName(sharedPreferences.getString(CoreConstants.PREFERENCE_USER_LAST_NAME, null));
+        subscriber.setEmail(sharedPreferences.getString(CoreConstants.PREFERENCE_USER_EMAIL, null));
+        subscriber.setOccupation(sharedPreferences.getString(CoreConstants.PREFERENCE_USER_OCCUPATION_NAME, null));
+        subscriber.setPhone(sharedPreferences.getString(CoreConstants.PREFERENCE_USER_PHONE, null));
+        subscriber.setEnglish(sharedPreferences.getBoolean(CoreConstants.PREFERENCE_USER_ENGLISH_KNOWLEDGE, false));
+        subscriber.setTwitterUser(sharedPreferences.getString(CoreConstants.PREFERENCE_USER_TWITTER, null));
+        subscriber.setCountry(sharedPreferences.getString(CoreConstants.PREFERENCE_USER_COUNTRY, null));
+        subscriber.setCity(sharedPreferences.getString(CoreConstants.PREFERENCE_USER_CITY, null));
+        //byte[] image = ConvertImage.convertBitmapToByteArrayAndCompress(subscriber.getPicture());
+        //String encoded = Base64.encodeToString(image, Base64.DEFAULT);
+        //editor.putString(CoreConstants.PREFERENCE_USER_PICTURE, encoded);
+        byte[] imageArray = getUserImage(context);
+        Bitmap imageBmp = null;
+        if (imageArray != null) {
+            imageBmp = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length, null);
+        }
+        subscriber.setPicture(imageBmp);
+        subscriber.setGlober(sharedPreferences.getBoolean(CoreConstants.PREFERENCE_USER_IS_GLOBER, false));
+
+        return subscriber;
     }
 
     public static void clearPreferences(Context context) {
