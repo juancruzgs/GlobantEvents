@@ -119,33 +119,12 @@ public class EventParticipantsListAdapterManager extends BaseParticipantsListAda
 
     private void setViewHolderImage(ParticipantsListViewHolderManager holder, Subscriber subscriber) {
         Bitmap subscriberPicture = subscriber.getPicture();
-        cropRectangularImage(subscriberPicture);
-        Bitmap circularImage = mTransformation.transform(rectangularBitmap);
+//        cropRectangularImage(subscriberPicture);
+        Bitmap circularImage = mTransformation.transform(subscriberPicture);
         holder.getImageViewParticipantLeft().setImageBitmap(circularImage);
         if (!subscriber.isAccepted()){
             holder.getImageViewParticipantRight().setImageBitmap(circularImage);
         }
     }
 
-    private void cropRectangularImage(Bitmap subscriberPicture) {
-        if (subscriberPicture.getWidth() >= subscriberPicture.getHeight()){
-            rectangularBitmap = Bitmap.createBitmap(
-                    subscriberPicture,
-                    subscriberPicture.getWidth()/2 - subscriberPicture.getHeight()/2,
-                    0,
-                    subscriberPicture.getHeight(),
-                    subscriberPicture.getHeight()
-            );
-
-        }else{
-
-            rectangularBitmap = Bitmap.createBitmap(
-                    subscriberPicture,
-                    0,
-                    subscriberPicture.getHeight()/2 - subscriberPicture.getWidth()/2,
-                    subscriberPicture.getWidth(),
-                    subscriberPicture.getWidth()
-            );
-        }
-    }
 }

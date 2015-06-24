@@ -47,7 +47,10 @@ import com.globant.eventscorelib.utils.ErrorLabelLayout;
 import com.globant.eventscorelib.utils.PushNotifications;
 import com.software.shell.fab.ActionButton;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
 import java.util.regex.Pattern;
 
 
@@ -57,6 +60,7 @@ import java.util.regex.Pattern;
 public class BaseSubscriberFragment extends BaseFragment implements BaseService.ActionListener,
         BaseEasterEgg.EasterEggListener {
 
+    private Uri mImageUri;
     private Bitmap mPhoto;
     private ImageView mPhotoProfile;
     private FloatingActionButton mFloatingActionButtonPhoto;
@@ -135,6 +139,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_subscriber, container, false);
         wireUpViews(rootView);
+        prepareToolbar(rootView);
         prepareImageButton();
         setOnFocusListeners();
         mPhotoTaken = false;
@@ -180,25 +185,28 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 
         mLayoutToFocus = (LinearLayout) rootView.findViewById(R.id.autoFocusable);
 
+            }
+
+    private void prepareToolbar(View rootView) {
         final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar_subscriber);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsing_toolbar);
         if (SharedPreferencesController.getUserFirstName(getActivity()) != null) {
             collapsingToolbar.setTitle(SharedPreferencesController.getUserFirstName(getActivity()) + " " + SharedPreferencesController.getUserLastName(getActivity()));
-        }    }
+        }
+    }
 
     private void prepareImageButton() {
         mFloatingActionButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent cameraIntent = new Intent(CoreConstants.IMAGE_CAPTURE);
 //    /*create instance of File with name img.jpg*/
-//                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
+                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
 //    /*put uri as extra in intent object*/
-//                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-//                startActivityForResult(cameraIntent, CAMERA_CAPTURE);
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                mImageUri = Uri.fromFile(file);
+                Intent cameraIntent = new Intent(CoreConstants.IMAGE_CAPTURE);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
                 startActivityForResult(cameraIntent, CAMERA_CAPTURE);
 
             }
@@ -250,11 +258,20 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         mCheckBoxEnglishKnowledge.setChecked(SharedPreferencesController.getUserEnglishKnowledge(this.getActivity()));
 //        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
 //        String value = sharedPreferences.getString(CoreConstants.PREFERENCE_USER_PICTURE, null);
-        byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
-        if (preferencePhoto != null) {
-            mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
+//    /*put uri as extra in intent object*/
+        mImageUri = Uri.fromFile(file);
+        if (mImageUri !=null){
+            mPhotoProfile.setImageURI(mImageUri);
             mPhotoTaken = true;
-//            mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
+        }
+        else {
+
+            byte[] preferencePhoto = SharedPreferencesController.getUserImage(this.getActivity());
+            if (preferencePhoto != null) {
+                mPhotoProfile.setImageBitmap(BitmapFactory.decodeByteArray(preferencePhoto, 0, preferencePhoto.length));
+                mPhotoTaken = true;
+        }
         }
     }
 
@@ -345,8 +362,39 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         } else {
             mSubscriber.setTwitterUser(null);
         }
-        mSubscriber.setPicture(((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap());
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        mPhoto= ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
+//        mPhoto.compress(Bitmap.CompressFormat.JPEG, 25, out);
+//        Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+        mPhoto = cropRectangularImage(mPhoto);
+        int asd=mPhoto.getByteCount();
+        if (mPhoto.getByteCount()>5000) {
+            mPhoto = Bitmap.createScaledBitmap(mPhoto, mPhoto.getWidth() / 4, mPhoto.getHeight() / 4, false);
+        }
+        mSubscriber.setPicture(mPhoto);
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
+    }
+
+    private Bitmap cropRectangularImage(Bitmap subscriberPicture) {
+        if (subscriberPicture.getWidth() >= subscriberPicture.getHeight()){
+            return  Bitmap.createBitmap(
+                    subscriberPicture,
+                    subscriberPicture.getWidth()/2 - subscriberPicture.getHeight()/2,
+                    0,
+                    subscriberPicture.getHeight(),
+                    subscriberPicture.getHeight()
+            );
+
+        }else{
+
+            return Bitmap.createBitmap(
+                    subscriberPicture,
+                    0,
+                    subscriberPicture.getHeight()/2 - subscriberPicture.getWidth()/2,
+                    subscriberPicture.getWidth(),
+                    subscriberPicture.getWidth()
+            );
+        }
     }
 
     @Override
@@ -359,16 +407,15 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CAMERA_CAPTURE) {
-                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
+//                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
 //                performCrop(Uri.fromFile(file));
 //            } else if (requestCode == CROP_PIC) {
 //                // get the returned data
-                Bundle extras = data.getExtras();
-                // get the cropped bitmap
-                mPhoto = extras.getParcelable(CoreConstants.DATA);
-                mPhotoProfile.setImageBitmap(mPhoto);
+//                Bundle extras = data.getExtras();
+//                // get the cropped bitmap
+//                mPhoto = extras.getParcelable(CoreConstants.DATA);
+                mPhotoProfile.setImageURI(mImageUri);
                 mPhotoTaken=true;
-//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
             }
         }
     }
@@ -422,8 +469,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
             Bitmap bitmapToSave = savedInstanceState.getParcelable(CoreConstants.PHOTO_ROTATE);
             mPhotoProfile.setImageBitmap(bitmapToSave);
             mPhotoTaken = Boolean.parseBoolean(savedInstanceState.getString(CoreConstants.PHOTO_TAKEN));
-//            if (mPhotoTaken){
-//                mPhotoProfile.setScaleType(ImageView.ScaleType.FIT_XY);
         }
     }
 
