@@ -6,8 +6,12 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.globant.eventscorelib.baseActivities.BaseSubscriberActivity;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.action.ViewActions.swipeDown;
+import static android.support.test.espresso.action.ViewActions.swipeUp;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Created by juan.soler on 6/16/2015.
@@ -26,7 +30,9 @@ public class SubscriberActivityTest extends ActivityInstrumentationTestCase2<Bas
         super.setUp();
     }
 
-    public void testNameIsDisplayed() throws Exception {
-        onView(withId(R.id.edit_text_first_name)).check(ViewAssertions.matches(isDisplayed()));
+    public void testHideCamera(){
+        onView(withId(R.id.fab)).check(ViewAssertions.matches(isDisplayed()));
+        onView(withId(R.id.card_view_contact)).perform(swipeUp());
+        onView(withId(R.id.fab)).check(ViewAssertions.matches(not(isDisplayed())));
     }
 }
