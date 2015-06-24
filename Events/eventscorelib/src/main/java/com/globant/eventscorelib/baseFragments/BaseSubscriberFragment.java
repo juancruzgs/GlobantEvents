@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import com.globant.eventscorelib.utils.ConvertImage;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -362,40 +363,14 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         } else {
             mSubscriber.setTwitterUser(null);
         }
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
         mPhoto= ((BitmapDrawable) mPhotoProfile.getDrawable()).getBitmap();
-//        mPhoto.compress(Bitmap.CompressFormat.JPEG, 25, out);
-//        Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-        mPhoto = cropRectangularImage(mPhoto);
-        int asd=mPhoto.getByteCount();
-        if (mPhoto.getByteCount()>5000) {
-            mPhoto = Bitmap.createScaledBitmap(mPhoto, mPhoto.getWidth() / 4, mPhoto.getHeight() / 4, false);
-        }
+        mPhoto = ConvertImage.cropRectangularImage(mPhoto);
+        mPhoto = Bitmap.createScaledBitmap(mPhoto, 220, 220, false);
         mSubscriber.setPicture(mPhoto);
         mSubscriber.setEnglish(mCheckBoxEnglishKnowledge.isChecked());
     }
 
-    private Bitmap cropRectangularImage(Bitmap subscriberPicture) {
-        if (subscriberPicture.getWidth() >= subscriberPicture.getHeight()){
-            return  Bitmap.createBitmap(
-                    subscriberPicture,
-                    subscriberPicture.getWidth()/2 - subscriberPicture.getHeight()/2,
-                    0,
-                    subscriberPicture.getHeight(),
-                    subscriberPicture.getHeight()
-            );
 
-        }else{
-
-            return Bitmap.createBitmap(
-                    subscriberPicture,
-                    0,
-                    subscriberPicture.getHeight()/2 - subscriberPicture.getWidth()/2,
-                    subscriberPicture.getWidth(),
-                    subscriberPicture.getWidth()
-            );
-        }
-    }
 
     @Override
     public String getTitle() {
@@ -407,13 +382,6 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CAMERA_CAPTURE) {
-//                File file = new File(Environment.getExternalStorageDirectory() + File.separator + CoreConstants.SHARED_PREF_IMG);
-//                performCrop(Uri.fromFile(file));
-//            } else if (requestCode == CROP_PIC) {
-//                // get the returned data
-//                Bundle extras = data.getExtras();
-//                // get the cropped bitmap
-//                mPhoto = extras.getParcelable(CoreConstants.DATA);
                 mPhotoProfile.setImageURI(mImageUri);
                 mPhotoTaken=true;
             }

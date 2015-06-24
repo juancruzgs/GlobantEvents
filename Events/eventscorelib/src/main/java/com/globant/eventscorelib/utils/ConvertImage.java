@@ -63,6 +63,28 @@ public class ConvertImage {
         return cropIntent;
     }
 
+    public static Bitmap cropRectangularImage(Bitmap subscriberPicture) {
+        if (subscriberPicture.getWidth() >= subscriberPicture.getHeight()){
+            return  Bitmap.createBitmap(
+                    subscriberPicture,
+                    subscriberPicture.getWidth()/2 - subscriberPicture.getHeight()/2,
+                    0,
+                    subscriberPicture.getHeight(),
+                    subscriberPicture.getHeight()
+            );
+
+        }else{
+
+            return Bitmap.createBitmap(
+                    subscriberPicture,
+                    0,
+                    subscriberPicture.getHeight()/2 - subscriberPicture.getWidth()/2,
+                    subscriberPicture.getWidth(),
+                    subscriberPicture.getWidth()
+            );
+        }
+    }
+
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
