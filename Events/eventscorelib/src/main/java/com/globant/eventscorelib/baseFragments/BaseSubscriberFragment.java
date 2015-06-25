@@ -2,6 +2,7 @@ package com.globant.eventscorelib.baseFragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -51,6 +52,7 @@ import com.software.shell.fab.ActionButton;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.regex.Pattern;
 
@@ -101,6 +103,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     private Subscriber mSubscriber;
     private String mEventId;
 
+    private Context mContext;
+
     //    private SensorManager sensorManager;
 //    private Sensor senAcelerometer;
 //    private long lastUpdate = 0;
@@ -139,6 +143,7 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
                                   Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_subscriber, container, false);
+        mContext= getActivity().getBaseContext();
         wireUpViews(rootView);
         prepareToolbar(rootView);
         prepareImageButton();
@@ -241,8 +246,8 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
     }
 
     private void populateInfo() {
-        File f = new File(CoreConstants.SHARED_PREF_ROOT + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_DIR + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_FILE);
-        if (f.exists()) {
+//        File f = new File(CoreConstants.SHARED_PREF_ROOT + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_DIR + this.getActivity().getPackageName() + CoreConstants.SHARED_PREF_FILE);
+        if (SharedPreferencesController.getUserFirstName(getActivity()) != null) {
             retrieveSubscriberPreferences();
         }
     }
@@ -263,8 +268,14 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
 //    /*put uri as extra in intent object*/
         mImageUri = Uri.fromFile(file);
         if (mImageUri !=null){
-            mPhotoProfile.setImageURI(mImageUri);
-            mPhotoTaken = true;
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), mImageUri);
+                bitmap = Bitmap.createScaledBitmap(bitmap,  bitmap.getWidth() /2, bitmap.getHeight() /2, false);
+                mPhotoProfile.setImageBitmap(bitmap);
+                mPhotoTaken = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         else {
 
@@ -382,8 +393,14 @@ public class BaseSubscriberFragment extends BaseFragment implements BaseService.
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CAMERA_CAPTURE) {
-                mPhotoProfile.setImageURI(mImageUri);
-                mPhotoTaken=true;
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), mImageUri);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() /2, bitmap.getHeight() /2, false);
+                    mPhotoProfile.setImageBitmap(bitmap);
+                    mPhotoTaken=true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
