@@ -77,12 +77,12 @@ public class CloudDatabaseController extends DatabaseController {
         return objectId;
     }
 
-    public boolean isSubscribed(String subscriberId, String eventId) {
+    public boolean isSubscribed(String subscriberEmail, String eventId) {
         ParseQuery<ParseObject> eventsInnerQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         eventsInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, eventId);
 
         ParseQuery<ParseObject> subscribersInnerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
-        subscribersInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, subscriberId);
+        subscribersInnerQuery.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         query.selectKeys(Collections.singletonList(CoreConstants.FIELD_OBJECT_ID));
