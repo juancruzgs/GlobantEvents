@@ -182,8 +182,9 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     }
 
     private void checkPrevSubscription() {
-        String subscriberId = SharedPreferencesController.getUserId(getActivity());
-        mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), subscriberId, mEvent.getObjectID());
+        //String subscriberId = SharedPreferencesController.getUserId(getActivity());
+        String subscriberEmail = SharedPreferencesController.getUserEmail(getActivity());
+        mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), subscriberEmail, mEvent.getObjectID());
     }
 
     private void subscribeToEvent() {
@@ -196,8 +197,10 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
-                        mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
-                                mSubscriber, mEvent.getObjectID());
+                        // TODO: First save the subscriber
+                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mSubscriber.getEmail());
+//                        mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
+//                                mSubscriber, mEvent.getObjectID());
                     }
 
                     @Override
@@ -353,33 +356,75 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
 
     @Override
     public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
+        //Intent intent;
         hideUtilsAndShowContentOverlay();
-        if (theAction == BaseService.ACTIONS.GET_CALENDARS) {
-            showCalendarList(result);
-        }
-        if (theAction == BaseService.ACTIONS.ADD_EVENT_TO_CALENDAR) {
-            if (SharedPreferencesController.addEventJsonInfo(getActivity(), mService.getNCalendar(), (Long) result, mEvent)) {
-                setCalendarButtonText();
+        switch (theAction) {
+            case GET_CALENDARS: {
+                showCalendarList(result);
+                break;
             }
-            else {
-                mButtonAddToCalendar.setEnabled(false);
+            case ADD_EVENT_TO_CALENDAR: {
+                if (SharedPreferencesController.addEventJsonInfo(getActivity(), mService.getNCalendar(), (Long) result, mEvent)) {
+                    setCalendarButtonText();
+                } else {
+                    mButtonAddToCalendar.setEnabled(false);
+                }
+                break;
             }
-        }
-        if (theAction == BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR) {
-            if (SharedPreferencesController.removeEventJsonInfo(getActivity(), mEvent)) {
-                setCalendarButtonText();
+            case REMOVE_EVENT_FROM_CALENDAR: {
+                if (SharedPreferencesController.removeEventJsonInfo(getActivity(), mEvent)) {
+                    setCalendarButtonText();
+                } else {
+                    mButtonAddToCalendar.setEnabled(false);
+                }
+                break;
             }
-            else {
-                mButtonAddToCalendar.setEnabled(false);
+            case IS_SUBSCRIBED: {
+                if ((Boolean) result) {
+                    Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
+                } else {
+                    subscribeToEvent();
+                }
+                break;
             }
-        }
-        if (theAction == BaseService.ACTIONS.IS_SUBSCRIBED) {
-            if ((Boolean)result) {
-                Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
-            }
-            else {
-                subscribeToEvent();
-            }
+            case SUBSCRIBER_EXISTS:
+                if (result.equals("")) {
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
+                } else {
+                    mSubscriber.setObjectID((String) result);
+                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);
+                }
+                break;
+            case SUBSCRIBER_CREATE:
+                mSubscriber.setObjectID((String) result);
+                SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
+                //mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
+//                intent = new Intent();
+//                intent.putExtra(CoreConstants.EXTRA_DATA_SUBSCRIBER, mSubscriber);
+//                getActivity().setResult(Activity.RESULT_OK, intent);
+//                getActivity().finish();
+                mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
+                        mSubscriber, mEvent.getObjectID());
+                break;
+            case SUBSCRIBER_UPDATE:
+//                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
+//                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
+//                } else {
+                //Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
+//                intent = new Intent();
+//                intent.putExtra(CoreConstants.EXTRA_DATA_SUBSCRIBER, mSubscriber);
+//                getActivity().setResult(Activity.RESULT_OK, intent);
+//                getActivity().finish();
+                mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
+                        mSubscriber, mEvent.getObjectID());
+                break;
+//                }
+            case EVENTS_TO_SUBSCRIBER_CREATE:
+                Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
+                PushNotifications.subscribeToChannel("SUB-" + mEvent.getObjectID());
+                PushNotifications.subscribeToChannel("SUB-" + mEvent.getObjectID() + "-" + mSubscriber.getObjectID());
+                //getActivity().finish();
+                break;
         }
     }
 
