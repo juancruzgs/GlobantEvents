@@ -414,7 +414,8 @@ public abstract class BaseService extends Service {
                                     result = mCloudDatabaseController.updateSubscriber((Subscriber) arguments[0]);
                                     break;
                                 case SUBSCRIBER_EXISTS:
-                                    result = mCloudDatabaseController.getSubscriberId((String) arguments[0]);
+                                    //result = mCloudDatabaseController.getSubscriberId((String) arguments[0]);
+                                    result = mCloudDatabaseController.subscriberExists((String) arguments[0]);
                                     break;
                                 case IS_SUBSCRIBED:
                                     //Object[] object = (Object[])arguments;

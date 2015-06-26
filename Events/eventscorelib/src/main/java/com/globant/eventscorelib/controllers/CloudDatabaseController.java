@@ -8,6 +8,7 @@ import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
 import com.globant.eventscorelib.utils.ConvertImage;
 import com.globant.eventscorelib.utils.CoreConstants;
+import com.globant.eventscorelib.utils.Logger;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -77,12 +78,26 @@ public class CloudDatabaseController extends DatabaseController {
         return objectId;
     }
 
-    public boolean isSubscribed(String subscriberEmail, String eventId) {
+    public boolean subscriberExists(String subscriberId) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
+        query.selectKeys(Collections.singletonList(CoreConstants.FIELD_OBJECT_ID));
+        query.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, subscriberId);
+
+        try {
+            return (query.count() > 0);
+        } catch (ParseException e) {
+            Logger.e("Error looking for subscriber with subscriberId", e);
+            return false;
+        }
+    }
+
+    public boolean isSubscribed(String subscriberId, String eventId) {
         ParseQuery<ParseObject> eventsInnerQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TABLE);
         eventsInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, eventId);
 
         ParseQuery<ParseObject> subscribersInnerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
-        subscribersInnerQuery.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
+        //subscribersInnerQuery.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
+        subscribersInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, subscriberId);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         query.selectKeys(Collections.singletonList(CoreConstants.FIELD_OBJECT_ID));
@@ -96,11 +111,12 @@ public class CloudDatabaseController extends DatabaseController {
         }
     }
 
-    public Event setCheckIn(String eventId, String subscriberMail) throws ParseException {
+    //public Event setCheckIn(String eventId, String subscriberMail) throws ParseException {
+    public Event setCheckIn(String eventId, String subscriberId) throws ParseException {
         ParseObject event = getDatabaseEvent(eventId);
 
         ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
-        innerQuery.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberMail);
+        innerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, subscriberId);
 
         ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
