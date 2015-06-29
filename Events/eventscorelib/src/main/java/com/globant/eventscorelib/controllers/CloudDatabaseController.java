@@ -113,6 +113,7 @@ public class CloudDatabaseController extends DatabaseController {
 
     //public Event setCheckIn(String eventId, String subscriberMail) throws ParseException {
     public Event setCheckIn(String eventId, String subscriberId) throws ParseException {
+        // TODO: Somehow return an exception/error/etc if event doesn't exist, subscriber not subscribed, or not accepted
         ParseObject event = getDatabaseEvent(eventId);
 
         ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);

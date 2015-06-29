@@ -269,6 +269,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
             mService.executeAction(BaseService.ACTIONS.TWEET_POST, mBindingKey, tweet);
         } else {
+            // TODO: Do something after the checkin, besides showing the overlay
             showCheckinOverlay();
         }
     }
