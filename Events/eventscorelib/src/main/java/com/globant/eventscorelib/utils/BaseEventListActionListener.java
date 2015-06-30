@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.globant.eventscorelib.R;
 import com.globant.eventscorelib.baseActivities.BaseActivity;
 import com.globant.eventscorelib.baseComponents.BaseService;
+import com.globant.eventscorelib.baseExceptions.CheckinException;
 import com.globant.eventscorelib.baseFragments.BaseEventListFragment;
 import com.globant.eventscorelib.controllers.SharedPreferencesController;
 import com.globant.eventscorelib.domainObjects.Event;
@@ -55,7 +56,13 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
                 mFragment.updateEventList((List<Event>) result);
                 break;
             case SUBSCRIBER_CHECKIN:
-                mFragment.postCheckinTweet((Event) result);
+                if (result != null) {
+                    mFragment.postCheckinTweet((Event) result);
+                }
+                else {
+                    // TODO: "Unhardcode" the "wrong event QR" string
+                    Toast.makeText(mActivity, "The QR code doesn't match any event", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case TWEET_POST:
                 mFragment.showCheckinOverlay();
@@ -84,8 +91,21 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
     public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
         switch (theAction) {
             case SUBSCRIBER_CHECKIN:
-                mFragment.hideUtilsAndShowContentOverlay();
-                Toast.makeText(mActivity, mActivity.getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
+                if (e instanceof CheckinException) {
+                    mFragment.hideUtilsAndShowContentOverlay();
+                    //Toast.makeText(mActivity, mActivity.getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
+                    // TODO: "Unhardcode" the checkin exceptions toasts strings
+                    if (((CheckinException)e).getExceptionCode() == CheckinException.SUBSCRIBER_NOT_SUBSCRIBED) {
+                        Toast.makeText(mActivity, "Subscriber not subscribed", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(mActivity, "Subscriber not accepted", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    mFragment.showErrorOverlay();
+                    Logger.e("Exception during checkin", e);
+                }
                 break;
             case EVENT_LIST:
             case EVENTS_LIST_REFRESH:

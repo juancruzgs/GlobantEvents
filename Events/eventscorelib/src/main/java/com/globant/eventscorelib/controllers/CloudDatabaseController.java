@@ -3,6 +3,8 @@ package com.globant.eventscorelib.controllers;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
+import com.globant.eventscorelib.baseExceptions.BaseException;
+import com.globant.eventscorelib.baseExceptions.CheckinException;
 import com.globant.eventscorelib.domainObjects.Event;
 import com.globant.eventscorelib.domainObjects.Speaker;
 import com.globant.eventscorelib.domainObjects.Subscriber;
@@ -112,9 +114,14 @@ public class CloudDatabaseController extends DatabaseController {
     }
 
     //public Event setCheckIn(String eventId, String subscriberMail) throws ParseException {
-    public Event setCheckIn(String eventId, String subscriberId) throws ParseException {
-        // TODO: Somehow return an exception/error/etc if event doesn't exist, subscriber not subscribed, or not accepted
-        ParseObject event = getDatabaseEvent(eventId);
+    public Event setCheckIn(String eventId, String subscriberId) throws ParseException, CheckinException {
+        ParseObject event;
+        try {
+            event = getDatabaseEvent(eventId);
+        }
+        catch (ParseException e) {
+            return null;
+        }
 
         ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
         innerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, subscriberId);
@@ -122,7 +129,13 @@ public class CloudDatabaseController extends DatabaseController {
         ParseQuery<ParseObject> eventToSubsQuery = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_EVENTS, event);
         eventToSubsQuery.whereMatchesQuery(CoreConstants.FIELD_SUBSCRIBERS, innerQuery);
+        if (eventToSubsQuery.count() == 0) {
+            throw new CheckinException(CheckinException.SUBSCRIBER_NOT_SUBSCRIBED);
+        }
         eventToSubsQuery.whereEqualTo(CoreConstants.FIELD_ACCEPTED, true);
+        if (eventToSubsQuery.count() == 0) {
+            throw new CheckinException(CheckinException.SUBSCRIBER_NOT_ACCEPTED);
+        }
         ParseObject subscription = eventToSubsQuery.getFirst();
         subscription.put(CoreConstants.FIELD_CHECK_IN, true);
         subscription.save();
