@@ -150,7 +150,9 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 //String subscriberEmail = SharedPreferencesController.getUserEmail(getActivity());
                 mSubscriber = SharedPreferencesController.getSubscriberInformation(getActivity());
                 //if (subscriberEmail.isEmpty()) {
+                // TODO: See if it would be better to check the name
                 if (mSubscriber.getEmail() == null) {
+                //if (mSubscriber.getObjectID() == null) {
                     PushNotifications.subscribeToChannel("CH-" + mEvent.getObjectID());
                     Toast.makeText(getActivity(), R.string.need_info_for_subscription, Toast.LENGTH_LONG)
                             .show();
@@ -182,9 +184,9 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
     }
 
     private void checkPrevSubscription() {
-        //String subscriberId = SharedPreferencesController.getUserId(getActivity());
-        String subscriberEmail = SharedPreferencesController.getUserEmail(getActivity());
-        mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), subscriberEmail, mEvent.getObjectID());
+        String subscriberId = SharedPreferencesController.getUserId(getActivity());
+        //String subscriberEmail = SharedPreferencesController.getUserEmail(getActivity());
+        mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), subscriberId, mEvent.getObjectID());
     }
 
     private void subscribeToEvent() {
@@ -198,7 +200,8 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
                         // TODO: First save the subscriber
-                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mSubscriber.getEmail());
+                        //mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mSubscriber.getEmail());
+                        mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mSubscriber.getObjectID());
 //                        mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(),
 //                                mSubscriber, mEvent.getObjectID());
                     }
@@ -388,10 +391,11 @@ public abstract class BaseEventDescriptionFragment extends BaseFragment implemen
                 break;
             }
             case SUBSCRIBER_EXISTS:
-                if (result.equals("")) {
+                //if (result.equals("")) {
+                if (!(Boolean)result) {
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
                 } else {
-                    mSubscriber.setObjectID((String) result);
+                    //mSubscriber.setObjectID((String) result);
                     mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);
                 }
                 break;

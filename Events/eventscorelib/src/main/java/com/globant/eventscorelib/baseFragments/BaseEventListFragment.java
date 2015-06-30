@@ -51,6 +51,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private String mEventId;
     private String mSubscriberMail;
+    private String mSubscriberId;
 
     private BaseService.ActionListener mActionListener;
     private String mBindingKey;
@@ -268,6 +269,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             String tweet = getString(R.string.tweet_checkin) + " " + event.getTitle() + " " + event.getHashtag();
             mService.executeAction(BaseService.ACTIONS.TWEET_POST, mBindingKey, tweet);
         } else {
+            // TODO: Do something after the checkin, besides showing the overlay
             showCheckinOverlay();
         }
     }
@@ -297,8 +299,8 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             hideUtilsAndShowContentOverlay();
         }
         if (mEventId != null) {
-            mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey,
-                    mEventId, mSubscriberMail);
+            //mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey, mEventId, mSubscriberMail);
+            mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey, mEventId, mSubscriberId);
         }
     }
 
@@ -328,10 +330,11 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         if (scanResult != null) {
             showProgressOverlay();
             mEventId = scanResult.getContents();
-            mSubscriberMail = SharedPreferencesController.getUserEmail(getActivity());
+            //mSubscriberMail = SharedPreferencesController.getUserEmail(getActivity());
+            mSubscriberId = SharedPreferencesController.getUserId(getActivity());
             if (mService != null) {
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey,
-                        mEventId, mSubscriberMail);
+                        mEventId, mSubscriberId);
                 PushNotifications.unsubscribeToChannel(getString(R.string.prefix_participants) + mEventId);
                 PushNotifications.subscribeToChannel(getString(R.string.prefix_checkin) + mEventId);
             }
