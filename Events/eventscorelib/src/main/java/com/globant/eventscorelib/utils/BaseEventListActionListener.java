@@ -60,8 +60,7 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
                     mFragment.postCheckinTweet((Event) result);
                 }
                 else {
-                    // TODO: "Unhardcode" the "wrong event QR" string
-                    Toast.makeText(mActivity, "The QR code doesn't match any event", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, R.string.checkin_error_qr_code_no_event, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case TWEET_POST:
@@ -94,12 +93,13 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
                 if (e instanceof CheckinException) {
                     mFragment.hideUtilsAndShowContentOverlay();
                     //Toast.makeText(mActivity, mActivity.getString(R.string.checkin_error), Toast.LENGTH_SHORT).show();
-                    // TODO: "Unhardcode" the checkin exceptions toasts strings
                     if (((CheckinException)e).getExceptionCode() == CheckinException.SUBSCRIBER_NOT_SUBSCRIBED) {
-                        Toast.makeText(mActivity, "Subscriber not subscribed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, R.string.checkin_error_subscriber_not_subscribed,
+                                Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        Toast.makeText(mActivity, "Subscriber not accepted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, R.string.checkin_error_subscriber_not_accepted,
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
                 else {

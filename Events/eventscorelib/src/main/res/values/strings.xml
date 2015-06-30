@@ -152,4 +152,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="choose_calendar">Choose calendar</string>
+    <string name="checkin_error_qr_code_no_event">The QR code doesn\'t match any event</string>
+    <string name="checkin_error_subscriber_not_subscribed">Subscriber not subscribed</string>
+    <string name="checkin_error_subscriber_not_accepted">Subscriber not accepted</string>
 </resources>
