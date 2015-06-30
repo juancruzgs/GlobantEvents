@@ -298,10 +298,12 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
             mRecyclerView.setAdapter(getAdapter());
             hideUtilsAndShowContentOverlay();
         }
+/*
         if (mEventId != null) {
             //mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey, mEventId, mSubscriberMail);
             mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey, mEventId, mSubscriberId);
         }
+*/
     }
 
     @Override
