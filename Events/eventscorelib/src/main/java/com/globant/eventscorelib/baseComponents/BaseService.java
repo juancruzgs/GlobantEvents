@@ -83,7 +83,6 @@ public abstract class BaseService extends Service {
         } else {
             l_calendars = Uri.parse("content://calendar/calendars");
         }
-        //Cursor l_managedCursor = this.managedQuery(l_calendars, l_projection, null, null, null);    //all calendars
         CursorLoader loader = new CursorLoader(this, l_calendars, l_projection, null, null, null);    //all calendars
         //CursorLoader loader = new CursorLoader(this, l_calendars, l_projection, "selected=1", null, null);   //active calendars
         Cursor l_managedCursor = loader.loadInBackground();
@@ -104,7 +103,6 @@ public abstract class BaseService extends Service {
     }
 
     public static boolean isRunning = false;
-    //protected static List<String> cancelKeys = new ArrayList<>();
     // This is the object that receives interactions from clients.
     private final IBinder mBinder = new BaseBinder();
 
@@ -221,16 +219,13 @@ public abstract class BaseService extends Service {
         return eventID;
     }
 
-    protected long removeEventFromCalendar(/*Integer calendarID,*/ Long eventID) {
-        //ContentResolver cr = getContentResolver();
-        //ContentValues values = new ContentValues();
-        //Uri deleteUri = null;
+    protected long removeEventFromCalendar(Long eventID) {
         Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
 
         return getContentResolver().delete(deleteUri, null, null);
     }
 
-    protected long updateEventInCalendar(/*Integer calendarID,*/ Long eventID, Event event) {
+    protected long updateEventInCalendar(Long eventID, Event event) {
         ContentResolver contentResolver = getContentResolver();
 
         if (mNCalendar > mCalendars.length-1) {
@@ -311,8 +306,6 @@ public abstract class BaseService extends Service {
             ActionWrapper currentSubscriber = new ActionWrapper(anActionListener);
             currentSubscribers.put(bindingKey, currentSubscriber);
         }
-//        if (cancelKeys.contains(bindingKey))
-//            cancelKeys.remove(bindingKey);
 
         if (cachedElements.containsKey(bindingKey)){
             HashMap<ACTIONS,Object> cachedElement =cachedElements.remove(bindingKey);
@@ -327,7 +320,6 @@ public abstract class BaseService extends Service {
         String bindingKey = anActionListener != null ? anActionListener.getBindingKey() : "";
         if (anActionListener != null && currentSubscribers.containsKey(bindingKey)) {
             currentSubscribers.remove(bindingKey);
-//            cancelKeys.add(bindingKey);
         }
     }
 
@@ -369,9 +361,6 @@ public abstract class BaseService extends Service {
                                 case EVENT_LIST:
                                     result = mSelectiveDatabaseController.getEvents((boolean) arguments[0], (boolean) arguments[1]);
                                     break;
-//                                case EVENT_DETAIL:
-//                                    result = mCloudDatabaseController.getEvent((String) arguments[0]);
-//                                    break;
                                 case POSITION_ADDRESS:
                                     result = mGeocoderController.getAddressFromCoordinates((LatLng) arguments[0]);
                                     break;
@@ -400,32 +389,27 @@ public abstract class BaseService extends Service {
                                     result = mTwitterController.publishPost((String) arguments[0]);
                                     break;
                                 case SUBSCRIBER_CHECKIN:
-                                    //Object[] arguments  = (Object[]) arguments;
                                     result = mCloudDatabaseController.setCheckIn((String) arguments[0], (String) arguments[1]);
                                     break;
                                 case PARTICIPANT_LIST:
                                     result = mCloudDatabaseController.getEventSubscribers((String) arguments[0]);
                                     break;
                                 case SET_ACCEPTED:
-                                    //Object[] objects = (Object[]) arguments;
                                     mCloudDatabaseController.setAccepted((String) arguments[0], (List<String>) arguments[1]);
                                     break;
                                 case SUBSCRIBER_UPDATE:
                                     result = mCloudDatabaseController.updateSubscriber((Subscriber) arguments[0]);
                                     break;
                                 case SUBSCRIBER_EXISTS:
-                                    //result = mCloudDatabaseController.getSubscriberId((String) arguments[0]);
                                     result = mCloudDatabaseController.subscriberExists((String) arguments[0]);
                                     break;
                                 case IS_SUBSCRIBED:
-                                    //Object[] object = (Object[])arguments;
                                     result = mCloudDatabaseController.isSubscribed((String) arguments[0], (String) arguments[1]);
                                     break;
                                 case SUBSCRIBER_CREATE:
                                     result = mCloudDatabaseController.createSubscriber((Subscriber) arguments[0]);
                                     break;
                                 case EVENTS_TO_SUBSCRIBER_CREATE:
-                                    //Object[] obj = (Object[])arguments;
                                     mCloudDatabaseController.createEventToSubscriber((Subscriber) arguments[0], (String) arguments[1]);
                                     break;
                                 case GET_EVENT_HISTORY:
@@ -448,30 +432,22 @@ public abstract class BaseService extends Service {
                                     result = calendarNames;
                                     break;
                                 case REMOVE_EVENT_FROM_CALENDAR:
-                                    result = removeEventFromCalendar(/*(Integer)arguments[0],*/ (Long)arguments[0]);
+                                    result = removeEventFromCalendar((Long)arguments[0]);
                                     break;
                                 case UPDATE_EVENT_IN_CALENDAR:
                                     setNCalendar((Integer)arguments[0]);
-                                    long rows = updateEventInCalendar(/*(Integer)arguments[0],*/ (Long)arguments[1],
-                                            (Event)arguments[2]);
+                                    long rows = updateEventInCalendar((Long)arguments[1], (Event)arguments[2]);
                                     result = new CalendarResponse((Event)arguments[2], rows);
                                     break;
                             }
 
-//                            if (!cancelKeys.contains(bindingKey)) {
-                                currentSubscriber.finishAction(theAction, result);
-//                            }
-//                            else {
-//                                cancelKeys.remove(bindingKey);
-//                            }
+                            currentSubscriber.finishAction(theAction, result);
                         } catch (Exception e) {
                             currentSubscriber.failAction(theAction, e);
                             Logger.e("executeAction", e);
                         }
                     }
                 }
-
-                //cancelKeys.clear();
             }
         };
         new Thread(r).start();

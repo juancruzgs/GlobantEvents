@@ -14,6 +14,8 @@ import com.globant.eventscorelib.domainObjects.Event;
 import java.util.List;
 
 /**
+ * Service action listener. Separated to keep it available when the parent fragment is destroyed.
+ *
  * Created by ariel.cattaneo on 14/05/2015.
  */
 public class BaseEventListActionListener implements BaseService.ActionListener {
@@ -73,11 +75,6 @@ public class BaseEventListActionListener implements BaseService.ActionListener {
                 }
                 else {
                     SharedPreferencesController.removeEventJsonInfo(mActivity, response.getEvent());
-/*
-                    mFragment.removeEventFromCalendar(getBindingKey(),
-                            JSONSharedPreferences.getCalendarIdFromEventId(mActivity,
-                                    response.getEvent().getObjectID()));
-*/
                 }
                 break;
             default:

@@ -60,8 +60,7 @@ import java.util.regex.Pattern;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BaseSubscriberFragment extends BaseFragment implements //BaseService.ActionListener,
-        BaseEasterEgg.EasterEggListener {
+public class BaseSubscriberFragment extends BaseFragment implements BaseEasterEgg.EasterEggListener {
 
     private Uri mImageUri;
     private Bitmap mPhoto;
@@ -105,15 +104,7 @@ public class BaseSubscriberFragment extends BaseFragment implements //BaseServic
 
     private Context mContext;
 
-    //    private SensorManager sensorManager;
-//    private Sensor senAcelerometer;
-//    private long lastUpdate = 0;
-//    private float last_x, last_y, last_z;
-//    private static final int N_SHAKES = 3;
-//    private static final int SHAKE_THRESHOLD = 2500;
-//    private static final int ONE_SHAKE_TIME_MILLIS = 80;
     private static final String HANDSHAKE_MESSAGE = "Glober detected";
-    //    private int mShakes = 0;
     private boolean mGloberDetected = false;
 
     public BaseSubscriberFragment() {
@@ -122,7 +113,6 @@ public class BaseSubscriberFragment extends BaseFragment implements //BaseServic
 
     @Override
     public BaseService.ActionListener getActionListener() {
-        //return this;
         return null;
     }
 
@@ -133,9 +123,6 @@ public class BaseSubscriberFragment extends BaseFragment implements //BaseServic
 
         if (!mGloberDetected) {
             subscribeEggListener(this);
-//            sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-//            senAcelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-//            sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
@@ -428,8 +415,6 @@ public class BaseSubscriberFragment extends BaseFragment implements //BaseServic
                 if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
                     mEventId = BaseEventDetailPagerActivity.getInstance().getEvent().getObjectID();
                 }
-                // TODO: Move all the "Parse-saving" stuff to the subscription
-                //mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_EXISTS, getBindingKey(), mEditTextEmail.getText().toString());
                 Intent intent = new Intent();
                 intent.putExtra(CoreConstants.EXTRA_DATA_SUBSCRIBER, mSubscriber);
                 getActivity().setResult(Activity.RESULT_OK, intent);
@@ -473,89 +458,15 @@ public class BaseSubscriberFragment extends BaseFragment implements //BaseServic
         outState.putParcelable(CoreConstants.PHOTO_ROTATE, bitmapToSave);
     }
 
-//    @Override
-//    public Activity getBindingActivity() {
-//        return getActivity();
-//    }
-
     @Override
     public void onPause() {
         super.onPause();
-        //sensorManager.unregisterListener(this);
     }
-
-//    @Override
-//    public String getBindingKey() {
-//        return this.getClass().getSimpleName();//+ new Date().toString();
-//    }
 
     @Override
     public void onResume() {
         super.onResume();
-//        if (!mGloberDetected) {
-//            //sensorManager.registerListener(this, senAcelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-//        }
     }
-
-//    @Override
-//    public void onStartAction(BaseService.ACTIONS theAction) {
-//        showProgressOverlay();
-//    }
-
-//    @Override
-//    public void onFinishAction(BaseService.ACTIONS theAction, Object result) {
-//        Intent intent;
-//        // TODO: Move all the "Parse-saving" stuff to the subscription
-//        switch (theAction) {
-//            case SUBSCRIBER_EXISTS:
-//                if (result.equals("")) {
-//                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CREATE, getBindingKey(), mSubscriber);
-//                } else {
-//                    mSubscriber.setObjectID((String) result);
-//                    mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_UPDATE, getBindingKey(), mSubscriber);
-//                }
-//                break;
-//            case IS_SUBSCRIBED:
-//                if ((Boolean) result) {
-//                    Toast.makeText(getActivity(), getString(R.string.already_subscribed), Toast.LENGTH_SHORT).show();
-//                    getActivity().finish();
-//                } else {
-//                    mService.executeAction(BaseService.ACTIONS.EVENTS_TO_SUBSCRIBER_CREATE, getBindingKey(), mSubscriber, mEventId);
-//                }
-//                break;
-//            case SUBSCRIBER_CREATE:
-//                mSubscriber.setObjectID((String) result);
-//                SharedPreferencesController.setSubscriberInformation(mSubscriber, getActivity());
-//                //mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
-//                intent = new Intent();
-//                intent.putExtra(CoreConstants.EXTRA_DATA_SUBSCRIBER, mSubscriber);
-//                getActivity().setResult(Activity.RESULT_OK, intent);
-//                getActivity().finish();
-//                break;
-//            case EVENTS_TO_SUBSCRIBER_CREATE:
-//                Toast.makeText(getActivity(), getString(R.string.have_been_subscribed), Toast.LENGTH_SHORT).show();
-//                PushNotifications.subscribeToChannel("SUB-" + mEventId);
-//                PushNotifications.subscribeToChannel("SUB-" + mEventId + "-" + mSubscriber.getObjectID());
-//                getActivity().finish();
-//                break;
-//            case SUBSCRIBER_UPDATE:
-////                if (getActivity().getIntent().getBooleanExtra(CoreConstants.FIELD_CHECK_IN, false)) {
-////                    mService.executeAction(BaseService.ACTIONS.IS_SUBSCRIBED, getBindingKey(), result, mEventId);
-////                } else {
-//                    Toast.makeText(getActivity(), getResources().getString(R.string.profile_saved), Toast.LENGTH_SHORT).show();
-//                    intent = new Intent();
-//                    intent.putExtra(CoreConstants.EXTRA_DATA_SUBSCRIBER, mSubscriber);
-//                    getActivity().setResult(Activity.RESULT_OK, intent);
-//                    getActivity().finish();
-//                    break;
-////                }
-//        }
-//    }
-
-//    @Override
-//    public void onFailAction(BaseService.ACTIONS theAction, Exception e) {
-//        showErrorOverlay();
-//    }
 
     @Override
     public void onEasterEgg() {

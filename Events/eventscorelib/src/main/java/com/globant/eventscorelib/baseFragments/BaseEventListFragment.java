@@ -50,7 +50,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     private static final String TAG = "EventListFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private String mEventId;
-    private String mSubscriberMail;
     private String mSubscriberId;
 
     private BaseService.ActionListener mActionListener;
@@ -86,9 +85,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
                     Date lastUpdateDb = event.getUpdatedAt();
                     String lastUpdateCalStr = (String) eventJSON.get(CoreConstants.CALENDAR_EVENT_LAST_UPDATE);
-                    // Thu Jun 11 15:37:48 GMT-03:00 2015
-                    //DateFormat dateFormat = DateFormat.getDateTimeInstance();
-                    //Date lastUpdateCal = dateFormat.parse(lastUpdateCalStr);
+                    // Date example: Thu Jun 11 15:37:48 GMT-03:00 2015
                     Date lastUpdateCal = CustomDateFormat.parseCompleteDate(lastUpdateCalStr, getActivity());
                     if (lastUpdateCal.before(lastUpdateDb)) {
                         mService.executeAction(BaseService.ACTIONS.UPDATE_EVENT_IN_CALENDAR, mActionListener.getBindingKey(),
@@ -115,9 +112,7 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
     }
 
     public void removeEventFromCalendar(String bindingKey, Long eventId) {
-        mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, bindingKey,
-                                /*calendarData.getInt(CoreConstants.CALENDAR_SELF_ID),*/
-                eventId);
+        mService.executeAction(BaseService.ACTIONS.REMOVE_EVENT_FROM_CALENDAR, bindingKey, eventId);
     }
 
     protected enum LayoutManagerType {
@@ -185,7 +180,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
 
     @Override
     public String getTitle() {
-//        return getString(R.string.title_fragment_events_stream);
         return "";
     }
 
@@ -300,7 +294,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         }
 /*
         if (mEventId != null) {
-            //mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey, mEventId, mSubscriberMail);
             mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey, mEventId, mSubscriberId);
         }
 */
@@ -332,7 +325,6 @@ public abstract class BaseEventListFragment extends BaseFragment implements Obse
         if (scanResult != null) {
             showProgressOverlay();
             mEventId = scanResult.getContents();
-            //mSubscriberMail = SharedPreferencesController.getUserEmail(getActivity());
             mSubscriberId = SharedPreferencesController.getUserId(getActivity());
             if (mService != null) {
                 mService.executeAction(BaseService.ACTIONS.SUBSCRIBER_CHECKIN, mBindingKey,

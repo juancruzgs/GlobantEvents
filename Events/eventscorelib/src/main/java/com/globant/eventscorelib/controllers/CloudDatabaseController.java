@@ -98,7 +98,6 @@ public class CloudDatabaseController extends DatabaseController {
         eventsInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, eventId);
 
         ParseQuery<ParseObject> subscribersInnerQuery = ParseQuery.getQuery(CoreConstants.SUBSCRIBERS_TABLE);
-        //subscribersInnerQuery.whereEqualTo(CoreConstants.FIELD_EMAIL, subscriberEmail);
         subscribersInnerQuery.whereEqualTo(CoreConstants.FIELD_OBJECT_ID, subscriberId);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(CoreConstants.EVENTS_TO_SUBSCRIBERS_TABLE);
@@ -113,7 +112,6 @@ public class CloudDatabaseController extends DatabaseController {
         }
     }
 
-    //public Event setCheckIn(String eventId, String subscriberMail) throws ParseException {
     public Event setCheckIn(String eventId, String subscriberId) throws ParseException, CheckinException {
         ParseObject event;
         try {
